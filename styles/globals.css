@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --alpine-violet: #7B2CBF;
+    --alpine-border: #E5E7EB;
+    --alpine-card: #FFFFFF;
+    --alpine-ink: #0F0F10;
+  }
+
+  /* Apply Linear's OpenType features globally — non-negotiable for the look */
+  * {
+    font-feature-settings: "cv01", "ss03";
+  }
+
+  body {
+    @apply antialiased;
+    font-family: var(--font-alpine-body), -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    font-feature-settings: "cv01", "ss03";
+    font-weight: 500;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-alpine-heading), var(--font-alpine-body), sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.018em;
+  }
+}
+
+@layer components {
+  .field-input {
+    @apply w-full rounded-card bg-white px-4 py-3 text-sm transition-colors focus:outline-none;
+    border: 1px solid var(--alpine-border);
+    color: var(--alpine-ink);
+  }
+
+  .field-input::placeholder {
+    color: #9CA3AF;
+  }
+
+  .field-input:focus-visible {
+    border-color: var(--alpine-violet);
+    box-shadow: 0 0 0 3px rgba(123, 44, 191, 0.12);
+  }
+
+  .metric-label {
+    @apply font-mono text-[11px] uppercase;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+}

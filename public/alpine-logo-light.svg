@@ -1,0 +1,19 @@
+<svg width="290" height="76" viewBox="0 0 290 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Alpine Due Diligence — Full Logo — Light Background (v3 — app icon + wordmark) -->
+  <defs>
+    <linearGradient id="icon-bg" x1="0" y1="60" x2="60" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="45%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#7B2CBF"/>
+    </linearGradient>
+  </defs>
+  <!-- App icon (scaled to 60x60) — double-peak mark from canonical 512×512 SVG -->
+  <rect x="0" y="8" width="60" height="60" rx="12" fill="url(#icon-bg)"/>
+  <g fill="none" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18.3 45.6L30 28L41.7 45.6"/>
+    <path d="M24.1 39.8L30 31L35.9 39.8"/>
+  </g>
+  <!-- Wordmark -->
+  <text x="76" y="38" font-family="Plus Jakarta Sans, sans-serif" font-size="26" font-weight="700" fill="#1A1A2E" letter-spacing="3">ALPINE</text>
+  <text x="76" y="56" font-family="DM Sans, sans-serif" font-size="10" fill="#7B2CBF" letter-spacing="3.5">DUE DILIGENCE</text>
+</svg>
