@@ -17,7 +17,7 @@ const POSTS: Post[] = [
     title: "What recent ODD failures reveal about allocator blind spots",
     excerpt:
       "Allen's recent activity focuses on how operational failures can compound into multi-billion-dollar investor and counterparty losses, and why allocators need to treat ODD as loss prevention rather than box-checking.",
-    href: "https://www.linkedin.com/in/kaishen-allen-zhang/",
+    href: "https://www.linkedin.com/posts/kaishen-allen-zhang_operationalduediligence-institutionalinvesting-activity-7448450921853837312-iTKB",
   },
   {
     source: "Founder Activity",
@@ -25,7 +25,7 @@ const POSTS: Post[] = [
     title: "In ODD, who sent the document is not the same as who authored it",
     excerpt:
       "A recent post digs into chain-of-custody and source-of-truth questions, making the case that operational diligence should distinguish between distribution channels and true document ownership.",
-    href: "https://www.linkedin.com/in/kaishen-allen-zhang/",
+    href: "https://www.linkedin.com/posts/kaishen-allen-zhang_duediligence-operationalduediligence-odd-activity-7447280645858353154-gssz",
   },
   {
     source: "Market Watch",

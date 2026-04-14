@@ -14,12 +14,8 @@ export default function SubpageLayout({ children }: SubpageLayoutProps) {
         <div className="h-[2px] w-full" style={{ background: `linear-gradient(90deg, ${GREEN}, ${AMBER}, ${VIOLET})` }} />
         <div style={{ borderBottom: `1px solid ${BORDER}` }}>
           <div className="mx-auto max-w-5xl px-6 py-4 flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2.5">
-              <Image src="/alpine-icon.svg" alt="Alpine" width={32} height={32} />
-              <div>
-                <span className="font-heading font-emphasis text-[14px] block leading-none" style={{ color: INK }}>ALPINE</span>
-                <span className="font-mono text-[10px] tracking-wider uppercase" style={{ color: GREEN }}>Due Diligence</span>
-              </div>
+            <Link href="/" className="flex items-center">
+              <Image src="/alpine-logo-dark.svg" alt="Alpine Due Diligence" width={180} height={48} style={{ height: 40, width: "auto" }} />
             </Link>
           </div>
         </div>

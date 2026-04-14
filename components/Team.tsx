@@ -5,8 +5,8 @@ const MEMBERS = [
   {
     name: "Allen Zhang",
     role: "Founder & CEO",
-    bio: "Three years as an operational due diligence analyst at Castle Hall Diligence, covering hedge funds, private equity, and real assets for institutional allocators globally. Founded Alpine to bring that methodology into software.",
-    credentials: ["Castle Hall Diligence — ODD Analyst", "Concordia University — Finance"],
+    bio: "Three years as a senior operational due diligence analyst, covering hedge funds, private equity, and real assets for institutional allocators globally. Founded Alpine to bring that methodology into software.",
+    credentials: ["Senior ODD Analyst — Institutional Due Diligence", "Finance — BSc"],
     photo: "/allen-zhang-headshot.jpeg",
     linkedin: "https://www.linkedin.com/in/kaishen-allen-zhang/",
   },

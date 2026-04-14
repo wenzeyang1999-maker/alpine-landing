@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import {
-  BG, BG_CARD, INK, SECONDARY, MUTED, VIOLET, GREEN, AMBER, BORDER, BORDER_SUBTLE, LS_BODY,
+  BG, BG_CARD, INK, SECONDARY, MUTED, VIOLET, GREEN, AMBER, BORDER, BORDER_SUBTLE,
 } from "@/lib/constants";
 
 type Item = { text: string; dot?: string; check?: string };
@@ -76,8 +76,8 @@ const STEPS: {
     color: AMBER,
     stats: [
       { value: "Zero", label: "AI-only output" },
-      { value: "3 yrs", label: "Castle Hall Diligence" },
       { value: "100%", label: "analyst-reviewed" },
+      { value: "Senior", label: "ODD analyst assigned" },
     ],
     body: "Every report is reviewed by a senior ODD analyst before delivery. No finding leaves Alpine without a human signing off — that's the institutional standard your IC expects.",
     cols: 1,
@@ -137,19 +137,20 @@ export default function Hero() {
             Live
           </span>
           <span className="text-[14px] font-body" style={{ color: SECONDARY, fontWeight: 600, letterSpacing: "-0.015em" }}>
-            Concordia University Endowment onboarded
+            AI Engine · Early Access now open
           </span>
         </motion.div>
 
         {/* Display headline */}
         <motion.h1
-          className="font-heading mb-6"
-          style={{ fontSize: "clamp(3rem, 5.8vw, 4.25rem)", fontWeight: 700, lineHeight: 0.96, letterSpacing: "-0.055em", color: INK }}
+          className="font-heading mb-8"
+          style={{ fontSize: "clamp(3.25rem, 6.5vw, 5rem)", fontWeight: 700, lineHeight: 1.1, letterSpacing: "-0.04em", color: INK }}
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          Machine speed.<br />Analyst standards.
+          Machine speed.<br />
+          <span style={{ color: VIOLET }}>Analyst standards.</span>
         </motion.h1>
 
         {/* Subtitle */}
@@ -205,7 +206,7 @@ export default function Hero() {
               <span
                 key={type}
                 className="font-body text-[15px]"
-                style={{ color: SECONDARY, fontWeight: 600, letterSpacing: "-0.015em" }}
+                style={{ color: MUTED, fontWeight: 500, letterSpacing: "-0.015em" }}
               >
                 {type}
               </span>
@@ -242,7 +243,7 @@ export default function Hero() {
                 className="rounded px-3 py-1 text-[11px] font-sans max-w-xs mx-auto text-center"
                 style={{ background: BG_CARD, color: MUTED, border: `1px solid ${BORDER}`, letterSpacing: "0.01em" }}
               >
-                alpinedd.com/review/ridgeline-global
+                alpinedd.com/review/northpoint-capital
               </div>
             </div>
           </div>
@@ -268,7 +269,7 @@ export default function Hero() {
                   aria-controls={`workflow-panel-${i}`}
                   id={`workflow-tab-${i}`}
                   tabIndex={isActive ? 0 : -1}
-                  className="relative flex min-w-max flex-1 items-center justify-center gap-2 px-5 py-3 text-[14px] font-body whitespace-nowrap transition-colors"
+                  className="relative flex min-w-max flex-1 items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2.5 sm:py-3 text-[12px] sm:text-[14px] font-body whitespace-nowrap transition-colors"
                   style={{
                     background: isActive ? BG_CARD : "transparent",
                     color: isActive ? INK : MUTED,
@@ -295,7 +296,7 @@ export default function Hero() {
           </div>
 
           {/* Tab content panel */}
-          <div className="p-6 md:p-8" style={{ background: BG_CARD, minHeight: "220px" }}>
+          <div className="p-4 sm:p-6 md:p-8" style={{ background: BG_CARD, minHeight: "220px" }}>
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeStep}
@@ -308,18 +309,18 @@ export default function Hero() {
                 transition={{ duration: 0.18 }}
               >
                 {/* Stats row — big numbers with rhythm */}
-                <div className="grid gap-4 mb-5" style={{ gridTemplateColumns: `repeat(${step.stats.length}, minmax(0, 1fr))` }}>
+                <div className="grid gap-3 mb-4 sm:gap-4 sm:mb-5" style={{ gridTemplateColumns: `repeat(${step.stats.length}, minmax(0, 1fr))` }}>
                   {step.stats.map((stat) => (
                     <div key={stat.label}>
                       <div
                         className="font-heading"
-                        style={{ fontSize: "2.25rem", fontWeight: 700, color: step.color, letterSpacing: "-0.05em", lineHeight: 0.96 }}
+                        style={{ fontSize: "clamp(1.25rem, 4vw, 2.25rem)", fontWeight: 700, color: step.color, letterSpacing: "-0.05em", lineHeight: 1 }}
                       >
                         {stat.value}
                       </div>
                       <div
                         className="metric-label mt-1"
-                        style={{ fontSize: "0.75rem", fontWeight: 700, color: MUTED, letterSpacing: "0.08em", textTransform: "uppercase" }}
+                        style={{ fontSize: "clamp(0.625rem, 1.5vw, 0.75rem)", fontWeight: 700, color: MUTED, letterSpacing: "0.06em", textTransform: "uppercase" }}
                       >
                         {stat.label}
                       </div>
@@ -328,29 +329,31 @@ export default function Hero() {
                 </div>
 
                 {/* Body copy */}
-                  <p className="font-body mb-5" style={{ fontSize: "0.9375rem", fontWeight: 500, lineHeight: 1.7, color: SECONDARY, letterSpacing: "-0.015em" }}>
+                <p className="font-body mb-4 sm:mb-5" style={{ fontSize: "clamp(0.8125rem, 2.5vw, 0.9375rem)", fontWeight: 500, lineHeight: 1.65, color: SECONDARY, letterSpacing: "-0.015em" }}>
                   {step.body}
                 </p>
 
                 {/* Divider */}
-                <div className="mb-4" style={{ height: "1px", background: BORDER }} />
+                <div className="mb-3 sm:mb-4" style={{ height: "1px", background: BORDER }} />
 
-                {/* Items */}
-                <div
-                  className="grid gap-2"
-                  style={{ gridTemplateColumns: `repeat(${step.cols}, minmax(0, 1fr))` }}
-                >
+                {/* Items — max 2 cols on mobile, step.cols on sm+ */}
+                <div className={[
+                  "grid gap-1.5 sm:gap-2",
+                  step.cols === 4 ? "grid-cols-2 sm:grid-cols-4" :
+                  step.cols === 2 ? "grid-cols-1 sm:grid-cols-2" :
+                  "grid-cols-1",
+                ].join(" ")}>
                   {step.items.map((item) => (
                     <div
                       key={item.text}
-                      className="flex items-center gap-2 rounded-card px-4 py-2.5 text-[13px] font-body"
-                      style={{ background: BORDER_SUBTLE, border: `1px solid ${BORDER}`, color: SECONDARY, fontWeight: 500 }}
+                      className="flex items-center gap-1.5 rounded-card px-2.5 py-2 sm:px-4 sm:py-2.5 font-body"
+                      style={{ background: BORDER_SUBTLE, border: `1px solid ${BORDER}`, color: SECONDARY, fontWeight: 500, fontSize: "clamp(0.6875rem, 2vw, 0.8125rem)" }}
                     >
                       {item.check && (
-                        <span className="shrink-0" style={{ color: item.check, fontSize: "11px", fontWeight: 600 }}>✓</span>
+                        <span className="shrink-0" style={{ color: item.check, fontSize: "10px", fontWeight: 600 }}>✓</span>
                       )}
                       {item.dot && (
-                        <span className="w-2 h-2 rounded-full shrink-0" style={{ background: item.dot }} />
+                        <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: item.dot }} />
                       )}
                       {item.text}
                     </div>

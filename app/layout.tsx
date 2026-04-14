@@ -1,33 +1,30 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Plus_Jakarta_Sans, DM_Sans } from "next/font/google";
 import "@/styles/globals.css";
 import { BG, INK } from "@/lib/constants";
 
-const alpineHeading = localFont({
-  src: [
-    { path: "../public/fonts/InstrumentSans-Regular.ttf", weight: "400", style: "normal" },
-    { path: "../public/fonts/InstrumentSans-Bold.ttf", weight: "600", style: "normal" },
-    { path: "../public/fonts/InstrumentSans-Bold.ttf", weight: "700", style: "normal" },
-  ],
+// Display / Hero headings — Plus Jakarta Sans 700
+const alpineHeading = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["600", "700", "800"],
   variable: "--font-alpine-heading",
   display: "swap",
 });
 
-const alpineBody = localFont({
-  src: [
-    { path: "../public/fonts/InstrumentSans-Regular.ttf", weight: "400", style: "normal" },
-    { path: "../public/fonts/InstrumentSans-Bold.ttf", weight: "500", style: "normal" },
-    { path: "../public/fonts/InstrumentSans-Bold.ttf", weight: "600", style: "normal" },
-    { path: "../public/fonts/InstrumentSans-Bold.ttf", weight: "700", style: "normal" },
-  ],
+// Body / UI — DM Sans 400 / 500
+const alpineBody = DM_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-alpine-body",
   display: "swap",
 });
 
+// Mono — IBM Plex Mono (local)
 const alpineMono = localFont({
   src: [
     { path: "../public/fonts/IBMPlexMono-Regular.ttf", weight: "400", style: "normal" },
-    { path: "../public/fonts/IBMPlexMono-Bold.ttf", weight: "700", style: "normal" },
+    { path: "../public/fonts/IBMPlexMono-Bold.ttf",    weight: "700", style: "normal" },
   ],
   variable: "--font-alpine-mono",
   display: "swap",
@@ -43,11 +40,13 @@ export const metadata: Metadata = {
     siteName: "Alpine Due Diligence",
     type: "website",
     locale: "en_US",
+    images: [{ url: "/logo.png", width: 1024, height: 1024, alt: "Alpine Due Diligence" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Alpine Due Diligence — AI-Powered ODD Platform",
     description: "Replace 40-hour manual ODD with 45-minute AI assessments.",
+    images: ["/logo.png"],
   },
   robots: {
     index: true,

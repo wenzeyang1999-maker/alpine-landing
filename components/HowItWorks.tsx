@@ -19,33 +19,33 @@ const STEPS: Step[] = [
     num: "01", title: "Collect Documents", color: VIOLET,
     summary: "Upload once. Everything is classified and ready.",
     advantage: "Easy",
-    advantageDesc: "No setup, no instructions, no email chains. One upload and you're done.",
+    advantageDesc: "A few clicks to upload. Instant iterations — swap files, re-run, refine without restarting.",
     left: {
       metric: "Several days",
       unit: "of back-and-forth",
       points: [
-        "Email back-and-forth with managers to request each document",
+        "Initial requests are partial — follow-up emails fill the gaps over days",
         "Missing items often surface only after the review has started",
         "Manual trackers and shared folders need to be updated throughout",
         "Every manager sends a different package and naming convention",
       ],
     },
     right: {
-      metric: "1 upload",
+      metric: "Several clicks",
       unit: "to start the review",
       points: [
-        "Drop your files once — Alpine handles everything from there",
-        "Document types are recognized and classified automatically",
-        "Zero instructions, zero back-and-forth, zero setup required",
-        "Review begins the moment your upload is complete",
+        "Start immediately — no waiting for a complete document set",
+        "Alpine flags missing files and drafts AI follow-up requests automatically",
+        "Calendar notifications keep outstanding items on track across stakeholders",
+        "Analysis runs in parallel as remaining documents arrive",
       ],
     },
   },
   {
     num: "02", title: "Verify Regulatory", color: AMBER,
-    summary: "10 global registries. Checked automatically. Nothing missed.",
+    summary: "54 regulators across 3 tiers. Checked automatically. Nothing missed.",
     advantage: "Thorough",
-    advantageDesc: "Manual lookups miss things. Alpine checks every registry, every time — live.",
+    advantageDesc: "Manual lookups miss things. Alpine verifies against 54 regulators — every time, live.",
     left: {
       metric: "Hours",
       unit: "of manual verification",
@@ -58,12 +58,10 @@ const STEPS: Step[] = [
     },
     right: {
       metric: "One pass",
-      unit: "across the registry set",
+      unit: "with ongoing monitoring",
       points: [
-        "SEC, FCA, MAS, SFC, CSSF, ASIC and other sources checked in the same workflow",
-        "Registry results are captured consistently for every review",
-        "Discrepancies and disciplinary flags are surfaced in the same evidence trail",
-        "Verification is repeatable instead of analyst-by-analyst",
+        "22 Tier 1 (SEC, FCA, MAS, ASIC, BaFin, FINMA…), 25 Tier 2 (CIMA, DFSA, SEBI, MFSA…), and 7 Tier 3 regulators — verified in one pass",
+        "Disciplinary flags, registration gaps, and discrepancies surfaced in a single evidence trail",
       ],
     },
   },
@@ -86,10 +84,8 @@ const STEPS: Step[] = [
       metric: "472 questions",
       unit: "tailored to your fund",
       points: [
-        "Question set adapts to fund structure, type, and strategy automatically",
-        "36 configurations — only questions that apply to this fund",
-        "12 ODD topics covered with consistent depth, every review",
-        "Surfaces gaps that strategy-agnostic reviews routinely miss",
+        "More precise, faster, and interactive — 472 strategy-specific questions scored in minutes, with real-time updates as fund details or regulatory guidance change",
+        "36 configurations ensure only relevant questions apply — surfacing gaps that strategy-agnostic reviews routinely miss",
       ],
     },
   },
@@ -102,19 +98,17 @@ const STEPS: Step[] = [
       metric: "Manual prep",
       unit: "assembled across documents",
       points: [
-        "Analyst notes, DDQs, and source files are often reviewed in separate places",
-        "Call prep can start only after the draft report has already been assembled",
-        "Follow-up questions depend on individual note quality and analyst memory",
-        "Evidence tracing can take extra time when committee questions come in",
+        "Hours spent manually searching through documents to locate and confirm specific details",
+        "Evidence tracing is done by hand — slow, inconsistent, and dependent on analyst memory",
       ],
     },
     right: {
       metric: "Reviewed",
       unit: "before delivery",
       points: [
-        "Every finding reviewed and approved by a senior ODD analyst",
-        "Analyst prepares call notes for your IC or manager follow-up",
-        "Castle Hall Diligence background — 3 years of real ODD reviews",
+        "Every report is reviewed by an experienced ODD analyst before delivery. No AI-only output reaches your IC.",
+        "Search, extraction, and detail confirmation are fully automated by AI — analyst focus shifts to judgment, not legwork",
+        "Every review is assigned to a senior ODD analyst with institutional due diligence experience",
         "You walk into committee with verified output and prepared support",
       ],
     },
@@ -136,7 +130,7 @@ const STEPS: Step[] = [
     },
     right: {
       metric: "1 week",
-      unit: "to IC-ready package",
+      unit: "draft report in minutes",
       points: [
         "ACCEPT / WATCHLIST / FLAG rating with clear, structured rationale",
         "Every finding cited to its source — traceable and audit-ready",
@@ -249,14 +243,14 @@ export default function HowItWorks() {
                             </p>
                           </div>
                           <div
-                            className="pointer-events-none absolute right-8 top-[4.6rem] font-heading"
+                            className="pointer-events-none absolute right-8 top-[2.25rem] font-heading"
                             style={{
                               color: step.color,
-                              fontSize: "1.625rem",
-                              fontWeight: 600,
-                              letterSpacing: "-0.025em",
+                              fontSize: "2.5rem",
+                              fontWeight: 700,
+                              letterSpacing: "-0.035em",
                               lineHeight: 1,
-                              opacity: 0.9,
+                              opacity: 0.35,
                             }}
                           >
                             {step.advantage}

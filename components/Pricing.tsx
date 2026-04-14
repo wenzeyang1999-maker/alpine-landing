@@ -251,8 +251,8 @@ export default function Pricing() {
             Institutional Quality Guarantee
           </h3>
           <p className="font-body text-[13px] max-w-lg mx-auto" style={{ color: SECONDARY, lineHeight: 1.65, letterSpacing: LS_BODY }}>
-            If our report doesn&rsquo;t match the depth and rigor of a traditional ODD firm,
-            we refund the review in full. Compare against Castle Hall, ACA, or Albourne.
+            If our report doesn&rsquo;t match the depth and rigor of a traditional institutional ODD review,
+            we refund the review in full — no questions asked.
           </p>
         </div>
       </div>

@@ -1,7 +1,7 @@
-import { BG, BG_CARD, BG_AMBER, INK, MUTED, VIOLET, BORDER, LS_BODY } from "@/lib/constants";
+import { BG_CARD, BG_AMBER, INK, MUTED, VIOLET, BORDER, LS_BODY } from "@/lib/constants";
 
 const CREDENTIALS = [
-  { stat: "3 yrs", label: "Castle Hall analyst experience", detail: "Real-world institutional ODD background" },
+  { stat: "80+", label: "Institutional ODD reports authored", detail: "Hedge fund, PE, and VC mandates" },
   { stat: "Analyst-reviewed", label: "Every report reviewed before delivery", detail: "No draft goes out unchecked" },
   { stat: "65", label: "Verification checkpoints", detail: "Regulatory, operational, and document-based" },
 ];

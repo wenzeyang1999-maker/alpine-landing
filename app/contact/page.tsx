@@ -31,7 +31,7 @@ export default function ContactPage() {
           </div>
 
           <p className="text-base font-body leading-relaxed" style={{ color: SECONDARY }}>
-            Allen spent three years as an operational due diligence analyst at Castle Hall Diligence, conducting ODD reviews across hedge funds, private equity, and real assets for institutional allocators. He founded Alpine to bring that methodology into software — replacing manual, weeks-long reviews with AI-powered analysis that institutional investors can run on their own terms.
+            Allen spent three years as a senior operational due diligence analyst, conducting ODD reviews across hedge funds, private equity, and real assets for institutional allocators globally. He founded Alpine to bring that methodology into software — replacing manual, weeks-long reviews with AI-powered analysis that institutional investors can run on their own terms.
           </p>
 
           <div className="space-y-4">

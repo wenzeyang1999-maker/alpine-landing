@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { ChevronRight } from "lucide-react";
 import { useInView } from "framer-motion";
-import { BG_CARD, BG_VIOLET, INK, SECONDARY, MUTED, VIOLET, BORDER, BORDER_SUBTLE, LS_BODY } from "@/lib/constants";
+import { BG_CARD, BG_VIOLET, INK, SECONDARY, MUTED, SUBTLE, VIOLET, BORDER, BORDER_SUBTLE, LS_BODY } from "@/lib/constants";
 
 function CountUp({ target, duration = 1.6, delay = 0 }: { target: number; duration?: number; delay?: number }) {
   const [count, setCount] = useState(0);
@@ -118,22 +118,22 @@ export default function QuestionTree() {
               className="rounded-card p-5"
               style={{ background: BG_CARD, border: `1px solid ${BORDER}` }}
             >
-              <div className="flex items-center gap-2 mb-3">
+              <div className="flex items-center gap-2 mb-4">
                 <span className="font-mono text-[11px] px-1.5 py-0.5 rounded-micro" style={{ background: BORDER_SUBTLE, color: MUTED, fontWeight: 600, letterSpacing: "0.04em" }}>
                   {ft.code}
                 </span>
-                <span className="font-body text-[13px]" style={{ color: INK, fontWeight: 600, letterSpacing: "-0.01em" }}>
+                <span className="font-body text-[15px]" style={{ color: INK, fontWeight: 600, letterSpacing: "-0.01em" }}>
                   {ft.label}
                 </span>
-                <span className="font-mono text-[11px] ml-auto" style={{ color: MUTED }}>
+                <span className="font-mono text-[12px] ml-auto" style={{ color: MUTED }}>
                   {ft.strategies.length}
                 </span>
               </div>
-              <div className="space-y-0.5">
+              <div className="space-y-1">
                 {ft.strategies.map((s) => (
                   <div key={s} className="flex items-center gap-2 py-0.5">
-                    <ChevronRight size={9} style={{ color: MUTED, flexShrink: 0 }} />
-                    <span className="font-body text-[12px]" style={{ color: SECONDARY, letterSpacing: LS_BODY }}>{s}</span>
+                    <ChevronRight size={10} style={{ color: MUTED, flexShrink: 0 }} />
+                    <span className="font-body text-[14px]" style={{ color: SECONDARY, letterSpacing: LS_BODY }}>{s}</span>
                   </div>
                 ))}
               </div>
@@ -148,13 +148,13 @@ export default function QuestionTree() {
               <div key={label}>
                 <div
                   className="font-heading"
-                  style={{ fontSize: "clamp(3rem, 6vw, 4.5rem)", fontWeight: 800, letterSpacing: "-0.045em", lineHeight: 1, color: INK, opacity: 0.55 }}
+                  style={{ fontSize: "clamp(2.5rem, 5vw, 3.75rem)", fontWeight: 600, letterSpacing: "-0.03em", lineHeight: 1, color: MUTED }}
                 >
                   <CountUp target={parseInt(value)} duration={1.6} delay={i * 0.15} />
                 </div>
                 <div
                   className="metric-label mt-3"
-                  style={{ fontSize: "0.8125rem", fontWeight: 500, color: MUTED, letterSpacing: "0.04em", textTransform: "uppercase" }}
+                  style={{ fontSize: "0.75rem", fontWeight: 500, color: SUBTLE, letterSpacing: "0.06em", textTransform: "uppercase" }}
                 >
                   {label}
                 </div>
