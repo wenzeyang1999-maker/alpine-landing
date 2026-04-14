@@ -150,7 +150,7 @@ export default function Hero() {
           transition={{ duration: 0.5, delay: 0.1 }}
         >
           Machine speed.<br />
-          <span style={{ color: VIOLET }}>Analyst standards.</span>
+          <span style={{ color: VIOLET }}>Institutional standard.</span>
         </motion.h1>
 
         {/* Subtitle */}
