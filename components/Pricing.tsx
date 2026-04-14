@@ -19,8 +19,8 @@ const TIERS: Tier[] = [
   },
   {
     name: "Platform", tagline: "Annual Subscription", price: "$30K", priceDetail: "per year",
-    features: ["Unlimited ODD reviews", "All 36 strategy profiles", "Continuous monitoring (up to 25 funds)", "Priority analysis queue", "Custom framework configuration", "Dedicated onboarding"],
-    cta: "Request Access", ctaHref: "/early-access", highlight: true,
+    features: ["Unlimited ODD reviews", "All 38 strategy profiles", "Continuous monitoring (up to 25 funds)", "Priority analysis queue", "Custom framework configuration", "Dedicated onboarding"],
+    cta: "Request Access", ctaHref: "/early-access", highlight: false,
   },
   {
     name: "Enterprise", tagline: "On-Prem Deployment", price: "Custom", priceDetail: "annual license",
@@ -187,9 +187,9 @@ export default function Pricing() {
                 boxShadow: tier.highlight ? `0 0 0 1px ${VIOLET}15, 0 4px 16px rgba(0,0,0,0.06)` : "none",
               }}
             >
-              {tier.highlight && (
+              {tier.name === "Platform" && (
                 <span className="font-sans text-[10px] uppercase mb-2" style={{ color: VIOLET, fontWeight: 600, letterSpacing: "0.1em" }}>
-                  Best Value
+                  Most Popular
                 </span>
               )}
               <h3 className="font-heading" style={{ fontSize: "1rem", fontWeight: 600, letterSpacing: LS_H3, color: INK }}>
@@ -215,7 +215,7 @@ export default function Pricing() {
 
               <Link
                 href={tier.ctaHref}
-                className="rounded-btn px-4 py-2.5 font-body text-[13px] text-center mt-6 inline-flex items-center justify-center gap-1.5 hover:opacity-90 transition-opacity"
+                className="rounded-btn px-4 py-3 font-body text-[13px] text-center mt-6 inline-flex items-center justify-center gap-1.5 hover:opacity-90 transition-opacity"
                 style={tier.highlight
                   ? { background: INK, color: "#fff", fontWeight: 500 }
                   : { color: INK, border: `1px solid ${BORDER}`, fontWeight: 500 }
@@ -248,11 +248,11 @@ export default function Pricing() {
         <div className="rounded-card p-7 mt-4 text-center" style={{ background: BG_CARD, border: `1px solid ${BORDER}` }}>
           <Shield size={18} style={{ color: GREEN }} className="mx-auto mb-3" />
           <h3 className="font-heading mb-2" style={{ fontSize: "0.9375rem", fontWeight: 600, letterSpacing: LS_H3, color: INK }}>
-            Institutional Quality Guarantee
+            Institutional Quality Commitment
           </h3>
           <p className="font-body text-[13px] max-w-lg mx-auto" style={{ color: SECONDARY, lineHeight: 1.65, letterSpacing: LS_BODY }}>
-            If our report doesn&rsquo;t match the depth and rigor of a traditional institutional ODD review,
-            we refund the review in full — no questions asked.
+            Every report is analyst-reviewed against a defined scope of 472 questions, 12 ODD topics,
+            and regulatory verification across 54 regulators. If coverage falls short, we re-review at no additional cost.
           </p>
         </div>
       </div>

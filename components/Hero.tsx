@@ -38,11 +38,11 @@ const STEPS: {
     label: "Verify",
     color: AMBER,
     stats: [
-      { value: "10", label: "global registries" },
-      { value: "~2 min", label: "vs. hours manually" },
-      { value: "Live", label: "real-time data" },
+      { value: "54", label: "regulators checked" },
+      { value: "3", label: "coverage tiers" },
+      { value: "Automated", label: "up-to-date data" },
     ],
-    body: "Alpine cross-references registration and disciplinary data against live feeds from SEC EDGAR, FCA, MAS, SFC, CSSF, ASIC, and more — in the time it used to take to open a browser.",
+    body: "Alpine cross-references registration and disciplinary data across 54 regulators in 3 tiers — SEC EDGAR, FCA, MAS, SFC, CSSF, ASIC, and 48 more — automated and kept current.",
     cols: 4,
     items: [
       { text: "SEC / IAPD", check: GREEN }, { text: "FCA (UK)", check: GREEN },
@@ -56,7 +56,7 @@ const STEPS: {
     color: GREEN,
     stats: [
       { value: "472", label: "questions asked" },
-      { value: "36", label: "fund strategies" },
+      { value: "38", label: "fund strategies" },
       { value: "12", label: "ODD topics covered" },
       { value: "~5 min", label: "to analyze" },
     ],
@@ -117,7 +117,7 @@ export default function Hero() {
   const step = STEPS[activeStep] ?? STEPS[0];
 
   return (
-    <section className="pt-32 pb-20 px-6" style={{ background: BG }}>
+    <section className="pt-28 pb-16 px-6" style={{ background: BG }}>
       <div className="max-w-3xl mx-auto text-center">
 
         {/* Eyebrow pill */}
@@ -144,7 +144,7 @@ export default function Hero() {
         {/* Display headline */}
         <motion.h1
           className="font-heading mb-8"
-          style={{ fontSize: "clamp(3.25rem, 6.5vw, 5rem)", fontWeight: 700, lineHeight: 1.1, letterSpacing: "-0.04em", color: INK }}
+          style={{ fontSize: "clamp(2.75rem, 5.5vw, 4.25rem)", fontWeight: 700, lineHeight: 1.12, letterSpacing: "-0.038em", color: INK }}
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
@@ -155,36 +155,28 @@ export default function Hero() {
 
         {/* Subtitle */}
         <motion.p
-          className="font-body max-w-xl mx-auto"
-          style={{ fontSize: "1.1875rem", fontWeight: 500, lineHeight: 1.7, letterSpacing: "-0.02em", color: SECONDARY }}
+          className="font-body max-w-lg mx-auto"
+          style={{ fontSize: "1.0625rem", fontWeight: 500, lineHeight: 1.65, letterSpacing: "-0.02em", color: SECONDARY }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          472 questions across 36 strategies. Each review tailored to your fund&rsquo;s
-          structure, type, and strategy. Draft in minutes, institutional delivery after analyst review.
+          472 questions across 38 fund strategies. AI drafts your ODD report in minutes, a senior analyst reviews every finding before delivery.
         </motion.p>
 
-        {/* CTAs */}
+        {/* CTA */}
         <motion.div
-          className="flex items-center justify-center gap-3 mt-8"
+          className="flex items-center justify-center gap-3 mt-6"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}
         >
           <Link
             href="/early-access"
-            className="inline-flex items-center gap-1.5 rounded-btn px-5 py-2.5 font-body hover:opacity-90 transition-opacity"
+            className="inline-flex items-center gap-1.5 rounded-btn px-6 py-3 font-body hover:opacity-90 transition-opacity"
             style={{ background: INK, color: "#fff", fontSize: "0.9375rem", fontWeight: 600, letterSpacing: "-0.02em" }}
           >
-            Book a Call <ArrowUpRight size={13} />
-          </Link>
-          <Link
-            href="/early-access"
-            className="inline-flex items-center rounded-btn px-5 py-2.5 font-body hover:bg-gray-50 transition-colors"
-            style={{ color: SECONDARY, fontSize: "0.9375rem", fontWeight: 600, border: `1px solid ${BORDER}`, letterSpacing: "-0.02em" }}
-          >
-            Request a Demo
+            Request Early Access <ArrowUpRight size={13} />
           </Link>
         </motion.div>
 
@@ -218,7 +210,7 @@ export default function Hero() {
       {/* Product mockup — folder tab panel */}
       <motion.div
         ref={ref}
-        className="max-w-5xl mx-auto mt-16"
+        className="max-w-5xl mx-auto mt-10"
         initial={{ opacity: 0, y: 24 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.5, delay: 0.1 }}

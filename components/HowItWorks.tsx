@@ -43,9 +43,9 @@ const STEPS: Step[] = [
   },
   {
     num: "02", title: "Verify Regulatory", color: AMBER,
-    summary: "54 regulators across 3 tiers. Checked automatically. Nothing missed.",
+    summary: "54 regulators across 3 tiers. Checked automatically.",
     advantage: "Thorough",
-    advantageDesc: "Manual lookups miss things. Alpine verifies against 54 regulators — every time, live.",
+    advantageDesc: "Manual lookups miss things. Alpine verifies against 54 regulators — automated, up-to-date.",
     left: {
       metric: "Hours",
       unit: "of manual verification",
@@ -228,8 +228,8 @@ export default function HowItWorks() {
                           <div className="space-y-2">
                             {step.left.points.map((p) => (
                               <div key={p} className="flex items-start gap-2.5">
-                                <span className="mt-1 shrink-0" style={{ color: BORDER, fontSize: "10px" }}>✕</span>
-                                <span className="font-body text-[13px]" style={{ color: MUTED, lineHeight: 1.5 }}>{p}</span>
+                                <span className="mt-1 shrink-0" style={{ color: SUBTLE, fontSize: "10px" }}>✕</span>
+                                <span className="font-body text-[13px]" style={{ color: SECONDARY, lineHeight: 1.5 }}>{p}</span>
                               </div>
                             ))}
                           </div>

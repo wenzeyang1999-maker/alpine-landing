@@ -32,7 +32,7 @@ const alpineMono = localFont({
 
 export const metadata: Metadata = {
   title: "Alpine Due Diligence — AI-Powered ODD Platform",
-  description: "Replace 40-hour manual operational due diligence with 45-minute AI assessments. Document upload, 12-topic gap analysis, SEC verification, and IC-ready report generation.",
+  description: "AI-drafted, analyst-reviewed operational due diligence. 472 questions across 36 fund strategies, regulatory verification across 54 regulators, and IC-ready report generation.",
   icons: { icon: "/alpine-icon.svg" },
   openGraph: {
     title: "Alpine Due Diligence — AI-Powered ODD Platform",
@@ -62,6 +62,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${alpineHeading.variable} ${alpineBody.variable} ${alpineMono.variable}`}
     >
       <body style={{ backgroundColor: BG, color: INK }}>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:rounded-btn focus:px-4 focus:py-2 focus:font-body focus:text-sm"
+          style={{ background: INK, color: "#fff" }}
+        >
+          Skip to content
+        </a>
         {children}
       </body>
     </html>

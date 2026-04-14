@@ -9,23 +9,20 @@ import Blog         from "@/components/Blog";
 import CTAFooter    from "@/components/CTAFooter";
 import { BG } from "@/lib/constants";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Page layout — add, remove, or reorder sections here.
-// Each section is fully self-contained in its own file under /components.
-// ─────────────────────────────────────────────────────────────────────────────
-
 export default function LandingPage() {
   return (
-    <div style={{ background: BG }}>
+    <>
       <Navbar />
-      <Hero />
-      <QuestionTree />
-      <HowItWorks />
-      <Pricing />
-      <Methodology />
-      <Blog />
-      <Team />
+      <main id="main-content" style={{ background: BG }}>
+        <Hero />
+        <QuestionTree />
+        <HowItWorks />
+        <Pricing />
+        <Methodology />
+        <Blog />
+        <Team />
+      </main>
       <CTAFooter />
-    </div>
+    </>
   );
 }

@@ -63,7 +63,7 @@ const FUND_TYPES: Record<string, FundType[]> = {
 
 const STATS = [
   { value: "472", label: "Due diligence questions" },
-  { value: "36",  label: "Strategy profiles" },
+  { value: "38",  label: "Strategy profiles" },
   { value: "12",  label: "ODD topics" },
 ];
 
@@ -96,7 +96,7 @@ export default function QuestionTree() {
               onClick={() => setActive(s.id)}
               className="rounded-btn px-4 py-2 text-left transition-all"
               style={{
-                background: active === s.id ? "#EEF4FF" : "transparent",
+                background: active === s.id ? BG_VIOLET : "transparent",
                 boxShadow: active === s.id ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
               }}
             >
@@ -141,16 +141,16 @@ export default function QuestionTree() {
           ))}
         </div>
 
-        {/* Stats — count-up, centered */}
+        {/* Stats — static numbers */}
         <div className="mt-16 pt-12" style={{ borderTop: `1px solid ${BORDER}` }}>
           <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-3">
-            {STATS.map(({ value, label }, i) => (
+            {STATS.map(({ value, label }) => (
               <div key={label}>
                 <div
                   className="font-heading"
                   style={{ fontSize: "clamp(2.5rem, 5vw, 3.75rem)", fontWeight: 600, letterSpacing: "-0.03em", lineHeight: 1, color: MUTED }}
                 >
-                  <CountUp target={parseInt(value)} duration={1.6} delay={i * 0.15} />
+                  {value}
                 </div>
                 <div
                   className="metric-label mt-3"

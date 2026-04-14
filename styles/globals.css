@@ -10,9 +10,25 @@
     --alpine-ink: #0F0F10;
   }
 
-  /* Apply Linear's OpenType features globally — non-negotiable for the look */
+  /* OpenType features globally */
   * {
     font-feature-settings: "cv01", "ss03";
+  }
+
+  /* Focus-visible ring — violet, 2px offset */
+  :focus-visible {
+    outline: 2px solid var(--alpine-violet);
+    outline-offset: 2px;
+  }
+
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 
   html {

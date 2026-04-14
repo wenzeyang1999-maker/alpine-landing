@@ -20,20 +20,13 @@ export default function CTAFooter() {
         <p className="font-body mt-4" style={{ fontSize: "1.0625rem", lineHeight: 1.65, letterSpacing: LS_BODY, color: SECONDARY }}>
           See what strategy-specific due diligence can do for your portfolio.
         </p>
-        <div className="flex items-center justify-center gap-3 mt-8">
+        <div className="flex flex-col items-center gap-3 mt-8">
           <Link
             href="/early-access"
-            className="rounded-btn px-6 py-2.5 font-body text-[13px] hover:opacity-90 transition-opacity inline-flex items-center gap-1.5"
-            style={{ background: INK, color: "#fff", fontWeight: 500 }}
+            className="rounded-btn px-7 py-3 font-body text-[14px] hover:opacity-90 transition-opacity inline-flex items-center gap-1.5"
+            style={{ background: INK, color: "#fff", fontWeight: 600 }}
           >
-            Book a Call <ArrowUpRight size={13} />
-          </Link>
-          <Link
-            href="/early-access"
-            className="rounded-btn px-6 py-2.5 font-body text-[13px] hover:opacity-90 transition-opacity"
-            style={{ color: INK, border: `1px solid ${BORDER}`, fontWeight: 500 }}
-          >
-            Request a Demo
+            Request Early Access <ArrowUpRight size={13} />
           </Link>
         </div>
       </div>
@@ -54,8 +47,8 @@ export default function CTAFooter() {
             <Link
               key={l}
               href={`/${l}`}
-              className="font-mono text-[11px] hover:opacity-70 transition-opacity capitalize"
-              style={{ color: MUTED, letterSpacing: LS_BODY }}
+              className="font-mono text-[11px] hover:opacity-70 transition-opacity capitalize flex items-center"
+              style={{ color: MUTED, letterSpacing: LS_BODY, minHeight: "44px" }}
             >
               {l}
             </Link>

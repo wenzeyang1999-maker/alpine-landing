@@ -16,12 +16,49 @@ const NAV_LINKS = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
+  const [scrolledPastHero, setScrolledPastHero] = useState(false);
 
   // Close menu on resize to desktop
   useEffect(() => {
     const onResize = () => { if (window.innerWidth >= 768) setOpen(false); };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  // Scroll spy — highlight active nav link
+  useEffect(() => {
+    const ids = NAV_LINKS.map((l) => l.href.slice(1));
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        }
+      },
+      { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
+    );
+    ids.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, []);
+
+  // Show nav CTA only between hero CTA and footer CTA
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight;
+      const viewHeight = window.innerHeight;
+      // Hide when near top (hero CTA visible) or near bottom (footer CTA visible)
+      const pastHero = y > 600;
+      const nearBottom = y + viewHeight > docHeight - 400;
+      setScrolledPastHero(pastHero && !nearBottom);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   // Prevent body scroll when menu is open
@@ -32,7 +69,7 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50">
-      {/* Linear-style gradient bar — 1px, Alpine colors */}
+      {/* Summit gradient accent — Alpine brand colors */}
       <div className="h-px w-full" style={{
         background: `linear-gradient(90deg, ${GREEN}, ${AMBER}, ${VIOLET})`
       }} />
@@ -58,42 +95,42 @@ export default function Navbar() {
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-10">
-            {NAV_LINKS.map(({ label, href }) => (
-              <a
-                key={label}
-                href={href}
-                className="font-body text-[15.5px] transition-opacity hover:opacity-100"
-                style={{
-                  color: MUTED,
-                  fontWeight: 500,
-                  letterSpacing: "0",
-                }}
-              >
-                {label}
-              </a>
-            ))}
+            {NAV_LINKS.map(({ label, href }) => {
+              const isActive = activeSection === href.slice(1);
+              return (
+                <a
+                  key={label}
+                  href={href}
+                  className="font-body text-[15.5px] transition-colors flex items-center"
+                  style={{
+                    color: isActive ? INK : MUTED,
+                    fontWeight: isActive ? 600 : 500,
+                    letterSpacing: "0",
+                    minHeight: "44px",
+                  }}
+                >
+                  {label}
+                </a>
+              );
+            })}
           </div>
 
-          {/* Desktop CTAs + mobile hamburger */}
+          {/* Desktop CTA (appears on scroll) + mobile hamburger */}
           <div className="flex items-center gap-3">
             <Link
               href="/early-access"
-              className="hidden md:inline-flex text-[15px] font-body transition-colors hover:opacity-80"
-              style={{ color: MUTED, fontWeight: 600 }}
-            >
-              Request Demo
-            </Link>
-            <Link
-              href="/early-access"
-              className="hidden md:inline-flex items-center rounded-btn px-5 py-2.5 text-[15px] font-body hover:opacity-90 transition-opacity"
+              className="hidden md:inline-flex items-center rounded-btn px-5 py-3 text-[14px] font-body hover:opacity-90 transition-all duration-200"
               style={{
-                background: VIOLET,
+                background: INK,
                 color: "#fff",
                 fontWeight: 600,
                 letterSpacing: "-0.01em",
+                opacity: scrolledPastHero ? 1 : 0,
+                pointerEvents: scrolledPastHero ? "auto" : "none",
+                transform: scrolledPastHero ? "translateY(0)" : "translateY(-4px)",
               }}
             >
-              Book a Call
+              Request Early Access
             </Link>
 
             {/* Hamburger button — mobile only */}
@@ -165,34 +202,20 @@ export default function Navbar() {
                 </motion.a>
               ))}
 
-              {/* Mobile CTAs */}
-              <div className="flex flex-col gap-2 pt-4 pb-2">
+              {/* Mobile CTA */}
+              <div className="pt-4 pb-2">
                 <Link
                   href="/early-access"
                   onClick={() => setOpen(false)}
-                  className="w-full text-center rounded-btn px-5 py-3 font-body text-[15px] hover:opacity-90 transition-opacity"
+                  className="w-full text-center rounded-btn px-5 py-3 font-body text-[15px] hover:opacity-90 transition-opacity block"
                   style={{
-                    background: VIOLET,
+                    background: INK,
                     color: "#fff",
                     fontWeight: 600,
                     letterSpacing: "-0.01em",
                   }}
                 >
-                  Book a Call
-                </Link>
-                <Link
-                  href="/early-access"
-                  onClick={() => setOpen(false)}
-                  className="w-full text-center rounded-btn px-5 py-3 font-body text-[15px] hover:opacity-80 transition-opacity"
-                  style={{
-                    color: INK,
-                    border: `1px solid ${BORDER}`,
-                    fontWeight: 600,
-                    letterSpacing: "-0.01em",
-                    background: BG,
-                  }}
-                >
-                  Request Demo
+                  Request Early Access
                 </Link>
               </div>
             </div>

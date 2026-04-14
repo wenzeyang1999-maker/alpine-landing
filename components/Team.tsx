@@ -5,8 +5,8 @@ const MEMBERS = [
   {
     name: "Allen Zhang",
     role: "Founder & CEO",
-    bio: "Three years as a senior operational due diligence analyst, covering hedge funds, private equity, and real assets for institutional allocators globally. Founded Alpine to bring that methodology into software.",
-    credentials: ["Senior ODD Analyst — Institutional Due Diligence", "Finance — BSc"],
+    bio: "Three years as a senior ODD analyst at Castle Hall, covering hedge funds, private equity, and real assets for institutional allocators globally. Founded Alpine to bring that methodology into software.",
+    credentials: ["Senior ODD Analyst — Institutional Due Diligence", "BCom, Finance & Economics — Rotman, University of Toronto"],
     photo: "/allen-zhang-headshot.jpeg",
     linkedin: "https://www.linkedin.com/in/kaishen-allen-zhang/",
   },
@@ -65,7 +65,7 @@ export default function Team() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-1.5 text-[12px] font-sans hover:opacity-70 transition-opacity"
-                  style={{ color: VIOLET, fontWeight: 500 }}
+                  style={{ color: VIOLET, fontWeight: 500, minHeight: "44px" }}
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />

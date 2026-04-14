@@ -30,9 +30,9 @@ const POSTS: Post[] = [
   {
     source: "Market Watch",
     tone: "Industry",
-    title: "The operational bar for allocators keeps getting higher",
+    title: "What emerging managers get wrong about operational infrastructure",
     excerpt:
-      "Industry commentary this month keeps pointing in the same direction: institutional infrastructure, service-provider quality, and repeatable controls are increasingly part of the allocation decision, not post-investment cleanup.",
+      "AIMA outlines the operational mistakes emerging hedge fund managers make at launch — from underestimating compliance requirements to skipping institutional-grade ODD readiness. A reminder that operational gaps are allocation blockers, not afterthoughts.",
     href: "https://www.aima.org/article/what-emerging-managers-get-wrong-when-launching-a-hedge-fund.html",
   },
 ];
@@ -45,7 +45,7 @@ export default function Blog() {
           <p className="font-sans text-[11px] uppercase mb-3" style={{ color: VIOLET, fontWeight: 600, letterSpacing: "0.1em" }}>
             Blog
           </p>
-          <h2 className="font-heading mb-3" style={{ fontSize: "1.875rem", fontWeight: 700, lineHeight: 1.08, letterSpacing: "-0.038em", color: INK }}>
+          <h2 className="font-heading mb-3" style={{ fontSize: "2rem", fontWeight: 700, lineHeight: 1.08, letterSpacing: "-0.038em", color: INK }}>
             Founder commentary, grounded in live ODD issues.
           </h2>
           <p className="font-body text-[15px]" style={{ color: SECONDARY, lineHeight: 1.65, letterSpacing: LS_BODY }}>
@@ -53,8 +53,53 @@ export default function Blog() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          {POSTS.map((post) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Featured post — large, left side */}
+          {POSTS.slice(0, 1).map((post) => (
+            <Link
+              key={post.title}
+              href={post.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group rounded-card p-8 flex flex-col justify-between transition-shadow hover:shadow-md md:row-span-2"
+              style={{ background: BG_CARD, border: `1px solid ${BORDER}` }}
+            >
+              <div>
+                <div className="mb-5 flex items-center justify-between gap-3">
+                  <span
+                    className="font-mono text-[10px] uppercase"
+                    style={{ color: VIOLET, fontWeight: 500, letterSpacing: "0.08em" }}
+                  >
+                    {post.source}
+                  </span>
+                  <span className="font-mono text-[10px]" style={{ color: SUBTLE, letterSpacing: "0.06em" }}>
+                    {post.tone}
+                  </span>
+                </div>
+
+                <h3
+                  className="font-heading mb-4"
+                  style={{ fontSize: "1.375rem", fontWeight: 700, lineHeight: 1.25, letterSpacing: "-0.03em", color: INK }}
+                >
+                  {post.title}
+                </h3>
+
+                <p
+                  className="font-body"
+                  style={{ fontSize: "15px", lineHeight: 1.7, color: SECONDARY, letterSpacing: LS_BODY }}
+                >
+                  {post.excerpt}
+                </p>
+              </div>
+
+              <div className="mt-8 inline-flex items-center gap-1.5 font-body text-[14px]" style={{ color: MUTED, fontWeight: 500 }}>
+                Read more <ArrowUpRight size={14} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              </div>
+            </Link>
+          ))}
+
+          {/* Secondary posts — stacked on right */}
+          {POSTS.slice(1).map((post) => (
             <Link
               key={post.title}
               href={post.href}
@@ -63,7 +108,7 @@ export default function Blog() {
               className="group rounded-card p-6 flex flex-col transition-shadow hover:shadow-md"
               style={{ background: BG_CARD, border: `1px solid ${BORDER}` }}
             >
-              <div className="mb-4 flex items-center justify-between gap-3">
+              <div className="mb-3 flex items-center justify-between gap-3">
                 <span
                   className="font-mono text-[10px] uppercase"
                   style={{ color: post.source === "Market Watch" ? GREEN : VIOLET, fontWeight: 500, letterSpacing: "0.08em" }}
@@ -76,20 +121,20 @@ export default function Blog() {
               </div>
 
               <h3
-                className="font-heading mb-3"
+                className="font-heading mb-2"
                 style={{ fontSize: "1rem", fontWeight: 700, lineHeight: 1.3, letterSpacing: "-0.025em", color: INK }}
               >
                 {post.title}
               </h3>
 
               <p
-                className="font-body flex-1"
+                className="font-body flex-1 line-clamp-3"
                 style={{ fontSize: "13px", lineHeight: 1.65, color: SECONDARY, letterSpacing: LS_BODY }}
               >
                 {post.excerpt}
               </p>
 
-              <div className="mt-6 inline-flex items-center gap-1.5 font-body text-[13px]" style={{ color: MUTED, fontWeight: 500 }}>
+              <div className="mt-4 inline-flex items-center gap-1.5 font-body text-[13px]" style={{ color: MUTED, fontWeight: 500 }}>
                 Read more <ArrowUpRight size={13} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </div>
             </Link>
