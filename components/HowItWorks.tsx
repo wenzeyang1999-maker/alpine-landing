@@ -85,7 +85,7 @@ const STEPS: Step[] = [
       unit: "tailored to your fund",
       points: [
         "More precise, faster, and interactive — 472 strategy-specific questions scored in minutes, with real-time updates as fund details or regulatory guidance change",
-        "36 configurations ensure only relevant questions apply — surfacing gaps that strategy-agnostic reviews routinely miss",
+        "38 configurations ensure only relevant questions apply — surfacing gaps that strategy-agnostic reviews routinely miss",
       ],
     },
   },

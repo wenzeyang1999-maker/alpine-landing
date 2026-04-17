@@ -150,7 +150,7 @@ export default function EarlyAccessPage() {
                 We&apos;ll be in touch
               </h1>
               <p className="mt-3 text-sm font-body leading-relaxed max-w-sm mx-auto" style={{ color: MUTED }}>
-                Thanks, {name.split(" ")[0]}! You&apos;ll receive a private invite at <span style={{ color: INK }}>{email}</span> within 24 hours.
+                Our team will reach out to you at <span style={{ color: INK }}>{email}</span> within 24 hours.
               </p>
 
               <div className="mt-8">

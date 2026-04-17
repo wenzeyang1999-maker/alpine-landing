@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { BG, BG_CARD, INK, SECONDARY, MUTED, SUBTLE, VIOLET, GREEN, BORDER, LS_BODY } from "@/lib/constants";
 
@@ -8,9 +9,19 @@ type Post = {
   title: string;
   excerpt: string;
   href: string;
+  image?: string;
 };
 
 const POSTS: Post[] = [
+  {
+    source: "Partnership Announcement",
+    tone: "LinkedIn",
+    title: "Emerging managers lose LP mandates not because of weak performance — but because their operations don't hold up",
+    excerpt:
+      "Acephalt powers deal intelligence for VC funds. Alpine powers LP readiness through institutional-grade operational due diligence. Together, we cover the full diligence stack for VCs — from sourcing to institutional close. Co-publishing: The LP Readiness Gap: Why Emerging VCs Stall at the Diligence Stage.",
+    href: "https://www.linkedin.com/feed/update/urn:li:activity:7450574333204135936/",
+    image: "/blog-acephalt.jpg",
+  },
   {
     source: "Founder Activity",
     tone: "LinkedIn",
@@ -26,14 +37,6 @@ const POSTS: Post[] = [
     excerpt:
       "A recent post digs into chain-of-custody and source-of-truth questions, making the case that operational diligence should distinguish between distribution channels and true document ownership.",
     href: "https://www.linkedin.com/posts/kaishen-allen-zhang_duediligence-operationalduediligence-odd-activity-7447280645858353154-gssz",
-  },
-  {
-    source: "Market Watch",
-    tone: "Industry",
-    title: "What emerging managers get wrong about operational infrastructure",
-    excerpt:
-      "AIMA outlines the operational mistakes emerging hedge fund managers make at launch — from underestimating compliance requirements to skipping institutional-grade ODD readiness. A reminder that operational gaps are allocation blockers, not afterthoughts.",
-    href: "https://www.aima.org/article/what-emerging-managers-get-wrong-when-launching-a-hedge-fund.html",
   },
 ];
 
@@ -65,6 +68,11 @@ export default function Blog() {
               style={{ background: BG_CARD, border: `1px solid ${BORDER}` }}
             >
               <div>
+                {post.image && (
+                  <div className="mb-5 rounded-md overflow-hidden" style={{ aspectRatio: "16/5" }}>
+                    <Image src={post.image} alt={post.title} width={800} height={250} className="w-full h-full object-cover" />
+                  </div>
+                )}
                 <div className="mb-5 flex items-center justify-between gap-3">
                   <span
                     className="font-mono text-[10px] uppercase"

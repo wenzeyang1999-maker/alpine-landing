@@ -33,7 +33,7 @@ export default function Methodology() {
           </div>
 
           {/* Horizontal stat strip — NOT a 3-col card grid */}
-          <div className="flex items-center gap-0 rounded-card overflow-x-auto" style={{ border: `1px solid ${BORDER}` }}>
+          <div className="flex items-center gap-0 rounded-card overflow-x-auto" style={{ border: `1px solid ${BORDER}`, background: BG_CARD }}>
             {CREDENTIALS.map(({ stat, label, accent }, i) => (
               <div
                 key={label}
@@ -42,6 +42,7 @@ export default function Methodology() {
                   background: BG_CARD,
                   borderLeft: i > 0 ? `1px solid ${BORDER}` : "none",
                   minWidth: "120px",
+                  flex: 1,
                 }}
               >
                 <span

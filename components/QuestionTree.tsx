@@ -141,16 +141,16 @@ export default function QuestionTree() {
           ))}
         </div>
 
-        {/* Stats — static numbers */}
+        {/* Stats — animated count-up */}
         <div className="mt-16 pt-12" style={{ borderTop: `1px solid ${BORDER}` }}>
           <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-3">
-            {STATS.map(({ value, label }) => (
+            {STATS.map(({ value, label }, i) => (
               <div key={label}>
                 <div
                   className="font-heading"
                   style={{ fontSize: "clamp(2.5rem, 5vw, 3.75rem)", fontWeight: 600, letterSpacing: "-0.03em", lineHeight: 1, color: MUTED }}
                 >
-                  {value}
+                  <CountUp target={parseInt(value, 10)} delay={i * 0.15} />
                 </div>
                 <div
                   className="metric-label mt-3"

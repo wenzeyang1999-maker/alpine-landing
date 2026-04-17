@@ -5,7 +5,7 @@ const MEMBERS = [
   {
     name: "Allen Zhang",
     role: "Founder & CEO",
-    bio: "Three years as a senior ODD analyst at Castle Hall, covering hedge funds, private equity, and real assets for institutional allocators globally. Founded Alpine to bring that methodology into software.",
+    bio: "Three years as a senior ODD analyst at Castle Hall, covering hedge funds, private equity, and real assets for institutional allocators globally. Founded Alpine to make institutional-grade ODD faster, more accessible, and radically more affordable with AI.",
     credentials: ["Senior ODD Analyst — Institutional Due Diligence", "BCom, Finance & Economics — Rotman, University of Toronto"],
     photo: "/allen-zhang-headshot.jpeg",
     linkedin: "https://www.linkedin.com/in/kaishen-allen-zhang/",
