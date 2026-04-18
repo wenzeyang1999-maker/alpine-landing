@@ -5,8 +5,6 @@ import Link from "next/link";
 import SubpageLayout from "@/components/SubpageLayout";
 import { BG_CARD, INK, MUTED, SUBTLE, GREEN, BORDER, VIOLET } from "@/lib/constants";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_ALPINE_API_BASE_URL ?? "https://alpinedd.com";
-
 export default function EarlyAccessPage() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -21,7 +19,7 @@ export default function EarlyAccessPage() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`${API_BASE_URL}/api/public/early-access`, {
+      const res = await fetch(`/api/early-access`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ full_name: name, email, organization: org || undefined, phone: phone || undefined }),
@@ -150,7 +148,7 @@ export default function EarlyAccessPage() {
                 We&apos;ll be in touch
               </h1>
               <p className="mt-3 text-sm font-body leading-relaxed max-w-sm mx-auto" style={{ color: MUTED }}>
-                Our team will reach out to you at <span style={{ color: INK }}>{email}</span> within 24 hours.
+                Thanks, {name}. Our team will review your request and reach out within 1 business day at <span style={{ color: INK }}>{email}</span>.
               </p>
 
               <div className="mt-8">
