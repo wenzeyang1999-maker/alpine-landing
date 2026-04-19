@@ -10,7 +10,13 @@ function wrapEmail(body: string): string {
   <div style="background-color:#f1f0eb;padding:32px 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
     <div style="max-width:560px;margin:0 auto;">
       <div style="background-color:#ffffff;padding:24px 32px;border-radius:12px 12px 0 0;text-align:center;border-bottom:1px solid #e8e6e1;">
-        <img src="https://alpinedd.com/alpine-logo-new.png" alt="Alpine Due Diligence" style="height:40px;width:auto;" />
+        <div style="display:inline-flex;align-items:center;gap:10px;">
+          <img src="https://alpinedd.com/alpine-icon.svg" alt="Alpine" style="height:36px;width:36px;" />
+          <div style="text-align:left;">
+            <div style="font-size:17px;font-weight:700;color:#1a1a2e;letter-spacing:-0.02em;line-height:1.1;">ALPINE</div>
+            <div style="font-size:9px;font-weight:600;color:#64748B;letter-spacing:0.12em;text-transform:uppercase;">Due Diligence</div>
+          </div>
+        </div>
       </div>
       <div style="background-color:#ffffff;padding:36px 32px 32px 32px;">
         ${body}
