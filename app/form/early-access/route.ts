@@ -12,7 +12,7 @@ function wrapEmail(body: string): string {
       <div style="background-color:#ffffff;padding:24px 32px;border-radius:12px 12px 0 0;text-align:center;border-bottom:1px solid #e8e6e1;">
         <div style="display:inline-flex;align-items:center;gap:10px;">
           <img src="https://alpinedd.com/alpine-icon.svg" alt="Alpine" style="height:36px;width:36px;" />
-          <div style="text-align:left;">
+          <div style="text-align:left;margin-left:10px;">
             <div style="font-size:17px;font-weight:700;color:#1a1a2e;letter-spacing:-0.02em;line-height:1.1;">ALPINE</div>
             <div style="font-size:9px;font-weight:600;color:#64748B;letter-spacing:0.12em;text-transform:uppercase;">Due Diligence</div>
           </div>
