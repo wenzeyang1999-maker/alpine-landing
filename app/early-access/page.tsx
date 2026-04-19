@@ -19,7 +19,7 @@ export default function EarlyAccessPage() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`/api/early-access`, {
+      const res = await fetch(`/form/early-access`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ full_name: name, email, organization: org || undefined, phone: phone || undefined }),
