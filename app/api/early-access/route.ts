@@ -9,9 +9,8 @@ function wrapEmail(body: string): string {
   return `
   <div style="background-color:#f1f0eb;padding:32px 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
     <div style="max-width:560px;margin:0 auto;">
-      <div style="background-color:#1E2A3A;padding:28px 32px;border-radius:12px 12px 0 0;text-align:center;">
-        <span style="font-size:22px;font-weight:700;letter-spacing:1.5px;color:#F5F0E8;">ALPINE</span>
-        <span style="display:block;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#9B7EC8;margin-top:2px;">Due Diligence</span>
+      <div style="background-color:#ffffff;padding:24px 32px;border-radius:12px 12px 0 0;text-align:center;border-bottom:1px solid #e8e6e1;">
+        <img src="https://alpinedd.com/alpine-logo-new.png" alt="Alpine Due Diligence" style="height:40px;width:auto;" />
       </div>
       <div style="background-color:#ffffff;padding:36px 32px 32px 32px;">
         ${body}
@@ -31,21 +30,52 @@ function wrapEmail(body: string): string {
 
 async function notifyAdmin(full_name: string, email: string, organization?: string, phone?: string) {
   const org = organization || "Not provided";
+  const timestamp = new Date().toLocaleString("en-US", {
+    timeZone: "America/Toronto",
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+
+  const rows = [
+    { label: "Type",      value: "Early Access Request", bg: false },
+    { label: "Name",      value: full_name,               bg: true  },
+    { label: "Email",     value: `<a href="mailto:${email}" style="color:#7B2CBF;text-decoration:none;">${email}</a>`, bg: false },
+    { label: "Org",       value: org,                     bg: true  },
+    { label: "Phone",     value: phone || "Not provided", bg: false },
+    { label: "Submitted", value: timestamp,               bg: true  },
+  ];
+
+  const tableRows = rows.map(({ label, value, bg }) =>
+    `<tr${bg ? ' style="background:#f8f7f4;"' : ""}>
+      <td style="padding:10px 14px;font-weight:600;color:#64748B;font-size:13px;width:110px;white-space:nowrap;">${label}</td>
+      <td style="padding:10px 14px;font-size:14px;color:#1a1a2e;">${value}</td>
+    </tr>`
+  ).join("");
+
   const body = `
-    <h2 style="margin:0 0 20px 0;font-size:20px;font-weight:700;color:#1a1a2e;">New Early Access Request</h2>
-    <div style="border:1px solid #e8e6e1;border-radius:8px;overflow:hidden;">
-      <table style="border-collapse:collapse;width:100%;">
-        <tr><td style="padding:8px 12px;font-weight:600;color:#64748B;font-size:13px;width:110px;">Name</td><td style="padding:8px 12px;font-size:14px;color:#1a1a2e;">${full_name}</td></tr>
-        <tr style="background:#f8f7f4;"><td style="padding:8px 12px;font-weight:600;color:#64748B;font-size:13px;">Email</td><td style="padding:8px 12px;font-size:14px;"><a href="mailto:${email}" style="color:#7B2CBF;text-decoration:none;">${email}</a></td></tr>
-        <tr><td style="padding:8px 12px;font-weight:600;color:#64748B;font-size:13px;">Org</td><td style="padding:8px 12px;font-size:14px;color:#1a1a2e;">${org}</td></tr>
-        ${phone ? `<tr style="background:#f8f7f4;"><td style="padding:8px 12px;font-weight:600;color:#64748B;font-size:13px;">Phone</td><td style="padding:8px 12px;font-size:14px;color:#1a1a2e;">${phone}</td></tr>` : ""}
-      </table>
-    </div>`;
+    <h2 style="margin:0 0 6px 0;font-size:20px;font-weight:700;color:#1a1a2e;">New Early Access Request</h2>
+    <p style="margin:0 0 20px 0;font-size:14px;color:#64748B;">A new prospect has submitted a request on alpinedd.com.</p>
+
+    <div style="border:1px solid #e8e6e1;border-radius:8px;overflow:hidden;margin-bottom:24px;">
+      <table style="border-collapse:collapse;width:100%;">${tableRows}</table>
+    </div>
+
+    <div style="background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 16px;margin-bottom:24px;">
+      <p style="margin:0;font-size:13px;color:#1e40af;line-height:1.6;">
+        <strong>Suggested next step:</strong> Reply to ${email} within 1 business day to confirm receipt and propose a 20-minute intro call.
+      </p>
+    </div>
+
+    <p style="margin:0 0 24px 0;text-align:center;">
+      <a href="https://alpinedd.com/admin" style="display:inline-block;padding:11px 28px;background:#7B2CBF;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:14px;">
+        Review in Admin Panel &rarr;
+      </a>
+    </p>`;
 
   await resend.emails.send({
     from: FROM_EMAIL,
     to: ADMIN_EMAIL,
-    subject: `New Early Access Request: ${full_name} (${org})`,
+    subject: `New Early Access Request — ${full_name}, ${org}`,
     html: wrapEmail(body),
   });
 }
@@ -54,14 +84,9 @@ async function sendConfirmation(email: string, full_name: string) {
   const firstName = full_name.split(" ")[0] || "there";
   const body = `
     <p style="font-size:14px;line-height:1.6;color:#1a1a2e;margin:0 0 16px 0;">Hi ${firstName},</p>
-    <p style="font-size:14px;line-height:1.6;color:#1a1a2e;margin:0 0 16px 0;">
+    <p style="font-size:14px;line-height:1.6;color:#1a1a2e;margin:0 0 24px 0;">
       Thanks for requesting early access to Alpine. Your request has been received and our team will review it shortly.
       You'll hear back within 1 business day.
-    </p>
-    <p style="font-size:14px;line-height:1.6;color:#1a1a2e;margin:0 0 24px 0;">
-      If you'd like to share context about what you're looking to evaluate ahead of our first conversation,
-      please reach out to our founder Allen Zhang directly at
-      <a href="mailto:azhang@alpinedd.com" style="color:#7B2CBF;text-decoration:none;">azhang@alpinedd.com</a>.
     </p>
     <div style="border-top:1px solid #e8e6e1;padding-top:20px;margin-top:8px;">
       <p style="margin:0;font-size:13px;color:#64748B;line-height:1.6;">

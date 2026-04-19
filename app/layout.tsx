@@ -32,7 +32,7 @@ const alpineMono = localFont({
 
 export const metadata: Metadata = {
   title: "Alpine Due Diligence — AI-Powered ODD Platform",
-  description: "AI-drafted, analyst-reviewed operational due diligence. 472 questions across 36 fund strategies, regulatory verification across 54 regulators, and IC-ready report generation.",
+  description: "AI-drafted, analyst-reviewed operational due diligence. 472 questions across 38 fund strategies, regulatory verification across 54 regulators, and IC-ready report generation.",
   icons: { icon: "/alpine-icon.svg" },
   openGraph: {
     title: "Alpine Due Diligence — AI-Powered ODD Platform",

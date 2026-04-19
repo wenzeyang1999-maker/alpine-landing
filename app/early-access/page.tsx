@@ -131,7 +131,7 @@ export default function EarlyAccessPage() {
               </form>
 
               <p className="mt-6 text-center text-xs font-mono" style={{ color: SUBTLE }}>
-                We typically respond within 24 hours.
+                We typically respond within 1 business day.
               </p>
             </>
           ) : (
