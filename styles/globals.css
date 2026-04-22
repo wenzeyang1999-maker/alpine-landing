@@ -71,3 +71,50 @@
     letter-spacing: 0.08em;
   }
 }
+
+/* ── Demo pages: --br-* theme variables ─────────────────────────────────────── */
+/* Default light (Portfolio2Page / Review2Page use data-brand="blackrock") */
+:root,
+[data-theme="light"][data-brand="blackrock"] {
+  --br-bg-primary:    #F8FAFC;
+  --br-bg-surface:    #FFFFFF;
+  --br-bg-card:       #FFFFFF;
+  --br-bg-card-hover: #F1F5F9;
+  --br-bg-sidebar:    #F1F5F9;
+  --br-text-primary:  #1A1A2E;
+  --br-text-secondary:#475569;
+  --br-text-muted:    #64748B;
+  --br-border:        #E2E8F0;
+  --br-border-subtle: #F1F5F9;
+  --br-accent:        #10B981;
+  --br-accent-muted:  #34D399;
+}
+[data-theme="dark"][data-brand="blackrock"] {
+  --br-bg-primary:    #07111d;
+  --br-bg-surface:    #0d1727;
+  --br-bg-card:       #102038;
+  --br-bg-card-hover: #162742;
+  --br-bg-sidebar:    #08111e;
+  --br-text-primary:  #eff4fb;
+  --br-text-secondary:#98a7bb;
+  --br-text-muted:    #6b7c95;
+  --br-border:        rgba(148,163,184,0.14);
+  --br-border-subtle: rgba(148,163,184,0.07);
+  --br-accent:        #18b97e;
+  --br-accent-muted:  #34D399;
+}
+
+@layer utilities {
+  .bg-br-primary      { background-color: var(--br-bg-primary); }
+  .bg-br-surface      { background-color: var(--br-bg-surface); }
+  .bg-br-card         { background-color: var(--br-bg-card); }
+  .bg-br-card-hover   { background-color: var(--br-bg-card-hover); }
+  .bg-br-sidebar      { background-color: var(--br-bg-sidebar); }
+  .text-br-text-primary   { color: var(--br-text-primary); }
+  .text-br-text-secondary { color: var(--br-text-secondary); }
+  .text-br-text-muted     { color: var(--br-text-muted); }
+  .text-br-accent         { color: var(--br-accent); }
+  .border-br        { border-color: var(--br-border); }
+  .border-br-subtle { border-color: var(--br-border-subtle); }
+  .hover\:bg-br-card-hover:hover { background-color: var(--br-bg-card-hover); }
+}

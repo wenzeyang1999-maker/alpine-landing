@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/zeyangwen/Desktop/Alpine/**)",
+      "Bash(git -C /Users/zeyangwen/Desktop/Alpine/alpine-landing remote -v)",
+      "Bash(git -C /Users/zeyangwen/Desktop/Alpine/alpine-landing status public/logo.png)",
+      "Bash(git -C /Users/zeyangwen/Desktop/Alpine/alpine-landing add public/logo.png)",
+      "Bash(git -C /Users/zeyangwen/Desktop/Alpine/alpine-landing commit -m ' *)",
+      "Bash(git -C /Users/zeyangwen/Desktop/Alpine/alpine-landing push origin main)"
+    ]
+  }
+}

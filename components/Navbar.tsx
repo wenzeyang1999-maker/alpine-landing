@@ -115,7 +115,7 @@ export default function Navbar() {
             })}
           </div>
 
-          {/* Desktop CTA (appears on scroll) + mobile hamburger */}
+          {/* Desktop CTA (appears on scroll) + Login + mobile hamburger */}
           <div className="flex items-center gap-3">
             <Link
               href="/early-access"
@@ -131,6 +131,19 @@ export default function Navbar() {
               }}
             >
               Request Early Access
+            </Link>
+            <Link
+              href="/login"
+              className="inline-flex items-center rounded-btn px-4 py-2 text-[14px] font-body hover:opacity-90 transition-opacity"
+              style={{
+                background: "transparent",
+                color: INK,
+                fontWeight: 600,
+                letterSpacing: "-0.01em",
+                border: `1px solid ${BORDER}`,
+              }}
+            >
+              Login
             </Link>
 
             {/* Hamburger button — mobile only */}
