@@ -112,6 +112,348 @@ function RatingRing({ green, yellow, red, size = 112 }: { green: number; yellow:
   );
 }
 
+// ── Profile (local demo — persists to localStorage) ────────────────────────────
+
+interface ProfileData {
+  nickname: string;
+  avatar: string | null;
+  passwordHash: string | null;
+}
+
+const PROFILE_STORAGE_KEY = "alpine-profile";
+const DEFAULT_PROFILE: ProfileData = { nickname: "User", avatar: null, passwordHash: null };
+
+function loadProfile(): ProfileData {
+  if (typeof window === "undefined") return DEFAULT_PROFILE;
+  try {
+    const raw = localStorage.getItem(PROFILE_STORAGE_KEY);
+    if (raw) return { ...DEFAULT_PROFILE, ...JSON.parse(raw) };
+  } catch {}
+  return DEFAULT_PROFILE;
+}
+
+function saveProfile(p: ProfileData) {
+  try { localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(p)); } catch {}
+}
+
+async function hashPassword(s: string): Promise<string> {
+  const buf = new TextEncoder().encode(s);
+  const hash = await crypto.subtle.digest("SHA-256", buf);
+  return Array.from(new Uint8Array(hash)).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+function getInitials(name: string): string {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "U";
+  if (parts.length === 1) return parts[0][0].toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+const profileInputStyle: React.CSSProperties = {
+  width: "100%",
+  padding: "9px 12px",
+  background: "var(--br-bg-card, #102038)",
+  border: "1px solid var(--br-border, rgba(148,163,184,0.14))",
+  borderRadius: 8,
+  fontSize: 13.5,
+  color: "var(--br-text-primary, #eff4fb)",
+  outline: "none",
+  fontFamily: "inherit",
+};
+
+function ProfileModal({
+  profile, onClose, onSave,
+}: {
+  profile: ProfileData;
+  onClose: () => void;
+  onSave: (p: ProfileData) => void;
+}) {
+  const [nickname, setNickname] = useState(profile.nickname);
+  const [avatar, setAvatar] = useState<string | null>(profile.avatar);
+  const [currentPw, setCurrentPw] = useState("");
+  const [newPw, setNewPw] = useState("");
+  const [confirmPw, setConfirmPw] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      setError("Image must be smaller than 2 MB.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => setAvatar(typeof reader.result === "string" ? reader.result : null);
+    reader.readAsDataURL(file);
+  }
+
+  async function handleSubmit() {
+    setError(null);
+    const next: ProfileData = { ...profile, nickname: nickname.trim() || "User", avatar };
+
+    const touchingPassword = Boolean(newPw || confirmPw || currentPw);
+    if (touchingPassword) {
+      if (profile.passwordHash) {
+        const currentHash = await hashPassword(currentPw);
+        if (currentHash !== profile.passwordHash) {
+          setError("Current password is incorrect.");
+          return;
+        }
+      }
+      if (newPw.length < 6) { setError("New password must be at least 6 characters."); return; }
+      if (newPw !== confirmPw) { setError("New passwords do not match."); return; }
+      next.passwordHash = await hashPassword(newPw);
+    }
+
+    setSaving(true);
+    onSave(next);
+    setSaving(false);
+    onClose();
+  }
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed", inset: 0, zIndex: 1000,
+        background: "rgba(7,17,29,0.72)", backdropFilter: "blur(4px)",
+        display: "flex", alignItems: "center", justifyContent: "center", padding: 20,
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: "100%", maxWidth: 440,
+          background: "var(--br-bg-surface, #0d1727)",
+          border: "1px solid var(--br-border, rgba(148,163,184,0.14))",
+          borderRadius: 14, overflow: "hidden",
+        }}
+      >
+        <div style={{
+          padding: "16px 22px",
+          borderBottom: "1px solid var(--br-border, rgba(148,163,184,0.14))",
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+        }}>
+          <div style={{ fontSize: 15, fontWeight: 700, color: "var(--br-text-primary, #eff4fb)", letterSpacing: "-0.01em" }}>
+            Profile settings
+          </div>
+          <button onClick={onClose} title="Close" style={{
+            background: "transparent", border: "none", cursor: "pointer",
+            color: "var(--br-text-muted, #6b7c95)", padding: 4, display: "flex",
+          }}>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <path d="M3 3l10 10M13 3L3 13" />
+            </svg>
+          </button>
+        </div>
+
+        <div style={{ padding: "22px", display: "flex", flexDirection: "column", gap: 18 }}>
+          <div>
+            <div style={{
+              fontSize: 10, fontWeight: 600, letterSpacing: "0.16em", textTransform: "uppercase",
+              color: "var(--br-text-muted, #6b7c95)", marginBottom: 10,
+            }}>Avatar</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <div style={{
+                width: 56, height: 56, borderRadius: "50%", flexShrink: 0,
+                backgroundColor: "#7B2CBF",
+                backgroundImage: avatar
+                  ? `url(${avatar})`
+                  : "linear-gradient(135deg, #7B2CBF 0%, #F59E0B 100%)",
+                backgroundSize: "cover", backgroundPosition: "center",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                color: "#fff", fontWeight: 700, fontSize: 20,
+                overflow: "hidden",
+                boxShadow: "0 2px 6px rgba(123,44,191,0.2)",
+              }}>
+                {!avatar && getInitials(nickname || "User")}
+              </div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <label style={{
+                  padding: "8px 14px", fontSize: 12.5, fontWeight: 600, borderRadius: 8,
+                  border: "1px solid var(--br-border, rgba(148,163,184,0.2))",
+                  color: "var(--br-text-primary, #eff4fb)", cursor: "pointer",
+                  background: "var(--br-bg-card-hover, #162742)",
+                }}>
+                  Upload photo
+                  <input type="file" accept="image/*" onChange={handleAvatarChange} style={{ display: "none" }} />
+                </label>
+                {avatar && (
+                  <button onClick={() => setAvatar(null)} style={{
+                    padding: "8px 14px", fontSize: 12.5, fontWeight: 600, borderRadius: 8,
+                    border: "1px solid var(--br-border, rgba(148,163,184,0.2))",
+                    color: "var(--br-text-secondary, #98a7bb)", cursor: "pointer",
+                    background: "transparent",
+                  }}>
+                    Remove
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label style={{
+              display: "block", fontSize: 10, fontWeight: 600, letterSpacing: "0.16em",
+              textTransform: "uppercase", color: "var(--br-text-muted, #6b7c95)", marginBottom: 6,
+            }}>Nickname</label>
+            <input
+              type="text" value={nickname} maxLength={40}
+              onChange={(e) => setNickname(e.target.value)}
+              style={profileInputStyle}
+            />
+          </div>
+
+          <div>
+            <div style={{
+              fontSize: 10, fontWeight: 600, letterSpacing: "0.16em", textTransform: "uppercase",
+              color: "var(--br-text-muted, #6b7c95)", marginBottom: 10,
+            }}>Change password</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {profile.passwordHash && (
+                <input type="password" placeholder="Current password"
+                  value={currentPw} onChange={(e) => setCurrentPw(e.target.value)}
+                  style={profileInputStyle} autoComplete="current-password" />
+              )}
+              <input type="password" placeholder="New password"
+                value={newPw} onChange={(e) => setNewPw(e.target.value)}
+                style={profileInputStyle} autoComplete="new-password" />
+              <input type="password" placeholder="Confirm new password"
+                value={confirmPw} onChange={(e) => setConfirmPw(e.target.value)}
+                style={profileInputStyle} autoComplete="new-password" />
+            </div>
+            <div style={{ fontSize: 11, color: "var(--br-text-muted, #6b7c95)", marginTop: 6 }}>
+              Leave blank to keep current password.
+            </div>
+          </div>
+
+          {error && (
+            <div style={{
+              fontSize: 12.5, color: "#f87171",
+              background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)",
+              padding: "8px 12px", borderRadius: 8,
+            }}>
+              {error}
+            </div>
+          )}
+        </div>
+
+        <div style={{
+          padding: "14px 22px",
+          borderTop: "1px solid var(--br-border, rgba(148,163,184,0.14))",
+          display: "flex", justifyContent: "flex-end", gap: 8,
+        }}>
+          <button onClick={onClose} style={{
+            padding: "8px 16px", fontSize: 13, fontWeight: 600, borderRadius: 8,
+            border: "1px solid var(--br-border, rgba(148,163,184,0.2))",
+            color: "var(--br-text-secondary, #98a7bb)", background: "transparent", cursor: "pointer",
+          }}>
+            Cancel
+          </button>
+          <button onClick={handleSubmit} disabled={saving} style={{
+            padding: "8px 18px", fontSize: 13, fontWeight: 600, borderRadius: 8,
+            border: "none", color: "#fff", background: "#7B2CBF",
+            cursor: saving ? "default" : "pointer", opacity: saving ? 0.7 : 1,
+          }}>
+            {saving ? "Saving…" : "Save changes"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProfileMenu({ collapsed }: { collapsed: boolean }) {
+  const [profile, setProfile] = useState<ProfileData>(DEFAULT_PROFILE);
+  const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setProfile(loadProfile());
+    setMounted(true);
+  }, []);
+
+  function handleSave(next: ProfileData) {
+    saveProfile(next);
+    setProfile(next);
+  }
+
+  const initials = getInitials(profile.nickname);
+
+  return (
+    <>
+      <div style={{
+        padding: 8,
+        borderTop: "1px solid var(--br-border, rgba(148,163,184,0.14))",
+      }}>
+        <button
+          onClick={() => setOpen(true)}
+          title={collapsed ? profile.nickname : undefined}
+          style={{
+            width: "100%",
+            padding: collapsed ? "8px 0" : "8px 10px",
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            justifyContent: collapsed ? "center" : "flex-start",
+            background: "transparent",
+            border: "none",
+            borderRadius: 8,
+            cursor: "pointer",
+            transition: "background 0.15s",
+            textAlign: "left",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(239,244,251,0.06)")}
+          onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+        >
+          <div style={{
+            width: 30, height: 30, borderRadius: "50%", flexShrink: 0,
+            backgroundColor: "#7B2CBF",
+            backgroundImage: profile.avatar
+              ? `url(${profile.avatar})`
+              : "linear-gradient(135deg, #7B2CBF 0%, #F59E0B 100%)",
+            backgroundSize: "cover", backgroundPosition: "center",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            color: "#fff", fontSize: 11.5, fontWeight: 700,
+            overflow: "hidden",
+          }}>
+            {mounted && !profile.avatar ? initials : ""}
+          </div>
+          {!collapsed && (
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{
+                fontSize: 12.5, fontWeight: 600,
+                color: "var(--br-text-primary, #eff4fb)",
+                overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+              }}>
+                {mounted ? profile.nickname : " "}
+              </div>
+              <div style={{ fontSize: 10, color: "var(--br-text-muted, #6b7c95)" }}>
+                Profile settings
+              </div>
+            </div>
+          )}
+          {!collapsed && (
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"
+              stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+              style={{ color: "var(--br-text-muted, #6b7c95)", flexShrink: 0 }}>
+              <circle cx="3" cy="8" r="1" /><circle cx="8" cy="8" r="1" /><circle cx="13" cy="8" r="1" />
+            </svg>
+          )}
+        </button>
+      </div>
+      {open && <ProfileModal profile={profile} onClose={() => setOpen(false)} onSave={handleSave} />}
+    </>
+  );
+}
+
 // ── Sidebar ────────────────────────────────────────────────────────────────────
 
 function Sidebar({
@@ -127,7 +469,6 @@ function Sidebar({
     <aside
       style={{
         width: collapsed ? 56 : 220,
-        minHeight: "100vh",
         background: "var(--br-bg-sidebar, #08111e)",
         borderRight: "1px solid var(--br-border, rgba(148,163,184,0.14))",
         display: "flex",
@@ -135,9 +476,9 @@ function Sidebar({
         flexShrink: 0,
         transition: "width 0.2s",
         position: "sticky",
-        top: 0,
+        top: 52,
         alignSelf: "flex-start",
-        height: "100vh",
+        height: "calc(100vh - 52px)",
       }}
     >
       {/* Logo / header */}
@@ -252,6 +593,7 @@ function Sidebar({
           );
         })}
       </nav>
+      <ProfileMenu collapsed={collapsed} />
     </aside>
   );
 }
