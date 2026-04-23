@@ -223,7 +223,7 @@ export function TopicPage({ topicNumber, onNavigate, alpineReviewId, topicDataOv
       {/* Key Data Points */}
       {topic.dataPoints.length > 0 && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-          {topic.dataPoints.map((group, gi) => (
+          {topic.dataPoints.map((group: any, gi: number) => (
             <div key={gi} className={`bg-br-card border border-br rounded-xl overflow-hidden ${
               gi === topic.dataPoints.length - 1 && topic.dataPoints.length % 2 !== 0 ? "lg:col-span-2" : ""
             }`}>
@@ -231,7 +231,7 @@ export function TopicPage({ topicNumber, onNavigate, alpineReviewId, topicDataOv
                 <h4 className="text-[10px] font-heading font-semibold text-br-text-muted uppercase tracking-wider">{group.group}</h4>
               </div>
               <div className="divide-y divide-br/20">
-                {group.items.map((dp, i) => {
+                {group.items.map((dp: any, i: number) => {
                   const srcColor: "blue" | "emerald" | "amber" | "purple" =
                     !dp.source ? "blue"
                     : ["Form ADV", "SEC EDGAR"].includes(dp.source) ? "emerald"
