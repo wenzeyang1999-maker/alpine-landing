@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { formatCurrency, relativeTime } from "@/lib/demo-utils";
 import { alpineDemoBrand } from "@/lib/demo-brands/alpine-demo";
 
@@ -440,30 +440,17 @@ const IN_PROGRESS_REVIEWS = [
     subtextColor: "#18b97e",
   },
   {
-    slug: "pacific-rim",
-    name: "Pacific Rim Opportunities",
-    analyst: "Josh Wu",
-    started: "2026-01-24",
-    rating: "FLAG",
-    stageBadge: "Emergency Monitoring",
-    stageBadgeColor: "#ffb3b3",
-    stageBadgeBg: "rgba(239,91,91,0.12)",
-    dotColor: "#ef4444",
-    subtext: "",
-    subtextColor: "",
-  },
-  {
-    slug: "vanguard-point",
-    name: "Vanguard Point Capital",
-    analyst: "Josh Wu",
-    started: "2026-01-20",
-    rating: "FLAG",
-    stageBadge: "Emergency Monitoring",
-    stageBadgeColor: "#ffb3b3",
-    stageBadgeBg: "rgba(239,91,91,0.12)",
-    dotColor: "#ef4444",
-    subtext: "",
-    subtextColor: "",
+    slug: "trellis-capital-iv",
+    name: "Trellis Capital IV, L.P.",
+    analyst: "Priya Sharma",
+    started: "2026-02-03",
+    rating: "WATCHLIST",
+    stageBadge: "IC Review",
+    stageBadgeColor: "#ffd48c",
+    stageBadgeBg: "rgba(242,169,59,0.12)",
+    dotColor: "#f59e0b",
+    subtext: "2 RED topics flagged · Governance & Regulatory",
+    subtextColor: "#f59e0b",
   },
 ];
 
@@ -811,7 +798,8 @@ function PeerComparisonView({ funds }: { funds: any[] }) {
 
 export default function Portfolio2Page() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState("portfolio-overview");
+  const searchParams = useSearchParams();
+  const [activeTab, setActiveTab] = useState(() => searchParams?.get("tab") ?? "portfolio-overview");
   const [contentTab, setContentTab] = useState("fund-universe");
   const [loading, setLoading] = useState(true);
   const [collapsed, setCollapsed] = useState(false);
@@ -821,12 +809,6 @@ export default function Portfolio2Page() {
   const [reviews, setReviews] = useState<any[]>([]);
   const [kpis, setKpis] = useState<any>(null);
   const [alerts, setAlerts] = useState<any[]>([]);
-
-  // Auth guard — redirect to /login if not logged in
-  useEffect(() => {
-    const session = localStorage.getItem("alpine_demo_user");
-    if (!session) router.replace("/login");
-  }, [router]);
 
   // Force dark blackrock theme while on this page
   useEffect(() => {
@@ -868,8 +850,9 @@ export default function Portfolio2Page() {
     setTheme(next);
   }, [theme]);
 
-  function navigateToFund(slug: string) {
-    router.push(`/review2/${slug}`);
+  function navigateToFund(slug: string, from?: string) {
+    const qs = from ? `?from=${from}` : "";
+    router.push(`/review2/${slug}${qs}`);
   }
 
   // Computed stats
@@ -1066,7 +1049,7 @@ export default function Portfolio2Page() {
                 <h2 style={{ fontSize: 18, fontWeight: 700, color: V.text, letterSpacing: "-0.02em", marginBottom: 4 }}>Active Reviews</h2>
                 <p style={{ fontSize: 12, color: V.muted }}>In-progress reviews, pipeline, and upcoming schedule</p>
               </div>
-              <ActiveReviewsList reviews={reviews} onNavigate={navigateToFund} V={V} />
+              <ActiveReviewsList reviews={reviews} onNavigate={(s) => navigateToFund(s, "active-reviews")} V={V} />
             </div>
           ) : activeTab === "fund-universe" ? (
             <div>
@@ -1074,7 +1057,7 @@ export default function Portfolio2Page() {
                 <h2 style={{ fontSize: 18, fontWeight: 700, color: V.text, letterSpacing: "-0.02em", marginBottom: 4 }}>Fund Universe</h2>
                 <p style={{ fontSize: 12, color: V.muted }}>{fundCount} monitored funds across {strategyCount} strategies</p>
               </div>
-              <FundUniverseTable funds={funds} onNavigate={navigateToFund} />
+              <FundUniverseTable funds={funds} onNavigate={(s) => navigateToFund(s, "fund-universe")} />
             </div>
           ) : activeTab === "peer-comparison" ? (
             <div>
@@ -1111,7 +1094,7 @@ function PortfolioOverviewContent({
   fundCount: number; strategyCount: number; totalAum: string | number; avgReturn: string | number;
   acceptCount: number; watchlistCount: number; flagCount: number; oddScore: number; activeReviewCount: number;
   funds: any[]; reviews: any[]; contentTab: string;
-  setContentTab: (t: string) => void; onNavigate: (slug: string) => void;
+  setContentTab: (t: string) => void; onNavigate: (slug: string, from?: string) => void;
   V: Record<string, string>;
 }) {
   const aumStr = typeof totalAum === "number" ? formatCurrency(totalAum) : totalAum;
@@ -1376,9 +1359,9 @@ function PortfolioOverviewContent({
 
         {/* Tab content */}
         {contentTab === "fund-universe" ? (
-          <FundUniverseTable funds={funds} onNavigate={onNavigate} />
+          <FundUniverseTable funds={funds} onNavigate={(s) => onNavigate(s, "fund-universe")} />
         ) : (
-          <ActiveReviewsList reviews={reviews} onNavigate={onNavigate} V={V} />
+          <ActiveReviewsList reviews={reviews} onNavigate={(s) => onNavigate(s, "active-reviews")} V={V} />
         )}
       </div>
     </div>

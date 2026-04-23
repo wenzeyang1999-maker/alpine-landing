@@ -1603,7 +1603,8 @@ function RefPopover({ info, onClose }: { info: RefPopoverState; onClose: () => v
   );
 }
 
-export default function DemoReportViewer(_props: { alpineReviewId?: string | null }) {
+export default function DemoReportViewer(_props: { alpineReviewId?: string | null; finalReportPending?: boolean }) {
+  const { finalReportPending } = _props;
   const [activeTab, setActiveTab] = useState<typeof TABS[number]>("Full Report");
   const containerRef = useRef<HTMLDivElement>(null);
   const contentAreaRef = useRef<HTMLDivElement>(null);
@@ -1636,7 +1637,6 @@ export default function DemoReportViewer(_props: { alpineReviewId?: string | nul
   }
 
 
-
   const renderedHtml = renderMarkdown(RIDGELINE_REPORT_MD);
 
   return (
@@ -1663,28 +1663,55 @@ export default function DemoReportViewer(_props: { alpineReviewId?: string | nul
       </div>
 
       {/* ── View sub-tabs + Print/Export ── */}
-      <div className="flex items-center justify-between">
-        <div />
-        <div className="flex items-center gap-3">
-          <p className="text-xs text-slate-400">
-            {activeTab === "Full Report" ? "Comprehensive IC-ready report with all findings" :
-             activeTab === "Data Report" ? "Verification data, document inventory, and evidence" :
-             activeTab === "Executive Brief" ? "Condensed overview for quick review" :
-             activeTab === "Call Prep" ? "Management call preparation guide" :
-             activeTab === "IC Deck" ? "10-slide IC presentation outline" : "Final deliverable report for investment committee"}
-          </p>
-          <button onClick={() => window.print()} className="px-3 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">Print</button>
-          <button
-            onClick={() => { const a = document.createElement("a"); a.href = "/demo-docs/sample_vc_fund_iv_alt.pdf"; a.download = "Ridgeline_ODD_Final_Report_Apr2026.pdf"; document.body.appendChild(a); a.click(); document.body.removeChild(a); }}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors"
-          >
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
-            Export PDF
-          </button>
-        </div>
-      </div>
+      {(() => {
+        const TAB_DOWNLOADS: Record<string, { file: string; saveAs: string }> = {
+          "Full Report":     { file: "/demo-docs/ridgeline_ddq_2026.pdf",          saveAs: "Ridgeline_Full_ODD_Report.pdf" },
+          "Data Report":     { file: "/demo-docs/ridgeline_annual_report_2024.pdf", saveAs: "Ridgeline_Data_Report.pdf" },
+          "Executive Brief": { file: "/demo-docs/ridgeline_ppm.pdf",                saveAs: "Ridgeline_Executive_Brief.pdf" },
+          "IC Deck":         { file: "/demo-docs/ridgeline_ic_charter.pdf",         saveAs: "Ridgeline_IC_Deck.pdf" },
+          "Final Report":    { file: "/demo-docs/sample_vc_fund_iv_alt.pdf",        saveAs: "Trellis_Capital_IV_ODD_Final_Report.pdf" },
+        };
+        const isDisabled = finalReportPending && activeTab === "Final Report";
+        const dl = TAB_DOWNLOADS[activeTab];
+        return (
+          <div className="flex items-center justify-between">
+            <div />
+            <div className="flex items-center gap-3">
+              <p className="text-xs text-slate-400">
+                {activeTab === "Full Report" ? "Comprehensive IC-ready report with all findings" :
+                 activeTab === "Data Report" ? "Verification data, document inventory, and evidence" :
+                 activeTab === "Executive Brief" ? "Condensed overview for quick review" :
+                 activeTab === "Call Prep" ? "Management call preparation guide" :
+                 activeTab === "IC Deck" ? "10-slide IC presentation outline" : "Final deliverable report for investment committee"}
+              </p>
+              <button onClick={() => window.print()} className="px-3 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">Print</button>
+              <button
+                disabled={isDisabled}
+                onClick={() => {
+                  if (!dl || isDisabled) return;
+                  const a = document.createElement("a");
+                  a.href = dl.file;
+                  a.download = dl.saveAs;
+                  document.body.appendChild(a);
+                  a.click();
+                  document.body.removeChild(a);
+                }}
+                title={isDisabled ? "Complete report generation to export" : `Export ${activeTab} as PDF`}
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
+                  isDisabled
+                    ? "text-slate-400 bg-slate-100 border border-slate-200 cursor-not-allowed"
+                    : "text-white bg-slate-800 hover:bg-slate-700 cursor-pointer"
+                }`}
+              >
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                Export PDF
+              </button>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* ── Content ── */}
       {activeTab === "Full Report" ? (
@@ -1733,6 +1760,23 @@ export default function DemoReportViewer(_props: { alpineReviewId?: string | nul
         <div ref={contentAreaRef} className="bg-white rounded-xl border border-slate-200 p-8"><CallPrep /></div>
       ) : activeTab === "IC Deck" ? (
         <div ref={contentAreaRef} className="bg-white rounded-xl border border-slate-200 p-8"><ICDeck /></div>
+      ) : finalReportPending ? (
+        <div ref={contentAreaRef} style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "64px 32px", gap: 16 }}>
+          <div style={{ width: 48, height: 48, borderRadius: 12, background: "rgba(124,58,237,0.08)", border: "1px solid rgba(124,58,237,0.18)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+            </svg>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", marginBottom: 6 }}>Final Report Pending</div>
+            <div style={{ fontSize: 13, color: "#64748b", maxWidth: 360, lineHeight: 1.6 }}>
+              The final deliverable is being compiled. Complete the report generation step to unlock the IC-ready PDF.
+            </div>
+          </div>
+          <div style={{ marginTop: 8, padding: "10px 20px", borderRadius: 8, background: "rgba(124,58,237,0.05)", border: "1px solid rgba(124,58,237,0.15)", fontSize: 12, color: "#7c3aed", fontWeight: 500 }}>
+            Report generation in queue · ~3 min remaining
+          </div>
+        </div>
       ) : (
         <div ref={contentAreaRef}><FinalReport /></div>
       )}

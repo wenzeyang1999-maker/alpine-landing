@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import React, { useEffect, useState, useCallback } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { alpineDemoBrand } from "@/lib/demo-brands/alpine-demo";
 import { TOPIC_DATA as RIDGELINE_TOPIC_DATA, RIDGELINE_MOCK, VAULT_DATA as RIDGELINE_VAULT_DATA, FOLLOW_UP_MOCK as RIDGELINE_FOLLOW_UP_MOCK } from "@/lib/ridgeline-data";
 import { TRELLIS_TOPIC_DATA, TRELLIS_MOCK, TRELLIS_VAULT_DATA, TRELLIS_FOLLOW_UP_MOCK } from "@/lib/trellis-data";
@@ -1202,134 +1202,6 @@ function CallPrepTab() {
 
 // ── TAB: Report Pending ────────────────────────────────────────────────────────
 
-function ReportPendingTab({ fundName }: { fundName: string }) {
-  const [dots, setDots] = React.useState(0);
-  React.useEffect(() => {
-    const t = setInterval(() => setDots((d) => (d + 1) % 4), 600);
-    return () => clearInterval(t);
-  }, []);
-
-  const steps = [
-    { label: "Collection verified", sub: "14 documents ingested & indexed", done: true },
-    { label: "Regulatory checks passed", sub: "SEC EDGAR + IAPD confirmed clean", done: true },
-    { label: "Analysis complete", sub: "12-topic ODD assessment finalized", done: true },
-    { label: "Call Prep ready", sub: "Manager questions staged", done: true },
-    { label: "Generating report", sub: "Compiling findings into final deliverable" + ".".repeat(dots), done: false, active: true },
-    { label: "IC Memo & export", sub: "Pending report generation", done: false },
-  ];
-
-  return (
-    <Card style={{ maxWidth: 680, margin: "0 auto", padding: "40px 48px" }}>
-      {/* Icon + title */}
-      <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 32 }}>
-        <div style={{
-          width: 52, height: 52, borderRadius: 14, flexShrink: 0,
-          background: "rgba(124,58,237,0.08)", border: "1px solid rgba(124,58,237,0.18)",
-          display: "flex", alignItems: "center", justifyContent: "center",
-        }}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <polyline points="14 2 14 8 20 8"/>
-            <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
-            <polyline points="10 9 9 9 8 9"/>
-          </svg>
-        </div>
-        <div>
-          <div style={{ fontSize: 18, fontWeight: 700, color: "var(--r2-text)", lineHeight: 1.2 }}>
-            Report Generation in Queue
-          </div>
-          <div style={{ fontSize: 13, color: "var(--r2-muted)", marginTop: 4 }}>
-            {fundName} · ODD Final Report
-          </div>
-        </div>
-      </div>
-
-      {/* Animated status banner */}
-      <div style={{
-        padding: "14px 18px", borderRadius: 12, marginBottom: 32,
-        background: "rgba(124,58,237,0.05)", border: "1px solid rgba(124,58,237,0.15)",
-        display: "flex", alignItems: "center", gap: 12,
-      }}>
-        {/* Spinning ring */}
-        <div style={{ position: "relative", width: 28, height: 28, flexShrink: 0 }}>
-          <svg width="28" height="28" viewBox="0 0 28 28" style={{ animation: "spin 1.2s linear infinite" }}>
-            <circle cx="14" cy="14" r="11" fill="none" stroke="rgba(124,58,237,0.15)" strokeWidth="2.5"/>
-            <path d="M 14 3 A 11 11 0 0 1 25 14" fill="none" stroke="#7c3aed" strokeWidth="2.5" strokeLinecap="round"/>
-          </svg>
-        </div>
-        <div>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "#7c3aed" }}>
-            Alpine AI is compiling your report{".".repeat(dots)}
-          </div>
-          <div style={{ fontSize: 11, color: "var(--r2-muted)", marginTop: 2 }}>
-            Synthesizing 14 documents · 12 topic assessments · risk observations
-          </div>
-        </div>
-      </div>
-
-      {/* Progress steps */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-        {steps.map((step, i) => (
-          <div key={i} style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
-            {/* Line + dot */}
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: 24, flexShrink: 0 }}>
-              <div style={{
-                width: 22, height: 22, borderRadius: "50%", flexShrink: 0,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                background: step.done ? "rgba(16,185,129,0.12)" : step.active ? "rgba(124,58,237,0.10)" : "transparent",
-                border: step.done ? "2px solid #10B981" : step.active ? "2px solid #7c3aed" : "2px solid var(--r2-border)",
-                transition: "all 0.3s",
-              }}>
-                {step.done ? (
-                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#10B981" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M1.5 5l2.5 2.5 5-5"/>
-                  </svg>
-                ) : step.active ? (
-                  <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#7c3aed", animation: "pulse-dot 1s ease-in-out infinite" }} />
-                ) : (
-                  <div style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--r2-border)" }} />
-                )}
-              </div>
-              {i < steps.length - 1 && (
-                <div style={{ width: 2, height: 28, background: step.done ? "#10B98140" : "var(--r2-border)", marginTop: 2 }} />
-              )}
-            </div>
-            {/* Content */}
-            <div style={{ paddingBottom: i < steps.length - 1 ? 16 : 0, paddingTop: 1 }}>
-              <div style={{
-                fontSize: 13, fontWeight: 600,
-                color: step.done ? "var(--r2-text)" : step.active ? "#7c3aed" : "var(--r2-faint)",
-              }}>
-                {step.label}
-              </div>
-              <div style={{ fontSize: 11, color: "var(--r2-faint)", marginTop: 1, lineHeight: 1.5 }}>
-                {step.sub}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Estimated time */}
-      <div style={{
-        marginTop: 32, padding: "12px 16px", borderRadius: 10,
-        background: "var(--r2-surface2)", border: "1px solid var(--r2-border)",
-        display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12,
-      }}>
-        <span style={{ color: "var(--r2-muted)" }}>Estimated completion</span>
-        <span style={{ color: "var(--r2-text)", fontWeight: 600 }}>~3 minutes remaining</span>
-      </div>
-
-      <style>{`
-        @keyframes pulse-dot {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.4; transform: scale(0.75); }
-        }
-      `}</style>
-    </Card>
-  );
-}
-
 // ── TAB: Analysis (12-topic) ───────────────────────────────────────────────────
 
 function AnalysisTopicsTab({ reviewData, onNavigate }: { reviewData: any; onNavigate: (id: string) => void }) {
@@ -1678,7 +1550,9 @@ function Overview2Tab({ reviewData, onNavigate }: { reviewData: any; onNavigate:
 export default function Review2Page() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const slug = params?.slug as string;
+  const fromContext = searchParams?.get("from") ?? null;
 
   const [activeTab, setActiveTab] = useState("overview");
   const [reviewData, setReviewData] = useState<any>(null);
@@ -1786,13 +1660,12 @@ export default function Review2Page() {
       case "call-prep":
         return <CallPrepTab />;
       case "report-gen":
-        if (!isTrellis) return <ReportPendingTab fundName={fundName} />;
         return (
           <div className="report-hide-callprep">
             <style>{`
               .report-hide-callprep .flex.items-center.gap-1.border-b button:nth-child(4) { display: none !important; }
             `}</style>
-            <ReportWithMemo alpineReviewId={null} brReviewId={reviewData?.id} />
+            <ReportWithMemo alpineReviewId={null} brReviewId={reviewData?.id} finalReportPending={!isTrellis} />
           </div>
         );
       // ── Detail tabs (Review2Page custom components) ──
@@ -1851,9 +1724,15 @@ export default function Review2Page() {
               <button onClick={toggleTheme} style={{ padding: "10px 16px", fontSize: 13, borderRadius: 999, border: "1px solid var(--r2-border)", background: "transparent", color: "var(--r2-muted)", cursor: "pointer" }}>
                 {theme === "dark" ? "☀ Light" : "☾ Dark"}
               </button>
-              <a href="/portfolio2" style={{ padding: "10px 16px", fontSize: 13, borderRadius: 16, border: "1px solid var(--r2-border)", background: "transparent", color: "var(--r2-muted)", textDecoration: "none", display: "inline-block" }}>
-                ← Portfolio
-              </a>
+              <button
+                onClick={() => {
+                  const tab = fromContext === "active-reviews" ? "active-reviews" : fromContext === "fund-universe" ? "fund-universe" : null;
+                  router.push(tab ? `/portfolio2?tab=${tab}` : "/portfolio2");
+                }}
+                style={{ padding: "10px 16px", fontSize: 13, borderRadius: 16, border: "1px solid var(--r2-border)", background: "transparent", color: "var(--r2-muted)", cursor: "pointer" }}
+              >
+                ← {fromContext === "active-reviews" ? "Active Reviews" : fromContext === "fund-universe" ? "Fund Universe" : "Portfolio"}
+              </button>
               <button style={{ padding: "10px 18px", fontSize: 13, borderRadius: 16, border: "1px solid var(--r2-border)", background: isDark ? "rgba(239,244,251,0.08)" : "rgba(15,23,42,0.06)", color: "var(--r2-text)", cursor: "pointer", fontWeight: 600 }}>
                 ⬇ Export Report
               </button>
