@@ -6,7 +6,24 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import type { DemoApi } from "@/lib/demo-api-factory";
 import type { VerificationPoint } from "@/lib/ridgeline-data";
 
-export function VerificationTab({ reviewId, api }: { reviewId: string; api: DemoApi }) {
+const REGISTRY_DATA: Record<string, Array<{ entity: string; type: string; jurisdiction: string; registry: string; status: string; since: string }>> = {
+  "ridgeline-capital": [
+    { entity: "Ridgeline Capital Partners, LLC", type: "Investment Adviser", jurisdiction: "United States — SEC", registry: "SEC IAPD (CRD 298741)", status: "verified", since: "April 2018" },
+    { entity: "Ridgeline Capital Partners, LLC", type: "Limited Liability Company", jurisdiction: "United States — Delaware", registry: "Delaware Division of Corporations", status: "verified", since: "March 2018" },
+    { entity: "Ridgeline Global Opportunities Fund, Ltd", type: "Regulated Mutual Fund", jurisdiction: "Cayman Islands — CIMA", registry: "Cayman Islands Monetary Authority", status: "verified", since: "April 2018" },
+    { entity: "Ridgeline Global Opportunities Fund, Ltd", type: "Exempted Company", jurisdiction: "Cayman Islands", registry: "Cayman Registrar of Companies", status: "verified", since: "March 2018" },
+  ],
+  "trellis-capital-iv": [
+    { entity: "Trellis Capital Management, LLC", type: "Exempt Reporting Adviser (ERA)", jurisdiction: "United States — SEC", registry: "SEC IARD — ERA Filing", status: "verified", since: "March 2019" },
+    { entity: "Trellis Capital Management, LLC", type: "Limited Liability Company", jurisdiction: "United States — Delaware", registry: "Delaware Division of Corporations", status: "verified", since: "August 2018" },
+    { entity: "Trellis Capital IV, L.P.", type: "Limited Partnership", jurisdiction: "United States — Delaware", registry: "Delaware Division of Corporations", status: "verified", since: "March 2026" },
+    { entity: "Trellis Capital GP IV, LLC", type: "General Partner Entity", jurisdiction: "United States — Delaware", registry: "Delaware Division of Corporations", status: "verified", since: "March 2026" },
+    { entity: "Arjun Mehta / Priya Sharma", type: "Principal Background Check", jurisdiction: "United States", registry: "FINRA BrokerCheck · IARD Personal History", status: "verified", since: "March 2019" },
+    { entity: "Priya Sharma — CCO Role", type: "Compliance Oversight Designation", jurisdiction: "Internal Assessment", registry: "Form ADV Part 1A · DDQ §4.2", status: "flagged", since: "August 2018" },
+  ],
+};
+
+export function VerificationTab({ reviewId, api, slug }: { reviewId: string; api: DemoApi; slug?: string }) {
   const [points, setPoints] = useState<VerificationPoint[]>([]);
   const [summary, setSummary] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -118,12 +135,7 @@ export function VerificationTab({ reviewId, api }: { reviewId: string; api: Demo
           <p className="text-[11px] text-br-text-muted mt-0.5">Manager and affiliate registrations across jurisdictions</p>
         </div>
         <div className="divide-y divide-br/50">
-          {[
-            { entity: "Ridgeline Capital Partners, LLC", type: "Investment Adviser", jurisdiction: "United States — SEC", registry: "SEC IAPD (CRD 298741)", status: "verified", since: "April 2018" },
-            { entity: "Ridgeline Capital Partners, LLC", type: "Limited Liability Company", jurisdiction: "United States — Delaware", registry: "Delaware Division of Corporations", status: "verified", since: "March 2018" },
-            { entity: "Ridgeline Global Opportunities Fund, Ltd", type: "Regulated Mutual Fund", jurisdiction: "Cayman Islands — CIMA", registry: "Cayman Islands Monetary Authority", status: "verified", since: "April 2018" },
-            { entity: "Ridgeline Global Opportunities Fund, Ltd", type: "Exempted Company", jurisdiction: "Cayman Islands", registry: "Cayman Registrar of Companies", status: "verified", since: "March 2018" },
-          ].map((reg, i) => (
+          {(REGISTRY_DATA[slug ?? "ridgeline-capital"] ?? REGISTRY_DATA["ridgeline-capital"]).map((reg, i) => (
             <div key={i} className="px-4 py-3 flex items-center justify-between">
               <div className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-lg bg-alpine-violet/10 flex items-center justify-center flex-shrink-0 mt-0.5">

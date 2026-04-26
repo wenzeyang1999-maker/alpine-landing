@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatCurrency, relativeTime } from "@/lib/demo-utils";
 import { alpineDemoBrand } from "@/lib/demo-brands/alpine-demo";
@@ -218,7 +219,7 @@ function ProfileModal({
     onClose();
   }
 
-  return (
+  return createPortal(
     <div
       onClick={onClose}
       style={{
@@ -366,7 +367,8 @@ function ProfileModal({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+  document.body
   );
 }
 

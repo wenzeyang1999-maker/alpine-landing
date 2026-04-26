@@ -577,6 +577,15 @@ export const SOURCE_META: Record<string, { label: string; type: string; filename
   "Follow-Up R2": { label: "Follow-Up Response — Round 2", type: "Follow-Up Response", filename: undefined, size: undefined },
   "Q1 Follow-Up": { label: "Q1 2026 Follow-Up Response", type: "Follow-Up Response", filename: undefined, size: undefined },
   "Manager Upload": { label: "Manager Direct Upload", type: "Manager Submission", filename: undefined, size: undefined },
+  // ── Trellis Capital IV documents ──────────────────────────────────────────
+  "trellis_form_adv.pdf":                             { label: "Form ADV ERA — Annual Filing (2026)",           type: "Regulatory Filing",    filename: "trellis_form_adv.pdf",                             size: "1.1 MB" },
+  "trellis_lpa.pdf":                                  { label: "Limited Partnership Agreement",                 type: "Fund Document",        filename: "trellis_lpa.pdf",                                  size: "2.8 MB" },
+  "trellis_ppm.pdf":                                  { label: "Private Placement Memorandum",                  type: "Fund Document",        filename: "trellis_ppm.pdf",                                  size: "1.9 MB" },
+  "Trellis-Capital-IV-ILPA-DDQ-2.0.pdf":             { label: "ILPA DDQ 2.0 — Trellis Capital IV",            type: "Fund Document",        filename: "Trellis-Capital-IV-ILPA-DDQ-2.0.pdf",             size: "1.4 MB" },
+  "Trellis-Capital-Compliance-Binder-2025.pdf":       { label: "Compliance Binder (2025)",                      type: "Compliance Document",  filename: "Trellis-Capital-Compliance-Binder-2025.pdf",       size: "920 KB" },
+  "Trellis-Capital-Valuation-Policy.pdf":             { label: "Valuation Policy",                              type: "Operations Document",  filename: "Trellis-Capital-Valuation-Policy.pdf",             size: "310 KB" },
+  "Trellis-Capital-III-Audited-FS-FY2024.pdf":        { label: "Audited Financial Statements FY2024",           type: "Financial Document",   filename: "Trellis-Capital-III-Audited-FS-FY2024.pdf",        size: "1.8 MB" },
+  "Trellis-Capital-Apex-Service-Description-Fund-III.pdf": { label: "Apex Service Description — Fund III",     type: "Third-Party Confirmation", filename: "Trellis-Capital-Apex-Service-Description-Fund-III.pdf", size: "680 KB" },
 };
 
 // ── Risk observations & strengths ────────────────────────────────────────────

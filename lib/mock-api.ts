@@ -99,6 +99,7 @@ export const mockApi: DemoApi = {
     return {
       id: fund.id,
       slug: fund.review_slug || fund.slug,
+      name: fund.name,
       fund_name: fund.name,
       fund_slug: fund.slug,
       status: "completed",

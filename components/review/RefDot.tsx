@@ -396,366 +396,256 @@ function buildPassage(quote: string, filename: string): { before: string; after:
   };
 }
 
-// ── DocViewerPanel ────────────────────────────────────────────────────────────
-
-function DocViewerPanel({ filename, quote, label, onClose }: {
-  filename: string;
-  quote: string;
-  label: string;
-  onClose: () => void;
-}) {
-  useEffect(() => {
-    function handleEsc(e: KeyboardEvent) { if (e.key === "Escape") onClose(); }
-    document.addEventListener("keydown", handleEsc);
-    return () => document.removeEventListener("keydown", handleEsc);
-  }, [onClose]);
-
-  const docMeta = buildDocMeta(filename, label);
-  const { before, after, section, pageLabel } = buildPassage(quote, filename);
-
-  return (
-    <>
-      {/* Backdrop */}
-      <div className="fixed inset-0 z-[299] bg-black/40" onClick={onClose} />
-
-      {/* Panel */}
-      <div
-        className="fixed top-0 right-0 bottom-0 z-[300] flex flex-col"
-        style={{ width: "min(660px, 52vw)", background: "#0f1117", borderLeft: "1px solid rgba(255,255,255,0.08)", boxShadow: "-8px 0 40px rgba(0,0,0,0.6)", animation: "slideInRight 0.22s ease-out" }}
-      >
-        {/* Panel header */}
-        <div style={{ background: "#161820", borderBottom: "1px solid rgba(255,255,255,0.07)", padding: "12px 18px", flexShrink: 0 }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" />
-              </svg>
-              <div style={{ minWidth: 0 }}>
-                <div style={{ fontSize: 12, fontWeight: 600, color: "#e5e7eb", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{docMeta.title}</div>
-                <div style={{ fontSize: 10, color: "#6b7280", marginTop: 1 }}>{docMeta.subtitle}</div>
-              </div>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-              <span style={{ fontSize: 9, fontWeight: 600, color: "#9ca3af", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 4, padding: "2px 7px", letterSpacing: "0.05em" }}>{docMeta.badge.toUpperCase()}</span>
-              <button onClick={onClose} style={{ color: "#6b7280", fontSize: 18, lineHeight: 1, padding: "0 4px", background: "none", border: "none", cursor: "pointer" }}>&times;</button>
-            </div>
-          </div>
-        </div>
-
-        {/* Scrollable body */}
-        <div style={{ flex: 1, overflowY: "auto", padding: "24px 32px" }}>
-
-          {/* Document page simulation */}
-          <div style={{ background: "#ffffff", borderRadius: 6, boxShadow: "0 4px 24px rgba(0,0,0,0.5)", overflow: "hidden", fontFamily: "Georgia, 'Times New Roman', serif" }}>
-
-            {/* Page header bar */}
-            {filename === "iapd_record" ? (
-              <div style={{ background: "#1a3a6e", padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 9, fontWeight: 700, color: "#93c5fd", letterSpacing: "0.12em" }}>U.S. SECURITIES AND EXCHANGE COMMISSION — IAPD</span>
-                <span style={{ fontSize: 9, color: "#60a5fa", fontWeight: 700, letterSpacing: "0.08em", border: "1px solid #60a5fa", padding: "1px 6px", borderRadius: 2 }}>PUBLIC RECORD</span>
-              </div>
-            ) : filename === "admin_verification_record" ? (
-              <div style={{ background: "#1a4a3a", padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 9, fontWeight: 700, color: "#6ee7b7", letterSpacing: "0.12em" }}>CITCO FUND SERVICES — ADMINISTRATOR VERIFICATION</span>
-                <span style={{ fontSize: 9, color: "#34d399", fontWeight: 700, letterSpacing: "0.08em", border: "1px solid #34d399", padding: "1px 6px", borderRadius: 2 }}>CONFIDENTIAL</span>
-              </div>
-            ) : filename === "alpine_analysis_record" ? (
-              <div style={{ background: "#2d1a5e", padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 9, fontWeight: 700, color: "#c4b5fd", letterSpacing: "0.12em" }}>ALPINE DUE DILIGENCE — INTERNAL ANALYSIS</span>
-                <span style={{ fontSize: 9, color: "#a78bfa", fontWeight: 700, letterSpacing: "0.08em", border: "1px solid #a78bfa", padding: "1px 6px", borderRadius: 2 }}>INTERNAL</span>
-              </div>
-            ) : filename === "manager_call_record" ? (
-              <div style={{ background: "#3a2a0a", padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 9, fontWeight: 700, color: "#fcd34d", letterSpacing: "0.12em" }}>MANAGER DUE DILIGENCE CALL — INTERVIEW NOTES</span>
-                <span style={{ fontSize: 9, color: "#fbbf24", fontWeight: 700, letterSpacing: "0.08em", border: "1px solid #fbbf24", padding: "1px 6px", borderRadius: 2 }}>CONFIDENTIAL</span>
-              </div>
-            ) : filename === "pentest_jan2026_record" ? (
-              <div style={{ background: "#1a2a1a", padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 9, fontWeight: 700, color: "#86efac", letterSpacing: "0.12em" }}>KROLL CYBER RISK — PENETRATION TEST REPORT</span>
-                <span style={{ fontSize: 9, color: "#ef4444", fontWeight: 700, letterSpacing: "0.08em", border: "1px solid #ef4444", padding: "1px 6px", borderRadius: 2 }}>CONFIDENTIAL</span>
-              </div>
-            ) : (
-              <div style={{ background: "#1e3a5f", padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 9, fontWeight: 700, color: "#93c5fd", letterSpacing: "0.12em" }}>ALPINE x RIDGELINE CAPITAL PARTNERS</span>
-                <span style={{ fontSize: 9, color: "#ef4444", fontWeight: 700, letterSpacing: "0.08em", border: "1px solid #ef4444", padding: "1px 6px", borderRadius: 2 }}>CONFIDENTIAL</span>
-              </div>
-            )}
-
-            {/* Page content */}
-            <div style={{ padding: "28px 0 32px", display: "flex" }}>
-
-              {/* Left margin — annotation area */}
-              <div style={{ width: 40, flexShrink: 0, paddingTop: 4, display: "flex", flexDirection: "column", alignItems: "center" }}>
-                {/* Marker pin shown next to highlighted paragraph */}
-                <div style={{ width: 3, background: "#f59e0b", borderRadius: 2, alignSelf: "stretch", marginTop: 68, opacity: 0.85 }} />
-              </div>
-
-              {/* Main text column */}
-              <div style={{ flex: 1, paddingRight: 32 }}>
-
-                {/* Document title block */}
-                <div style={{ borderBottom: "2px solid #1e3a5f", paddingBottom: 12, marginBottom: 20 }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: "#111827", lineHeight: 1.3 }}>{docMeta.title}</div>
-                  <div style={{ fontSize: 10.5, color: "#6b7280", marginTop: 3 }}>{docMeta.subtitle} &nbsp;·&nbsp; {docMeta.date}</div>
-                </div>
-
-                {/* Section heading */}
-                <div style={{ fontSize: 9.5, fontWeight: 700, color: "#1e3a5f", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 14, paddingBottom: 6, borderBottom: "1px solid #e5e7eb" }}>{section}</div>
-
-                {/* Paragraph with highlighted quote */}
-                <p style={{ fontSize: 12, lineHeight: 1.9, color: "#1f2937", margin: 0, textAlign: "justify" }}>
-                  {before}<mark style={{
-                    background: "#ffec3d",
-                    color: "#111",
-                    borderRadius: "1px",
-                    padding: "1px 1px",
-                    fontWeight: "inherit",
-                    fontStyle: "inherit",
-                    fontSize: "inherit",
-                    WebkitBoxDecorationBreak: "clone",
-                    boxDecorationBreak: "clone",
-                  }}>{quote}</mark>{after}
-                </p>
-
-              </div>
-            </div>
-
-            {/* Page footer */}
-            <div style={{ background: "#f9fafb", borderTop: "1px solid #e5e7eb", padding: "8px 40px 8px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <span style={{ fontSize: 9, color: "#9ca3af", fontFamily: "sans-serif" }}>{docMeta.subtitle}</span>
-              <span style={{ fontSize: 9, color: "#9ca3af", fontFamily: "sans-serif" }}>{pageLabel}</span>
-            </div>
-          </div>
-
-          {/* Actions below the page */}
-          <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
-            {filename === "iapd_record" ? (
-              <button
-                onClick={() => window.open("https://www.adviserinfo.sec.gov/firm/summary/298741", "_blank")}
-                style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 16px", fontSize: 11, fontWeight: 500, color: "#60a5fa", background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.2)", borderRadius: 8, cursor: "pointer", fontFamily: "sans-serif" }}
-              >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="15 3 21 3 21 9" /><polyline points="9 21 3 21 3 15" />
-                  <line x1="21" y1="3" x2="14" y2="10" /><line x1="3" y1="21" x2="10" y2="14" />
-                </svg>
-                Open SEC IAPD
-              </button>
-            ) : filename === "admin_verification_record" ? (
-              <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 16px", fontSize: 11, fontWeight: 500, color: "#34d399", background: "rgba(52,211,153,0.06)", border: "1px solid rgba(52,211,153,0.15)", borderRadius: 8, fontFamily: "sans-serif" }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M22 11.08V12a10 10 0 11-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
-                </svg>
-                Citco Verification Confirmed — January 22, 2026
-              </div>
-            ) : filename === "alpine_analysis_record" ? (
-              <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 16px", fontSize: 11, fontWeight: 500, color: "#a78bfa", background: "rgba(167,139,250,0.06)", border: "1px solid rgba(167,139,250,0.15)", borderRadius: 8, fontFamily: "sans-serif" }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
-                </svg>
-                Alpine Internal Analysis — Not for Distribution
-              </div>
-            ) : filename === "manager_call_record" ? (
-              <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 16px", fontSize: 11, fontWeight: 500, color: "#fbbf24", background: "rgba(251,191,36,0.06)", border: "1px solid rgba(251,191,36,0.15)", borderRadius: 8, fontFamily: "sans-serif" }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.22 1.19 2 2 0 012.2 1h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.91 8.4a16 16 0 006.72 6.72l1.46-1.46a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
-                </svg>
-                Manager Interview — January 15, 2026
-              </div>
-            ) : filename === "pentest_jan2026_record" ? (
-              <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 16px", fontSize: 11, fontWeight: 500, color: "#86efac", background: "rgba(134,239,172,0.06)", border: "1px solid rgba(134,239,172,0.15)", borderRadius: 8, fontFamily: "sans-serif" }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M22 11.08V12a10 10 0 11-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
-                </svg>
-                Kroll Cyber — No Critical Findings · Jan 28, 2026
-              </div>
-            ) : (
-              <>
-                <button
-                  onClick={() => downloadDemoFile(filename)}
-                  style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 16px", fontSize: 11, fontWeight: 500, color: "#34d399", background: "rgba(52,211,153,0.08)", border: "1px solid rgba(52,211,153,0.2)", borderRadius: 8, cursor: "pointer", fontFamily: "sans-serif" }}
-                >
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
-                  </svg>
-                  Download PDF
-                </button>
-                <button
-                  onClick={() => window.open(`/demo-docs/${filename}`, "_blank")}
-                  style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 16px", fontSize: 11, fontWeight: 500, color: "#9ca3af", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 8, cursor: "pointer", fontFamily: "sans-serif" }}
-                >
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="15 3 21 3 21 9" /><polyline points="9 21 3 21 3 15" />
-                    <line x1="21" y1="3" x2="14" y2="10" /><line x1="3" y1="21" x2="10" y2="14" />
-                  </svg>
-                  Open Full PDF
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <style>{`
-        @keyframes slideInRight {
-          from { transform: translateX(100%); opacity: 0; }
-          to   { transform: translateX(0);    opacity: 1; }
-        }
-      `}</style>
-    </>
-  );
-}
-
 // ── RefDot ────────────────────────────────────────────────────────────────────
 
-export function RefDot({ source, quote, context, color }: RefDotProps) {
-  const [open, setOpen] = useState(false);
-  const [expanded, setExpanded] = useState(false);
-  const [docViewer, setDocViewer] = useState(false);
-  const [pos, setPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
+export function RefDot({ source, quote, context: _context, color }: RefDotProps) {
+  const [panel, setPanel] = useState<"left" | "right" | null>(null);
   const dotRef = useRef<HTMLSpanElement>(null);
-  const popRef = useRef<HTMLDivElement>(null);
 
   const meta = SOURCE_META[source] || { label: source, type: "Source" };
 
-  const handleOpen = () => {
+  const handleClick = () => {
+    if (panel !== null) {
+      setPanel(null);
+      return;
+    }
     if (dotRef.current) {
       const rect = dotRef.current.getBoundingClientRect();
-      const popW = 380;
-      let left = rect.left + rect.width / 2 - popW / 2;
-      left = Math.max(12, Math.min(left, window.innerWidth - popW - 12));
-      let top = rect.bottom + 8;
-      if (top + 300 > window.innerHeight) top = rect.top - 308;
-      setPos({ top, left });
+      const side = rect.left < window.innerWidth / 2 ? "right" : "left";
+      setPanel(side);
     }
-    setOpen(!open);
   };
 
   useEffect(() => {
-    if (!open) return;
-    function handleClick(e: MouseEvent) {
-      if (
-        popRef.current && !popRef.current.contains(e.target as Node) &&
-        dotRef.current && !dotRef.current.contains(e.target as Node)
-      ) {
-        setOpen(false);
-        setExpanded(false);
-      }
-    }
+    if (!panel) return;
     function handleEsc(e: KeyboardEvent) {
-      if (e.key === "Escape") { setOpen(false); setExpanded(false); }
+      if (e.key === "Escape") setPanel(null);
     }
-    document.addEventListener("mousedown", handleClick);
     document.addEventListener("keydown", handleEsc);
-    return () => {
-      document.removeEventListener("mousedown", handleClick);
-      document.removeEventListener("keydown", handleEsc);
-    };
-  }, [open]);
+    return () => document.removeEventListener("keydown", handleEsc);
+  }, [panel]);
 
-  const fullContext = context || `...${quote}...`;
+  const filename = meta.filename ?? "";
+  const label = meta.label ?? source;
+  const docMeta = buildDocMeta(filename, label);
+  const { before, after, section, pageLabel } = buildPassage(quote, filename);
+
+  const panelWidth = "min(540px, 44vw)";
 
   return (
     <>
       <span
         ref={dotRef}
-        onClick={handleOpen}
+        onClick={handleClick}
         className={`inline-block w-[7px] h-[7px] rounded-full ${DOT_COLORS[color]} ml-1 align-middle cursor-pointer hover:ring-2 hover:ring-${color}-400/30 transition-all`}
-        title={`Source: ${meta.label}`}
+        title={`Source: ${label}`}
       />
 
-      {open && (
-        <div
-          ref={popRef}
-          className="fixed z-[200] w-[380px] bg-br-card rounded-xl shadow-2xl border border-br overflow-hidden"
-          style={{ top: pos.top, left: pos.left, animation: "popoverIn 0.15s ease-out" }}
-        >
-          {/* Header */}
-          <div className="px-4 py-2.5 bg-br-surface border-b border-br flex items-center justify-between">
-            <div className="flex items-center gap-2 min-w-0">
-              <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${DOT_COLORS[color]}`} />
-              <div className="min-w-0">
-                <span className="text-[11px] font-medium text-br-text-primary block truncate">{meta.label}</span>
-                <span className="text-[9px] text-br-text-muted">{meta.type}</span>
-              </div>
-            </div>
-            <button
-              onClick={() => { setOpen(false); setExpanded(false); }}
-              className="text-br-text-muted hover:text-br-text-primary text-sm px-1"
-            >
-              &times;
-            </button>
-          </div>
+      {panel !== null && (
+        <>
+          <style>{`
+            @keyframes slideInRight {
+              from { transform: translateX(100%); }
+              to   { transform: translateX(0); }
+            }
+            @keyframes slideInLeft {
+              from { transform: translateX(-100%); }
+              to   { transform: translateX(0); }
+            }
+            @keyframes popoverIn {
+              from { opacity: 0; transform: scale(0.96); }
+              to   { opacity: 1; transform: scale(1); }
+            }
+          `}</style>
 
-          {/* Quoted text */}
-          <div className="px-4 py-3">
-            <p className="text-[10px] text-br-text-muted uppercase tracking-wider mb-1.5 font-medium">Exact Source Text</p>
-            <div className="text-[11px] leading-relaxed text-br-text-secondary bg-amber-500/8 border-l-2 border-amber-400/40 pl-3 py-2 rounded-r">
-              <span className="italic">&ldquo;{quote}&rdquo;</span>
-            </div>
-          </div>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 z-[299] bg-black/40"
+            onClick={() => setPanel(null)}
+          />
 
-          {/* Expandable context */}
-          {context && (
-            <div className="px-4 pb-3">
-              <button
-                onClick={() => setExpanded(!expanded)}
-                className="text-[10px] text-alpine-violet hover:text-alpine-violet-light transition-colors flex items-center gap-1"
-              >
-                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                  {expanded ? <path d="M2 6l3-3 3 3" /> : <path d="M2 4l3 3 3-3" />}
-                </svg>
-                {expanded ? "Hide context" : "View surrounding context"}
-              </button>
-              {expanded && (
-                <div className="mt-2 text-[11px] text-br-text-muted leading-relaxed bg-br-surface rounded-lg p-3 border border-br max-h-[160px] overflow-y-auto">
-                  {fullContext}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Actions */}
-          <div className="px-4 pb-3 flex gap-2">
-            {meta.filename ? (
-              <>
-                <button
-                  onClick={() => { setOpen(false); setDocViewer(true); }}
-                  className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 text-[11px] font-medium text-br-text-primary bg-br-surface border border-br rounded-lg hover:bg-br-card-hover transition-colors"
-                >
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          {/* Panel */}
+          <div
+            className="fixed top-0 bottom-0 z-[300] flex flex-col"
+            style={{
+              width: panelWidth,
+              ...(panel === "right"
+                ? { right: 0, borderLeft: "1px solid rgba(255,255,255,0.08)", boxShadow: "-8px 0 40px rgba(0,0,0,0.6)", animation: "slideInRight 0.2s ease-out" }
+                : { left: 0, borderRight: "1px solid rgba(255,255,255,0.08)", boxShadow: "8px 0 40px rgba(0,0,0,0.6)", animation: "slideInLeft 0.2s ease-out" }),
+              background: "#0f1117",
+            }}
+          >
+            {/* Panel header */}
+            <div style={{ background: "#161820", borderBottom: "1px solid rgba(255,255,255,0.07)", padding: "12px 18px", flexShrink: 0 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
                     <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" />
                   </svg>
-                  View in Document
-                </button>
-                <button
-                  onClick={() => { if (meta.filename) downloadDemoFile(meta.filename); }}
-                  className="flex items-center justify-center gap-1.5 px-3 py-1.5 text-[11px] font-medium text-white bg-emerald-500 border border-emerald-500 rounded-lg hover:bg-emerald-400 transition-colors"
-                >
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
-                  </svg>
-                  Download {meta.size && <span className="text-white/70 ml-0.5">({meta.size})</span>}
-                </button>
-              </>
-            ) : (
-              <div className="text-[10px] text-br-text-muted italic">
-                {source === "SEC_EDGAR" ? "Verified via SEC EDGAR IAPD — CRD# 298741" :
-                 source === "MANAGER_CALL" ? "Due diligence call conducted January 15, 2026" :
-                 source === "ADMIN_VERIFICATION" ? "Verification request sent January 22, 2026" :
-                 "Alpine internal cross-reference analysis"}
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: "#e5e7eb", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{docMeta.title}</div>
+                    <div style={{ fontSize: 10, color: "#6b7280", marginTop: 1 }}>{docMeta.subtitle}</div>
+                  </div>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+                  <span style={{ fontSize: 9, fontWeight: 600, color: "#9ca3af", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 4, padding: "2px 7px", letterSpacing: "0.05em" }}>{docMeta.badge.toUpperCase()}</span>
+                  <button onClick={() => setPanel(null)} style={{ color: "#6b7280", fontSize: 18, lineHeight: 1, padding: "0 4px", background: "none", border: "none", cursor: "pointer" }}>&times;</button>
+                </div>
               </div>
-            )}
-          </div>
-        </div>
-      )}
+            </div>
 
-      {docViewer && meta.filename && (
-        <DocViewerPanel
-          filename={meta.filename}
-          quote={quote}
-          label={meta.label}
-          onClose={() => setDocViewer(false)}
-        />
+            {/* Scrollable body */}
+            <div style={{ flex: 1, overflowY: "auto", padding: "24px 32px" }}>
+
+              {/* Document page simulation */}
+              <div style={{ background: "#ffffff", borderRadius: 6, boxShadow: "0 4px 24px rgba(0,0,0,0.5)", overflow: "hidden", fontFamily: "Georgia, 'Times New Roman', serif" }}>
+
+                {/* Page header bar */}
+                {filename === "iapd_record" ? (
+                  <div style={{ background: "#1a3a6e", padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <span style={{ fontSize: 9, fontWeight: 700, color: "#93c5fd", letterSpacing: "0.12em" }}>U.S. SECURITIES AND EXCHANGE COMMISSION — IAPD</span>
+                    <span style={{ fontSize: 9, color: "#60a5fa", fontWeight: 700, letterSpacing: "0.08em", border: "1px solid #60a5fa", padding: "1px 6px", borderRadius: 2 }}>PUBLIC RECORD</span>
+                  </div>
+                ) : filename === "admin_verification_record" ? (
+                  <div style={{ background: "#1a4a3a", padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <span style={{ fontSize: 9, fontWeight: 700, color: "#6ee7b7", letterSpacing: "0.12em" }}>CITCO FUND SERVICES — ADMINISTRATOR VERIFICATION</span>
+                    <span style={{ fontSize: 9, color: "#34d399", fontWeight: 700, letterSpacing: "0.08em", border: "1px solid #34d399", padding: "1px 6px", borderRadius: 2 }}>CONFIDENTIAL</span>
+                  </div>
+                ) : filename === "alpine_analysis_record" ? (
+                  <div style={{ background: "#2d1a5e", padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <span style={{ fontSize: 9, fontWeight: 700, color: "#c4b5fd", letterSpacing: "0.12em" }}>ALPINE DUE DILIGENCE — INTERNAL ANALYSIS</span>
+                    <span style={{ fontSize: 9, color: "#a78bfa", fontWeight: 700, letterSpacing: "0.08em", border: "1px solid #a78bfa", padding: "1px 6px", borderRadius: 2 }}>INTERNAL</span>
+                  </div>
+                ) : filename === "manager_call_record" ? (
+                  <div style={{ background: "#3a2a0a", padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <span style={{ fontSize: 9, fontWeight: 700, color: "#fcd34d", letterSpacing: "0.12em" }}>MANAGER DUE DILIGENCE CALL — INTERVIEW NOTES</span>
+                    <span style={{ fontSize: 9, color: "#fbbf24", fontWeight: 700, letterSpacing: "0.08em", border: "1px solid #fbbf24", padding: "1px 6px", borderRadius: 2 }}>CONFIDENTIAL</span>
+                  </div>
+                ) : filename === "pentest_jan2026_record" ? (
+                  <div style={{ background: "#1a2a1a", padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <span style={{ fontSize: 9, fontWeight: 700, color: "#86efac", letterSpacing: "0.12em" }}>KROLL CYBER RISK — PENETRATION TEST REPORT</span>
+                    <span style={{ fontSize: 9, color: "#ef4444", fontWeight: 700, letterSpacing: "0.08em", border: "1px solid #ef4444", padding: "1px 6px", borderRadius: 2 }}>CONFIDENTIAL</span>
+                  </div>
+                ) : (
+                  <div style={{ background: "#1e3a5f", padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <span style={{ fontSize: 9, fontWeight: 700, color: "#93c5fd", letterSpacing: "0.12em" }}>ALPINE x RIDGELINE CAPITAL PARTNERS</span>
+                    <span style={{ fontSize: 9, color: "#ef4444", fontWeight: 700, letterSpacing: "0.08em", border: "1px solid #ef4444", padding: "1px 6px", borderRadius: 2 }}>CONFIDENTIAL</span>
+                  </div>
+                )}
+
+                {/* Page content */}
+                <div style={{ padding: "28px 0 32px", display: "flex" }}>
+
+                  {/* Left margin — annotation area */}
+                  <div style={{ width: 40, flexShrink: 0, paddingTop: 4, display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <div style={{ width: 3, background: "#f59e0b", borderRadius: 2, alignSelf: "stretch", marginTop: 68, opacity: 0.85 }} />
+                  </div>
+
+                  {/* Main text column */}
+                  <div style={{ flex: 1, paddingRight: 32 }}>
+
+                    {/* Document title block */}
+                    <div style={{ borderBottom: "2px solid #1e3a5f", paddingBottom: 12, marginBottom: 20 }}>
+                      <div style={{ fontSize: 15, fontWeight: 700, color: "#111827", lineHeight: 1.3 }}>{docMeta.title}</div>
+                      <div style={{ fontSize: 10.5, color: "#6b7280", marginTop: 3 }}>{docMeta.subtitle} &nbsp;·&nbsp; {docMeta.date}</div>
+                    </div>
+
+                    {/* Section heading */}
+                    <div style={{ fontSize: 9.5, fontWeight: 700, color: "#1e3a5f", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 14, paddingBottom: 6, borderBottom: "1px solid #e5e7eb" }}>{section}</div>
+
+                    {/* Paragraph with highlighted quote */}
+                    <p style={{ fontSize: 12, lineHeight: 1.9, color: "#1f2937", margin: 0, textAlign: "justify" }}>
+                      {before}<mark style={{
+                        background: "#ffec3d",
+                        color: "#111",
+                        borderRadius: "1px",
+                        padding: "1px 1px",
+                        fontWeight: "inherit",
+                        fontStyle: "inherit",
+                        fontSize: "inherit",
+                        WebkitBoxDecorationBreak: "clone",
+                        boxDecorationBreak: "clone",
+                      }}>{quote}</mark>{after}
+                    </p>
+
+                  </div>
+                </div>
+
+                {/* Page footer */}
+                <div style={{ background: "#f9fafb", borderTop: "1px solid #e5e7eb", padding: "8px 40px 8px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <span style={{ fontSize: 9, color: "#9ca3af", fontFamily: "sans-serif" }}>{docMeta.subtitle}</span>
+                  <span style={{ fontSize: 9, color: "#9ca3af", fontFamily: "sans-serif" }}>{pageLabel}</span>
+                </div>
+              </div>
+
+              {/* Actions below the page */}
+              <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
+                {filename === "iapd_record" ? (
+                  <button
+                    onClick={() => window.open("https://www.adviserinfo.sec.gov/firm/summary/298741", "_blank")}
+                    style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 16px", fontSize: 11, fontWeight: 500, color: "#60a5fa", background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.2)", borderRadius: 8, cursor: "pointer", fontFamily: "sans-serif" }}
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="15 3 21 3 21 9" /><polyline points="9 21 3 21 3 15" />
+                      <line x1="21" y1="3" x2="14" y2="10" /><line x1="3" y1="21" x2="10" y2="14" />
+                    </svg>
+                    Open SEC IAPD
+                  </button>
+                ) : filename === "admin_verification_record" ? (
+                  <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 16px", fontSize: 11, fontWeight: 500, color: "#34d399", background: "rgba(52,211,153,0.06)", border: "1px solid rgba(52,211,153,0.15)", borderRadius: 8, fontFamily: "sans-serif" }}>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M22 11.08V12a10 10 0 11-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
+                    Citco Verification Confirmed — January 22, 2026
+                  </div>
+                ) : filename === "alpine_analysis_record" ? (
+                  <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 16px", fontSize: 11, fontWeight: 500, color: "#a78bfa", background: "rgba(167,139,250,0.06)", border: "1px solid rgba(167,139,250,0.15)", borderRadius: 8, fontFamily: "sans-serif" }}>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    Alpine Internal Analysis — Not for Distribution
+                  </div>
+                ) : filename === "manager_call_record" ? (
+                  <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 16px", fontSize: 11, fontWeight: 500, color: "#fbbf24", background: "rgba(251,191,36,0.06)", border: "1px solid rgba(251,191,36,0.15)", borderRadius: 8, fontFamily: "sans-serif" }}>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.22 1.19 2 2 0 012.2 1h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.91 8.4a16 16 0 006.72 6.72l1.46-1.46a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
+                    </svg>
+                    Manager Interview — January 15, 2026
+                  </div>
+                ) : filename === "pentest_jan2026_record" ? (
+                  <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 16px", fontSize: 11, fontWeight: 500, color: "#86efac", background: "rgba(134,239,172,0.06)", border: "1px solid rgba(134,239,172,0.15)", borderRadius: 8, fontFamily: "sans-serif" }}>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M22 11.08V12a10 10 0 11-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
+                    Kroll Cyber — No Critical Findings · Jan 28, 2026
+                  </div>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => downloadDemoFile(filename)}
+                      style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 16px", fontSize: 11, fontWeight: 500, color: "#34d399", background: "rgba(52,211,153,0.08)", border: "1px solid rgba(52,211,153,0.2)", borderRadius: 8, cursor: "pointer", fontFamily: "sans-serif" }}
+                    >
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
+                      </svg>
+                      Download PDF
+                    </button>
+                    <button
+                      onClick={() => window.open(`/demo-docs/${filename}`, "_blank")}
+                      style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 16px", fontSize: 11, fontWeight: 500, color: "#9ca3af", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 8, cursor: "pointer", fontFamily: "sans-serif" }}
+                    >
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="15 3 21 3 21 9" /><polyline points="9 21 3 21 3 15" />
+                        <line x1="21" y1="3" x2="14" y2="10" /><line x1="3" y1="21" x2="10" y2="14" />
+                      </svg>
+                      Open Full PDF
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </>
   );

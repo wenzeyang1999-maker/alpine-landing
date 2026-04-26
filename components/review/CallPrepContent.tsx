@@ -36,6 +36,6 @@ export function CallPrepContent({ reviewId }: { reviewId: string }) {
       </div>
     );
   }
-  if (error || !data) return <PlaceholderTab label="Manager Call Prep" detail={error || "No call prep data available."} />;
+  if (error || !data) return <PlaceholderTab label="Manager Analyst Call" detail={error || "No analyst call data available."} />;
   return <CallPrepViewer data={data} reviewId={reviewId} />;
 }

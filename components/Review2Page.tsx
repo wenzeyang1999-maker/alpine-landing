@@ -46,12 +46,20 @@ interface ReviewCtxValue {
   mock: typeof RIDGELINE_MOCK;
   vaultData: typeof RIDGELINE_VAULT_DATA;
   followUpMock: typeof RIDGELINE_FOLLOW_UP_MOCK;
+  slug: string;
+  topicRatingOverrides: Record<number, string>;
+  riskObsOverrides: Record<string, RiskObsEdit>;
+  onRiskObsSaved: (id: string, edit: RiskObsEdit) => void;
 }
 const ReviewCtx = React.createContext<ReviewCtxValue>({
   topicData: RIDGELINE_TOPIC_DATA,
   mock: RIDGELINE_MOCK as any,
   vaultData: RIDGELINE_VAULT_DATA,
   followUpMock: RIDGELINE_FOLLOW_UP_MOCK,
+  slug: "",
+  topicRatingOverrides: {},
+  riskObsOverrides: {},
+  onRiskObsSaved: () => {},
 });
 
 // ── Nav items ──────────────────────────────────────────────────────────────────
@@ -66,7 +74,7 @@ const REVIEW_NAV = [
     icon: <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M8 2l5 3v4c0 3-2.5 4.5-5 5.5-2.5-1-5-2.5-5-5.5V5L8 2z"/><path d="M6 8l1.5 1.5L10 7"/></svg> },
   { id: "analysis", label: "Analysis", section: "ODD Review", badge: "Complete",
     icon: <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M4 13V7M8 13V4M12 13V9"/></svg> },
-  { id: "call-prep", label: "Call Prep", section: "ODD Review",
+  { id: "call-prep", label: "Analyst Call", section: "ODD Review", badge: "Pending",
     icon: <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M4 4a1 1 0 011-1h2l1 3-1.5 1a8 8 0 004.5 4.5L12.5 10l3 1v2a1 1 0 01-1 1A13 13 0 013 5"/></svg> },
   { id: "report-gen", label: "Report", section: "ODD Review", badge: "Pending",
     icon: <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M4 2h8a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M6 5h4M6 7.5h4M6 10h2"/></svg> },
@@ -75,21 +83,6 @@ const REVIEW_NAV = [
   // ── Intelligence ──
   { id: "monitoring", label: "Monitoring", section: "Intelligence",
     icon: <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="5.5"/><path d="M8 5v3l2 2"/></svg> },
-  // ── Detailed analysis (hidden section, kept for completeness) ──
-  { id: "odd-summary", label: "ODD Summary", section: "Detail",
-    icon: <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="5.5"/><path d="M8 5v3l2 2"/></svg> },
-  { id: "risk-obs", label: "Risk Observations", section: "Detail",
-    icon: <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M8 2l6 10H2L8 2z"/><path d="M8 6.5v2.5M8 11h.01"/></svg> },
-  { id: "fund-profile", label: "Fund Profile", section: "Detail",
-    icon: <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="3" y="2" width="10" height="12" rx="1.5"/><path d="M6 5h4M6 8h4M6 11h2"/></svg> },
-  { id: "peer-compare", label: "Peer Comparison", section: "Detail",
-    icon: <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M4 13V7M8 13V4M12 13V9"/></svg> },
-  { id: "ic-memo", label: "IC Memo", section: "Detail",
-    icon: <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M12 2H4a1 1 0 00-1 1v10a1 1 0 001 1h8a1 1 0 001-1V3a1 1 0 00-1-1z"/><path d="M6 5h4M6 8h4M6 11h2"/></svg> },
-  { id: "verification", label: "IC Verification", section: "Detail",
-    icon: <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M8 2l5 3v4c0 3-2.5 4.5-5 5.5-2.5-1-5-2.5-5-5.5V5L8 2z"/><path d="M6 8l1.5 1.5L10 7"/></svg> },
-  { id: "full-report", label: "Full Report", section: "Detail",
-    icon: <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M4 2h8a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M6 5h4M6 7.5h4M6 10h2"/></svg> },
 ];
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
@@ -167,7 +160,7 @@ const STEPPER_STEPS = [
   { label: "Collection",   sub: "14 docs",  tabId: "collection",       completed: true },
   { label: "Verification", sub: "Ready",     tabId: "reg-verification", completed: true },
   { label: "Analysis",     sub: "Complete",  tabId: "analysis",         completed: true },
-  { label: "Call Prep",    sub: "Ready",     tabId: "call-prep",        completed: true },
+  { label: "Analyst Call",    sub: "Ready",     tabId: "call-prep",        completed: true },
   { label: "Report",       sub: "Pending",   tabId: "report-gen",       completed: false },
 ];
 
@@ -238,10 +231,15 @@ function WorkflowStepper({ activeTab, onNavigate, isDark }: { activeTab: string;
 
 // ── Sidebar ────────────────────────────────────────────────────────────────────
 
-function ReviewSidebar({ active, onNavigate }: { active: string; onNavigate: (id: string) => void }) {
+function ReviewSidebar({ active, onNavigate, docCount }: { active: string; onNavigate: (id: string) => void; docCount?: number }) {
   const [detailOpen, setDetailOpen] = React.useState(false);
   const visibleSections = ["ODD Review", "Intelligence"];
   if (detailOpen) visibleSections.push("Detail");
+  // Live override for badges that reflect data counts.
+  const liveBadge: Record<string, string | undefined> = {
+    collection: docCount != null ? `${docCount} docs` : undefined,
+    "doc-vault": docCount != null ? `${docCount} docs` : undefined,
+  };
 
   return (
     <aside style={{
@@ -282,15 +280,18 @@ function ReviewSidebar({ active, onNavigate }: { active: string; onNavigate: (id
                 >
                   <span style={{ opacity: isActive ? 1 : 0.6, flexShrink: 0 }}>{item.icon}</span>
                   <span style={{ flex: 1 }}>{item.label}</span>
-                  {(item as any).badge && (
-                    <span style={{
-                      fontSize: 10, color: "var(--r2-faint)",
-                      background: "var(--r2-surface2)", borderRadius: 6,
-                      padding: "1px 6px", whiteSpace: "nowrap", flexShrink: 0,
-                    }}>
-                      {(item as any).badge}
-                    </span>
-                  )}
+                  {(() => {
+                    const badge = liveBadge[item.id] ?? (item as any).badge;
+                    return badge ? (
+                      <span style={{
+                        fontSize: 10, color: "var(--r2-faint)",
+                        background: "var(--r2-surface2)", borderRadius: 6,
+                        padding: "1px 6px", whiteSpace: "nowrap", flexShrink: 0,
+                      }}>
+                        {badge}
+                      </span>
+                    ) : null;
+                  })()}
                 </button>
               );
             })}
@@ -298,21 +299,6 @@ function ReviewSidebar({ active, onNavigate }: { active: string; onNavigate: (id
         );
       })}
 
-      {/* Toggle detail tabs */}
-      <button
-        onClick={() => setDetailOpen((o) => !o)}
-        style={{
-          marginTop: 10, width: "100%", padding: "7px 10px", borderRadius: 8,
-          border: "1px solid var(--r2-border)", background: "transparent",
-          fontSize: 11, color: "var(--r2-faint)", cursor: "pointer",
-          display: "flex", alignItems: "center", gap: 6,
-        }}
-      >
-        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" style={{ transform: detailOpen ? "rotate(90deg)" : "none", transition: "transform 0.15s" }}>
-          <path d="M4 2l3 3-3 3" />
-        </svg>
-        {detailOpen ? "Hide detail tabs" : "More detail tabs"}
-      </button>
     </aside>
   );
 }
@@ -320,7 +306,7 @@ function ReviewSidebar({ active, onNavigate }: { active: string; onNavigate: (id
 // ── TAB: Overview — replaced by OverviewSection import above ──────────────────
 // (kept stub to avoid breaking other references if any)
 function OverviewTab({ reviewData: _r }: { reviewData: any }) { return null; }
-function _OverviewTabUnused({ reviewData }: { reviewData: any }) {
+function _OverviewTabUnused({ reviewData, isTrellis }: { reviewData: any; isTrellis?: boolean }) {
   const rating = (reviewData?.rating || "WATCHLIST").toUpperCase();
   const score = reviewData?.overall_score || reviewData?.score || 68;
   const ratingLabel = rating === "ACCEPT" ? "ACCEPT" : rating === "FLAG" ? "FLAG" : "WATCHLIST";
@@ -399,7 +385,15 @@ function _OverviewTabUnused({ reviewData }: { reviewData: any }) {
             </div>
           </div>
           <div style={{ display: "grid", gap: 8, fontSize: 13, color: "var(--r2-muted)" }}>
-            {[
+            {(isTrellis ? [
+              { label: "Fund Size", value: "$274M commitments · $280.3M net assets" },
+              { label: "SEC Filing", value: "ERA (VC Exemption) · Since March 2019" },
+              { label: "Founded", value: "August 2018 · San Francisco, CA" },
+              { label: "Strategy", value: "Venture Capital — Pre-Seed & Seed" },
+              { label: "Staff", value: "7 full-time (6 investment + 1 ops)" },
+              { label: "Principals", value: "Arjun Mehta · Priya Sharma (50/50)" },
+              { label: "Disclosures", value: "0 (clean record)", color: D.green },
+            ] : [
               { label: "Fund AUM", value: reviewData?.aum || RIDGELINE_MOCK.fund.aum },
               { label: "CRD / SEC#", value: reviewData?.crd || "298741 / 801-112847" },
               { label: "Registered since", value: reviewData?.registered_since || "April 2018" },
@@ -407,7 +401,7 @@ function _OverviewTabUnused({ reviewData }: { reviewData: any }) {
               { label: "Employees", value: reviewData?.employees || "34 total · 12 advisory" },
               { label: "Investor accounts", value: reviewData?.investor_count ? `${reviewData.investor_count}` : "412" },
               { label: "Disclosures", value: reviewData?.disclosures || "0 (clean record)", color: D.green },
-            ].map(({ label, value, color }) => (
+            ]).map(({ label, value, color }) => (
               <div key={label}>
                 <span style={{ color: "var(--r2-faint)" }}>{label}: </span>
                 <strong style={{ color: color || "var(--r2-text)" }}>{value}</strong>
@@ -534,15 +528,122 @@ function OddSummaryTab({ reviewData }: { reviewData: any }) {
 
 // ── TAB: Risk Observations ─────────────────────────────────────────────────────
 
+type RiskObs = { id: string; severity: string; topic: string; title: string; detail: string; remediation: string };
+type RiskObsEdit = { severity: string; title: string; detail: string; remediation: string };
+
+function RiskObsRow({ obs, slug, override, onSaved }: { obs: RiskObs; slug: string; override?: RiskObsEdit; onSaved?: (id: string, edit: RiskObsEdit) => void }) {
+  const merged = override ? { ...obs, ...override } : obs;
+  const [editing, setEditing] = React.useState(false);
+  const [draft, setDraft] = React.useState<RiskObsEdit>({ severity: merged.severity, title: merged.title, detail: merged.detail, remediation: merged.remediation });
+  const [saving, setSaving] = React.useState(false);
+
+  function startEdit() {
+    setDraft({ severity: merged.severity, title: merged.title, detail: merged.detail, remediation: merged.remediation });
+    setEditing(true);
+  }
+
+  async function save() {
+    setSaving(true);
+    try {
+      await fetch("/api/risk-obs", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: obs.id, review_slug: slug, ...draft }),
+      });
+      onSaved?.(obs.id, draft);
+      setEditing(false);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  const inputStyle: React.CSSProperties = {
+    width: "100%", background: "var(--r2-surface2)", border: "1px solid var(--r2-border)",
+    borderRadius: 6, padding: "6px 10px", color: "var(--r2-text)", fontSize: 13,
+    outline: "none", fontFamily: "inherit",
+  };
+
+  if (editing) {
+    return (
+      <div style={{ padding: "14px 16px", background: "var(--r2-card)", display: "grid", gap: 10 }}>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <span style={{ fontSize: 10, color: "var(--r2-faint)", fontWeight: 600 }}>{obs.id}</span>
+          <select value={draft.severity} onChange={(e) => setDraft((p) => ({ ...p, severity: e.target.value }))}
+            style={{ ...inputStyle, width: 110 }}>
+            <option>HIGH</option>
+            <option>MEDIUM</option>
+            <option>LOW</option>
+          </select>
+        </div>
+        <input value={draft.title} onChange={(e) => setDraft((p) => ({ ...p, title: e.target.value }))}
+          placeholder="Title" style={inputStyle} />
+        <textarea value={draft.detail} onChange={(e) => setDraft((p) => ({ ...p, detail: e.target.value }))}
+          placeholder="Detail" rows={3}
+          style={{ ...inputStyle, resize: "vertical", lineHeight: 1.55 }} />
+        <textarea value={draft.remediation} onChange={(e) => setDraft((p) => ({ ...p, remediation: e.target.value }))}
+          placeholder="Remediation (optional)" rows={2}
+          style={{ ...inputStyle, resize: "vertical", lineHeight: 1.55 }} />
+        <div style={{ display: "flex", gap: 8 }}>
+          <button onClick={save} disabled={saving}
+            style={{ padding: "6px 16px", borderRadius: 6, background: D.green, color: "#fff", border: "none", fontSize: 12, fontWeight: 600, cursor: saving ? "default" : "pointer", opacity: saving ? 0.6 : 1 }}>
+            {saving ? "Saving…" : "Save"}
+          </button>
+          <button onClick={() => setEditing(false)}
+            style={{ padding: "6px 14px", borderRadius: 6, background: "transparent", color: "var(--r2-muted)", border: "1px solid var(--r2-border)", fontSize: 12, cursor: "pointer" }}>
+            Cancel
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ padding: "12px 16px", background: "var(--r2-card)", display: "grid", gap: 6 }}
+      className="risk-obs-row">
+      {/* Row 1: ID · badge · edit button */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <span style={{ fontSize: 10, fontFamily: "monospace", color: "var(--r2-faint)", fontWeight: 600 }}>{merged.id}</span>
+          <SevBadge sev={merged.severity} />
+        </div>
+        <button onClick={startEdit} title="Edit"
+          style={{ padding: "2px 7px", borderRadius: 5, background: "transparent", border: "1px solid var(--r2-border)", color: "var(--r2-faint)", cursor: "pointer", fontSize: 11, lineHeight: 1.4, flexShrink: 0 }}>
+          ✎
+        </button>
+      </div>
+      {/* Row 2: title */}
+      <div style={{ fontSize: 13, fontWeight: 600, color: "var(--r2-text)", lineHeight: 1.4 }}>{merged.title}</div>
+      {/* Row 3: detail */}
+      <div style={{ fontSize: 12, color: "var(--r2-muted)", lineHeight: 1.65 }}>{merged.detail}</div>
+      {/* Row 4: remediation */}
+      {merged.remediation && (
+        <div style={{ fontSize: 12, color: D.amber, paddingLeft: 10, borderLeft: `3px solid ${D.amber}`, marginTop: 2 }}>
+          <strong style={{ color: "var(--r2-text)" }}>Remediation: </strong>{merged.remediation}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function RiskObsTab() {
-  const { mock } = React.useContext(ReviewCtx);
-  const obs = mock.risk_observations;
+  const { mock, slug, riskObsOverrides, onRiskObsSaved } = React.useContext(ReviewCtx);
+  const staticObs = mock.risk_observations as RiskObs[];
+  const overrides = riskObsOverrides;
+
+  const obs = staticObs.map((o) => overrides[o.id] ? { ...o, ...overrides[o.id] } : o);
   const highCount = obs.filter((o) => o.severity === "HIGH").length;
   const medCount = obs.filter((o) => o.severity === "MEDIUM").length;
 
+  const grouped: Record<string, RiskObs[]> = {};
+  staticObs.forEach((o) => {
+    const key = o.topic || "Other";
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(o);
+  });
+
   return (
     <Card>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 18 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
         <div>
           <div style={{ fontSize: 18, fontWeight: 600, color: "var(--r2-text)" }}>Risk Observations</div>
           <div style={{ fontSize: 12, color: "var(--r2-muted)", marginTop: 2 }}>{obs.length} observations · {highCount} High · {medCount} Medium</div>
@@ -553,25 +654,24 @@ function RiskObsTab() {
         </div>
       </div>
 
-      <div style={{ display: "grid", gap: 12 }}>
-        {obs.map((o) => (
-          <div key={o.id} style={{
-            padding: 16, borderRadius: 14, border: "1px solid var(--r2-border)",
-            background: "var(--r2-card)", display: "grid", gap: 10,
-          }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
-              <div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: "var(--r2-text)", lineHeight: 1.4 }}>{o.title}</div>
-                <div style={{ fontSize: 11, color: "var(--r2-faint)", marginTop: 2 }}>{o.topic}</div>
-              </div>
-              <SevBadge sev={o.severity} />
+      <div style={{ display: "grid", gap: 16 }}>
+        {Object.entries(grouped).map(([topic, items]) => (
+          <div key={topic} style={{ borderRadius: 14, border: "1px solid var(--r2-border)", overflow: "hidden" }}>
+            <div style={{
+              padding: "10px 16px", background: "var(--r2-surface2)", borderBottom: "1px solid var(--r2-border)",
+              fontSize: 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase",
+              color: "var(--r2-faint)", display: "flex", alignItems: "center", justifyContent: "space-between",
+            }}>
+              <span>{topic}</span>
+              <span style={{ fontWeight: 500, letterSpacing: 0, textTransform: "none", fontSize: 11 }}>
+                {items.length} observation{items.length !== 1 ? "s" : ""}
+              </span>
             </div>
-            <div style={{ fontSize: 13, color: "var(--r2-muted)", lineHeight: 1.65 }}>{o.detail}</div>
-            {o.remediation && (
-              <div style={{ fontSize: 12, color: D.amber, paddingLeft: 12, borderLeft: `3px solid ${D.amber}` }}>
-                <strong style={{ color: "var(--r2-text)" }}>Remediation: </strong>{o.remediation}
+            {items.map((o, i) => (
+              <div key={o.id} style={{ borderTop: i > 0 ? "1px solid var(--r2-border)" : undefined }}>
+                <RiskObsRow obs={o} slug={slug} override={overrides[o.id]} onSaved={onRiskObsSaved} />
               </div>
-            )}
+            ))}
           </div>
         ))}
       </div>
@@ -581,29 +681,57 @@ function RiskObsTab() {
 
 // ── TAB: Fund Profile ──────────────────────────────────────────────────────────
 
-function FundProfileTab({ reviewData }: { reviewData: any }) {
+function FundProfileTab({ reviewData, isTrellis }: { reviewData: any; isTrellis?: boolean }) {
   const { mock } = React.useContext(ReviewCtx);
   const perf = mock.fund_performance;
+
+  const firmRows = isTrellis ? [
+    ["Legal Name", "Trellis Capital Management, LLC"],
+    ["Fund", "Trellis Capital IV, L.P. (GP: Trellis Capital GP IV, LLC)"],
+    ["Headquarters", "San Francisco, California"],
+    ["Year Founded", "August 2018"],
+    ["SEC Filing", "Exempt Reporting Adviser (ERA) · VC Exemption · Since March 2019"],
+    ["Fund Size", "$274M total commitments · $280.3M net assets · $113.7M uncalled"],
+    ["Fund Structure", "Delaware LP + Delaware GP LLC"],
+    ["Strategy", "Venture Capital — Pre-Seed & Seed Stage Technology"],
+    ["Principals", "Arjun Mehta 50% · Priya Sharma 50% (confirmed Form ADV Sch. A/B)"],
+    ["Staff", "7 full-time (6 investment professionals + 1 operations)"],
+    ["LP Accounts", "Institutional LPs across Funds I–IV"],
+    ["Management Fee", "2.5% (commitment period) · 1.5% (invested capital thereafter)"],
+    ["Carried Interest", "20% (American waterfall · no preferred return)"],
+    ["Commitment Period", "5 years from first close · Recycling up to 120% of commitments"],
+  ] : [
+    ["Legal Name", reviewData?.legal_name || "Ridgeline Capital Partners, LLC"],
+    ["Headquarters", reviewData?.headquarters || "Greenwich, Connecticut"],
+    ["Year Founded", reviewData?.year_founded || "2018"],
+    ["SEC Registration", reviewData?.sec_registration || "Registered April 2018 · CRD #298741"],
+    ["Fund AUM", reviewData?.aum || "$2.31B (as of Mar 31, 2026)"],
+    ["Fund Structure", "Delaware LP + Cayman Islands Feeder"],
+    ["Strategy", reviewData?.strategy || RIDGELINE_MOCK.fund.strategy],
+    ["Employees", reviewData?.employees || "34 total · 12 advisory"],
+    ["Investor Accounts", "412 accounts"],
+    ["Management Fee", perf.fees.management_fee],
+    ["Performance Fee", `${perf.fees.performance_fee} with high-water mark`],
+    ["Redemption Terms", `${perf.liquidity.redemption_frequency} · ${perf.liquidity.redemption_notice} notice`],
+  ];
+
+  const teamMembers = isTrellis ? [
+    { name: "Arjun Mehta", role: "Co-Founder · Managing Partner", exp: "Investment lead · 50% ownership · prev. Sequoia Capital" },
+    { name: "Priya Sharma", role: "Co-Founder · Managing Partner · CCO (⚠ investment professional)", exp: "Compliance oversight · 50% ownership · prev. a16z" },
+    { name: "Sarah Collins", role: "Head of Operations", exp: "Sole operations professional · Fractional CFO (Raj Patel) joining Summer 2026" },
+  ] : [
+    { name: "David Chen, CFA", role: "CIO & Founder · PM (sole)", exp: "23 years experience · prev. Goldman Sachs" },
+    { name: "Sarah Martinez", role: "COO · Interim CCO", exp: "12 years experience · prev. AQR Capital" },
+    { name: "James Park, CFA", role: "Head of Research", exp: "15 years experience · prev. Citadel" },
+  ];
+
   return (
     <div style={{ display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: 16 }}>
       <Card>
         <div style={{ fontSize: 16, fontWeight: 600, color: "var(--r2-text)", marginBottom: 16 }}>Firm Overview</div>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
           <tbody>
-            {[
-              ["Legal Name", reviewData?.legal_name || "Ridgeline Capital Partners, LLC"],
-              ["Headquarters", reviewData?.headquarters || "Greenwich, Connecticut"],
-              ["Year Founded", reviewData?.year_founded || "2018"],
-              ["SEC Registration", reviewData?.sec_registration || "Registered April 2018 · CRD #298741"],
-              ["Fund AUM", reviewData?.aum || "$2.31B (as of Mar 31, 2026)"],
-              ["Fund Structure", "Delaware LP + Cayman Islands Feeder"],
-              ["Strategy", reviewData?.strategy || RIDGELINE_MOCK.fund.strategy],
-              ["Employees", reviewData?.employees || "34 total · 12 advisory"],
-              ["Investor Accounts", "412 accounts"],
-              ["Management Fee", perf.fees.management_fee],
-              ["Performance Fee", `${perf.fees.performance_fee} with high-water mark`],
-              ["Redemption Terms", `${perf.liquidity.redemption_frequency} · ${perf.liquidity.redemption_notice} notice`],
-            ].map(([label, value]) => (
+            {firmRows.map(([label, value]) => (
               <tr key={label as string}>
                 <td style={{ padding: "8px 0", color: "var(--r2-faint)", width: 160, verticalAlign: "top" }}>{label}</td>
                 <td style={{ padding: "8px 0", color: "var(--r2-text)", fontWeight: 500 }}>{value}</td>
@@ -617,11 +745,7 @@ function FundProfileTab({ reviewData }: { reviewData: any }) {
         <Card>
           <div style={{ fontSize: 14, fontWeight: 600, color: "var(--r2-text)", marginBottom: 12 }}>Investment Team</div>
           <div style={{ display: "grid", gap: 8 }}>
-            {[
-              { name: "David Chen, CFA", role: "CIO & Founder · PM (sole)", exp: "23 years experience · prev. Goldman Sachs" },
-              { name: "Sarah Martinez", role: "COO · Interim CCO", exp: "12 years experience · prev. AQR Capital" },
-              { name: "James Park, CFA", role: "Head of Research", exp: "15 years experience · prev. Citadel" },
-            ].map((p) => (
+            {teamMembers.map((p) => (
               <div key={p.name} style={{ padding: 12, borderRadius: 12, background: "var(--r2-surface2)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--r2-text)" }}>{p.name}</div>
                 <div style={{ fontSize: 12, color: "var(--r2-muted)", marginTop: 2 }}>{p.role}</div>
@@ -634,19 +758,38 @@ function FundProfileTab({ reviewData }: { reviewData: any }) {
         <Card>
           <div style={{ fontSize: 14, fontWeight: 600, color: "var(--r2-text)", marginBottom: 12 }}>Service Providers</div>
           <div style={{ display: "grid", gap: 8, fontSize: 13 }}>
-            {[
-              { label: "Prime Broker", value: "Goldman Sachs, Morgan Stanley", color: D.text },
-              { label: "Administrator", value: "Citco Fund Services", color: D.text },
-              { label: "Auditor", value: "Ernst & Young LLP", color: D.text },
-              { label: "Legal Counsel", value: "Schulte Roth & Zabel LLP", color: D.text },
-              { label: "IT / MSP", value: "Eze Castle Integration", color: D.text },
-              { label: "Compliance", value: "In-house interim (gap)", color: D.amber },
-            ].map(({ label, value, color }) => (
-              <div key={label}>
-                <span style={{ color: "var(--r2-faint)", width: 130, display: "inline-block" }}>{label}</span>
-                <strong style={{ color }}>{value}</strong>
-              </div>
-            ))}
+            {isTrellis ? (
+              <>
+                {[
+                  { label: "Administrator", value: "Apex Fund Services, LLC (Xero + FundPanel)", color: D.text },
+                  { label: "Auditor", value: "Baker Thompson & Co.", color: D.text },
+                  { label: "Legal Counsel", value: "Morrison Cole Ashworth", color: D.text },
+                  { label: "Banking", value: "Pacific Commerce → JP Morgan (transition)", color: D.text },
+                  { label: "Prime Broker", value: "N/A — Venture Capital strategy", color: D.text },
+                ].map(({ label, value, color }) => (
+                  <div key={label} style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ color: "var(--r2-faint)" }}>{label}</span>
+                    <span style={{ color, fontWeight: 500, textAlign: "right", maxWidth: 200 }}>{value}</span>
+                  </div>
+                ))}
+              </>
+            ) : (
+              <>
+                {[
+                  { label: "Prime Broker", value: "Goldman Sachs, Morgan Stanley", color: D.text },
+                  { label: "Administrator", value: "Citco Fund Services", color: D.text },
+                  { label: "Auditor", value: "Ernst & Young LLP", color: D.text },
+                  { label: "Legal Counsel", value: "Schulte Roth & Zabel LLP", color: D.text },
+                  { label: "IT / MSP", value: "Eze Castle Integration", color: D.text },
+                  { label: "Compliance", value: "In-house interim (gap)", color: D.amber },
+                ].map(({ label, value, color }) => (
+                  <div key={label} style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ color: "var(--r2-faint)" }}>{label}</span>
+                    <strong style={{ color }}>{value}</strong>
+                  </div>
+                ))}
+              </>
+            )}
           </div>
         </Card>
       </div>
@@ -876,8 +1019,15 @@ function ICMemoTab({ reviewData }: { reviewData: any }) {
 
 // ── TAB: Verification ──────────────────────────────────────────────────────────
 
-function VerificationTab2({ reviewData }: { reviewData: any }) {
-  const checks = [
+function VerificationTab2({ reviewData, isTrellis }: { reviewData: any; isTrellis?: boolean }) {
+  const checks = isTrellis ? [
+    { title: "SEC ERA Filing — Confirmed", status: "passed", detail: "Trellis Capital Management, LLC filed as an Exempt Reporting Adviser (ERA) under the venture capital adviser exemption (Section 203(l) of the Advisers Act) since March 9, 2019. Current Form ADV dated March 22, 2026 reviewed. No discrepancies found.", source: "SEC IARD / EDGAR · ERA Form ADV · March 22, 2026" },
+    { title: "SEC Disciplinary Disclosures — None Found", status: "passed", detail: "Form ADV Section 11 all answered No. No disciplinary actions, regulatory inquiries, or sanctions on DRP pages. No BrokerCheck reportable events for either principal (Arjun Mehta or Priya Sharma). Clean regulatory history since 2019.", source: "Form ADV Part 1A Section 11 · FINRA BrokerCheck · March 2026" },
+    { title: "Administrator — Apex Fund Services Confirmed", status: "passed", detail: "Apex Fund Services, LLC confirmed as expected administrator for Fund IV, continuing from prior funds. Apex uses Xero for accounting and FundPanel for LP reporting. Engagement letter for Fund IV expected before first capital call — Alpine confirmed expected engagement via conference call April 3, 2026.", source: "Direct administrator verification · Apr 3, 2026" },
+    { title: "Form ADV Year-over-Year Comparison", status: "passed", detail: "Firm net assets grew from $212.4M (2024) to $280.3M (2025) plus $113.7M uncalled capital. Staff count stable at 7 full-time. No material changes to ownership structure (Mehta 50%, Sharma 50%). No new disciplinary items.", source: "Year-over-year ADV comparison · March 2026" },
+    { title: "Dedicated CCO — Investment Professional (RED)", status: "failed", detail: "Priya Sharma (Co-Founder, Managing Partner) is responsible for compliance oversight in addition to full investment responsibilities. Alpine is strongly opposed to an investment professional holding compliance responsibilities and requires this be transferred to a non-investment professional (e.g., Sarah Collins, Head of Operations). This is a required action before close.", source: "Form ADV Part 1A · DDQ §4.2 · Alpine Compliance Standard" },
+    { title: "Cybersecurity & BCP — Not Documented", status: "exception", detail: "No formal cybersecurity policy or incident response plan documented. No penetration testing completed. No written BCP exists. No third-party cybersecurity framework adopted. Endpoints lack formal DLP controls. Required remediation before ACCEPT designation.", source: "DDQ §9.1–9.5 · CyberSec Assessment · Feb 2026" },
+  ] : [
     { title: "SEC Form ADV — Registration Confirmed", status: "passed", detail: `${reviewData?.name || "The fund"} is registered with the SEC as an investment adviser (CRD #298741). Form ADV filed March 28, 2025. AUM reported: $2.31B. No discrepancies found.`, source: "SEC EDGAR / IAPD · Updated: Feb 10, 2026" },
     { title: "SEC Disciplinary Disclosures — None Found", status: "passed", detail: "No disciplinary actions, customer complaints, or regulatory events found. SEC examination completed October 2023 — no deficiency letter or findings. Clean regulatory history since registration.", source: "Items 11A-K all answered No · 0 disclosures" },
     { title: "Administrator — Citco Fund Services Confirmed", status: "passed", detail: "Citco Fund Services confirmed as independent administrator performing NAV calculations. AUM of $2.31B and 412 investor accounts confirmed. Monthly reconciliation process verified.", source: "Direct administrator verification · Feb 14, 2026" },
@@ -926,40 +1076,112 @@ function VerificationTab2({ reviewData }: { reviewData: any }) {
 
 // ── TAB: Monitoring ────────────────────────────────────────────────────────────
 
+const MONITORING_ITEMS = [
+  { id: 4,  priority: "Med", target: "2027",        action: "Monitor progress", issue: "Hire full-time Head of Finance" },
+  { id: 5,  priority: "Med", target: "TBD",         action: "Monitor progress", issue: "Implement compliance attestation and annual training" },
+  { id: 6,  priority: "Med", target: "TBD",         action: "Monitor progress", issue: "Form valuation committee with non-investment representation" },
+  { id: 7,  priority: "Med", target: "TBD",         action: "Monitor progress", issue: "Implement internal investor-level accounting records" },
+  { id: 8,  priority: "Med", target: "TBD",         action: "Monitor progress", issue: "Prepare written business continuity plan" },
+  { id: 9,  priority: "Low", target: "Conditional", action: "Request formation", issue: "Form LPAC" },
+  { id: 10, priority: "Low", target: "TBD",         action: "Monitor",          issue: "Monitor Pacific Commerce / JP Morgan banking transition" },
+  { id: 11, priority: "Low", target: "TBD",         action: "Monitor",          issue: "Engage third-party background check provider" },
+];
+
 function MonitoringTab() {
-  const tasks = [
-    { title: "Quarterly CCO appointment status check", freq: "Quarterly", status: "open", desc: "Verify progress on hiring dedicated CCO. This is the highest priority open condition." },
-    { title: "Pre-trade compliance system implementation", freq: "Monthly", status: "open", desc: "Track selection and implementation of automated pre-trade compliance system." },
-    { title: "Form ADV annual update review", freq: "Annual", status: "done", desc: "Review and compare to prior year. Flag any material changes to ownership, AUM, or personnel." },
-    { title: "NAV reconciliation monitoring", freq: "Monthly", status: "done", desc: "Confirm no NAV errors via administrator transparency report. Zero errors in last 24 months." },
-    { title: "BCP test confirmation", freq: "Annual", status: "open", desc: "Confirm completion of annual BCP test with documented RTOs. Exception from last review." },
-    { title: "Cybersecurity policy annual update", freq: "Annual", status: "open", desc: "Confirm policy updated and penetration testing completed by external vendor." },
-  ];
+  const SCAN_INTERVAL = 120; // seconds
+  const [countdown, setCountdown] = React.useState(SCAN_INTERVAL);
+  const [scanning, setScanning] = React.useState(false);
+  const [scanDots, setScanDots] = React.useState(0);
+
+  React.useEffect(() => {
+    const tick = setInterval(() => {
+      setCountdown(prev => {
+        if (prev <= 1) {
+          setScanning(true);
+          setTimeout(() => setScanning(false), 3000);
+          return SCAN_INTERVAL;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(tick);
+  }, []);
+
+  React.useEffect(() => {
+    if (!scanning) { setScanDots(0); return; }
+    const d = setInterval(() => setScanDots(p => (p + 1) % 4), 400);
+    return () => clearInterval(d);
+  }, [scanning]);
+
+  const mins = Math.floor(countdown / 60);
+  const secs = countdown % 60;
+  const pct = ((SCAN_INTERVAL - countdown) / SCAN_INTERVAL) * 100;
+
+  const priorityColor = (p: string) => p === "Med" ? "#F59E0B" : "#6b7280";
+  const priorityBg   = (p: string) => p === "Med" ? "rgba(245,158,11,0.10)" : "rgba(107,114,128,0.10)";
 
   return (
     <Card>
-      <div style={{ fontSize: 18, fontWeight: 600, color: "var(--r2-text)", marginBottom: 6 }}>Monitoring Plan</div>
-      <div style={{ fontSize: 12, color: "var(--r2-muted)", marginBottom: 18 }}>Ongoing monitoring tasks — {tasks.filter((t) => t.status === "open").length} open</div>
-      <div style={{ display: "grid", gap: 10 }}>
-        {tasks.map((task, i) => (
-          <div key={i} style={{ display: "flex", gap: 14, alignItems: "flex-start", padding: "14px 16px", borderRadius: 12, border: "1px solid var(--r2-border)", background: "var(--r2-card)" }}>
-            <div style={{
-              width: 18, height: 18, borderRadius: "50%", border: `2px solid ${task.status === "done" ? D.green : D.amber}`,
-              flexShrink: 0, marginTop: 1, display: "flex", alignItems: "center", justifyContent: "center",
-              background: task.status === "done" ? "rgba(24,185,126,0.15)" : "transparent",
-            }}>
-              {task.status === "done" && <span style={{ fontSize: 10, color: D.green }}>✓</span>}
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: "var(--r2-text)" }}>{task.title}</div>
-              <div style={{ fontSize: 12, color: "var(--r2-muted)", marginTop: 3, lineHeight: 1.5 }}>{task.desc}</div>
-              <div style={{ marginTop: 8, display: "flex", gap: 8 }}>
-                <span style={{ fontSize: 10, padding: "3px 8px", borderRadius: 999, background: "var(--r2-surface2)", color: "var(--r2-faint)" }}>{task.freq}</span>
-                {task.status === "open" && (
-                  <span style={{ fontSize: 10, padding: "3px 8px", borderRadius: 999, background: "rgba(242,169,59,0.10)", color: "#ffd48c" }}>Open</span>
-                )}
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 18, gap: 16 }}>
+        <div>
+          <div style={{ fontSize: 18, fontWeight: 600, color: "var(--r2-text)", marginBottom: 4 }}>Post-Close Monitoring</div>
+          <div style={{ fontSize: 12, color: "var(--r2-muted)" }}>{MONITORING_ITEMS.length} open conditions · Trellis Capital IV</div>
+        </div>
+        {/* Scan widget */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 14px", borderRadius: 10, border: "1px solid var(--r2-border)", background: "var(--r2-surface2)", minWidth: 190 }}>
+          {scanning ? (
+            <>
+              <div style={{ position: "relative", width: 20, height: 20, flexShrink: 0 }}>
+                <svg width="20" height="20" viewBox="0 0 20 20" style={{ animation: "spin 1s linear infinite" }}>
+                  <circle cx="10" cy="10" r="8" fill="none" stroke="var(--r2-border)" strokeWidth="2" />
+                  <path d="M10 2 A8 8 0 0 1 18 10" fill="none" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" />
+                </svg>
               </div>
+              <span style={{ fontSize: 11, color: "#6366f1", fontWeight: 600 }}>
+                Scanning web{"·".repeat(scanDots)}
+              </span>
+            </>
+          ) : (
+            <>
+              <div style={{ position: "relative", width: 20, height: 20, flexShrink: 0 }}>
+                <svg width="20" height="20" viewBox="0 0 20 20">
+                  <circle cx="10" cy="10" r="8" fill="none" stroke="var(--r2-border)" strokeWidth="2" />
+                  <path
+                    d={`M10 2 A8 8 0 ${pct > 50 ? 1 : 0} 1 ${10 + 8 * Math.sin((pct / 100) * 2 * Math.PI)} ${10 - 8 * Math.cos((pct / 100) * 2 * Math.PI)}`}
+                    fill="none" stroke="#6366f1" strokeWidth="2" strokeLinecap="round"
+                  />
+                </svg>
+              </div>
+              <div>
+                <div style={{ fontSize: 10, color: "var(--r2-faint)", lineHeight: 1.3 }}>Next web scan</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "var(--r2-text)", fontVariantNumeric: "tabular-nums" }}>
+                  {mins}:{secs.toString().padStart(2, "0")}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Table header */}
+      <div style={{ display: "grid", gridTemplateColumns: "36px 1fr 60px 100px 130px", gap: "0 12px", padding: "6px 12px", marginBottom: 6 }}>
+        {["#", "Issue", "Priority", "Target", "Action"].map(h => (
+          <div key={h} style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--r2-faint)" }}>{h}</div>
+        ))}
+      </div>
+
+      <div style={{ display: "grid", gap: 6 }}>
+        {MONITORING_ITEMS.map(item => (
+          <div key={item.id} style={{ display: "grid", gridTemplateColumns: "36px 1fr 60px 100px 130px", gap: "0 12px", alignItems: "center", padding: "12px 12px", borderRadius: 10, border: "1px solid var(--r2-border)", background: "var(--r2-card)" }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: "var(--r2-faint)" }}>{item.id}</div>
+            <div style={{ fontSize: 13, color: "var(--r2-text)", lineHeight: 1.5 }}>{item.issue}</div>
+            <div>
+              <span style={{ fontSize: 10, padding: "3px 8px", borderRadius: 999, background: priorityBg(item.priority), color: priorityColor(item.priority), fontWeight: 600 }}>
+                {item.priority}
+              </span>
             </div>
+            <div style={{ fontSize: 12, color: "var(--r2-muted)" }}>{item.target}</div>
+            <div style={{ fontSize: 12, color: "var(--r2-muted)", fontStyle: "italic" }}>{item.action}</div>
           </div>
         ))}
       </div>
@@ -1017,7 +1239,7 @@ function FullReportTab({ reviewData }: { reviewData: any }) {
 
 // ── Main Page ──────────────────────────────────────────────────────────────────
 
-// ── TAB: Call Prep ─────────────────────────────────────────────────────────────
+// ── TAB: Analyst Call ─────────────────────────────────────────────────────────────
 
 const CALL_PREP_SECTIONS = [
   {
@@ -1058,13 +1280,55 @@ const CALL_PREP_SECTIONS = [
   },
 ];
 
+// Pre-filled sample answers for ~half the questions (keys = "sectionIdx-questionIdx")
+const CALL_PREP_SAMPLE_NOTES: Record<string, string> = {
+  "0-0": "Arjun confirmed CCO search is actively underway via Caldwell Partners. Target profile: 5–7 yrs compliance experience in venture or growth equity. One finalist currently in final-round interviews. Manager is targeting Q3 2026 hire, ahead of final fund close. Committed to sending written candidate brief and timeline by end of week. ACTION: Follow up in 5 business days if not received.",
+  "0-2": "No formal written chaperoning policy in place. Priya stated all expert network calls are routed exclusively through GLG, and investment staff are verbally instructed to notify counsel before participating. No chaperone is present on calls. Manager acknowledged gap and agreed to draft a written policy by close. ACTION: Request draft policy as condition of close.",
+  "1-0": "No written succession plan exists today. Arjun and Priya confirmed they will document interim management responsibilities and GP governance provisions by Q4 2026. Both noted the LPA key person trigger requires simultaneous unavailability of both partners, which they view as adequate. Alpine disagrees — single-partner incapacity scenario is unaddressed. Manager agreed to deliver written plan within 90 days. ACTION: Calendar 90-day follow-up.",
+  "2-1": "Disputes escalated to the Valuation Committee per LPA. LP Advisory Board retains right to request independent valuation if they disagree with the Committee's conclusion. Priya noted zero mark disputes across Funds I–III since inception. No formal SLA for resolution timeline. Raj Patel (fractional CFO, joining Summer 2026) will formalize written dispute resolution protocol. Manager expects to have documented process in place before LP Advisory Board first meeting in Fund IV.",
+  "3-0": "Active cyber liability policy through Chubb. $2M coverage limit; policy renews October 2026. Does not include social engineering rider. No prior claims. Alpine view: coverage limit is light relative to AUM and LP data held — recommend increasing to $5M minimum at next renewal. Manager agreed to review at renewal. ACTION: Confirm in writing that renewal will be at higher limit.",
+  "3-1": "No independent penetration test has been conducted on manager systems to date. Manager relies on SOC 2 Type I from Apex (fund administrator) for infrastructure-level assurance. Internal IT for email, file storage, and LP portal is managed by Sarah Collins with no dedicated IT resource. Manager agreed this is a gap and committed to commissioning an external pen test by Q2 2026. ACTION ITEM — require completion prior to or shortly after final close.",
+};
+
 function CallPrepTab() {
+  const { slug } = React.useContext(ReviewCtx);
   // key = "sectionIdx-questionIdx", value = note text
-  const [notes, setNotes] = useState<Record<string, string>>({});
+  const [notes, setNotes] = useState<Record<string, string>>(CALL_PREP_SAMPLE_NOTES);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  const [saving, setSaving] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    if (!slug) return;
+    fetch(`/api/call-prep-notes?slug=${encodeURIComponent(slug)}`)
+      .then((r) => r.json())
+      .then((rows: Array<{ note_key: string; content: string }>) => {
+        if (rows.length > 0) {
+          const map: Record<string, string> = {};
+          rows.forEach((row) => { map[row.note_key] = row.content; });
+          // DB wins; keys not in DB fall back to sample notes
+          setNotes((prev) => ({ ...prev, ...map }));
+        }
+      })
+      .catch(() => {});
+  }, [slug]);
 
   function toggle(key: string) {
     setExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
+  }
+
+  async function saveNote(key: string) {
+    if (!slug) { toggle(key); return; }
+    setSaving((prev) => ({ ...prev, [key]: true }));
+    try {
+      await fetch("/api/call-prep-notes", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ review_slug: slug, note_key: key, content: notes[key] ?? "" }),
+      });
+    } finally {
+      setSaving((prev) => ({ ...prev, [key]: false }));
+      toggle(key);
+    }
   }
 
   return (
@@ -1075,7 +1339,7 @@ function CallPrepTab() {
           <div style={{ fontSize: 10, letterSpacing: "0.28em", textTransform: "uppercase", color: "#7c3aed", fontWeight: 700, marginBottom: 6 }}>
             Alpine Due Diligence
           </div>
-          <div style={{ fontSize: 20, fontWeight: 700, color: "var(--r2-text)", marginBottom: 4 }}>Management Call Prep</div>
+          <div style={{ fontSize: 20, fontWeight: 700, color: "var(--r2-text)", marginBottom: 4 }}>Management Analyst Call</div>
           <div style={{ fontSize: 13, color: "var(--r2-muted)" }}>Ridgeline Capital Partners, LLC</div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 16 }}>
             <span style={{ borderRadius: 999, border: "1px solid #fcd34d", background: "#fffbeb", padding: "5px 14px", fontSize: 13, fontWeight: 600, color: "#b45309" }}>6 risk observations</span>
@@ -1175,14 +1439,17 @@ function CallPrepTab() {
                             />
                             <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 8 }}>
                               <button
-                                onClick={() => toggle(key)}
+                                onClick={() => saveNote(key)}
+                                disabled={saving[key]}
                                 style={{
                                   padding: "5px 14px", fontSize: 12, fontWeight: 600,
                                   borderRadius: 7, border: "none",
-                                  background: "#7c3aed", color: "#fff", cursor: "pointer",
+                                  background: "#7c3aed", color: "#fff",
+                                  cursor: saving[key] ? "default" : "pointer",
+                                  opacity: saving[key] ? 0.65 : 1,
                                 }}
                               >
-                                Save & Close
+                                {saving[key] ? "Saving…" : "Save & Close"}
                               </button>
                             </div>
                           </div>
@@ -1205,10 +1472,11 @@ function CallPrepTab() {
 // ── TAB: Analysis (12-topic) ───────────────────────────────────────────────────
 
 function AnalysisTopicsTab({ reviewData, onNavigate }: { reviewData: any; onNavigate: (id: string) => void }) {
-  const { topicData } = React.useContext(ReviewCtx);
+  const { topicData, topicRatingOverrides } = React.useContext(ReviewCtx);
   const ratingMap: Record<number, { rating: string; name: string }> = {};
   for (const [num, td] of Object.entries(topicData)) {
-    ratingMap[parseInt(num)] = { rating: (td as any).rating, name: (td as any).name };
+    const n = parseInt(num);
+    ratingMap[n] = { rating: topicRatingOverrides[n] || (td as any).rating, name: (td as any).name };
   }
   const oddTopics = reviewData?.odd_summary?.topics;
   if (oddTopics) {
@@ -1223,16 +1491,6 @@ function AnalysisTopicsTab({ reviewData, onNavigate }: { reviewData: any; onNavi
   }
 
   const topicNums = Object.keys(topicData).map(Number).sort((a, b) => a - b);
-  const acts = topicNums.length <= 8
-    ? [
-        { act: "ACT I: THE MANAGER", topics: topicNums.slice(0, 4) },
-        { act: "ACT II: THE FUND", topics: topicNums.slice(4, 8) },
-      ]
-    : [
-        { act: "ACT I: THE MANAGER", topics: topicNums.slice(0, 4) },
-        { act: "ACT II: THE FUND", topics: topicNums.slice(4, 8) },
-        { act: "ACT III: THE NUMBERS", topics: topicNums.slice(8, 12) },
-      ];
 
   return (
     <Card style={{ padding: 0, overflow: "hidden" }}>
@@ -1240,43 +1498,36 @@ function AnalysisTopicsTab({ reviewData, onNavigate }: { reviewData: any; onNavi
         <span style={{ fontSize: 13, fontWeight: 600, color: "var(--r2-text)" }}>{topicNums.length}-Topic ODD Assessment</span>
         <span style={{ fontSize: 11, color: "var(--r2-faint)" }}>Peer Comparison →</span>
       </div>
-      {acts.map((group) => (
-        <div key={group.act}>
-          <div style={{ padding: "8px 18px", background: "var(--r2-surface2)", borderBottom: "1px solid var(--r2-border)" }}>
-            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.16em", color: "var(--r2-faint)", textTransform: "uppercase" }}>{group.act}</span>
-          </div>
-          {group.topics.map((num) => {
-            const td = ratingMap[num];
-            if (!td) return null;
-            const r = td.rating;
-            const dotColor = r === "GREEN" ? D.green : r === "RED" ? D.red : D.amber;
-            const textColor = r === "GREEN" ? D.green : r === "RED" ? D.red : D.amber;
-            return (
-              <button key={num}
-                onClick={() => onNavigate(`analysis-topic-${num}`)}
-                style={{
-                  width: "100%", padding: "13px 18px", display: "flex", alignItems: "center",
-                  justifyContent: "space-between", borderBottom: "1px solid var(--r2-border)",
-                  cursor: "pointer", transition: "background 0.1s", background: "none",
-                  border: "none", borderBottomWidth: 1, borderBottomStyle: "solid", borderBottomColor: "var(--r2-border)",
-                  textAlign: "left",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = "var(--r2-surface2)")}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <span style={{ width: 10, height: 10, borderRadius: "50%", background: dotColor, flexShrink: 0, display: "inline-block" }} />
-                  <span style={{ fontSize: 13, color: "var(--r2-text)" }}>{num}. {td.name}</span>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <span style={{ fontSize: 11, fontWeight: 600, color: textColor, letterSpacing: "0.06em" }}>{r}</span>
-                  <svg width="12" height="12" viewBox="0 0 10 10" fill="none" stroke="var(--r2-faint)" strokeWidth="1.5" strokeLinecap="round"><path d="M4 2l3 3-3 3" /></svg>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      ))}
+      {topicNums.map((num) => {
+        const td = ratingMap[num];
+        if (!td) return null;
+        const r = td.rating;
+        const dotColor = r === "GREEN" ? D.green : r === "RED" ? D.red : D.amber;
+        const textColor = r === "GREEN" ? D.green : r === "RED" ? D.red : D.amber;
+        return (
+          <button key={num}
+            onClick={() => onNavigate(`analysis-topic-${num}`)}
+            style={{
+              width: "100%", padding: "18px 18px", display: "flex", alignItems: "center",
+              justifyContent: "space-between", borderBottom: "1px solid var(--r2-border)",
+              cursor: "pointer", transition: "background 0.1s", background: "none",
+              border: "none", borderBottomWidth: 1, borderBottomStyle: "solid", borderBottomColor: "var(--r2-border)",
+              textAlign: "left",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = "var(--r2-surface2)")}
+            onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <span style={{ width: 10, height: 10, borderRadius: "50%", background: dotColor, flexShrink: 0, display: "inline-block" }} />
+              <span style={{ fontSize: 13, color: "var(--r2-text)" }}>{num}. {td.name}</span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <span style={{ fontSize: 11, fontWeight: 600, color: textColor, letterSpacing: "0.06em" }}>{r}</span>
+              <svg width="12" height="12" viewBox="0 0 10 10" fill="none" stroke="var(--r2-faint)" strokeWidth="1.5" strokeLinecap="round"><path d="M4 2l3 3-3 3" /></svg>
+            </div>
+          </button>
+        );
+      })}
     </Card>
   );
 }
@@ -1285,12 +1536,12 @@ function AnalysisTopicsTab({ reviewData, onNavigate }: { reviewData: any; onNavi
 
 
 function OvHealthRing({ size = 118, showCenterLegend = true }: { size?: number; showCenterLegend?: boolean }) {
-  const { topicData } = React.useContext(ReviewCtx);
+  const { topicData, topicRatingOverrides } = React.useContext(ReviewCtx);
   const [animated, setAnimated] = React.useState(false);
   React.useEffect(() => { const t = setTimeout(() => setAnimated(true), 120); return () => clearTimeout(t); }, []);
   let green = 0, yellow = 0, red = 0;
-  for (const td of Object.values(topicData)) {
-    const r = ((td as any).rating || "").toUpperCase();
+  for (const [num, td] of Object.entries(topicData)) {
+    const r = (topicRatingOverrides[parseInt(num)] || (td as any).rating || "").toUpperCase();
     if (r === "GREEN") green++; else if (r === "YELLOW") yellow++; else if (r === "RED") red++;
   }
   const total = Object.keys(topicData).length;
@@ -1339,8 +1590,9 @@ function OvHealthRing({ size = 118, showCenterLegend = true }: { size?: number; 
 }
 
 function Overview2Tab({ reviewData, onNavigate }: { reviewData: any; onNavigate: (id: string) => void }) {
-  const { topicData, mock } = React.useContext(ReviewCtx);
-  const riskObs = mock.risk_observations as any[];
+  const { topicData, mock, slug, riskObsOverrides, onRiskObsSaved } = React.useContext(ReviewCtx);
+  const staticObs = mock.risk_observations as RiskObs[];
+  const riskObs = staticObs.map((o) => riskObsOverrides[o.id] ? { ...o, ...riskObsOverrides[o.id] } : o);
   const topicNums = Object.keys(topicData).map(Number).sort((a, b) => a - b);
   const ovActs = topicNums.length <= 8
     ? [
@@ -1355,56 +1607,6 @@ function Overview2Tab({ reviewData, onNavigate }: { reviewData: any; onNavigate:
 
   return (
     <div style={{ display: "grid", gap: 14 }}>
-
-      {/* ── Workflow Progress card ── */}
-      <Card style={{ padding: "14px 24px" }}>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          {STEPPER_STEPS.map((step, i) => {
-            const green = "#059669";
-            const violet = "#7c3aed";
-            const dotColor = step.completed ? green : violet;
-            const labelColor = step.completed ? green : violet;
-            const isLast = i === STEPPER_STEPS.length - 1;
-            return (
-              <React.Fragment key={step.label}>
-                <button
-                  onClick={() => onNavigate(step.tabId)}
-                  style={{
-                    flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
-                    background: "none", border: "none", cursor: "pointer", padding: "8px 0",
-                    borderRadius: 10, transition: "background 0.15s",
-                  }}
-                  onMouseEnter={e => (e.currentTarget.style.background = "var(--r2-surface2)")}
-                  onMouseLeave={e => (e.currentTarget.style.background = "none")}
-                >
-                  <div style={{
-                    width: 28, height: 28, borderRadius: "50%", flexShrink: 0,
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    border: `2px solid ${dotColor}`,
-                    background: step.completed ? "transparent" : "transparent",
-                    color: dotColor,
-                  }}>
-                    {step.completed ? (
-                      <svg width="12" height="12" viewBox="0 0 13 13" fill="none" stroke={green} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M2.5 6.5l3 3 5-5" />
-                      </svg>
-                    ) : (
-                      <span style={{ fontSize: 11, fontWeight: 700 }}>{i + 1}</span>
-                    )}
-                  </div>
-                  <div style={{ textAlign: "left" }}>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: labelColor, lineHeight: 1.2 }}>{step.label}</div>
-                    <div style={{ fontSize: 10, color: labelColor, opacity: 0.7 }}>{step.sub}</div>
-                  </div>
-                </button>
-                {!isLast && (
-                  <div style={{ width: 32, height: 1, background: step.completed ? `${green}55` : "var(--r2-border)", flexShrink: 0 }} />
-                )}
-              </React.Fragment>
-            );
-          })}
-        </div>
-      </Card>
 
       {/* ── Hero card ── */}
       <Card style={{ padding: 0, overflow: "hidden" }}>
@@ -1519,28 +1721,40 @@ function Overview2Tab({ reviewData, onNavigate }: { reviewData: any; onNavigate:
       ))}
 
       {/* ── Risk Observations ── */}
-      {riskObs.length > 0 && (
-        <Card style={{ padding: 0, overflow: "hidden" }}>
-          <div style={{ padding: "12px 20px", borderBottom: "1px solid var(--r2-border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--r2-faint)" }}>Risk Observations</span>
-            <span style={{ fontSize: 10, color: "var(--r2-faint)" }}>
-              <span style={{ color: "#EF4444", fontWeight: 700 }}>{riskObs.filter(r => r.severity === "HIGH").length}</span> high &nbsp;·&nbsp;
-              <span style={{ color: "#F59E0B", fontWeight: 700 }}>{riskObs.filter(r => r.severity === "MEDIUM").length}</span> medium
-            </span>
-          </div>
-          {riskObs.map((ro: any) => (
-            <div key={ro.id} style={{ padding: "14px 20px", borderBottom: "1px solid var(--r2-border)" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 5 }}>
-                <span style={{ fontSize: 9, fontFamily: "monospace", color: "var(--r2-faint)" }}>{ro.id}</span>
-                <span style={{ fontSize: 9, fontWeight: 700, padding: "2px 8px", borderRadius: 999, background: ro.severity === "HIGH" ? "rgba(239,68,68,0.10)" : "rgba(245,158,11,0.10)", color: ro.severity === "HIGH" ? "#EF4444" : "#F59E0B", letterSpacing: "0.06em", textTransform: "uppercase" }}>{ro.severity}</span>
-                <span style={{ fontSize: 9, color: "var(--r2-faint)", textTransform: "uppercase", letterSpacing: "0.06em" }}>{ro.topic}</span>
-              </div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--r2-text)", marginBottom: 3 }}>{ro.title}</div>
-              <div style={{ fontSize: 11, color: "var(--r2-faint)", lineHeight: 1.6 }}>{ro.detail}</div>
+      {riskObs.length > 0 && (() => {
+        const grouped: Record<string, any[]> = {};
+        riskObs.forEach((ro: any) => {
+          const key = ro.topic || "Other";
+          if (!grouped[key]) grouped[key] = [];
+          grouped[key].push(ro);
+        });
+        return (
+          <div style={{ display: "grid", gap: 0 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+              <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--r2-faint)" }}>Risk Observations</span>
+              <span style={{ fontSize: 10, color: "var(--r2-faint)" }}>
+                <span style={{ color: "#EF4444", fontWeight: 700 }}>{riskObs.filter((r: any) => r.severity === "HIGH").length}</span> high &nbsp;·&nbsp;
+                <span style={{ color: "#F59E0B", fontWeight: 700 }}>{riskObs.filter((r: any) => r.severity === "MEDIUM").length}</span> medium
+              </span>
             </div>
-          ))}
-        </Card>
-      )}
+            <div style={{ display: "grid", gap: 10 }}>
+              {Object.entries(grouped).map(([topic, items]) => (
+                <Card key={topic} style={{ padding: 0, overflow: "hidden" }}>
+                  <div style={{ padding: "8px 16px", background: "var(--r2-surface2)", borderBottom: "1px solid var(--r2-border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--r2-faint)" }}>{topic}</span>
+                    <span style={{ fontSize: 10, color: "var(--r2-faint)" }}>{items.length} observation{items.length !== 1 ? "s" : ""}</span>
+                  </div>
+                  {items.map((ro: any, i: number) => (
+                    <div key={ro.id} style={{ borderTop: i > 0 ? "1px solid var(--r2-border)" : undefined }}>
+                      <RiskObsRow obs={ro} slug={slug} override={riskObsOverrides[ro.id]} onSaved={onRiskObsSaved} />
+                    </div>
+                  ))}
+                </Card>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }
@@ -1558,6 +1772,12 @@ export default function Review2Page() {
   const [reviewData, setReviewData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [theme, setTheme] = useState<"dark" | "light">("light");
+  const [topicRatingOverrides, setTopicRatingOverrides] = useState<Record<number, string>>({});
+  const [riskObsOverrides, setRiskObsOverrides] = useState<Record<string, RiskObsEdit>>({});
+
+  const handleRiskObsSaved = useCallback((id: string, edit: RiskObsEdit) => {
+    setRiskObsOverrides((prev) => ({ ...prev, [id]: edit }));
+  }, []);
 
   // Apply CSS custom properties
   useEffect(() => {
@@ -1609,6 +1829,22 @@ export default function Review2Page() {
     alpineDemoBrand.api.getReview(slug)
       .then((d: any) => { setReviewData(d?.review || d); setLoading(false); })
       .catch(() => { setReviewData(null); setLoading(false); });
+    fetch(`/api/topic-rating?slug=${encodeURIComponent(slug)}`)
+      .then((r) => r.json())
+      .then((rows: Array<{ topic_number: number; rating: string }>) => {
+        const map: Record<number, string> = {};
+        rows.forEach((row) => { map[row.topic_number] = row.rating; });
+        setTopicRatingOverrides(map);
+      })
+      .catch(() => {});
+    fetch(`/api/risk-obs?slug=${encodeURIComponent(slug)}`)
+      .then((r) => r.json())
+      .then((rows: Array<{ id: string; severity: string; title: string; detail: string; remediation: string }>) => {
+        const map: Record<string, RiskObsEdit> = {};
+        rows.forEach((row) => { map[row.id] = { severity: row.severity, title: row.title, detail: row.detail, remediation: row.remediation }; });
+        setRiskObsOverrides(map);
+      })
+      .catch(() => {});
   }, [slug]);
 
   const fundName = reviewData?.name || (slug ? slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "Fund Review");
@@ -1618,7 +1854,11 @@ export default function Review2Page() {
     topicData: isTrellis ? TRELLIS_TOPIC_DATA : RIDGELINE_TOPIC_DATA,
     mock: (isTrellis ? TRELLIS_MOCK : RIDGELINE_MOCK) as any,
     vaultData: isTrellis ? TRELLIS_VAULT_DATA : RIDGELINE_VAULT_DATA,
-    followUpMock: isTrellis ? TRELLIS_FOLLOW_UP_MOCK : RIDGELINE_FOLLOW_UP_MOCK,
+    followUpMock: (isTrellis ? TRELLIS_FOLLOW_UP_MOCK : RIDGELINE_FOLLOW_UP_MOCK) as typeof RIDGELINE_FOLLOW_UP_MOCK,
+    slug,
+    topicRatingOverrides,
+    riskObsOverrides,
+    onRiskObsSaved: handleRiskObsSaved,
   };
 
   function renderTabContent() {
@@ -1631,10 +1871,10 @@ export default function Review2Page() {
     switch (activeTab) {
       // ── Workflow tabs (use original components) ──
       case "collection":
-        return <DocumentCollectionView mock={reviewCtxValue.followUpMock} onNavigate={setActiveTab} brandName="Alpine ODD" />;
+        return <DocumentCollectionView mock={reviewCtxValue.followUpMock} onNavigate={setActiveTab} brandName="Alpine ODD" slug={slug} />;
       case "reg-verification":
         return reviewData?.id
-          ? <VerificationTab reviewId={reviewData.id} api={alpineDemoBrand.api} />
+          ? <VerificationTab reviewId={reviewData.id} api={alpineDemoBrand.api} slug={slug} />
           : <PlaceholderTab label="Verification" detail="Registry and verification data loads with a linked review." />;
       case "analysis":
         return <AnalysisTopicsTab reviewData={reviewData} onNavigate={setActiveTab} />;
@@ -1653,6 +1893,11 @@ export default function Review2Page() {
               topicDataOverride={isTrellis ? TRELLIS_TOPIC_DATA : undefined}
               mockOverride={isTrellis ? TRELLIS_MOCK as any : undefined}
               vaultDataOverride={isTrellis ? TRELLIS_VAULT_DATA : undefined}
+              slug={slug}
+              initialRating={topicRatingOverrides[topicNum]}
+              onRatingChange={(num, rating) => setTopicRatingOverrides((prev) => ({ ...prev, [num]: rating }))}
+              initialRiskOverrides={riskObsOverrides}
+              onRiskObsSaved={handleRiskObsSaved}
             />
           );
         }
@@ -1665,7 +1910,7 @@ export default function Review2Page() {
             <style>{`
               .report-hide-callprep .flex.items-center.gap-1.border-b button:nth-child(4) { display: none !important; }
             `}</style>
-            <ReportWithMemo alpineReviewId={null} brReviewId={reviewData?.id} finalReportPending={!isTrellis} />
+            <ReportWithMemo alpineReviewId={null} brReviewId={reviewData?.id} finalReportPending={!isTrellis} isTrellis={isTrellis} topicRatingOverrides={topicRatingOverrides} onRatingChange={(num, rating) => setTopicRatingOverrides((prev) => ({ ...prev, [num]: rating }))} slug={slug} />
           </div>
         );
       // ── Detail tabs (Review2Page custom components) ──
@@ -1681,11 +1926,11 @@ export default function Review2Page() {
       );
       case "odd-summary": return <OddSummaryTab reviewData={reviewData} />;
       case "risk-obs": return <RiskObsTab />;
-      case "fund-profile": return <FundProfileTab reviewData={reviewData} />;
+      case "fund-profile": return <FundProfileTab reviewData={reviewData} isTrellis={isTrellis} />;
       case "peer-compare": return <PeerCompareTab reviewData={reviewData} />;
       case "doc-vault": return <DocVaultTab />;
       case "ic-memo": return <ICMemoTab reviewData={reviewData} />;
-      case "verification": return <VerificationTab2 reviewData={reviewData} />;
+      case "verification": return <VerificationTab2 reviewData={reviewData} isTrellis={isTrellis} />;
       case "monitoring": return <MonitoringTab />;
       case "full-report": return <FullReportTab reviewData={reviewData} />;
     }
@@ -1733,7 +1978,21 @@ export default function Review2Page() {
               >
                 ← {fromContext === "active-reviews" ? "Active Reviews" : fromContext === "fund-universe" ? "Fund Universe" : "Portfolio"}
               </button>
-              <button style={{ padding: "10px 18px", fontSize: 13, borderRadius: 16, border: "1px solid var(--r2-border)", background: isDark ? "rgba(239,244,251,0.08)" : "rgba(15,23,42,0.06)", color: "var(--r2-text)", cursor: "pointer", fontWeight: 600 }}>
+              <button
+                onClick={() => {
+                  const d = new Date();
+                  const stamp = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, "0")}${String(d.getDate()).padStart(2, "0")}`;
+                  const file = isTrellis ? "/demo-docs/sample_vc_fund_iv_alt.pdf" : "/demo-docs/ridgeline_ddq_2026.pdf";
+                  const baseName = (fundName || "ODD_Report").replace(/[^A-Za-z0-9]+/g, "_").replace(/^_|_$/g, "");
+                  const a = document.createElement("a");
+                  a.href = file;
+                  a.download = `${stamp}-${baseName}_ODD_Report.pdf`;
+                  document.body.appendChild(a);
+                  a.click();
+                  document.body.removeChild(a);
+                }}
+                style={{ padding: "10px 18px", fontSize: 13, borderRadius: 16, border: "1px solid var(--r2-border)", background: isDark ? "rgba(239,244,251,0.08)" : "rgba(15,23,42,0.06)", color: "var(--r2-text)", cursor: "pointer", fontWeight: 600 }}
+              >
                 ⬇ Export Report
               </button>
             </div>
@@ -1741,12 +2000,8 @@ export default function Review2Page() {
 
           {/* ── Workspace ── */}
           <div style={{ display: "grid", gridTemplateColumns: "220px 1fr", gap: 16, marginTop: 14, alignItems: "start" }}>
-            <ReviewSidebar active={activeTab} onNavigate={setActiveTab} />
+            <ReviewSidebar active={activeTab} onNavigate={setActiveTab} docCount={(isTrellis ? TRELLIS_VAULT_DATA : RIDGELINE_VAULT_DATA).documents.length} />
             <div style={{ display: "grid", gap: 16 }}>
-              {/* Stepper: hidden on Overview */}
-              {activeTab !== "overview" && (
-                <WorkflowStepper activeTab={activeTab} onNavigate={setActiveTab} isDark={isDark} />
-              )}
               <main style={{ display: "grid", gap: 16, paddingBottom: 48 }}>
                 {renderTabContent()}
               </main>

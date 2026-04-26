@@ -275,7 +275,7 @@ export default function FullReportTab({
           {[
             { id: "full" as const, label: "Full Report" },
             { id: "brief" as const, label: "Executive Brief" },
-            { id: "call" as const, label: "Call Prep" },
+            { id: "call" as const, label: "Analyst Call" },
             { id: "deck" as const, label: "IC Deck" },
           ].map((tab) => (
             <button
@@ -461,7 +461,7 @@ export default function FullReportTab({
         </div>
       ) : activeTab === "call" ? (
         <div className="bg-br-card border border-br rounded-xl p-6 max-w-[900px]">
-          <h2 className="text-[15px] font-heading font-semibold text-br-text-primary mb-3">Call Preparation Notes</h2>
+          <h2 className="text-[15px] font-heading font-semibold text-br-text-primary mb-3">Analyst Callaration Notes</h2>
           <p className="text-[11px] text-br-text-muted mb-4">Discussion points for the Ridgeline Capital due diligence call.</p>
           <div className="space-y-3">
             {[
