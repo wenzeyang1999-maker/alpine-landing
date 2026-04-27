@@ -167,6 +167,7 @@ export function TopicPage({ topicNumber, onNavigate, alpineReviewId, topicDataOv
   const [reportView, setReportView] = useState<"view" | "edit">("view");
   const [editContent, setEditContent] = useState(topic?.findings || "");
   const [reportSavedFlash, setReportSavedFlash] = useState(false);
+  const [reportSaveError, setReportSaveError] = useState<string | null>(null);
   const [showAllDocs, setShowAllDocs] = useState(false);
   const [riskOverrides, setRiskOverrides] = useState<Record<string, RiskObsOverride>>(initialRiskOverrides ?? {});
   const [editingRisk, setEditingRisk] = useState<string | null>(null);
@@ -187,17 +188,34 @@ export function TopicPage({ topicNumber, onNavigate, alpineReviewId, topicDataOv
 
   const chapterDraftSlug = slug ? `${slug}_chapter_${topicNumber}` : null;
 
-  function saveReportEdit() {
+  async function saveReportEdit() {
     setReportSection(editContent);
     setReportView("view");
-    setReportSavedFlash(true);
-    setTimeout(() => setReportSavedFlash(false), 2000);
+    setReportSaveError(null);
     if (chapterDraftSlug) {
-      fetch("/api/report-draft", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ review_slug: chapterDraftSlug, content: editContent }),
-      }).catch(() => {});
+      try {
+        const res = await fetch("/api/report-draft", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ review_slug: chapterDraftSlug, content: editContent }),
+        });
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          console.error("[save-chapter] failed:", res.status, data);
+          setReportSaveError(`Save failed (${res.status}) — changes lost on refresh`);
+          setTimeout(() => setReportSaveError(null), 6000);
+        } else {
+          setReportSavedFlash(true);
+          setTimeout(() => setReportSavedFlash(false), 2000);
+        }
+      } catch (err) {
+        console.error("[save-chapter] network error:", err);
+        setReportSaveError("Save failed — network error");
+        setTimeout(() => setReportSaveError(null), 6000);
+      }
+    } else {
+      setReportSavedFlash(true);
+      setTimeout(() => setReportSavedFlash(false), 2000);
     }
   }
 
@@ -205,14 +223,17 @@ export function TopicPage({ topicNumber, onNavigate, alpineReviewId, topicDataOv
   useEffect(() => {
     if (!chapterDraftSlug) return;
     fetch(`/api/report-draft?slug=${encodeURIComponent(chapterDraftSlug)}`)
-      .then(r => r.json())
-      .then(({ content }) => {
-        if (content) {
-          setReportSection(content);
-          setEditContent(content);
+      .then(r => {
+        if (!r.ok) { console.error("[load-chapter] HTTP", r.status, chapterDraftSlug); return null; }
+        return r.json();
+      })
+      .then(data => {
+        if (data?.content) {
+          setReportSection(data.content);
+          setEditContent(data.content);
         }
       })
-      .catch(() => {});
+      .catch(err => console.error("[load-chapter] network error:", err));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chapterDraftSlug]);
 
@@ -555,7 +576,7 @@ export function TopicPage({ topicNumber, onNavigate, alpineReviewId, topicDataOv
                     onClick={saveReportEdit}
                     className="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-alpine-violet text-white hover:bg-alpine-violet/90 transition-colors"
                   >
-                    {reportSavedFlash ? "Saved ✓" : "Save"}
+                    {reportSavedFlash ? "Saved ✓" : reportSaveError ? "Error" : "Save"}
                   </button>
                 </>
               ) : (
@@ -577,6 +598,11 @@ export function TopicPage({ topicNumber, onNavigate, alpineReviewId, topicDataOv
               )}
             </div>
           </div>
+          {reportSaveError && (
+            <div className="px-4 py-2 bg-red-500/10 border-b border-red-500/20 text-[11px] text-red-400">
+              {reportSaveError}
+            </div>
+          )}
           <div className="max-h-[500px] overflow-y-auto">
             {reportView === "view" ? (
               <ReportViewer
