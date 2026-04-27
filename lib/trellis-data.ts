@@ -20,12 +20,7 @@ export const TRELLIS_TOPIC_DATA: Record<number, TopicInfo> = {
 
 Trellis Capital Management, LLC ("Trellis", the "Manager") is a pre-seed stage venture capital firm headquartered in San Francisco. Trellis was founded in 2018 by Arjun Mehta (Co-Founder, Managing Partner) and Priya Sharma (Co-Founder, Managing Partner). Prior to founding the firm, Arjun was a principal at Founder Collective, a Boston area seed-stage venture firm, while Priya was a partner at Foundation Capital, a venture firm based in Silicon Valley.
 
-| Fund | Vintage | Capital Raised | Status (12/31/2025) |
-|---|---|---|---|
-| Fund I | 2018 | $47 million | Fully deployed |
-| Fund II | 2021 | $78 million | Fully deployed |
-| Fund III | 2024 | $150 million | 64% deployed / reserved |
-| Fund IV | 2026 | ~$125M (initial close) | Pre-deployment |
+Trellis has deployed capital across four funds: Fund I (2018, $47 million, fully deployed), Fund II (2021, $78 million, fully deployed), Fund III (2024, $150 million, 64% deployed / reserved), and Fund IV (2026, ~$125 million initial close, pre-deployment).
 
 ### Assets under Management
 
@@ -37,27 +32,21 @@ GP commitments to Funds I-III were 1% of total commitments (~$2.8 million), cont
 
 ### Ownership & Succession
 
-Arjun Mehta and Priya Sharma each own 50% of the firm (confirmed via Form ADV Schedules A & B). No formal succession plan, though the Managing Partners could assume each other's responsibilities in a key person event. The key person provision (per Fund IV's LPA) would only be automatically triggered if both Managing Partners fail to provide sufficient time and attention. Key person life insurance is not maintained.
+Arjun Mehta and Priya Sharma each own 50% of the firm (confirmed via Form ADV Schedules A & B). No formal succession plan exists, though the Managing Partners could assume each other's responsibilities in a key person event. The key person provision (per Fund IV's LPA) would only be automatically triggered if both Managing Partners fail to provide sufficient time and attention. Key person life insurance is not maintained.
 
 ### Human Resources
 
-With a total headcount of seven full-time employees, consisting of six investment professionals and Sarah Collins (Head of Operations), Trellis is a small organization with resultant limitations to segregation of duties. Sarah's responsibilities focus on running business operations and acting as an executive assistant for the Managing Partners, rather than serving as a back office resource for the funds.
-
-| Name | Title | Function |
-|---|---|---|
-| Arjun Mehta | Co-Founder, Managing Partner | Investment |
-| Priya Sharma | Co-Founder, Managing Partner | Investment |
-| Kevin Chen | Principal | Investment (joined Q2 2025) |
-| Rachel Winters | Associate | Investment |
-| Ryan Mitchell | Analyst | Investment |
-| Vikram Nair | Chief Product Officer | Investment (departure planned Summer 2026) |
-| Sarah Collins | Head of Operations | Operations / EA (joined July 2025) |
+With a total headcount of seven full-time employees — six investment professionals and Sarah Collins (Head of Operations) — Trellis is a small organization with resultant limitations to segregation of duties. Sarah's responsibilities focus on running business operations and acting as an executive assistant for the Managing Partners, rather than serving as a back office resource for the funds. The investment team consists of Arjun Mehta and Priya Sharma (Co-Founders, Managing Partners), Kevin Chen (Principal, joined Q2 2025), Rachel Winters (Associate), Ryan Mitchell (Analyst), and Vikram Nair (Chief Product Officer, departure planned Summer 2026).
 
 The firm has recently retained Raj Patel as fractional CFO (former CFO of Atomic, a Miami-based venture studio). Raj will focus on overseeing Apex, though he will not dedicate substantial time until Summer 2026. A full-time Head of Finance is planned for 2027. James Crawford, an independent attorney and former partner at Hartwell & Sterling, is retained on an ad hoc basis for deal-related legal matters.
+
+### Staff Turnover
 
 Regarding staff turnover: Omar Hassan (Associate) departed in August 2025 to pursue personal business endeavors, while Emily Brooks (Head of Operations) departed in December 2024 to move into an investment-focused role. Both departures were amicable. Sarah Collins was hired in July 2025 to replace Emily. Sanjay Gupta, a part-time venture partner, departed near end of 2024 to start his own venture firm.
 
 Kevin Chen joined as a principal in Q2 2025. Vikram Nair, who began as a part-time venture partner in early 2024, was brought on full-time as Chief Product Officer but is planning to leave this summer to start his own company. A talent recruiter has been hired to identify replacement candidates.
+
+### Background Checks
 
 Employee background checks have been completed by the Managing Partners on an internal basis. The firm has not engaged a third-party background check provider, though a search for one is currently underway based on investor feedback. Staff are compensated with a base salary and discretionary bonus, and all investment staff participate in carried interest vesting over four years.
 
