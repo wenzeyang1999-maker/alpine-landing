@@ -82,7 +82,7 @@ function topicDot(r: string): string {
 }
 
 function canOpenFundReview(slug?: string): boolean {
-  return slug === "ridgeline-capital" || slug === "trellis-capital-iv";
+  return slug === "trellis-capital-iv";
 }
 
 // ── Rating Ring SVG ─────────────────────────────────────────────────────────
@@ -782,6 +782,7 @@ const IN_PROGRESS_REVIEWS = [
     dotColor: "#f59e0b",
     subtext: "4 conditions pending for ACCEPT upgrade",
     subtextColor: "#18b97e",
+    greyed: true,
   },
   {
     slug: "trellis-capital-iv",
@@ -890,7 +891,7 @@ function ActiveReviewsList({ reviews, onNavigate, V }: { reviews: any[]; onNavig
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {IN_PROGRESS_REVIEWS.map((rev) => {
             const fromApi = reviews.find((r: any) => r.slug === rev.slug);
-            const isClickable = canOpenFundReview(rev.slug);
+            const isClickable = !rev.greyed && canOpenFundReview(rev.slug);
             return (
               <div
                 key={rev.slug}
@@ -905,6 +906,7 @@ function ActiveReviewsList({ reviews, onNavigate, V }: { reviews: any[]; onNavig
                   gap: 14,
                   cursor: isClickable ? "pointer" : "default",
                   transition: "background 0.12s, border-color 0.12s",
+                  opacity: rev.greyed ? 0.4 : 1,
                 }}
                 onMouseEnter={(e) => {
                   if (!isClickable) return;

@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { isBlockedSlug, blockedResponse } from "@/lib/slug-guard";
 
 export async function GET(req: NextRequest) {
   const slug = req.nextUrl.searchParams.get("slug");
   if (!slug) return NextResponse.json({ error: "missing slug" }, { status: 400 });
+  if (isBlockedSlug(slug)) return blockedResponse();
 
   const { data, error } = await supabase
     .from("remediation_draft_edits")

@@ -629,12 +629,12 @@ export const TRELLIS_MOCK = {
       { name: "Y Combinator Continuity", strategy: "Early-stage VC", aum: "$500M+", score: 79, odd_rating: "ACCEPT" },
     ],
     benchmark_comparison: [
-      { metric: "Governance & Organization", assessment: "Below peer average", ridgeline: 55, peer_avg: 70, delta: -15 },
-      { metric: "Regulatory Compliance", assessment: "Below peer average", ridgeline: 30, peer_avg: 62, delta: -32 },
-      { metric: "Technology & Cybersecurity", assessment: "Below peer average", ridgeline: 20, peer_avg: 58, delta: -38 },
-      { metric: "Fund Structure & Terms", assessment: "At peer average", ridgeline: 80, peer_avg: 78, delta: 2 },
-      { metric: "Service Provider Quality", assessment: "Above peer average", ridgeline: 82, peer_avg: 72, delta: 10 },
-      { metric: "Operational Controls", assessment: "Below peer average", ridgeline: 55, peer_avg: 66, delta: -11 },
+      { metric: "Governance & Organization", assessment: "Below peer average", fund: 55, peer_avg: 70, delta: -15 },
+      { metric: "Regulatory Compliance", assessment: "Below peer average", fund: 30, peer_avg: 62, delta: -32 },
+      { metric: "Technology & Cybersecurity", assessment: "Below peer average", fund: 20, peer_avg: 58, delta: -38 },
+      { metric: "Fund Structure & Terms", assessment: "At peer average", fund: 80, peer_avg: 78, delta: 2 },
+      { metric: "Service Provider Quality", assessment: "Above peer average", fund: 82, peer_avg: 72, delta: 10 },
+      { metric: "Operational Controls", assessment: "Below peer average", fund: 55, peer_avg: 66, delta: -11 },
     ],
   },
 };

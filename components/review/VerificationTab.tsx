@@ -23,7 +23,7 @@ const REGISTRY_DATA: Record<string, Array<{ entity: string; type: string; jurisd
   ],
 };
 
-export function VerificationTab({ reviewId, api, slug }: { reviewId: string; api: DemoApi; slug?: string }) {
+export function VerificationTab({ reviewId, api, slug, onNavigate }: { reviewId: string; api: DemoApi; slug?: string; onNavigate?: (id: string) => void }) {
   const [points, setPoints] = useState<VerificationPoint[]>([]);
   const [summary, setSummary] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -102,11 +102,22 @@ export function VerificationTab({ reviewId, api, slug }: { reviewId: string; api
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-[15px] font-heading font-semibold text-br-text-primary">Verification & Registry</h2>
-        <p className="text-[12px] text-br-text-muted mt-0.5">
-          Regulatory registration, company registry, and independent verification results
-        </p>
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h2 className="text-[15px] font-heading font-semibold text-br-text-primary">Verification & Registry</h2>
+          <p className="text-[12px] text-br-text-muted mt-0.5">
+            Regulatory registration, company registry, and independent verification results
+          </p>
+        </div>
+        {onNavigate && (
+          <button
+            onClick={() => onNavigate("admin-portal")}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-br text-[13px] font-medium text-br-text-muted hover:text-br-text-primary hover:border-alpine-violet/40 hover:bg-alpine-violet/5 transition-colors shrink-0"
+          >
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="1" y="3" width="14" height="10" rx="1.5"/><path d="M1 6h14"/><path d="M5 9.5h6"/></svg>
+            Admin Portal
+          </button>
+        )}
       </div>
 
       {summary && (

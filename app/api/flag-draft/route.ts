@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { isBlockedSlug, blockedResponse } from "@/lib/slug-guard";
 
 export async function GET(req: NextRequest) {
   const slug = req.nextUrl.searchParams.get("slug");
   if (!slug) return NextResponse.json({ error: "missing slug" }, { status: 400 });
+  if (isBlockedSlug(slug)) return blockedResponse();
 
   const { data, error } = await supabase
     .from("flag_draft_edits")
@@ -26,6 +28,7 @@ export async function PUT(req: NextRequest) {
   if (!review_slug || !Array.isArray(flags)) {
     return NextResponse.json({ error: "missing review_slug or flags" }, { status: 400 });
   }
+  if (isBlockedSlug(review_slug)) return blockedResponse();
 
   const { error } = await supabase.from("flag_draft_edits").upsert(
     { review_slug, flags, updated_at: new Date().toISOString() },

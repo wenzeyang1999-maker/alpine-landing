@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { isBlockedSlug, blockedResponse } from "@/lib/slug-guard";
 
 const VALID_TOKEN = process.env.NOTES_TOKEN;
 
@@ -19,6 +20,7 @@ export async function GET(req: NextRequest) {
   const slug = req.nextUrl.searchParams.get("slug");
   const userEmail = req.nextUrl.searchParams.get("user");
   if (!slug || !userEmail) return NextResponse.json({}, { status: 400 });
+  if (isBlockedSlug(slug)) return blockedResponse();
 
   const { data, error } = await supabase
     .from("followup_notes")
@@ -45,6 +47,7 @@ export async function POST(req: NextRequest) {
     if (!slug || !userEmail || !state) {
       return NextResponse.json({ error: "missing slug, user, or state" }, { status: 400 });
     }
+    if (isBlockedSlug(slug)) return blockedResponse();
 
     // Ensure user row exists (upsert)
     await supabase

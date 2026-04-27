@@ -83,6 +83,9 @@ const REVIEW_NAV = [
   // ── Intelligence ──
   { id: "monitoring", label: "Monitoring", section: "Intelligence",
     icon: <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="5.5"/><path d="M8 5v3l2 2"/></svg> },
+  // ── Admin ──
+  { id: "admin-portal", label: "Admin Portal", section: "Admin",
+    icon: <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="1" y="3" width="14" height="10" rx="1.5"/><path d="M1 6h14"/><path d="M5 9.5h6"/></svg> },
 ];
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
@@ -233,7 +236,7 @@ function WorkflowStepper({ activeTab, onNavigate, isDark }: { activeTab: string;
 
 function ReviewSidebar({ active, onNavigate, docCount }: { active: string; onNavigate: (id: string) => void; docCount?: number }) {
   const [detailOpen, setDetailOpen] = React.useState(false);
-  const visibleSections = ["ODD Review", "Intelligence"];
+  const visibleSections = ["ODD Review", "Intelligence", "Admin"];
   if (detailOpen) visibleSections.push("Detail");
   // Live override for badges that reflect data counts.
   const liveBadge: Record<string, string | undefined> = {
@@ -1291,7 +1294,7 @@ const CALL_PREP_SAMPLE_NOTES: Record<string, string> = {
 };
 
 function CallPrepTab() {
-  const { slug } = React.useContext(ReviewCtx);
+  const { slug, mock } = React.useContext(ReviewCtx);
   // key = "sectionIdx-questionIdx", value = note text
   const [notes, setNotes] = useState<Record<string, string>>(CALL_PREP_SAMPLE_NOTES);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
@@ -1340,7 +1343,7 @@ function CallPrepTab() {
             Alpine Due Diligence
           </div>
           <div style={{ fontSize: 20, fontWeight: 700, color: "var(--r2-text)", marginBottom: 4 }}>Management Analyst Call</div>
-          <div style={{ fontSize: 13, color: "var(--r2-muted)" }}>Ridgeline Capital Partners, LLC</div>
+          <div style={{ fontSize: 13, color: "var(--r2-muted)" }}>{mock.fund.name}</div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 16 }}>
             <span style={{ borderRadius: 999, border: "1px solid #fcd34d", background: "#fffbeb", padding: "5px 14px", fontSize: 13, fontWeight: 600, color: "#b45309" }}>6 risk observations</span>
             <span style={{ borderRadius: 999, border: "1px solid #fca5a5", background: "#fef2f2", padding: "5px 14px", fontSize: 13, fontWeight: 600, color: "#b91c1c" }}>3 HIGH severity blockers</span>
@@ -1759,6 +1762,160 @@ function Overview2Tab({ reviewData, onNavigate }: { reviewData: any; onNavigate:
   );
 }
 
+// ── Admin Portal Tab ──────────────────────────────────────────────────────────
+
+const EMAIL_TEMPLATES = [
+  { label: "Request Documents", subject: "Document Request — Trellis Capital IV, L.P.", body: "Dear Trellis Capital Management Team,\n\nAs part of our ongoing ODD review, we would like to request the following additional documents:\n\n- [Document 1]\n- [Document 2]\n\nPlease upload these to the secure data room at your earliest convenience.\n\nBest regards,\nAlpine ODD Team" },
+  { label: "Schedule Analyst Call", subject: "Analyst Call Scheduling — Trellis Capital IV", body: "Dear Trellis Capital Management Team,\n\nWe would like to schedule a management analyst call to discuss the findings from our review. Please advise on your availability during the week of [date].\n\nThe call is expected to take approximately 60–90 minutes.\n\nBest regards,\nAlpine ODD Team" },
+  { label: "Condition Follow-Up", subject: "ODD Condition Update Request — Trellis Capital IV", body: "Dear Trellis Capital Management Team,\n\nThis is a follow-up regarding the outstanding conditions identified in our review:\n\n1. [Condition 1] — due [date]\n2. [Condition 2] — due [date]\n\nPlease provide a status update at your earliest convenience.\n\nBest regards,\nAlpine ODD Team" },
+  { label: "IC Memo Notification", subject: "IC Review Scheduled — Trellis Capital IV, L.P.", body: "Dear Trellis Capital Management Team,\n\nWe are pleased to inform you that Trellis Capital IV, L.P. has been scheduled for Investment Committee review on [date].\n\nWe will be in touch following the IC decision.\n\nBest regards,\nAlpine ODD Team" },
+];
+
+function AdminPortalTab({ fundName, onBack }: { fundName?: string; onBack?: () => void }) {
+  const [to, setTo] = useState("");
+  const [subject, setSubject] = useState("");
+  const [body, setBody] = useState("");
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  function applyTemplate(tpl: typeof EMAIL_TEMPLATES[number]) {
+    setSubject(tpl.subject);
+    setBody(tpl.body);
+    setError(null);
+  }
+
+  async function handleSend() {
+    if (!to || !subject || !body) { setError("Please fill in all fields."); return; }
+    setSending(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/admin-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ to, subject, body }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Send failed");
+      setSent(true);
+      setTimeout(() => setSent(false), 3000);
+      setTo(""); setSubject(""); setBody("");
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setSending(false);
+    }
+  }
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div>
+          {onBack && (
+            <button
+              onClick={onBack}
+              style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12, color: "var(--r2-muted)", background: "none", border: "none", cursor: "pointer", padding: "0 0 8px 0", transition: "color 0.12s" }}
+              onMouseEnter={e => (e.currentTarget.style.color = "var(--r2-text)")}
+              onMouseLeave={e => (e.currentTarget.style.color = "var(--r2-muted)")}
+            >
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M10 4L6 8l4 4"/></svg>
+              Back
+            </button>
+          )}
+          <div style={{ fontSize: 18, fontWeight: 700, color: "var(--r2-text)", letterSpacing: "-0.02em" }}>Admin Portal</div>
+          <div style={{ fontSize: 12, color: "var(--r2-muted)", marginTop: 3 }}>Send emails and manage communications for {fundName || "this review"}</div>
+        </div>
+      </div>
+
+      {/* Two-column layout */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 280px", gap: 16, alignItems: "start" }}>
+
+        {/* Left — Compose */}
+        <div style={{ background: "var(--r2-card)", border: "1px solid var(--r2-border)", borderRadius: 14, overflow: "hidden" }}>
+          <div style={{ padding: "14px 20px", borderBottom: "1px solid var(--r2-border)", fontSize: 12, fontWeight: 600, color: "var(--r2-text)" }}>Compose Email</div>
+
+          <div style={{ padding: "16px 20px", display: "flex", flexDirection: "column", gap: 0 }}>
+            {/* To */}
+            <div style={{ display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid var(--r2-border)", padding: "10px 0" }}>
+              <span style={{ fontSize: 11, fontWeight: 600, color: "var(--r2-muted)", width: 56, flexShrink: 0 }}>To</span>
+              <input
+                type="email"
+                value={to}
+                onChange={e => setTo(e.target.value)}
+                placeholder="recipient@example.com"
+                style={{ flex: 1, border: "none", background: "transparent", fontSize: 13, color: "var(--r2-text)", outline: "none" }}
+              />
+            </div>
+            {/* Subject */}
+            <div style={{ display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid var(--r2-border)", padding: "10px 0" }}>
+              <span style={{ fontSize: 11, fontWeight: 600, color: "var(--r2-muted)", width: 56, flexShrink: 0 }}>Subject</span>
+              <input
+                type="text"
+                value={subject}
+                onChange={e => setSubject(e.target.value)}
+                placeholder="Email subject"
+                style={{ flex: 1, border: "none", background: "transparent", fontSize: 13, color: "var(--r2-text)", outline: "none" }}
+              />
+            </div>
+            {/* Body */}
+            <textarea
+              value={body}
+              onChange={e => setBody(e.target.value)}
+              placeholder="Write your message..."
+              rows={12}
+              style={{ width: "100%", border: "none", background: "transparent", fontSize: 13, color: "var(--r2-text)", outline: "none", resize: "vertical", lineHeight: 1.7, fontFamily: "inherit", boxSizing: "border-box", padding: "12px 0" }}
+            />
+          </div>
+
+          <div style={{ padding: "12px 20px", borderTop: "1px solid var(--r2-border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ fontSize: 11, color: error ? "#ef4444" : sent ? "#18b97e" : "transparent" }}>
+              {error || (sent ? "✓ Email sent successfully" : ".")}
+            </div>
+            <button
+              onClick={handleSend}
+              disabled={sending}
+              style={{
+                padding: "9px 22px", borderRadius: 9, border: "none",
+                background: sending ? "#6b7280" : "#8c7cff",
+                color: "#fff", fontSize: 13, fontWeight: 600, cursor: sending ? "not-allowed" : "pointer",
+                transition: "background 0.12s", display: "flex", alignItems: "center", gap: 7,
+              }}
+            >
+              {sending ? "Sending…" : sent ? "Sent ✓" : (
+                <>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                  Send Email
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Right — Templates */}
+        <div style={{ background: "var(--r2-card)", border: "1px solid var(--r2-border)", borderRadius: 14, overflow: "hidden" }}>
+          <div style={{ padding: "14px 16px", borderBottom: "1px solid var(--r2-border)", fontSize: 12, fontWeight: 600, color: "var(--r2-text)" }}>Quick Templates</div>
+          <div style={{ padding: "10px 8px", display: "flex", flexDirection: "column", gap: 4 }}>
+            {EMAIL_TEMPLATES.map((tpl) => (
+              <button
+                key={tpl.label}
+                onClick={() => applyTemplate(tpl)}
+                style={{ padding: "9px 12px", borderRadius: 8, border: "1px solid transparent", background: "transparent", fontSize: 12, fontWeight: 500, color: "var(--r2-muted)", cursor: "pointer", transition: "all 0.12s", textAlign: "left" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = "var(--r2-surface)"; (e.currentTarget as HTMLButtonElement).style.color = "var(--r2-text)"; (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--r2-border)"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = "transparent"; (e.currentTarget as HTMLButtonElement).style.color = "var(--r2-muted)"; (e.currentTarget as HTMLButtonElement).style.borderColor = "transparent"; }}
+              >
+                {tpl.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
 // ── Main Page ──────────────────────────────────────────────────────────────────
 
 export default function Review2Page() {
@@ -1874,7 +2031,7 @@ export default function Review2Page() {
         return <DocumentCollectionView mock={reviewCtxValue.followUpMock} onNavigate={setActiveTab} brandName="Alpine ODD" slug={slug} />;
       case "reg-verification":
         return reviewData?.id
-          ? <VerificationTab reviewId={reviewData.id} api={alpineDemoBrand.api} slug={slug} />
+          ? <VerificationTab reviewId={reviewData.id} api={alpineDemoBrand.api} slug={slug} onNavigate={setActiveTab} />
           : <PlaceholderTab label="Verification" detail="Registry and verification data loads with a linked review." />;
       case "analysis":
         return <AnalysisTopicsTab reviewData={reviewData} onNavigate={setActiveTab} />;
@@ -1933,6 +2090,7 @@ export default function Review2Page() {
       case "verification": return <VerificationTab2 reviewData={reviewData} isTrellis={isTrellis} />;
       case "monitoring": return <MonitoringTab />;
       case "full-report": return <FullReportTab reviewData={reviewData} />;
+      case "admin-portal": return <AdminPortalTab fundName={reviewData?.name || (isTrellis ? "Trellis Capital IV, L.P." : undefined)} onBack={() => setActiveTab("reg-verification")} />;
     }
   }
 
