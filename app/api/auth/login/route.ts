@@ -12,9 +12,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Email and password are required." }, { status: 400 });
     }
 
-    // Demo shortcut — kept for internal testing
+    // Demo shortcut — always gets demo access
     if (email.trim().toLowerCase() === DEMO_EMAIL && password === DEMO_PASSWORD) {
-      return NextResponse.json({ user: { email: DEMO_EMAIL, full_name: "Demo User", role: "analyst" } });
+      return NextResponse.json({
+        user: { email: DEMO_EMAIL, full_name: "Demo User", role: "analyst" },
+        demo_access: true,
+      });
     }
 
     // Verify credentials against Supabase Auth
@@ -31,10 +34,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid email or password." }, { status: 401 });
     }
 
-    // Enrich with users table data
+    // Enrich with users table data — include demo_access flag
     const { data: row } = await supabase
       .from("users")
-      .select("full_name, role")
+      .select("full_name, role, demo_access")
       .eq("email", email.trim().toLowerCase())
       .single();
 
@@ -44,6 +47,7 @@ export async function POST(req: NextRequest) {
         full_name: row?.full_name ?? email,
         role: row?.role ?? "analyst",
       },
+      demo_access: row?.demo_access ?? false,
     });
   } catch (err) {
     console.error("Login error:", err);
