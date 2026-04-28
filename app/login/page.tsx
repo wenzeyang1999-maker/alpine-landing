@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import SubpageLayout from "@/components/SubpageLayout";
 import { BG_CARD, INK, MUTED, SUBTLE, BORDER, VIOLET } from "@/lib/constants";
 
-const DEMO_EMAIL = "demo@alpinedd.com";
-const DEMO_PASSWORD = "demo123";
 const SESSION_KEY = "alpine_demo_user";
 
 export default function LoginPage() {
@@ -21,13 +20,25 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
 
-    await new Promise((r) => setTimeout(r, 400));
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), password }),
+      });
 
-    if (email.trim().toLowerCase() === DEMO_EMAIL && password === DEMO_PASSWORD) {
-      localStorage.setItem(SESSION_KEY, JSON.stringify({ email: DEMO_EMAIL, name: "Demo User" }));
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Invalid email or password.");
+        return;
+      }
+
+      localStorage.setItem(SESSION_KEY, JSON.stringify(data.user));
       router.push("/portfolio2");
-    } else {
-      setError("Invalid email or password.");
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
       setLoading(false);
     }
   };
@@ -41,7 +52,7 @@ export default function LoginPage() {
               Sign in to Alpine
             </h1>
             <p className="mt-3 text-sm font-body leading-relaxed" style={{ color: MUTED }}>
-              Enter your demo credentials to access the platform.
+              Enter your credentials to access the platform.
             </p>
           </div>
 
@@ -61,7 +72,7 @@ export default function LoginPage() {
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="demo@alpinedd.com"
+                placeholder="jane@allocator.com"
                 className="field-input"
               />
             </div>
@@ -99,10 +110,17 @@ export default function LoginPage() {
           </form>
 
           <p className="mt-6 text-center text-xs font-mono" style={{ color: SUBTLE }}>
-            Don&apos;t have access?{" "}
-            <a href="/early-access" className="underline" style={{ color: INK }}>
+            Don&apos;t have an account?{" "}
+            <Link href="/signup" className="underline" style={{ color: INK }}>
+              Create one
+            </Link>
+          </p>
+
+          <p className="mt-3 text-center text-xs font-mono" style={{ color: SUBTLE }}>
+            Need a demo?{" "}
+            <Link href="/early-access" className="underline" style={{ color: SUBTLE }}>
               Request early access
-            </a>
+            </Link>
           </p>
         </div>
       </div>
