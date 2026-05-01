@@ -109,14 +109,15 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <p className="mt-6 text-center text-xs font-mono" style={{ color: SUBTLE }}>
-            Don&apos;t have an account?{" "}
-            <Link href="/signup" className="underline" style={{ color: INK }}>
-              Create one
-            </Link>
-          </p>
+          <Link
+            href="/signup"
+            className="mt-4 w-full inline-flex items-center justify-center px-6 py-3.5 rounded-btn font-body font-emphasis text-sm hover:opacity-80 transition-opacity border"
+            style={{ color: INK, borderColor: INK, background: "transparent" }}
+          >
+            Create an account
+          </Link>
 
-          <p className="mt-3 text-center text-xs font-mono" style={{ color: SUBTLE }}>
+          <p className="mt-5 text-center text-xs font-mono" style={{ color: SUBTLE }}>
             Need a demo?{" "}
             <Link href="/early-access" className="underline" style={{ color: SUBTLE }}>
               Request early access
