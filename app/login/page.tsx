@@ -49,7 +49,7 @@ export default function LoginPage() {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <h1 className="font-heading font-emphasis text-2xl md:text-3xl" style={{ color: INK }}>
-              Sign in to Alpine
+              Sign in to view our newest white paper
             </h1>
             <p className="mt-3 text-sm font-body leading-relaxed" style={{ color: MUTED }}>
               Enter your credentials to access the platform.
