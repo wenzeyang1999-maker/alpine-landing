@@ -7,11 +7,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import { BG, BG_CARD, INK, MUTED, VIOLET, GREEN, AMBER, BORDER } from "@/lib/constants";
 
 const NAV_LINKS = [
-  { label: "Engine",  href: "#engine"  },
-  { label: "Process", href: "#process" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "Blog",    href: "#blog"    },
-  { label: "Team",    href: "#team"    },
+  { label: "Engine",      href: "#engine"  },
+  { label: "Process",     href: "#process" },
+  { label: "Pricing",     href: "#pricing" },
+  { label: "Blog",        href: "#blog"    },
+  { label: "Team",        href: "#team"    },
+  { label: "White Paper", href: "/login",  page: true },
 ];
 
 export default function Navbar() {
@@ -26,9 +27,9 @@ export default function Navbar() {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  // Scroll spy — highlight active nav link
+  // Scroll spy — highlight active nav link (section links only)
   useEffect(() => {
-    const ids = NAV_LINKS.map((l) => l.href.slice(1));
+    const ids = NAV_LINKS.filter((l) => !l.page).map((l) => l.href.slice(1));
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -95,8 +96,26 @@ export default function Navbar() {
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-10">
-            {NAV_LINKS.map(({ label, href }) => {
-              const isActive = activeSection === href.slice(1);
+            {NAV_LINKS.map(({ label, href, page }) => {
+              const isActive = !page && activeSection === href.slice(1);
+              if (page) {
+                return (
+                  <Link
+                    key={label}
+                    href={href}
+                    className="font-body text-[15.5px] transition-colors flex items-center gap-1.5"
+                    style={{ color: INK, fontWeight: 600, letterSpacing: "0", minHeight: "44px" }}
+                  >
+                    {label}
+                    <span
+                      className="text-[9px] font-mono font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full"
+                      style={{ background: VIOLET, color: "#fff", letterSpacing: "0.08em" }}
+                    >
+                      New
+                    </span>
+                  </Link>
+                );
+              }
               return (
                 <a
                   key={label}
@@ -195,12 +214,12 @@ export default function Navbar() {
             }}
           >
             <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-1">
-              {NAV_LINKS.map(({ label, href }, i) => (
+              {NAV_LINKS.map(({ label, href, page }, i) => (
                 <motion.a
                   key={label}
                   href={href}
                   onClick={() => setOpen(false)}
-                  className="flex items-center py-3 font-body text-[16px] border-b last:border-b-0"
+                  className="flex items-center justify-between py-3 font-body text-[16px] border-b last:border-b-0"
                   style={{
                     color: INK,
                     fontWeight: 600,
@@ -212,6 +231,14 @@ export default function Navbar() {
                   transition={{ duration: 0.18, delay: i * 0.04 }}
                 >
                   {label}
+                  {page && (
+                    <span
+                      className="text-[9px] font-mono font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full"
+                      style={{ background: VIOLET, color: "#fff", letterSpacing: "0.08em" }}
+                    >
+                      New
+                    </span>
+                  )}
                 </motion.a>
               ))}
 
