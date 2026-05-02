@@ -103,6 +103,19 @@ function getMatchedFile(docType: string, docs: PortalDoc[]): string | null {
   return null;
 }
 
+const TRELLIS_MOCK_DOCS: PortalDoc[] = [
+  { id: "t01", filename: "Trellis-Capital-IV-ILPA-DDQ-2.0.pdf",               file_size: 3_200_000, page_count: 52, uploaded_at: "2026-04-01T09:10:00Z" },
+  { id: "t02", filename: "Trellis-Capital-Management-Form-ADV-ERA-2026.pdf",   file_size: 980_000,  page_count: 18, uploaded_at: "2026-04-01T09:12:00Z" },
+  { id: "t03", filename: "Trellis-Capital-IV-LPA.pdf",                         file_size: 2_100_000, page_count: 38, uploaded_at: "2026-04-01T09:15:00Z" },
+  { id: "t04", filename: "Trellis-Capital-IV-PPM.pdf",                         file_size: 1_750_000, page_count: 30, uploaded_at: "2026-04-01T09:17:00Z" },
+  { id: "t05", filename: "trellis_subscription_agreement.pdf",                 file_size: 640_000,  page_count: 12, uploaded_at: "2026-04-01T09:19:00Z" },
+  { id: "t06", filename: "Trellis-Capital-III-Audited-FS-FY2024.pdf",          file_size: 4_200_000, page_count: 68, uploaded_at: "2026-04-01T09:22:00Z" },
+  { id: "t07", filename: "Trellis-Capital-III-Audited-FS-FY2023.pdf",          file_size: 3_900_000, page_count: 64, uploaded_at: "2026-04-01T09:24:00Z" },
+  { id: "t08", filename: "Trellis-Capital-Valuation-Policy.pdf",               file_size: 420_000,  page_count: 8,  uploaded_at: "2026-04-01T09:26:00Z" },
+  { id: "t09", filename: "Summit-Advisory-Compliance-Binder-2025.pdf",         file_size: 1_100_000, page_count: 22, uploaded_at: "2026-04-01T09:28:00Z" },
+  { id: "t10", filename: "Apex-Fund-Services-Service-Description-FundIII.pdf", file_size: 560_000,  page_count: 10, uploaded_at: "2026-04-01T09:30:00Z" },
+];
+
 const FOLLOW_UP_ROUNDS = [
   {
     label: "Round 1",
@@ -173,15 +186,23 @@ export default function PortalPage() {
   ).length;
   const allCovered = coveredCount === portalInfo.document_types.length;
 
-  // On mount: load real uploaded docs from DB
+  const isTrellis = token === "demo-trellis-token";
+
+  // On mount: load docs from DB; fall back to mock data for demo-trellis-token
   useEffect(() => {
     fetch(`/api/portal/documents?token=${encodeURIComponent(token)}`)
       .then((r) => r.json())
       .then((rows: PortalDoc[]) => {
-        if (Array.isArray(rows)) setDocs(rows);
+        if (Array.isArray(rows) && rows.length > 0) {
+          setDocs(rows);
+        } else if (isTrellis) {
+          setDocs(TRELLIS_MOCK_DOCS);
+        }
       })
-      .catch(() => {});
-  }, [token]);
+      .catch(() => {
+        if (isTrellis) setDocs(TRELLIS_MOCK_DOCS);
+      });
+  }, [token, isTrellis]);
 
   const handleUpload = useCallback(async (files: FileList | File[]) => {
     setUploadError("");
@@ -405,8 +426,8 @@ export default function PortalPage() {
           </div>
         )}
 
-        {/* AI Follow-Up Agent (demo: shows completed rounds) */}
-        {isDemo && (
+        {/* AI Follow-Up Agent (Ridgeline only) */}
+        {isDemo && !isTrellis && (
           <div className="bg-white rounded-xl border border-alpine-border p-5 mb-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-heading font-semibold text-sm text-alpine-ink flex items-center gap-2">
