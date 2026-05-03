@@ -80,7 +80,7 @@ export default function EarlyAccessPage() {
                     autoComplete="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="jane@allocator.com"
+                    placeholder="name@firm.com"
                     className="field-input"
                   />
                 </div>
