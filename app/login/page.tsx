@@ -35,7 +35,7 @@ export default function LoginPage() {
       }
 
       localStorage.setItem(SESSION_KEY, JSON.stringify(data.user));
-      router.push(data.demo_access ? "/portfolio2" : "/thank-you");
+      router.push(data.demo_access ? "/demo" : "/thank-you");
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
