@@ -117,9 +117,9 @@ export default function LoginPage() {
             Create an account
           </Link>
 
-          <p className="mt-5 text-center text-xs font-mono" style={{ color: SUBTLE }}>
+          <p className="mt-5 text-center text-xs font-mono" style={{ color: MUTED }}>
             Need a demo?{" "}
-            <Link href="/early-access" className="underline" style={{ color: SUBTLE }}>
+            <Link href="/early-access" className="underline hover:opacity-80 transition-opacity" style={{ color: VIOLET }}>
               Request early access
             </Link>
           </p>
