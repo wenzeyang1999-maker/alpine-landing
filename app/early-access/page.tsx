@@ -5,11 +5,20 @@ import Link from "next/link";
 import SubpageLayout from "@/components/SubpageLayout";
 import { BG_CARD, INK, MUTED, SUBTLE, GREEN, BORDER, VIOLET } from "@/lib/constants";
 
+const ROLES = [
+  { value: "allocator", label: "Allocator", sub: "LP, fund of funds, family office" },
+  { value: "manager",   label: "Asset manager", sub: "GP, fund manager" },
+  { value: "other",     label: "Service provider or other", sub: "" },
+] as const;
+
+type Role = typeof ROLES[number]["value"];
+
 export default function EarlyAccessPage() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [org, setOrg] = useState("");
   const [phone, setPhone] = useState("");
+  const [role, setRole] = useState<Role | "">("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -22,7 +31,13 @@ export default function EarlyAccessPage() {
       const res = await fetch(`/form/early-access`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ full_name: name, email, organization: org || undefined, phone: phone || undefined }),
+        body: JSON.stringify({
+          full_name: name,
+          email,
+          organization: org || undefined,
+          phone: phone || undefined,
+          role: role || undefined,
+        }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => null);
@@ -48,11 +63,45 @@ export default function EarlyAccessPage() {
                   Request a Demo
                 </h1>
                 <p className="mt-3 text-sm font-body leading-relaxed" style={{ color: MUTED }}>
-                  Leave your details and we&apos;ll schedule a walkthrough of the platform tailored to your portfolio.
+                  Leave your details and we&apos;ll schedule a walkthrough of the platform tailored to your mandate.
                 </p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4 rounded-panel border p-6 shadow-sm" style={{ background: BG_CARD, borderColor: BORDER }}>
+
+                {/* Role selector */}
+                <div>
+                  <label className="block text-xs font-mono font-semibold uppercase tracking-wider mb-2" style={{ color: SUBTLE }}>
+                    I am a&hellip;
+                  </label>
+                  <div className="space-y-2">
+                    {ROLES.map((r) => (
+                      <label
+                        key={r.value}
+                        className="flex items-start gap-3 rounded-lg border px-3.5 py-2.5 cursor-pointer transition-colors"
+                        style={{
+                          borderColor: role === r.value ? INK : BORDER,
+                          background: role === r.value ? `${INK}08` : "transparent",
+                        }}
+                      >
+                        <input
+                          type="radio"
+                          name="role"
+                          value={r.value}
+                          checked={role === r.value}
+                          onChange={() => setRole(r.value)}
+                          className="mt-0.5 accent-black shrink-0"
+                          required
+                        />
+                        <span>
+                          <span className="block text-sm font-body font-medium" style={{ color: INK }}>{r.label}</span>
+                          {r.sub && <span className="block text-xs font-body" style={{ color: MUTED }}>{r.sub}</span>}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
                 <div>
                   <label htmlFor="name" className="block text-xs font-mono font-semibold uppercase tracking-wider mb-1.5" style={{ color: SUBTLE }}>
                     Name
@@ -96,7 +145,7 @@ export default function EarlyAccessPage() {
                     autoComplete="organization"
                     value={org}
                     onChange={(e) => setOrg(e.target.value)}
-                    placeholder="Acme Endowment"
+                    placeholder="Acme Capital"
                     className="field-input"
                   />
                 </div>

@@ -193,7 +193,7 @@ export default function SignupPage() {
                 autoComplete="organization"
                 value={organization}
                 onChange={(e) => setOrganization(e.target.value)}
-                placeholder="Acme Endowment"
+                placeholder="Acme Capital"
                 className="field-input"
               />
             </div>
