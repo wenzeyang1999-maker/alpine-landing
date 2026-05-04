@@ -234,7 +234,15 @@ function WorkflowStepper({ activeTab, onNavigate, isDark }: { activeTab: string;
 
 // ── Sidebar ────────────────────────────────────────────────────────────────────
 
-function ReviewSidebar({ active, onNavigate, docCount }: { active: string; onNavigate: (id: string) => void; docCount?: number }) {
+const PORTAL_STATUS_BADGE: Record<PortalStatus, string> = {
+  not_sent:    "Not Sent",
+  sent:        "Sent",
+  opened:      "Opened",
+  in_progress: "In Progress",
+  submitted:   "Submitted",
+};
+
+function ReviewSidebar({ active, onNavigate, docCount, portalStatus }: { active: string; onNavigate: (id: string) => void; docCount?: number; portalStatus?: PortalStatus }) {
   const [detailOpen, setDetailOpen] = React.useState(false);
   const visibleSections = ["ODD Review", "Intelligence", "Admin"];
   if (detailOpen) visibleSections.push("Detail");
@@ -242,6 +250,7 @@ function ReviewSidebar({ active, onNavigate, docCount }: { active: string; onNav
   const liveBadge: Record<string, string | undefined> = {
     collection: docCount != null ? `${docCount} docs` : undefined,
     "doc-vault": docCount != null ? `${docCount} docs` : undefined,
+    "admin-portal": portalStatus ? PORTAL_STATUS_BADGE[portalStatus] : undefined,
   };
 
   return (
@@ -1764,25 +1773,99 @@ function Overview2Tab({ reviewData, onNavigate }: { reviewData: any; onNavigate:
 
 // ── Admin Portal Tab ──────────────────────────────────────────────────────────
 
-const EMAIL_TEMPLATES = [
-  { label: "Request Documents", subject: "Document Request — Trellis Capital IV, L.P.", body: "Dear Trellis Capital Management Team,\n\nAs part of our ongoing ODD review, we would like to request the following additional documents:\n\n- [Document 1]\n- [Document 2]\n\nPlease upload these to the secure data room at your earliest convenience.\n\nBest regards,\nAlpine ODD Team" },
-  { label: "Schedule Analyst Call", subject: "Analyst Call Scheduling — Trellis Capital IV", body: "Dear Trellis Capital Management Team,\n\nWe would like to schedule a management analyst call to discuss the findings from our review. Please advise on your availability during the week of [date].\n\nThe call is expected to take approximately 60–90 minutes.\n\nBest regards,\nAlpine ODD Team" },
-  { label: "Condition Follow-Up", subject: "ODD Condition Update Request — Trellis Capital IV", body: "Dear Trellis Capital Management Team,\n\nThis is a follow-up regarding the outstanding conditions identified in our review:\n\n1. [Condition 1] — due [date]\n2. [Condition 2] — due [date]\n\nPlease provide a status update at your earliest convenience.\n\nBest regards,\nAlpine ODD Team" },
-  { label: "IC Memo Notification", subject: "IC Review Scheduled — Trellis Capital IV, L.P.", body: "Dear Trellis Capital Management Team,\n\nWe are pleased to inform you that Trellis Capital IV, L.P. has been scheduled for Investment Committee review on [date].\n\nWe will be in touch following the IC decision.\n\nBest regards,\nAlpine ODD Team" },
+type PortalStatus = "not_sent" | "sent" | "opened" | "in_progress" | "submitted";
+type LogEntry = { icon: string; color: string; text: string; ts: string };
+
+const APEX_PORTAL = {
+  token: "demo-apex-admin",
+  engagement_id: "ENG-2026-TC-04",
+  administrator: "Apex Fund Services, LLC",
+  contact_name: "James Whitfield",
+  contact_title: "Director of Fund Administration",
+  contact_email: "j.whitfield@apexfundservices.com",
+  issued: "May 2, 2026",
+  expires: "May 16, 2026",
+  questions: 10,
+};
+
+const PORTAL_STATUS_STEPS: { id: PortalStatus; label: string; ts?: string }[] = [
+  { id: "not_sent",    label: "Generated" },
+  { id: "sent",        label: "Link Sent",    ts: "May 2, 2026 · 9:14 AM" },
+  { id: "opened",      label: "Portal Opened" },
+  { id: "in_progress", label: "In Progress" },
+  { id: "submitted",   label: "Submitted" },
 ];
 
-function AdminPortalTab({ fundName, onBack }: { fundName?: string; onBack?: () => void }) {
-  const [to, setTo] = useState("");
+const ADMIN_EMAIL_TEMPLATES = [
+  {
+    label: "Portal Link Delivery",
+    subject: `Administrator Verification Request — Trellis Capital IV, L.P.`,
+    body: `Dear ${APEX_PORTAL.contact_name},\n\nAlpine Due Diligence is conducting an operational due diligence review of Trellis Capital IV, L.P. As part of this process, we are seeking independent confirmation from Apex Fund Services on a set of representations made by the Manager.\n\nPlease access the secure verification portal using the link below:\n\n[PORTAL_LINK]\n\nYou will be asked to confirm, qualify, or contradict 10 specific representations across areas including AUM, fee calculation, cash controls, valuation, and asset existence. The portal expires on ${APEX_PORTAL.expires}.\n\nPlease do not hesitate to contact us if you have any questions.\n\nBest regards,\nAlpine Due Diligence`,
+  },
+  {
+    label: "Portal Reminder",
+    subject: `Reminder: Verification Portal Expiring Soon — Trellis Capital IV`,
+    body: `Dear ${APEX_PORTAL.contact_name},\n\nThis is a friendly reminder that the administrator verification portal for Trellis Capital IV, L.P. expires on ${APEX_PORTAL.expires}.\n\nIf you have not yet completed the verification, please access it at your earliest convenience using the link previously provided.\n\nPlease let us know if you require a link resend or have any questions.\n\nBest regards,\nAlpine Due Diligence`,
+  },
+  {
+    label: "Request Documents",
+    subject: `Document Request — Trellis Capital IV, L.P.`,
+    body: `Dear ${APEX_PORTAL.contact_name},\n\nAs part of our ongoing ODD review, we would like to request the following additional documents:\n\n- [Document 1]\n- [Document 2]\n\nPlease upload these to the secure data room at your earliest convenience.\n\nBest regards,\nAlpine Due Diligence`,
+  },
+  {
+    label: "Schedule Analyst Call",
+    subject: `Analyst Call Scheduling — Trellis Capital IV`,
+    body: `Dear ${APEX_PORTAL.contact_name},\n\nWe would like to schedule a call to discuss the administrator verification responses. Please advise on your availability during the week of [date]. The call is expected to take approximately 30–45 minutes.\n\nBest regards,\nAlpine Due Diligence`,
+  },
+];
+
+function AdminPortalTab({
+  fundName, onBack,
+  status, portalLog, onSimulateNext,
+}: {
+  fundName?: string;
+  onBack?: () => void;
+  status: PortalStatus;
+  portalLog: LogEntry[];
+  onSimulateNext: () => void;
+}) {
+  const [view, setView] = useState<"portal" | "compose">("portal");
+  const [copied, setCopied] = useState(false);
+  const [sendingLink, setSendingLink] = useState(false);
+  const [linkSent, setLinkSent] = useState(status !== "not_sent");
+
+  const [to, setTo] = useState(status !== "not_sent" ? APEX_PORTAL.contact_email : "");
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  function applyTemplate(tpl: typeof EMAIL_TEMPLATES[number]) {
+  const currentStepIdx = PORTAL_STATUS_STEPS.findIndex(s => s.id === status);
+
+  const portalUrl = typeof window !== "undefined"
+    ? `${window.location.origin}/admin/${APEX_PORTAL.token}`
+    : `/admin/${APEX_PORTAL.token}`;
+
+  function handleCopy() {
+    navigator.clipboard?.writeText(portalUrl).catch(() => {});
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
+  async function handleSendLink() {
+    setSendingLink(true);
+    await new Promise(r => setTimeout(r, 900));
+    setSendingLink(false);
+    setLinkSent(true);
+  }
+
+  function applyTemplate(tpl: typeof ADMIN_EMAIL_TEMPLATES[number]) {
+    setTo(APEX_PORTAL.contact_email);
     setSubject(tpl.subject);
-    setBody(tpl.body);
+    setBody(tpl.body.replace("[PORTAL_LINK]", portalUrl));
     setError(null);
+    setView("compose");
   }
 
   async function handleSend() {
@@ -1799,7 +1882,7 @@ function AdminPortalTab({ fundName, onBack }: { fundName?: string; onBack?: () =
       if (!res.ok) throw new Error(json.error || "Send failed");
       setSent(true);
       setTimeout(() => setSent(false), 3000);
-      setTo(""); setSubject(""); setBody("");
+      setSubject(""); setBody("");
     } catch (e: any) {
       setError(e.message);
     } finally {
@@ -1807,11 +1890,14 @@ function AdminPortalTab({ fundName, onBack }: { fundName?: string; onBack?: () =
     }
   }
 
+  const card: React.CSSProperties = { background: "var(--r2-card)", border: "1px solid var(--r2-border)", borderRadius: 14, overflow: "hidden" };
+  const cardHeader: React.CSSProperties = { padding: "12px 18px", borderBottom: "1px solid var(--r2-border)", fontSize: 11, fontWeight: 700, color: "var(--r2-muted)", textTransform: "uppercase", letterSpacing: "0.06em" };
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
 
       {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
         <div>
           {onBack && (
             <button
@@ -1825,93 +1911,287 @@ function AdminPortalTab({ fundName, onBack }: { fundName?: string; onBack?: () =
             </button>
           )}
           <div style={{ fontSize: 18, fontWeight: 700, color: "var(--r2-text)", letterSpacing: "-0.02em" }}>Admin Portal</div>
-          <div style={{ fontSize: 12, color: "var(--r2-muted)", marginTop: 3 }}>Send emails and manage communications for {fundName || "this review"}</div>
-        </div>
-      </div>
-
-      {/* Two-column layout */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 280px", gap: 16, alignItems: "start" }}>
-
-        {/* Left — Compose */}
-        <div style={{ background: "var(--r2-card)", border: "1px solid var(--r2-border)", borderRadius: 14, overflow: "hidden" }}>
-          <div style={{ padding: "14px 20px", borderBottom: "1px solid var(--r2-border)", fontSize: 12, fontWeight: 600, color: "var(--r2-text)" }}>Compose Email</div>
-
-          <div style={{ padding: "16px 20px", display: "flex", flexDirection: "column", gap: 0 }}>
-            {/* To */}
-            <div style={{ display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid var(--r2-border)", padding: "10px 0" }}>
-              <span style={{ fontSize: 11, fontWeight: 600, color: "var(--r2-muted)", width: 56, flexShrink: 0 }}>To</span>
-              <input
-                type="email"
-                value={to}
-                onChange={e => setTo(e.target.value)}
-                placeholder="recipient@example.com"
-                style={{ flex: 1, border: "none", background: "transparent", fontSize: 13, color: "var(--r2-text)", outline: "none" }}
-              />
-            </div>
-            {/* Subject */}
-            <div style={{ display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid var(--r2-border)", padding: "10px 0" }}>
-              <span style={{ fontSize: 11, fontWeight: 600, color: "var(--r2-muted)", width: 56, flexShrink: 0 }}>Subject</span>
-              <input
-                type="text"
-                value={subject}
-                onChange={e => setSubject(e.target.value)}
-                placeholder="Email subject"
-                style={{ flex: 1, border: "none", background: "transparent", fontSize: 13, color: "var(--r2-text)", outline: "none" }}
-              />
-            </div>
-            {/* Body */}
-            <textarea
-              value={body}
-              onChange={e => setBody(e.target.value)}
-              placeholder="Write your message..."
-              rows={12}
-              style={{ width: "100%", border: "none", background: "transparent", fontSize: 13, color: "var(--r2-text)", outline: "none", resize: "vertical", lineHeight: 1.7, fontFamily: "inherit", boxSizing: "border-box", padding: "12px 0" }}
-            />
+          <div style={{ fontSize: 12, color: "var(--r2-muted)", marginTop: 3 }}>
+            Independent administrator verification for {fundName || "this review"}
           </div>
-
-          <div style={{ padding: "12px 20px", borderTop: "1px solid var(--r2-border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <div style={{ fontSize: 11, color: error ? "#ef4444" : sent ? "#18b97e" : "transparent" }}>
-              {error || (sent ? "✓ Email sent successfully" : ".")}
-            </div>
+        </div>
+        {/* View toggle */}
+        <div style={{ display: "flex", gap: 3, background: "var(--r2-surface)", borderRadius: 10, padding: 3, flexShrink: 0 }}>
+          {(["portal", "compose"] as const).map(v => (
             <button
-              onClick={handleSend}
-              disabled={sending}
+              key={v}
+              onClick={() => setView(v)}
               style={{
-                padding: "9px 22px", borderRadius: 9, border: "none",
-                background: sending ? "#6b7280" : "#8c7cff",
-                color: "#fff", fontSize: 13, fontWeight: 600, cursor: sending ? "not-allowed" : "pointer",
-                transition: "background 0.12s", display: "flex", alignItems: "center", gap: 7,
+                padding: "7px 14px", borderRadius: 8, border: "none", fontSize: 12, fontWeight: 600, cursor: "pointer", transition: "all 0.12s",
+                background: view === v ? "var(--r2-card)" : "transparent",
+                color: view === v ? "var(--r2-text)" : "var(--r2-muted)",
+                boxShadow: view === v ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
               }}
             >
-              {sending ? "Sending…" : sent ? "Sent ✓" : (
-                <>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                  Send Email
-                </>
-              )}
+              {v === "portal" ? "Portal Management" : "Compose Email"}
             </button>
-          </div>
+          ))}
         </div>
-
-        {/* Right — Templates */}
-        <div style={{ background: "var(--r2-card)", border: "1px solid var(--r2-border)", borderRadius: 14, overflow: "hidden" }}>
-          <div style={{ padding: "14px 16px", borderBottom: "1px solid var(--r2-border)", fontSize: 12, fontWeight: 600, color: "var(--r2-text)" }}>Quick Templates</div>
-          <div style={{ padding: "10px 8px", display: "flex", flexDirection: "column", gap: 4 }}>
-            {EMAIL_TEMPLATES.map((tpl) => (
-              <button
-                key={tpl.label}
-                onClick={() => applyTemplate(tpl)}
-                style={{ padding: "9px 12px", borderRadius: 8, border: "1px solid transparent", background: "transparent", fontSize: 12, fontWeight: 500, color: "var(--r2-muted)", cursor: "pointer", transition: "all 0.12s", textAlign: "left" }}
-                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = "var(--r2-surface)"; (e.currentTarget as HTMLButtonElement).style.color = "var(--r2-text)"; (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--r2-border)"; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = "transparent"; (e.currentTarget as HTMLButtonElement).style.color = "var(--r2-muted)"; (e.currentTarget as HTMLButtonElement).style.borderColor = "transparent"; }}
-              >
-                {tpl.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
       </div>
+
+      {view === "portal" ? (
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+
+          {/* Top row: engagement info + portal link */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, alignItems: "start" }}>
+
+            {/* Engagement info */}
+            <div style={card}>
+              <div style={cardHeader}>Engagement</div>
+              <div style={{ padding: "14px 18px", display: "flex", flexDirection: "column", gap: 10 }}>
+                <div>
+                  <div style={{ fontSize: 11, color: "var(--r2-muted)", marginBottom: 2 }}>Fund</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: "var(--r2-text)" }}>{fundName || "—"}</div>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                  <div>
+                    <div style={{ fontSize: 11, color: "var(--r2-muted)", marginBottom: 2 }}>Administrator</div>
+                    <div style={{ fontSize: 12, fontWeight: 500, color: "var(--r2-text)" }}>{APEX_PORTAL.administrator}</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 11, color: "var(--r2-muted)", marginBottom: 2 }}>Engagement ID</div>
+                    <div style={{ fontSize: 12, fontFamily: "monospace", color: "var(--r2-text)" }}>{APEX_PORTAL.engagement_id}</div>
+                  </div>
+                </div>
+                <div style={{ paddingTop: 10, borderTop: "1px solid var(--r2-border)", display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{ width: 32, height: 32, borderRadius: "50%", background: "var(--r2-surface)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--r2-muted)" strokeWidth="1.5" strokeLinecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: "var(--r2-text)" }}>{APEX_PORTAL.contact_name}</div>
+                    <div style={{ fontSize: 11, color: "var(--r2-muted)" }}>{APEX_PORTAL.contact_title}</div>
+                    <div style={{ fontSize: 11, color: "var(--r2-violet)" }}>{APEX_PORTAL.contact_email}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Portal link */}
+            <div style={card}>
+              <div style={cardHeader}>Verification Portal Link</div>
+              <div style={{ padding: "14px 18px", display: "flex", flexDirection: "column", gap: 12 }}>
+                {/* URL box */}
+                <div style={{ display: "flex", alignItems: "center", gap: 8, background: "var(--r2-surface)", borderRadius: 8, padding: "8px 12px", border: "1px solid var(--r2-border)" }}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--r2-muted)" strokeWidth="1.5" strokeLinecap="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                  <span style={{ flex: 1, fontSize: 11, fontFamily: "monospace", color: "var(--r2-muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{portalUrl}</span>
+                </div>
+                {/* Actions */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                  <button
+                    onClick={handleCopy}
+                    style={{ padding: "8px 0", borderRadius: 8, border: "1px solid var(--r2-border)", background: "var(--r2-surface)", fontSize: 12, fontWeight: 600, color: copied ? "var(--r2-green)" : "var(--r2-text)", cursor: "pointer", transition: "all 0.12s", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
+                  >
+                    {copied
+                      ? <><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>Copied</>
+                      : <><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy Link</>
+                    }
+                  </button>
+                  <button
+                    onClick={() => window.open(`/admin/${APEX_PORTAL.token}`, "_blank")}
+                    style={{ padding: "8px 0", borderRadius: 8, border: "1px solid var(--r2-border)", background: "var(--r2-surface)", fontSize: 12, fontWeight: 600, color: "var(--r2-text)", cursor: "pointer", transition: "all 0.12s", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--r2-violet)"; (e.currentTarget as HTMLButtonElement).style.color = "var(--r2-violet)"; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--r2-border)"; (e.currentTarget as HTMLButtonElement).style.color = "var(--r2-text)"; }}
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    Open Portal
+                  </button>
+                </div>
+                {/* Expiry + questions */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, paddingTop: 8, borderTop: "1px solid var(--r2-border)" }}>
+                  {[
+                    { label: "Issued", value: APEX_PORTAL.issued },
+                    { label: "Expires", value: APEX_PORTAL.expires },
+                    { label: "Questions", value: String(APEX_PORTAL.questions) },
+                  ].map(s => (
+                    <div key={s.label} style={{ textAlign: "center" }}>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: "var(--r2-text)" }}>{s.value}</div>
+                      <div style={{ fontSize: 10, color: "var(--r2-muted)", marginTop: 1 }}>{s.label}</div>
+                    </div>
+                  ))}
+                </div>
+                {/* Send link button */}
+                <button
+                  onClick={handleSendLink}
+                  disabled={sendingLink || linkSent}
+                  style={{
+                    width: "100%", padding: "9px 0", borderRadius: 9, border: "none",
+                    background: linkSent ? "rgba(24,185,126,0.12)" : sendingLink ? "var(--r2-surface)" : "var(--r2-violet)",
+                    color: linkSent ? "var(--r2-green)" : sendingLink ? "var(--r2-muted)" : "#fff",
+                    fontSize: 12, fontWeight: 600, cursor: (sendingLink || linkSent) ? "default" : "pointer",
+                    transition: "all 0.15s", display: "flex", alignItems: "center", justifyContent: "center", gap: 7,
+                  }}
+                >
+                  {linkSent
+                    ? <><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>Link Sent to Administrator</>
+                    : sendingLink
+                      ? "Sending…"
+                      : <><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Send Portal Link to Administrator</>
+                  }
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Status stepper */}
+          <div style={card}>
+            <div style={cardHeader}>Portal Status</div>
+            <div style={{ padding: "20px 24px" }}>
+              <div style={{ display: "flex", alignItems: "flex-start", gap: 0 }}>
+                {PORTAL_STATUS_STEPS.map((step, i) => {
+                  const done = i < currentStepIdx;
+                  const active = i === currentStepIdx;
+                  const pending = i > currentStepIdx;
+                  return (
+                    <div key={step.id} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", position: "relative" }}>
+                      {/* Connector line */}
+                      {i > 0 && (
+                        <div style={{ position: "absolute", left: 0, top: 11, width: "50%", height: 2, background: done || active ? "var(--r2-violet)" : "var(--r2-border)", transition: "background 0.3s" }} />
+                      )}
+                      {i < PORTAL_STATUS_STEPS.length - 1 && (
+                        <div style={{ position: "absolute", right: 0, top: 11, width: "50%", height: 2, background: done ? "var(--r2-violet)" : "var(--r2-border)", transition: "background 0.3s" }} />
+                      )}
+                      {/* Dot */}
+                      <div style={{
+                        width: 24, height: 24, borderRadius: "50%", zIndex: 1, flexShrink: 0,
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        background: done ? "var(--r2-violet)" : active ? "var(--r2-violet)" : "var(--r2-surface)",
+                        border: `2px solid ${pending ? "var(--r2-border)" : "var(--r2-violet)"}`,
+                        transition: "all 0.3s",
+                      }}>
+                        {done
+                          ? <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                          : active
+                            ? <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#fff" }} />
+                            : null
+                        }
+                      </div>
+                      {/* Label */}
+                      <div style={{ marginTop: 8, fontSize: 10, fontWeight: active ? 700 : 500, color: pending ? "var(--r2-faint)" : "var(--r2-text)", textAlign: "center" }}>
+                        {step.label}
+                      </div>
+                      {step.ts && (done || active) && (
+                        <div style={{ fontSize: 9, color: "var(--r2-muted)", marginTop: 2, textAlign: "center" }}>{step.ts}</div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Activity log */}
+          <div style={card}>
+            <div style={{ ...cardHeader, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span>Activity Log</span>
+              {status !== "submitted" && (
+                <button
+                  onClick={onSimulateNext}
+                  style={{ fontSize: 10, fontWeight: 600, color: "var(--r2-violet)", background: "rgba(140,124,255,0.08)", border: "1px solid rgba(140,124,255,0.2)", borderRadius: 5, padding: "3px 8px", cursor: "pointer", letterSpacing: "0.03em", textTransform: "uppercase" }}
+                  onMouseEnter={e => (e.currentTarget.style.background = "rgba(140,124,255,0.15)")}
+                  onMouseLeave={e => (e.currentTarget.style.background = "rgba(140,124,255,0.08)")}
+                >
+                  Simulate Next Step
+                </button>
+              )}
+            </div>
+            <div style={{ padding: "4px 0" }}>
+              {portalLog.map((entry, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: 14, padding: "10px 18px", borderBottom: "1px solid var(--r2-border)" }}>
+                  <div style={{ width: 28, height: 28, borderRadius: "50%", background: "var(--r2-surface)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    {entry.icon === "send"
+                      ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={entry.color} strokeWidth="2" strokeLinecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                      : entry.icon === "check"
+                        ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={entry.color} strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        : entry.icon === "open"
+                          ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={entry.color} strokeWidth="2" strokeLinecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                          : entry.icon === "edit"
+                            ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={entry.color} strokeWidth="2" strokeLinecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={entry.color} strokeWidth="2" strokeLinecap="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                    }
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 12, fontWeight: 500, color: "var(--r2-text)" }}>{entry.text}</div>
+                  </div>
+                  <div style={{ fontSize: 11, color: "var(--r2-muted)", flexShrink: 0 }}>{entry.ts}</div>
+                </div>
+              ))}
+              {/* Compose follow-up */}
+              <div style={{ padding: "12px 18px" }}>
+                <div style={{ fontSize: 11, color: "var(--r2-muted)", marginBottom: 8 }}>Quick actions</div>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  {ADMIN_EMAIL_TEMPLATES.map(tpl => (
+                    <button
+                      key={tpl.label}
+                      onClick={() => applyTemplate(tpl)}
+                      style={{ padding: "6px 12px", borderRadius: 7, border: "1px solid var(--r2-border)", background: "var(--r2-surface)", fontSize: 11, fontWeight: 500, color: "var(--r2-muted)", cursor: "pointer", transition: "all 0.12s" }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = "var(--r2-text)"; (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--r2-violet)"; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = "var(--r2-muted)"; (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--r2-border)"; }}
+                    >
+                      {tpl.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        /* Compose Email view */
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 260px", gap: 16, alignItems: "start" }}>
+          <div style={card}>
+            <div style={cardHeader}>Compose Email</div>
+            <div style={{ padding: "16px 20px", display: "flex", flexDirection: "column", gap: 0 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid var(--r2-border)", padding: "10px 0" }}>
+                <span style={{ fontSize: 11, fontWeight: 600, color: "var(--r2-muted)", width: 56, flexShrink: 0 }}>To</span>
+                <input type="email" value={to} onChange={e => setTo(e.target.value)} placeholder="recipient@example.com"
+                  style={{ flex: 1, border: "none", background: "transparent", fontSize: 13, color: "var(--r2-text)", outline: "none" }} />
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid var(--r2-border)", padding: "10px 0" }}>
+                <span style={{ fontSize: 11, fontWeight: 600, color: "var(--r2-muted)", width: 56, flexShrink: 0 }}>Subject</span>
+                <input type="text" value={subject} onChange={e => setSubject(e.target.value)} placeholder="Email subject"
+                  style={{ flex: 1, border: "none", background: "transparent", fontSize: 13, color: "var(--r2-text)", outline: "none" }} />
+              </div>
+              <textarea value={body} onChange={e => setBody(e.target.value)} placeholder="Write your message…" rows={12}
+                style={{ width: "100%", border: "none", background: "transparent", fontSize: 13, color: "var(--r2-text)", outline: "none", resize: "vertical", lineHeight: 1.7, fontFamily: "inherit", boxSizing: "border-box", padding: "12px 0" }} />
+            </div>
+            <div style={{ padding: "12px 20px", borderTop: "1px solid var(--r2-border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ fontSize: 11, color: error ? "#ef4444" : sent ? "#18b97e" : "transparent" }}>
+                {error || (sent ? "✓ Email sent successfully" : ".")}
+              </div>
+              <button onClick={handleSend} disabled={sending} style={{
+                padding: "9px 22px", borderRadius: 9, border: "none",
+                background: sending ? "#6b7280" : "#8c7cff", color: "#fff", fontSize: 13, fontWeight: 600,
+                cursor: sending ? "not-allowed" : "pointer", transition: "background 0.12s",
+                display: "flex", alignItems: "center", gap: 7,
+              }}>
+                {sending ? "Sending…" : sent ? "Sent ✓" : (
+                  <><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Send Email</>
+                )}
+              </button>
+            </div>
+          </div>
+
+          <div style={card}>
+            <div style={cardHeader}>Quick Templates</div>
+            <div style={{ padding: "10px 8px", display: "flex", flexDirection: "column", gap: 4 }}>
+              {ADMIN_EMAIL_TEMPLATES.map((tpl) => (
+                <button key={tpl.label} onClick={() => applyTemplate(tpl)}
+                  style={{ padding: "9px 12px", borderRadius: 8, border: "1px solid transparent", background: "transparent", fontSize: 12, fontWeight: 500, color: "var(--r2-muted)", cursor: "pointer", transition: "all 0.12s", textAlign: "left" }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = "var(--r2-surface)"; (e.currentTarget as HTMLButtonElement).style.color = "var(--r2-text)"; (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--r2-border)"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = "transparent"; (e.currentTarget as HTMLButtonElement).style.color = "var(--r2-muted)"; (e.currentTarget as HTMLButtonElement).style.borderColor = "transparent"; }}
+                >
+                  {tpl.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1931,6 +2211,33 @@ export default function Review2Page() {
   const [theme, setTheme] = useState<"dark" | "light">("light");
   const [topicRatingOverrides, setTopicRatingOverrides] = useState<Record<number, string>>({});
   const [riskObsOverrides, setRiskObsOverrides] = useState<Record<string, RiskObsEdit>>({});
+
+  const isTrellisSlug = slug === "trellis-capital-iv";
+  const [portalStatus, setPortalStatus] = useState<PortalStatus>(() =>
+    isTrellisSlug ? "sent" : "not_sent"
+  );
+  const [portalLog, setPortalLog] = useState<LogEntry[]>(() =>
+    isTrellisSlug ? [
+      { icon: "send", color: "var(--r2-violet)", text: `Portal link sent to ${APEX_PORTAL.contact_email}`, ts: "May 2, 2026 · 9:14 AM" },
+      { icon: "gen",  color: "var(--r2-green)",  text: `Token generated — ${APEX_PORTAL.token}`, ts: "May 2, 2026 · 9:12 AM" },
+    ] : [
+      { icon: "gen", color: "var(--r2-green)", text: `Token generated — ready to send`, ts: "Today" },
+    ]
+  );
+
+  const SIMULATE_TRANSITIONS: Partial<Record<PortalStatus, { next: PortalStatus; entry: LogEntry }>> = {
+    not_sent:    { next: "sent",        entry: { icon: "send",  color: "var(--r2-violet)", text: `Portal link sent to ${APEX_PORTAL.contact_email}`, ts: "Just now" } },
+    sent:        { next: "opened",      entry: { icon: "open",  color: "var(--r2-amber)",  text: `Portal accessed by ${APEX_PORTAL.contact_name}`, ts: "Just now" } },
+    opened:      { next: "in_progress", entry: { icon: "edit",  color: "var(--r2-amber)",  text: `Verification started — 0 of 10 questions answered`, ts: "Just now" } },
+    in_progress: { next: "submitted",   entry: { icon: "check", color: "var(--r2-green)",  text: `Verification submitted — all 10 responses received`, ts: "Just now" } },
+  };
+
+  const handleSimulateNext = () => {
+    const t = SIMULATE_TRANSITIONS[portalStatus];
+    if (!t) return;
+    setPortalStatus(t.next);
+    setPortalLog(prev => [t.entry, ...prev]);
+  };
 
   const handleRiskObsSaved = useCallback((id: string, edit: RiskObsEdit) => {
     setRiskObsOverrides((prev) => ({ ...prev, [id]: edit }));
@@ -2090,7 +2397,7 @@ export default function Review2Page() {
       case "verification": return <VerificationTab2 reviewData={reviewData} isTrellis={isTrellis} />;
       case "monitoring": return <MonitoringTab />;
       case "full-report": return <FullReportTab reviewData={reviewData} />;
-      case "admin-portal": return <AdminPortalTab fundName={reviewData?.name || (isTrellis ? "Trellis Capital IV, L.P." : undefined)} onBack={() => setActiveTab("reg-verification")} />;
+      case "admin-portal": return <AdminPortalTab fundName={reviewData?.name || (isTrellis ? "Trellis Capital IV, L.P." : undefined)} onBack={() => setActiveTab("reg-verification")} status={portalStatus} portalLog={portalLog} onSimulateNext={handleSimulateNext} />;
     }
   }
 
@@ -2158,7 +2465,7 @@ export default function Review2Page() {
 
           {/* ── Workspace ── */}
           <div style={{ display: "grid", gridTemplateColumns: "220px 1fr", gap: 16, marginTop: 14, alignItems: "start" }}>
-            <ReviewSidebar active={activeTab} onNavigate={setActiveTab} docCount={(isTrellis ? TRELLIS_VAULT_DATA : RIDGELINE_VAULT_DATA).documents.length} />
+            <ReviewSidebar active={activeTab} onNavigate={setActiveTab} docCount={(isTrellis ? TRELLIS_VAULT_DATA : RIDGELINE_VAULT_DATA).documents.length} portalStatus={portalStatus} />
             <div style={{ display: "grid", gap: 16 }}>
               <main style={{ display: "grid", gap: 16, paddingBottom: 48 }}>
                 {renderTabContent()}
