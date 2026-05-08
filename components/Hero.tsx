@@ -20,7 +20,7 @@ const STEPS: {
   items: Item[];
 }[] = [
   {
-    label: "Upload",
+    label: "Collect",
     color: VIOLET,
     stats: [
       { value: "14+", label: "document types" },
@@ -72,7 +72,25 @@ const STEPS: {
     ],
   },
   {
-    label: "Review",
+    label: "Manager Call",
+    color: VIOLET,
+    stats: [
+      { value: "Structured", label: "call agenda" },
+      { value: "AI", label: "prep briefing" },
+      { value: "Live", label: "note capture" },
+      { value: "100%", label: "documented" },
+    ],
+    body: "Alpine prepares a targeted call agenda based on gaps identified during analysis. Key follow-up questions are surfaced automatically so nothing is missed on the call.",
+    cols: 2,
+    items: [
+      { text: "Pre-call briefing prepared", dot: VIOLET },
+      { text: "Gap-driven question agenda", dot: VIOLET },
+      { text: "Live note capture", dot: VIOLET },
+      { text: "Post-call summary generated", dot: VIOLET },
+    ],
+  },
+  {
+    label: "Review & Remediations",
     color: AMBER,
     stats: [
       { value: "Zero", label: "AI-only output" },
@@ -107,7 +125,7 @@ const STEPS: {
   },
 ];
 
-const AUDIENCE_TYPES = ["Endowments", "Pensions", "Family Offices", "Fund of Funds", "Consultants"];
+const AUDIENCE_TYPES = ["Endowments", "Pensions", "Family Offices", "Fund of Funds", "Managers", "Consultants"];
 
 export default function Hero() {
   const ref = useRef(null);
@@ -117,29 +135,8 @@ export default function Hero() {
   const step = STEPS[activeStep] ?? STEPS[0];
 
   return (
-    <section className="pt-28 pb-16 px-6" style={{ background: BG }}>
+    <section className="pt-44 pb-16 px-6" style={{ background: BG }}>
       <div className="max-w-3xl mx-auto text-center">
-
-        {/* Eyebrow pill */}
-        <motion.div
-          className="inline-flex items-center gap-2 rounded-full px-4 py-2 mb-8"
-          style={{
-            background: "linear-gradient(180deg, #FFFFFF 0%, #F6FAFF 100%)",
-            border: `1px solid ${BORDER}`,
-            boxShadow: "0 6px 18px rgba(15,15,16,0.05), 0 1px 2px rgba(0,0,0,0.04)",
-          }}
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-        >
-          <span className="w-2 h-2 rounded-full" style={{ background: GREEN, boxShadow: `0 0 0 4px ${GREEN}20` }} />
-          <span className="text-[11px] font-mono uppercase" style={{ color: GREEN, fontWeight: 700, letterSpacing: "0.08em" }}>
-            Live
-          </span>
-          <span className="text-[14px] font-body" style={{ color: SECONDARY, fontWeight: 600, letterSpacing: "-0.015em" }}>
-            AI Engine · Early Access now open
-          </span>
-        </motion.div>
 
         {/* Display headline */}
         <motion.h1
@@ -149,8 +146,8 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          Machine speed.<br />
-          <span style={{ color: VIOLET }}>Institutional standard.</span>
+          ODD Engine for<br />
+          <span style={{ color: VIOLET }}>Institutional Capital.</span>
         </motion.h1>
 
         {/* Subtitle */}
@@ -161,7 +158,7 @@ export default function Hero() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          472 questions across 38 fund strategies. AI drafts your ODD report in minutes, a senior analyst reviews every finding before delivery.
+          Sits between raw information and human judgment — making that judgment faster, sharper, more defensible, and more affordable.
         </motion.p>
 
         {/* CTA */}
@@ -235,7 +232,7 @@ export default function Hero() {
                 className="rounded px-3 py-1 text-[11px] font-sans max-w-xs mx-auto text-center"
                 style={{ background: BG_CARD, color: MUTED, border: `1px solid ${BORDER}`, letterSpacing: "0.01em" }}
               >
-                alpinedd.com/review/northpoint-capital
+                alpinedd.com/review/your-fund
               </div>
             </div>
           </div>

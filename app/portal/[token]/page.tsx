@@ -176,6 +176,7 @@ export default function PortalPage() {
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [uploadError, setUploadError] = useState("");
+  const [removingId, setRemovingId] = useState<string | null>(null);
 
   // Follow-up rounds display (demo shows completed rounds)
   const [activeRound] = useState(isDemo ? 2 : 0);
@@ -241,6 +242,17 @@ export default function PortalPage() {
     if (newDocs.length > 0) setDocs((prev) => [...newDocs, ...prev]);
     setUploading(false);
   }, [token]);
+
+  const handleRemove = useCallback(async (id: string) => {
+    setRemovingId(id);
+    try {
+      await fetch(`/api/portal/documents?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+    } catch {
+      // remove from UI regardless
+    }
+    setDocs((prev) => prev.filter((d) => d.id !== id));
+    setRemovingId(null);
+  }, []);
 
   // ── Invalid token ──────────────────────────────────────────────────────────
   if (!isDemo) {
@@ -405,7 +417,7 @@ export default function PortalPage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6">
               {docs.map((doc) => (
-                <div key={doc.id} className="flex items-center gap-2.5 py-2 border-b border-alpine-border/40 last:border-0">
+                <div key={doc.id} className="flex items-center gap-2.5 py-2 border-b border-alpine-border/40 last:border-0 group">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7B2CBF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
                     <polyline points="14 2 14 8 20 8" />
@@ -417,9 +429,17 @@ export default function PortalPage() {
                       {" · "}{formatDate(doc.uploaded_at)}
                     </p>
                   </div>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
+                  <button
+                    onClick={() => handleRemove(doc.id)}
+                    disabled={removingId === doc.id}
+                    title="Remove file"
+                    className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-alpine-slate/40 hover:text-red-400 disabled:opacity-30"
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                  </button>
                 </div>
               ))}
             </div>
