@@ -360,7 +360,7 @@ export default function WhitePaperPage() {
           <SectionLabel>About the Authors</SectionLabel>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {[
-              { name: "Alpine Due Diligence", url: "alpinedd.com", desc: "Alpine is a technology-enabled ODD platform for institutional allocators. Alpine's AI engine processes 472 questions across 38 fund strategies, with every finding reviewed by a senior analyst before delivery." },
+              { name: "Alpine Due Diligence", url: "alpinedd.com", desc: "Alpine is an institutional ODD engine for allocators and emerging managers. The Alpine engine processes 901 strategy-specific questions across 8 chapters and 2 acts, with every finding reviewed by a senior analyst before delivery." },
               { name: "Acephalt",             url: "acephalt.com", desc: "Acephalt advises emerging venture capital managers on fund formation, LP communications, and institutional readiness — helping managers build the operational infrastructure that allocation committees expect." },
             ].map(({ name, url, desc }) => (
               <div key={name} className="rounded-xl border p-5" style={{ borderColor: BORDER, background: BG_CARD }}>

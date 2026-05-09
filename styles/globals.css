@@ -31,6 +31,28 @@
     }
   }
 
+  /* Print: force <details> contents to render expanded so collapsed sections
+     (e.g. the Framework eight-chapter grid) appear in printed/PDF output. */
+  @media print {
+    details {
+      display: block;
+    }
+    details > summary {
+      display: none;
+    }
+    details > *:not(summary) {
+      display: block !important;
+    }
+  }
+
+  /* Strip the default disclosure triangle on <summary> elements that opt out via list-none */
+  summary.list-none::-webkit-details-marker {
+    display: none;
+  }
+  summary.list-none {
+    list-style: none;
+  }
+
   html {
     scroll-behavior: smooth;
   }

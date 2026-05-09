@@ -10,7 +10,9 @@ Make the landing page feel more dynamic, more institutional, and more credible w
 
 - Refine the hero headline and subheadline so the value proposition is immediately clear to institutional allocators.
 - Make the primary differentiation more explicit:
-  AI-powered ODD, strategy-specific question routing, analyst-reviewed delivery, audit-ready output.
+  institutional-grade ODD methodology (8 chapters · 2 acts), strategy-specific question routing
+  (901 strategy-specific questions across 38 strategies, up to 1,193 with appendix walkthrough),
+  regulatory verification (54 regulators), and human-owned conclusions delivered in 3–5 days.
 - Tighten CTA language so each button has a distinct purpose:
   one for demo / sales conversation, one for product access or sample review.
 - Rework supporting copy to sound more precise and less generic in high-stakes financial workflows.

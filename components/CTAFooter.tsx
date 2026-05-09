@@ -18,7 +18,7 @@ export default function CTAFooter() {
           Your next ODD review starts here.
         </h2>
         <p className="font-body mt-4" style={{ fontSize: "1.0625rem", lineHeight: 1.65, letterSpacing: LS_BODY, color: SECONDARY }}>
-          See what strategy-specific due diligence can do for your portfolio.
+          Reshape the process. Elevate human judgement.
         </p>
         <div className="flex flex-col items-center gap-3 mt-8">
           <Link
@@ -26,7 +26,7 @@ export default function CTAFooter() {
             className="rounded-btn px-7 py-3 font-body text-[14px] hover:opacity-90 transition-opacity inline-flex items-center gap-1.5"
             style={{ background: INK, color: "#fff", fontWeight: 600 }}
           >
-            Request Early Access <ArrowUpRight size={13} />
+            Book a 30-min walkthrough <ArrowUpRight size={13} />
           </Link>
         </div>
       </div>
@@ -38,7 +38,7 @@ export default function CTAFooter() {
       >
         <div className="flex items-center gap-2.5">
           <Image src="/alpine-icon.svg" alt="Alpine" width={18} height={18} />
-          <span className="font-mono text-[11px]" style={{ color: MUTED, letterSpacing: LS_BODY }}>
+          <span className="font-mono text-[11px]" style={{ color: SECONDARY, letterSpacing: LS_BODY }}>
             &copy; 2026 Alpine Due Diligence Inc.
           </span>
         </div>
@@ -48,7 +48,7 @@ export default function CTAFooter() {
               key={l}
               href={`/${l}`}
               className="font-mono text-[11px] hover:opacity-70 transition-opacity capitalize flex items-center"
-              style={{ color: MUTED, letterSpacing: LS_BODY, minHeight: "44px" }}
+              style={{ color: SECONDARY, letterSpacing: LS_BODY, minHeight: "44px" }}
             >
               {l}
             </Link>
