@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { motion, useInView, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import {
   BG, BG_CARD, INK, SECONDARY, MUTED, VIOLET, GREEN, AMBER, BORDER, BORDER_SUBTLE,
@@ -115,8 +115,46 @@ export default function Hero() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
   const [activeStep, setActiveStep] = useState(0);
+  const shouldReduceMotion = useReducedMotion();
 
   const step = STEPS[activeStep] ?? STEPS[0];
+
+  const eyebrowMotion = shouldReduceMotion
+    ? { initial: false, animate: false }
+    : { initial: { opacity: 0, y: -8 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.4 } };
+
+  const headlineMotion = shouldReduceMotion
+    ? { initial: false, animate: false }
+    : { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.5, delay: 0.1 } };
+
+  const subtitleMotion = shouldReduceMotion
+    ? { initial: false, animate: false }
+    : { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.5, delay: 0.2 } };
+
+  const ctaMotion = shouldReduceMotion
+    ? { initial: false, animate: false }
+    : { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.4, delay: 0.3 } };
+
+  const audienceMotion = shouldReduceMotion
+    ? { initial: false, animate: false }
+    : { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.4, delay: 0.35 } };
+
+  const mockupMotion = shouldReduceMotion
+    ? { initial: false, animate: false }
+    : {
+        initial: { opacity: 0, y: 24 },
+        animate: isInView ? { opacity: 1, y: 0 } : {},
+        transition: { duration: 0.5, delay: 0.1 },
+      };
+
+  const panelMotion = shouldReduceMotion
+    ? ({ initial: false, animate: false, transition: { duration: 0 } } as const)
+    : ({
+        initial: { opacity: 0, y: 6 },
+        animate: { opacity: 1, y: 0 },
+        exit: { opacity: 0, y: -6 },
+        transition: { duration: 0.18 },
+      } as const);
 
   return (
     <section className="pt-28 pb-16 px-6" style={{ background: BG }}>
@@ -130,9 +168,7 @@ export default function Hero() {
             border: `1px solid ${BORDER}`,
             boxShadow: "0 6px 18px rgba(15,15,16,0.05), 0 1px 2px rgba(0,0,0,0.04)",
           }}
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
+          {...eyebrowMotion}
         >
           <span className="w-2 h-2 rounded-full" style={{ background: GREEN, boxShadow: `0 0 0 4px ${GREEN}20` }} />
           <span className="text-[11px] font-mono uppercase" style={{ color: GREEN, fontWeight: 700, letterSpacing: "0.08em" }}>
@@ -144,9 +180,7 @@ export default function Hero() {
         <motion.h1
           className="font-heading mb-8"
           style={{ fontSize: "clamp(2.75rem, 5.5vw, 4.25rem)", fontWeight: 700, lineHeight: 1.12, letterSpacing: "-0.038em", color: INK }}
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
+          {...headlineMotion}
         >
           ODD Engine for<br />
           <span style={{ color: VIOLET }}>Institutional Capital.</span>
@@ -156,9 +190,7 @@ export default function Hero() {
         <motion.p
           className="font-body max-w-2xl mx-auto"
           style={{ fontSize: "1.0625rem", fontWeight: 500, lineHeight: 1.65, letterSpacing: "-0.02em", color: SECONDARY }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          {...subtitleMotion}
         >
           Sits between raw information and human judgment — making that judgment faster, sharper,
           more defensible, and more affordable.
@@ -167,9 +199,7 @@ export default function Hero() {
         {/* CTA */}
         <motion.div
           className="flex items-center justify-center gap-3 mt-6"
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.3 }}
+          {...ctaMotion}
         >
           <Link
             href="/early-access"
@@ -182,9 +212,7 @@ export default function Hero() {
 
         <motion.div
           className="mt-8 flex flex-col items-center gap-4"
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.35 }}
+          {...audienceMotion}
         >
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-3">
             <span
@@ -207,13 +235,26 @@ export default function Hero() {
         </motion.div>
       </div>
 
+      {/* Scroll affordance — visible cue that there's more below */}
+      <div className="text-center mt-6 mb-2">
+        <a
+          href="#hero-mockup"
+          className="font-mono text-[11px] uppercase inline-flex items-center gap-1.5"
+          style={{ color: MUTED, fontWeight: 700, letterSpacing: "0.1em" }}
+        >
+          See it in action
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+        </a>
+      </div>
+
       {/* Product mockup — folder tab panel */}
       <motion.div
         ref={ref}
+        id="hero-mockup"
         className="max-w-5xl mx-auto mt-10"
-        initial={{ opacity: 0, y: 24 }}
-        animate={isInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.5, delay: 0.1 }}
+        {...mockupMotion}
       >
         <div
           className="rounded-panel overflow-hidden"
@@ -240,11 +281,10 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Folder tabs */}
+          {/* Folder tabs — toggle buttons (not ARIA tab pattern; no arrow-key handler implemented) */}
           <div
             className="flex items-end px-4 pt-3 overflow-x-auto"
             style={{ background: BG, borderBottom: `1px solid ${BORDER}` }}
-            role="tablist"
             aria-label="Operational due diligence workflow"
           >
             {STEPS.map((s, i) => {
@@ -256,11 +296,7 @@ export default function Hero() {
                   onClick={() => setActiveStep(i)}
                   onMouseEnter={() => setActiveStep(i)}
                   onFocus={() => setActiveStep(i)}
-                  role="tab"
-                  aria-selected={isActive}
-                  aria-controls={`workflow-panel-${i}`}
-                  id={`workflow-tab-${i}`}
-                  tabIndex={isActive ? 0 : -1}
+                  aria-pressed={isActive}
                   className="relative flex min-w-max flex-1 items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2.5 sm:py-3 text-[12px] sm:text-[14px] font-body whitespace-nowrap transition-colors"
                   style={{
                     background: isActive ? BG_CARD : "transparent",
@@ -292,13 +328,7 @@ export default function Hero() {
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeStep}
-                id={`workflow-panel-${activeStep}`}
-                role="tabpanel"
-                aria-labelledby={`workflow-tab-${activeStep}`}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: 0.18 }}
+                {...panelMotion}
               >
                 {/* Stats row — big numbers with rhythm */}
                 <div className="grid gap-3 mb-4 sm:gap-4 sm:mb-5" style={{ gridTemplateColumns: `repeat(${step.stats.length}, minmax(0, 1fr))` }}>

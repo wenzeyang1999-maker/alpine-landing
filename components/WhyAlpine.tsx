@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Users, Shield, Zap, DollarSign, Layers, Search } from "lucide-react";
 import {
   BG_CARD, BG_AMBER, INK, SECONDARY, MUTED, VIOLET, GREEN, AMBER, BORDER, BORDER_SUBTLE, LS_BODY, LS_H3,
@@ -27,7 +27,7 @@ const ITEMS: Differentiator[] = [
   {
     icon: <Shield size={18} />,
     title: "Compliant & Secure",
-    desc: "Commercial API · DPA · ZDR · TLS 1.3 · SOC 2 in progress. Security-first from day one.",
+    desc: "Server-side TLS, encryption in transit, and security review in progress. Security-first from day one.",
     statValue: "Enterprise",
     statLabel: "Grade",
     accent: GREEN,
@@ -68,6 +68,24 @@ const ITEMS: Differentiator[] = [
 ];
 
 export default function WhyAlpine() {
+  const shouldReduceMotion = useReducedMotion();
+
+  const containerMotion = shouldReduceMotion
+    ? { initial: false, animate: false }
+    : {
+        initial: "hidden" as const,
+        whileInView: "visible" as const,
+        viewport: { once: true, margin: "-80px" },
+        variants: { visible: { transition: { staggerChildren: 0.05 } } },
+      };
+
+  const itemMotion = shouldReduceMotion
+    ? { initial: false, animate: false }
+    : {
+        variants: { hidden: { opacity: 0, y: 6 }, visible: { opacity: 1, y: 0 } },
+        transition: { duration: 0.3 },
+      };
+
   return (
     <section id="why-alpine" className="py-24 px-6" style={{ background: BG_AMBER }}>
       <div className="max-w-5xl mx-auto">
@@ -88,18 +106,14 @@ export default function WhyAlpine() {
 
         {/* Six differentiator cards */}
         <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
-          variants={{ visible: { transition: { staggerChildren: 0.05 } } }}
+          {...containerMotion}
           className="rounded-panel overflow-hidden"
           style={{ background: BG_CARD, border: `1px solid ${BORDER}` }}
         >
           {ITEMS.map((d, i) => (
             <motion.div
               key={d.title}
-              variants={{ hidden: { opacity: 0, y: 6 }, visible: { opacity: 1, y: 0 } }}
-              transition={{ duration: 0.3 }}
+              {...itemMotion}
               className="flex items-start sm:items-center gap-4 sm:gap-6 p-5 sm:p-6"
               style={{ borderTop: i > 0 ? `1px solid ${BORDER_SUBTLE}` : "none" }}
             >

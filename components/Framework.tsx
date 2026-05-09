@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   BG_CARD, BG, INK, SECONDARY, MUTED, VIOLET, GREEN, AMBER, BORDER, BORDER_SUBTLE, LS_BODY, LS_H3,
 } from "@/lib/constants";
@@ -55,6 +55,28 @@ function ChapterCard({ ch, accent }: { ch: Chapter; accent: string }) {
 }
 
 export default function Framework() {
+  const shouldReduceMotion = useReducedMotion();
+
+  // Container-level whileInView staggering. When reduced-motion is on, drop
+  // the viewport/whileInView triggers entirely and render the cards visible.
+  const actContainerMotion = shouldReduceMotion
+    ? { initial: false, animate: false }
+    : {
+        initial: "hidden" as const,
+        whileInView: "visible" as const,
+        viewport: { once: true, margin: "-60px" },
+        variants: { visible: { transition: { staggerChildren: 0.06 } } },
+      };
+
+  // Per-card motion. When reduced-motion is on, no animation, no variants —
+  // just render the static visible state.
+  const cardMotion = shouldReduceMotion
+    ? { initial: false, animate: false }
+    : {
+        variants: { hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } },
+        transition: { duration: 0.35 },
+      };
+
   return (
     <section id="framework" className="py-24 px-6" style={{ background: BG }}>
       <div className="max-w-5xl mx-auto">
@@ -74,78 +96,117 @@ export default function Framework() {
           </p>
         </div>
 
-        {/* Two acts grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-          {/* Act I */}
-          <div>
-            <div className="flex items-center gap-3 mb-4">
-              <span
-                className="font-mono text-[10px] uppercase px-2 py-1 rounded-full"
-                style={{ background: `${VIOLET}15`, color: VIOLET, fontWeight: 700, letterSpacing: "0.1em" }}
-              >
-                Act I
-              </span>
-              <h3 className="font-heading" style={{ fontSize: "1rem", fontWeight: 700, color: INK, letterSpacing: "-0.02em" }}>
-                The Manager
-              </h3>
-              <span className="font-mono text-[10px]" style={{ color: MUTED, letterSpacing: "0.06em" }}>
-                · {ACT_I.reduce((a, c) => a + c.questions, 0)} questions
-              </span>
-            </div>
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-60px" }}
-              variants={{ visible: { transition: { staggerChildren: 0.06 } } }}
-              className="grid grid-cols-1 sm:grid-cols-2 gap-3"
-            >
-              {ACT_I.map((ch) => (
-                <motion.div
-                  key={ch.num}
-                  variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
-                  transition={{ duration: 0.35 }}
-                >
-                  <ChapterCard ch={ch} accent={VIOLET} />
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-
-          {/* Act II */}
-          <div>
-            <div className="flex items-center gap-3 mb-4">
-              <span
-                className="font-mono text-[10px] uppercase px-2 py-1 rounded-full"
-                style={{ background: `${GREEN}15`, color: GREEN, fontWeight: 700, letterSpacing: "0.1em" }}
-              >
-                Act II
-              </span>
-              <h3 className="font-heading" style={{ fontSize: "1rem", fontWeight: 700, color: INK, letterSpacing: "-0.02em" }}>
-                The Fund
-              </h3>
-              <span className="font-mono text-[10px]" style={{ color: MUTED, letterSpacing: "0.06em" }}>
-                · {ACT_II.reduce((a, c) => a + c.questions, 0)} questions
-              </span>
-            </div>
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-60px" }}
-              variants={{ visible: { transition: { staggerChildren: 0.06 } } }}
-              className="grid grid-cols-1 sm:grid-cols-2 gap-3"
-            >
-              {ACT_II.map((ch) => (
-                <motion.div
-                  key={ch.num}
-                  variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
-                  transition={{ duration: 0.35 }}
-                >
-                  <ChapterCard ch={ch} accent={GREEN} />
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
+        {/* The Spine — always-visible summary block above the collapsed grid */}
+        <div
+          className="rounded-panel p-6 sm:p-7 mb-6"
+          style={{ background: BG_CARD, border: `1px solid ${BORDER}` }}
+        >
+          <p className="font-mono text-[11px] uppercase mb-3" style={{ color: VIOLET, fontWeight: 700, letterSpacing: "0.1em" }}>
+            The Spine
+          </p>
+          <h3 className="font-heading mb-3" style={{ fontSize: "1.5rem", fontWeight: 700, color: INK, letterSpacing: "-0.025em" }}>
+            Two Acts · Eight Chapters · 901 Questions
+          </h3>
+          <p className="font-body" style={{ fontSize: "0.9375rem", lineHeight: 1.65, letterSpacing: LS_BODY, color: SECONDARY }}>
+            Act I covers the Manager (governance, compliance, technology, fund structure). Act II covers
+            the Fund (service providers, ops, valuation, transparency). Drafted in 3-5 days. Defensible
+            in front of your IC.
+          </p>
         </div>
+
+        {/* Eight-chapter grid — collapsed behind a summary toggle */}
+        <details className="group mb-6">
+          <summary
+            className="cursor-pointer rounded-card px-5 py-3 inline-flex items-center gap-2 font-mono text-[11px] uppercase select-none list-none"
+            style={{
+              color: VIOLET,
+              fontWeight: 700,
+              letterSpacing: "0.1em",
+              background: BG_CARD,
+              border: `1px solid ${BORDER}`,
+            }}
+          >
+            <span>See the eight chapters</span>
+            <svg
+              width="10"
+              height="10"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              className="transition-transform group-open:rotate-180"
+            >
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </summary>
+
+          <div className="mt-6">
+            {/* Two acts grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+              {/* Act I */}
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <span
+                    className="font-mono text-[10px] uppercase px-2 py-1 rounded-full"
+                    style={{ background: `${VIOLET}15`, color: VIOLET, fontWeight: 700, letterSpacing: "0.1em" }}
+                  >
+                    Act I
+                  </span>
+                  <h3 className="font-heading" style={{ fontSize: "1rem", fontWeight: 700, color: INK, letterSpacing: "-0.02em" }}>
+                    The Manager
+                  </h3>
+                  <span className="font-mono text-[10px]" style={{ color: MUTED, letterSpacing: "0.06em" }}>
+                    · {ACT_I.reduce((a, c) => a + c.questions, 0)} questions
+                  </span>
+                </div>
+                <motion.div
+                  {...actContainerMotion}
+                  className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+                >
+                  {ACT_I.map((ch) => (
+                    <motion.div
+                      key={ch.num}
+                      {...cardMotion}
+                    >
+                      <ChapterCard ch={ch} accent={VIOLET} />
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </div>
+
+              {/* Act II */}
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <span
+                    className="font-mono text-[10px] uppercase px-2 py-1 rounded-full"
+                    style={{ background: `${GREEN}15`, color: GREEN, fontWeight: 700, letterSpacing: "0.1em" }}
+                  >
+                    Act II
+                  </span>
+                  <h3 className="font-heading" style={{ fontSize: "1rem", fontWeight: 700, color: INK, letterSpacing: "-0.02em" }}>
+                    The Fund
+                  </h3>
+                  <span className="font-mono text-[10px]" style={{ color: MUTED, letterSpacing: "0.06em" }}>
+                    · {ACT_II.reduce((a, c) => a + c.questions, 0)} questions
+                  </span>
+                </div>
+                <motion.div
+                  {...actContainerMotion}
+                  className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+                >
+                  {ACT_II.map((ch) => (
+                    <motion.div
+                      key={ch.num}
+                      {...cardMotion}
+                    >
+                      <ChapterCard ch={ch} accent={GREEN} />
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </div>
+            </div>
+          </div>
+        </details>
 
         {/* Outcomes band */}
         <div
