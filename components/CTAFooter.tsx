@@ -26,7 +26,7 @@ export default function CTAFooter() {
             className="rounded-btn px-7 py-3 font-body text-[14px] hover:opacity-90 transition-opacity inline-flex items-center gap-1.5"
             style={{ background: INK, color: "#fff", fontWeight: 600 }}
           >
-            Book a Demo <ArrowUpRight size={13} />
+            Book a 30-min walkthrough <ArrowUpRight size={13} />
           </Link>
         </div>
       </div>

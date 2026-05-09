@@ -17,11 +17,13 @@ const NAV_ITEMS: NavItem[] = [
   {
     kind: "menu",
     label: "Alpine",
-    href: "#engine",
+    href: "#solution",
     children: [
-      { label: "Engine",     href: "#engine" },
-      { label: "Why Alpine", href: "#why-alpine" },
-      { label: "Team",       href: "#team" },
+      { label: "How it works", href: "#solution" },
+      { label: "Sample output", href: "#sample" },
+      { label: "Framework", href: "#framework" },
+      { label: "Engine", href: "#engine" },
+      { label: "Team", href: "#team" },
     ],
   },
   {
@@ -29,13 +31,11 @@ const NAV_ITEMS: NavItem[] = [
     label: "Services",
     href: "#services",
     children: [
-      { label: "Why Alpine",     href: "#why-alpine" },
       { label: "Three Products", href: "#services" },
     ],
   },
   { kind: "link", label: "Blog",            href: "#blog" },
   { kind: "page", label: "Alpine Space",    href: "/login", badge: "NEW" },
-  { kind: "link", label: "Subscribe",       href: "#subscribe" },
 ];
 
 export default function Navbar() {
@@ -231,9 +231,10 @@ export default function Navbar() {
               href="/login"
               className="hidden md:inline-flex items-center rounded-btn px-5 py-2.5 text-[14px] font-body hover:opacity-90 transition-opacity"
               style={{
-                background: VIOLET,
-                color: "#fff",
-                fontWeight: 600,
+                color: INK,
+                border: `1px solid ${BORDER}`,
+                background: "transparent",
+                fontWeight: 500,
                 letterSpacing: "-0.01em",
               }}
             >
@@ -343,16 +344,17 @@ export default function Navbar() {
                 );
               })}
 
-              {/* Mobile Login button */}
+              {/* Mobile Login button — ghost */}
               <div className="pt-4 pb-2">
                 <Link
                   href="/login"
                   onClick={() => setOpen(false)}
                   className="w-full text-center rounded-btn px-5 py-3 font-body text-[15px] hover:opacity-90 transition-opacity block"
                   style={{
-                    background: VIOLET,
-                    color: "#fff",
-                    fontWeight: 600,
+                    color: INK,
+                    border: `1px solid ${BORDER}`,
+                    background: "transparent",
+                    fontWeight: 500,
                     letterSpacing: "-0.01em",
                   }}
                 >

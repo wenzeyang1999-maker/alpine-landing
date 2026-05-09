@@ -58,7 +58,7 @@ const PRODUCTS: Product[] = [
       "Fundraising readiness support",
       "Pre-LP-meeting walkthrough",
     ],
-    cta: "Book a Call",
+    cta: "Talk to us",
     ctaHref: "/early-access",
     highlight: false,
   },
@@ -78,7 +78,7 @@ const PRODUCTS: Product[] = [
       "Custom workflows · SSO · on-prem option",
       "White-label + API access",
     ],
-    cta: "Book a Call",
+    cta: "Talk to us",
     ctaHref: "/early-access",
     highlight: false,
   },
@@ -173,26 +173,17 @@ export default function Products() {
           ))}
         </div>
 
-        {/* Continuous monitoring — concise, no price */}
+        {/* Continuous monitoring — passive caption, no CTA (CTA dedup) */}
         <div
-          className="rounded-card p-5 mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+          className="rounded-card p-5 mt-4"
           style={{ background: BG_CARD, border: `1px solid ${BORDER}` }}
         >
-          <div>
-            <span className="font-heading text-[13px]" style={{ color: INK, fontWeight: 600, letterSpacing: LS_H3 }}>
-              Continuous Monitoring
-            </span>
-            <p className="font-body text-[12px] mt-1" style={{ color: MUTED, letterSpacing: LS_BODY }}>
-              24/7 monitoring for key person changes, regulatory actions, and material events. Available with any product.
-            </p>
-          </div>
-          <Link
-            href="/early-access"
-            className="font-mono text-[11px] uppercase shrink-0 hover:opacity-70 transition-opacity"
-            style={{ color: VIOLET, fontWeight: 600, letterSpacing: "0.08em" }}
-          >
-            Add to engagement →
-          </Link>
+          <span className="font-heading text-[13px]" style={{ color: INK, fontWeight: 600, letterSpacing: LS_H3 }}>
+            Continuous Monitoring
+          </span>
+          <p className="font-body text-[12px] mt-1" style={{ color: MUTED, letterSpacing: LS_BODY }}>
+            Optional 24/7 monitoring for key person changes, regulatory actions, and material events. Available alongside any product.
+          </p>
         </div>
 
         {/* Quality commitment */}

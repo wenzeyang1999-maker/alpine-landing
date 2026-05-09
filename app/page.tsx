@@ -1,8 +1,10 @@
 import Navbar       from "@/components/Navbar";
 import Hero         from "@/components/Hero";
+import Problem      from "@/components/Problem";
+import Solution     from "@/components/Solution";
+import SampleOutput from "@/components/SampleOutput";
 import Framework    from "@/components/Framework";
 import QuestionTree from "@/components/QuestionTree";
-import WhyAlpine    from "@/components/WhyAlpine";
 import Products     from "@/components/Products";
 import Team         from "@/components/Team";
 import Blog         from "@/components/Blog";
@@ -16,9 +18,11 @@ export default function LandingPage() {
       <Navbar />
       <main id="main-content" style={{ background: BG }}>
         <Hero />
+        <Problem />
+        <Solution />
+        <SampleOutput />
         <Framework />
         <QuestionTree />
-        <WhyAlpine />
         <Products />
         <Blog />
         <Team />

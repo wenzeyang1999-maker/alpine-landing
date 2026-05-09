@@ -237,7 +237,7 @@ export default function Team() {
         {/* Affiliation strip */}
         <div className="rounded-panel p-5" style={{ background: BG_CARD, border: `1px solid ${BORDER}` }}>
           <p className="font-mono text-[10px] uppercase mb-3" style={{ color: MUTED, fontWeight: 700, letterSpacing: "0.1em" }}>
-            Education · Credentials · Industry partners
+            Founder affiliations & credentials
           </p>
           <div className="flex flex-wrap gap-x-5 gap-y-2.5">
             {AFFILIATIONS.map((a) => (
