@@ -1279,7 +1279,151 @@ function RefDataSection({ overrides }: { overrides: Record<string, string> }) {
   );
 }
 
-function FinalReport({ slug, topicRatingOverrides }: { slug?: string; topicRatingOverrides?: Record<number, string> }) {
+// ── Watermark Modal ───────────────────────────────────────────────────────────
+
+function WatermarkModal({ onClose }: { onClose: () => void }) {
+  const [recipientName, setRecipientName] = useState("");
+  const [recipientEmail, setRecipientEmail] = useState("");
+  const [step, setStep] = useState<"form" | "processing" | "done" | "error">("form");
+  const [emailSent, setEmailSent] = useState(false);
+  const [errMsg, setErrMsg] = useState("");
+
+  const handleGenerate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!recipientName.trim()) return;
+    setStep("processing");
+    try {
+      const pdfRes = await fetch("/demo-docs/sample_vc_fund_iv_alt.pdf");
+      const pdfBlob = await pdfRes.blob();
+      const file = new File([pdfBlob], "sample_vc_fund_iv_alt.pdf", { type: "application/pdf" });
+
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("recipientName", recipientName.trim());
+      fd.append("distributedBy", "demo");
+      if (recipientEmail.trim()) fd.append("recipientEmail", recipientEmail.trim());
+
+      const res = await fetch("/api/watermark", { method: "POST", body: fd });
+      if (!res.ok) {
+        const d = await res.json();
+        throw new Error(d.error ?? "Server error");
+      }
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Trellis_Capital_IV_${recipientName.trim().replace(/\s+/g, "_")}_CONFIDENTIAL.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      setEmailSent(res.headers.get("X-Email-Sent") === "true");
+      setStep("done");
+    } catch (err) {
+      setErrMsg(err instanceof Error ? err.message : "Failed to generate watermark");
+      setStep("error");
+    }
+  };
+
+  const isReady = !!recipientName.trim() && step !== "processing";
+
+  return (
+    <div
+      style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.55)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center" }}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div style={{ background: "#fff", borderRadius: 16, padding: "32px 32px", width: 440, maxWidth: "90vw", boxShadow: "0 20px 60px rgba(0,0,0,0.18)" }}>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 20 }}>
+          <div>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 4 }}>Final Report</div>
+            <div style={{ fontSize: 17, fontWeight: 700, color: "#0f172a" }}>Send Watermarked Copy</div>
+            <div style={{ fontSize: 12, color: "#64748b", marginTop: 3 }}>Watermark embedded across every page. Email delivery is optional.</div>
+          </div>
+          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", padding: 4, marginTop: -4 }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+
+        {step === "done" ? (
+          <div style={{ textAlign: "center", padding: "16px 0" }}>
+            <div style={{ width: 48, height: 48, borderRadius: "50%", background: "#f0fdf4", border: "1px solid #bbf7d0", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px" }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+            </div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "#0f172a", marginBottom: 6 }}>Watermarked PDF Ready</div>
+            <div style={{ fontSize: 12, color: "#64748b", marginBottom: emailSent ? 8 : 20 }}>File downloaded to your device.</div>
+            {emailSent && (
+              <div style={{ fontSize: 12, color: "#059669", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 8, padding: "8px 12px", marginBottom: 20 }}>
+                Email sent to {recipientEmail} with the report attached.
+              </div>
+            )}
+            <button onClick={onClose} style={{ padding: "10px 24px", fontSize: 13, fontWeight: 600, color: "#fff", background: "#7c3aed", border: "none", borderRadius: 8, cursor: "pointer" }}>Done</button>
+          </div>
+        ) : (
+          <form onSubmit={handleGenerate} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            <div>
+              <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.08em", display: "block", marginBottom: 5 }}>Recipient Name *</label>
+              <input
+                type="text" required autoFocus value={recipientName}
+                onChange={(e) => setRecipientName(e.target.value)}
+                placeholder="e.g. James Whitfield"
+                disabled={step === "processing"}
+                style={{ width: "100%", padding: "10px 12px", fontSize: 14, border: "1px solid #e2e8f0", borderRadius: 8, outline: "none", boxSizing: "border-box" }}
+              />
+            </div>
+            <div>
+              <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.08em", display: "block", marginBottom: 5 }}>
+                Recipient Email
+                <span style={{ fontSize: 10, fontWeight: 400, color: "#94a3b8", textTransform: "none", letterSpacing: 0, marginLeft: 6 }}>— leave blank to download only</span>
+              </label>
+              <input
+                type="email" value={recipientEmail}
+                onChange={(e) => setRecipientEmail(e.target.value)}
+                placeholder="james@example.com"
+                disabled={step === "processing"}
+                style={{ width: "100%", padding: "10px 12px", fontSize: 14, border: "1px solid #e2e8f0", borderRadius: 8, outline: "none", boxSizing: "border-box" }}
+              />
+            </div>
+
+            {recipientEmail.trim() && (
+              <div style={{ fontSize: 12, color: "#64748b", background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 8, padding: "10px 12px", lineHeight: 1.6 }}>
+                <span style={{ fontWeight: 600, color: "#475569" }}>Email preview:</span> "Alpine ODD Report — Confidential Copy for {recipientName || "…"}" with PDF attached.
+              </div>
+            )}
+
+            {step === "error" && (
+              <div style={{ fontSize: 12, color: "#dc2626", background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 8, padding: "8px 12px" }}>{errMsg}</div>
+            )}
+
+            <div style={{ display: "flex", gap: 10 }}>
+              <button type="button" onClick={onClose} style={{ flex: 1, padding: "10px", fontSize: 13, fontWeight: 600, color: "#475569", background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 8, cursor: "pointer" }}>Cancel</button>
+              <button
+                type="submit" disabled={!isReady}
+                style={{ flex: 2, padding: "10px", fontSize: 13, fontWeight: 700, color: "#fff", background: isReady ? "#7c3aed" : "#94a3b8", border: "none", borderRadius: 8, cursor: isReady ? "pointer" : "not-allowed", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
+              >
+                {step === "processing" ? (
+                  <><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: "wmSpin 1s linear infinite" }}><path d="M21 12a9 9 0 1 1-6.219-8.56" /></svg>{recipientEmail.trim() ? "Generating & Sending…" : "Generating…"}</>
+                ) : recipientEmail.trim() ? (
+                  <><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Generate & Send Email</>
+                ) : (
+                  <><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>Generate & Download</>
+                )}
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
+      <style>{`@keyframes wmSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+    </div>
+  );
+}
+
+// ── Final Report ──────────────────────────────────────────────────────────────
+
+function FinalReport({ slug, topicRatingOverrides, onWatermark }: { slug?: string; topicRatingOverrides?: Record<number, string>; onWatermark: () => void }) {
   const [activeSectionId, setActiveSectionId] = useState<string>(FINAL_REPORT_SECTIONS[0].id);
   const activeIdx = FINAL_REPORT_SECTIONS.findIndex((s) => s.id === activeSectionId);
   const activeSection = FINAL_REPORT_SECTIONS[activeIdx];
@@ -1391,7 +1535,7 @@ function FinalReport({ slug, topicRatingOverrides }: { slug?: string; topicRatin
             );
           })}
         </div>
-        <div style={{ padding: "12px 12px", borderTop: "1px solid #f1f5f9" }}>
+        <div style={{ padding: "12px 12px", borderTop: "1px solid #f1f5f9", display: "flex", flexDirection: "column", gap: 8 }}>
           <button
             onClick={handleDownload}
             style={{ width: "100%", padding: "8px 12px", fontSize: 11, fontWeight: 600, color: "#fff", background: "#7c3aed", border: "none", borderRadius: 8, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
@@ -1400,6 +1544,15 @@ function FinalReport({ slug, topicRatingOverrides }: { slug?: string; topicRatin
               <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
             </svg>
             Download PDF
+          </button>
+          <button
+            onClick={onWatermark}
+            style={{ width: "100%", padding: "8px 12px", fontSize: 11, fontWeight: 700, color: "#7c3aed", background: "#f5f3ff", border: "1.5px solid #7c3aed", borderRadius: 8, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+            Send Watermarked Copy
           </button>
         </div>
       </div>
@@ -3263,6 +3416,7 @@ export default function DemoReportViewer(_props: { alpineReviewId?: string | nul
   const DRAFT_STORAGE_KEY = `alpine-report-draft-${slug || "default"}`;
 
   const [activeTab, setActiveTab] = useState<typeof TABS[number]>("AI Draft");
+  const [showWatermarkModal, setShowWatermarkModal] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const contentAreaRef = useRef<HTMLDivElement>(null);
   const [refPopover, setRefPopover] = useState<RefPopoverState | null>(null);
@@ -3458,6 +3612,17 @@ export default function DemoReportViewer(_props: { alpineReviewId?: string | nul
                  "Final deliverable report for investment committee"}
               </p>
               <button onClick={() => window.print()} className="px-3 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">Print</button>
+              {activeTab === "Final Report" && !finalReportPending && (
+                <button
+                  onClick={() => setShowWatermarkModal(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors text-[#7c3aed] bg-[#f5f3ff] border border-[#7c3aed] hover:bg-[#ede9fe] cursor-pointer"
+                >
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  </svg>
+                  Send Watermarked Copy
+                </button>
+              )}
               <button
                 disabled={isDisabled}
                 onClick={() => {
@@ -3610,10 +3775,11 @@ export default function DemoReportViewer(_props: { alpineReviewId?: string | nul
           </div>
         </div>
       ) : (
-        <div ref={contentAreaRef}><FinalReport slug={slug} topicRatingOverrides={topicRatingOverrides} /></div>
+        <div ref={contentAreaRef}><FinalReport slug={slug} topicRatingOverrides={topicRatingOverrides} onWatermark={() => setShowWatermarkModal(true)} /></div>
       )}
       {refPopover && <RefPopover info={refPopover} onClose={() => setRefPopover(null)} />}
       {docViewer && <DocViewerPanel filename={docViewer.filename} quote={docViewer.quote} label={docViewer.label} onClose={() => setDocViewer(null)} />}
+      {showWatermarkModal && <WatermarkModal onClose={() => setShowWatermarkModal(false)} />}
     </div>
   );
 }
