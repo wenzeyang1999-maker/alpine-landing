@@ -20,7 +20,7 @@ const NAV_ITEMS: NavItem[] = [
     href: "#solution",
     children: [
       { label: "How it works", href: "#solution" },
-      { label: "Sample output", href: "#sample" },
+      { label: "Sample output", href: "#sample-output" },
       { label: "Framework", href: "#framework" },
       { label: "Engine", href: "#engine" },
       { label: "Team", href: "#team" },
