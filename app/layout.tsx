@@ -31,12 +31,12 @@ const alpineMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Alpine Due Diligence — AI-Powered ODD Platform",
-  description: "AI-drafted, analyst-reviewed operational due diligence. 472 questions across 38 fund strategies, regulatory verification across 54 regulators, and IC-ready report generation.",
+  title: "Alpine Due Diligence — ODD Engine for Institutional Capital",
+  description: "An ODD engine for institutional capital. 901 strategy-specific questions across 8 chapters, verified against 54 regulators. Practitioner-built. Human-owned conclusions. Drafted in 3–5 days.",
   icons: { icon: "/alpine-icon.svg" },
   openGraph: {
-    title: "Alpine Due Diligence — AI-Powered ODD Platform",
-    description: "Self-service AI platform automating operational due diligence for institutional investors.",
+    title: "Alpine Due Diligence — ODD Engine for Institutional Capital",
+    description: "An ODD engine for institutional capital — built by ODD professionals for institutional allocators and emerging managers.",
     siteName: "Alpine Due Diligence",
     type: "website",
     locale: "en_US",
@@ -44,8 +44,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Alpine Due Diligence — AI-Powered ODD Platform",
-    description: "Replace 40-hour manual ODD with 45-minute AI assessments.",
+    title: "Alpine Due Diligence — ODD Engine for Institutional Capital",
+    description: "Replace weeks-long manual ODD with a 3–5 day institutional engine. Practitioner-built. Human-owned conclusions.",
     images: ["/logo.png"],
   },
   robots: {

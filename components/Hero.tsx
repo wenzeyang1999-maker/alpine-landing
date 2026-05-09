@@ -20,12 +20,12 @@ const STEPS: {
   items: Item[];
 }[] = [
   {
-    label: "Upload",
+    label: "Collect",
     color: VIOLET,
     stats: [
-      { value: "14+", label: "document types" },
+      { value: "14+",   label: "document types" },
       { value: "< 60s", label: "to classify" },
-      { value: "Zero", label: "manual tagging" },
+      { value: "Zero",  label: "manual tagging" },
     ],
     body: "Drop your files. Alpine recognizes each document type and maps it to your fund's analysis path automatically — before the review even begins.",
     cols: 4,
@@ -38,76 +38,78 @@ const STEPS: {
     label: "Verify",
     color: AMBER,
     stats: [
-      { value: "54", label: "regulators checked" },
-      { value: "3", label: "coverage tiers" },
+      { value: "54",        label: "regulators checked" },
+      { value: "3",         label: "coverage tiers" },
       { value: "Automated", label: "up-to-date data" },
     ],
     body: "Alpine cross-references registration and disciplinary data across 54 regulators in 3 tiers — SEC EDGAR, FCA, MAS, SFC, CSSF, ASIC, and 48 more — automated and kept current.",
     cols: 4,
     items: [
-      { text: "SEC / IAPD", check: GREEN }, { text: "FCA (UK)", check: GREEN },
-      { text: "MAS (Singapore)", check: GREEN }, { text: "SFC (Hong Kong)", check: GREEN },
-      { text: "CSSF (Luxembourg)", check: GREEN }, { text: "ASIC (Australia)", check: GREEN },
-      { text: "AMF (France)", check: GREEN }, { text: "BaFin (Germany)", check: GREEN },
+      { text: "SEC / IAPD",          check: GREEN }, { text: "FCA (UK)",          check: GREEN },
+      { text: "MAS (Singapore)",     check: GREEN }, { text: "SFC (Hong Kong)",   check: GREEN },
+      { text: "CSSF (Luxembourg)",   check: GREEN }, { text: "ASIC (Australia)",  check: GREEN },
+      { text: "AMF (France)",        check: GREEN }, { text: "BaFin (Germany)",   check: GREEN },
     ],
   },
   {
     label: "Analyze",
     color: GREEN,
     stats: [
-      { value: "472", label: "questions asked" },
-      { value: "38", label: "fund strategies" },
-      { value: "12", label: "ODD topics covered" },
-      { value: "~5 min", label: "to analyze" },
+      { value: "901", label: "questions asked" },
+      { value: "38",  label: "fund strategies" },
+      { value: "8",   label: "Chapters · 2 Acts" },
     ],
-    body: "The question set adapts to your fund's structure, type, and strategy. Not a generic checklist — a strategy-specific engine that surfaces gaps a standard review would miss.",
+    body: "The same eight chapters apply to every fund. Inside them, the question set adapts to your fund's structure, type, and strategy — surfacing gaps a generic checklist would miss. Up to 1,193 questions in practice when the strategy appendix is walked through.",
     cols: 4,
     items: [
-      { text: "Governance", dot: GREEN }, { text: "Compliance", dot: GREEN },
-      { text: "Valuation", dot: GREEN }, { text: "Trading", dot: AMBER },
-      { text: "Technology", dot: AMBER }, { text: "Operations", dot: GREEN },
-      { text: "AML / KYC", dot: GREEN }, { text: "Risk Management", dot: GREEN },
-      { text: "Counterparty", dot: GREEN }, { text: "Liquidity", dot: AMBER },
-      { text: "Investor Relations", dot: GREEN }, { text: "Business Continuity", dot: GREEN },
+      { text: "01 · Manager Ownership & Governance",      dot: VIOLET },
+      { text: "02 · Legal, Regulatory & Compliance",       dot: VIOLET },
+      { text: "03 · Tech, Cyber & Resilience",             dot: VIOLET },
+      { text: "04 · Fund Structure, Terms & Alignment",    dot: VIOLET },
+      { text: "05 · Service Providers & Oversight",        dot: GREEN },
+      { text: "06 · Investment Ops & Portfolio Controls",  dot: GREEN },
+      { text: "07 · Valuation, Asset Existence & Reporting", dot: GREEN },
+      { text: "08 · Manager Transparency & LP Comms",      dot: GREEN },
     ],
   },
   {
-    label: "Review",
+    label: "Manager Call",
     color: AMBER,
     stats: [
-      { value: "Zero", label: "AI-only output" },
-      { value: "100%", label: "analyst-reviewed" },
-      { value: "Senior", label: "ODD analyst assigned" },
+      { value: "30–60 min",   label: "live call" },
+      { value: "8 chapters",  label: "covered" },
+      { value: "Verified",    label: "with the manager" },
     ],
-    body: "Every report is reviewed by a senior ODD analyst before delivery. No finding leaves Alpine without a human signing off — that's the institutional standard your IC expects.",
+    body: "A live call with the Manager to verify findings, walk through operational gaps, and capture context that documents alone can't. The analyst leads. The Manager confirms or corrects.",
     cols: 1,
     items: [
-      { text: "ODD Analyst Assigned to Review", check: AMBER },
-      { text: "Findings Verified Against Source Documents", check: AMBER },
-      { text: "Evidence Reviewed & Citations Confirmed", check: AMBER },
-      { text: "Follow-Up Questions Drafted by Analyst", check: AMBER },
-      { text: "Report Approved and Released for Delivery", check: AMBER },
+      { text: "Pre-call brief delivered to the Manager",       check: AMBER },
+      { text: "Eight-chapter walkthrough on the call",         check: AMBER },
+      { text: "Open-ended risk discussion with the Manager",   check: AMBER },
+      { text: "Findings cross-checked against source documents", check: AMBER },
+      { text: "Remediation pathways scoped together",          check: AMBER },
     ],
   },
   {
-    label: "Deliver",
+    label: "Review & Remediations",
     color: VIOLET,
     stats: [
-      { value: "< 5", label: "business days" },
-      { value: "3", label: "rating outcomes" },
-      { value: "Cite-ready", label: "for committee" },
+      { value: "< 5",            label: "business days" },
+      { value: "Citations",      label: "linked with traceability" },
+      { value: "100% Human",     label: "reviewed" },
+      { value: "Risks flagged",  label: "with remediations" },
     ],
-    body: "A complete ODD report with ACCEPT / WATCHLIST / FLAG ratings, structured observations, source citations, and a follow-up question list — formatted to defend in front of your IC.",
+    body: "A senior ODD analyst owns the final review. Every finding cited to source. Every risk paired with a remediation pathway. Defensible in front of your IC.",
     cols: 2,
     items: [
-      { text: "ACCEPT / WATCHLIST / FLAG Rating" }, { text: "Structured Risk Observations" },
-      { text: "Evidence Map & Source Citations" }, { text: "Follow-Up Question List" },
-      { text: "IC-Ready Report Package" }, { text: "Ongoing Monitoring Available" },
+      { text: "RATED · RISKS FLAGGED · REMEDIATED outcomes" }, { text: "Evidence map & source citations" },
+      { text: "Remediation pathway per risk" },                { text: "IC-ready report package" },
+      { text: "Ongoing monitoring available" },                { text: "Senior ODD analyst signature" },
     ],
   },
 ];
 
-const AUDIENCE_TYPES = ["Endowments", "Pensions", "Family Offices", "Fund of Funds", "Consultants"];
+const AUDIENCE_TYPES = ["Endowments", "Pensions", "Family Offices", "Fund of Funds", "Consultants", "Managers"];
 
 export default function Hero() {
   const ref = useRef(null);
@@ -120,7 +122,7 @@ export default function Hero() {
     <section className="pt-28 pb-16 px-6" style={{ background: BG }}>
       <div className="max-w-3xl mx-auto text-center">
 
-        {/* Eyebrow pill */}
+        {/* Eyebrow pill — just LIVE indicator */}
         <motion.div
           className="inline-flex items-center gap-2 rounded-full px-4 py-2 mb-8"
           style={{
@@ -136,12 +138,9 @@ export default function Hero() {
           <span className="text-[11px] font-mono uppercase" style={{ color: GREEN, fontWeight: 700, letterSpacing: "0.08em" }}>
             Live
           </span>
-          <span className="text-[14px] font-body" style={{ color: SECONDARY, fontWeight: 600, letterSpacing: "-0.015em" }}>
-            AI Engine · Early Access now open
-          </span>
         </motion.div>
 
-        {/* Display headline */}
+        {/* Display headline — ODD Engine for Institutional Capital */}
         <motion.h1
           className="font-heading mb-8"
           style={{ fontSize: "clamp(2.75rem, 5.5vw, 4.25rem)", fontWeight: 700, lineHeight: 1.12, letterSpacing: "-0.038em", color: INK }}
@@ -149,19 +148,20 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          Machine speed.<br />
-          <span style={{ color: VIOLET }}>Institutional standard.</span>
+          ODD Engine for<br />
+          <span style={{ color: VIOLET }}>Institutional Capital.</span>
         </motion.h1>
 
-        {/* Subtitle */}
+        {/* Subtitle — slide 3 of deck */}
         <motion.p
-          className="font-body max-w-lg mx-auto"
+          className="font-body max-w-2xl mx-auto"
           style={{ fontSize: "1.0625rem", fontWeight: 500, lineHeight: 1.65, letterSpacing: "-0.02em", color: SECONDARY }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          472 questions across 38 fund strategies. AI drafts your ODD report in minutes, a senior analyst reviews every finding before delivery.
+          Sits between raw information and human judgment — making that judgment faster, sharper,
+          more defensible, and more affordable.
         </motion.p>
 
         {/* CTA */}
@@ -176,7 +176,7 @@ export default function Hero() {
             className="inline-flex items-center gap-1.5 rounded-btn px-6 py-3 font-body hover:opacity-90 transition-opacity"
             style={{ background: INK, color: "#fff", fontSize: "0.9375rem", fontWeight: 600, letterSpacing: "-0.02em" }}
           >
-            Request Early Access <ArrowUpRight size={13} />
+            Book a Demo <ArrowUpRight size={13} />
           </Link>
         </motion.div>
 
@@ -235,7 +235,7 @@ export default function Hero() {
                 className="rounded px-3 py-1 text-[11px] font-sans max-w-xs mx-auto text-center"
                 style={{ background: BG_CARD, color: MUTED, border: `1px solid ${BORDER}`, letterSpacing: "0.01em" }}
               >
-                alpinedd.com/review/northpoint-capital
+                alpinedd.com/review/trellis-capital-iv
               </div>
             </div>
           </div>
@@ -306,7 +306,7 @@ export default function Hero() {
                     <div key={stat.label}>
                       <div
                         className="font-heading"
-                        style={{ fontSize: "clamp(1.25rem, 4vw, 2.25rem)", fontWeight: 700, color: step.color, letterSpacing: "-0.05em", lineHeight: 1 }}
+                        style={{ fontSize: "clamp(1.125rem, 3.6vw, 2rem)", fontWeight: 700, color: step.color, letterSpacing: "-0.05em", lineHeight: 1 }}
                       >
                         {stat.value}
                       </div>

@@ -42,16 +42,16 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="font-heading font-emphasis text-lg" style={{ color: INK }}>4. AI Processing &mdash; Zero Data Retention</h2>
+            <h2 className="font-heading font-emphasis text-lg" style={{ color: INK }}>4. Data Processing &mdash; Zero Retention on Analysis Layer</h2>
             <p className="mt-3">
-              Alpine uses Anthropic&apos;s commercial API under a Data Processing Agreement (DPA) with a Zero Data Retention (ZDR) addendum. Your document content is <strong>never used to train, fine-tune, or modify any AI model</strong>. This is a contractual prohibition, not an opt-out. Document content sent to the API for analysis is not stored by Anthropic after processing.
+              Alpine&apos;s document analysis layer uses Anthropic&apos;s commercial API under a Data Processing Agreement (DPA) with a Zero Data Retention (ZDR) addendum. Your document content is <strong>never used to train, fine-tune, or modify any model</strong>. This is a contractual prohibition, not an opt-out. Document content sent to the API for analysis is not stored after processing.
             </p>
           </section>
 
           <section>
             <h2 className="font-heading font-emphasis text-lg" style={{ color: INK }}>5. Data Sharing</h2>
             <p className="mt-3">
-              We do not sell, rent, or share your data with third parties for marketing purposes. The only third-party processor is Anthropic (for AI analysis), operating under the terms described in Section 4.
+              We do not sell, rent, or share your data with third parties for marketing purposes. The only third-party processor is Anthropic (for document analysis), operating under the terms described in Section 4.
             </p>
           </section>
 

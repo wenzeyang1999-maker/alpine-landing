@@ -17,7 +17,7 @@ export default function TermsPage() {
           <section>
             <h2 className="font-heading font-emphasis text-lg" style={{ color: INK }}>1. Service Description</h2>
             <p className="mt-3">
-              Alpine Due Diligence Inc. (&ldquo;Alpine&rdquo;) provides an AI-powered operational due diligence platform (&ldquo;Platform&rdquo;) that automates document analysis, gap assessment, regulatory verification, and report generation for institutional investors. The Platform is accessed via web application at alpinedd.com.
+              Alpine Due Diligence Inc. (&ldquo;Alpine&rdquo;) provides an operational due diligence platform (&ldquo;Platform&rdquo;) that supports document analysis, gap assessment, regulatory verification, and report generation for institutional investors. The Platform is accessed via web application at alpinedd.com.
             </p>
           </section>
 
@@ -46,7 +46,7 @@ export default function TermsPage() {
               <strong>Your Data:</strong> You retain full ownership of all documents you upload and all reports generated from your documents. Alpine does not claim any ownership interest in your data.
             </p>
             <p className="mt-3">
-              <strong>Alpine&apos;s Property:</strong> Alpine retains ownership of the Platform, its 12-topic ODD framework, analytical methodologies, risk observation libraries, report templates, and all underlying technology. These are proprietary to Alpine and may not be copied or reproduced.
+              <strong>Alpine&apos;s Property:</strong> Alpine retains ownership of the Platform, its eight-chapter ODD framework, analytical methodologies, risk observation libraries, report templates, and all underlying technology. These are proprietary to Alpine and may not be copied or reproduced.
             </p>
           </section>
 

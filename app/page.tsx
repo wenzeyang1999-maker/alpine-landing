@@ -1,11 +1,12 @@
 import Navbar       from "@/components/Navbar";
 import Hero         from "@/components/Hero";
+import Framework    from "@/components/Framework";
 import QuestionTree from "@/components/QuestionTree";
-import HowItWorks   from "@/components/HowItWorks";
-import Pricing      from "@/components/Pricing";
-import Methodology  from "@/components/Methodology";
+import WhyAlpine    from "@/components/WhyAlpine";
+import Products     from "@/components/Products";
 import Team         from "@/components/Team";
 import Blog         from "@/components/Blog";
+import Subscribe    from "@/components/Subscribe";
 import CTAFooter    from "@/components/CTAFooter";
 import { BG } from "@/lib/constants";
 
@@ -15,12 +16,13 @@ export default function LandingPage() {
       <Navbar />
       <main id="main-content" style={{ background: BG }}>
         <Hero />
+        <Framework />
         <QuestionTree />
-        <HowItWorks />
-        <Pricing />
-        <Methodology />
+        <WhyAlpine />
+        <Products />
         <Blog />
         <Team />
+        <Subscribe variant="band" source="landing" />
       </main>
       <CTAFooter />
     </>

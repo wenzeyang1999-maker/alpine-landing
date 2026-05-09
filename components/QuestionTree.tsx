@@ -62,9 +62,9 @@ const FUND_TYPES: Record<string, FundType[]> = {
 };
 
 const STATS = [
-  { value: "472", label: "Due diligence questions" },
+  { value: "901", label: "Due diligence questions" },
   { value: "38",  label: "Strategy profiles" },
-  { value: "12",  label: "ODD topics" },
+  { value: "8",   label: "Chapters · 2 Acts" },
 ];
 
 export default function QuestionTree() {
@@ -83,8 +83,9 @@ export default function QuestionTree() {
             Every fund type. Every strategy.
           </h2>
           <p className="font-body" style={{ fontSize: "1.0625rem", lineHeight: 1.65, letterSpacing: LS_BODY, color: SECONDARY }}>
-            Alpine routes the right questions based on fund structure, type, and strategy.
-            No irrelevant questions. No gaps.
+            All eight chapters apply to every fund. The 901 strategy-specific questions inside them
+            adapt to your fund's structure, type, and strategy — up to 1,193 in practice when the
+            strategy appendix is walked through.
           </p>
         </div>
 
