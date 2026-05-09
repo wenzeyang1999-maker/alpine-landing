@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import SubpageLayout from "@/components/SubpageLayout";
-import { BG_CARD, INK, MUTED, SUBTLE, GREEN, BORDER, VIOLET } from "@/lib/constants";
+import { BG_CARD, INK, MUTED, SECONDARY, SUBTLE, GREEN, BORDER, VIOLET, LS_BODY } from "@/lib/constants";
 
 const ROLES = [
   { value: "allocator", label: "Allocator", sub: "LP, fund of funds, family office" },
@@ -14,6 +15,8 @@ const ROLES = [
 type Role = typeof ROLES[number]["value"];
 
 export default function EarlyAccessPage() {
+  const pathname = usePathname();
+  const newsletterSource = pathname?.startsWith("/demo") ? "demo" : "early-access";
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [org, setOrg] = useState("");
@@ -22,6 +25,7 @@ export default function EarlyAccessPage() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [subscribeNewsletter, setSubscribeNewsletter] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,6 +46,17 @@ export default function EarlyAccessPage() {
       if (!res.ok) {
         const data = await res.json().catch(() => null);
         throw new Error(data?.detail || "Something went wrong. Please try again.");
+      }
+      if (subscribeNewsletter) {
+        // Fire-and-forget — never block the request flow on newsletter sync.
+        fetch("/api/subscribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: email.trim().toLowerCase(),
+            source: newsletterSource,
+          }),
+        }).catch(console.error);
       }
       setSubmitted(true);
     } catch (err: unknown) {
@@ -164,6 +179,18 @@ export default function EarlyAccessPage() {
                     className="field-input"
                   />
                 </div>
+
+                <label className="flex items-start gap-2 mt-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={subscribeNewsletter}
+                    onChange={(e) => setSubscribeNewsletter(e.target.checked)}
+                    className="mt-1 cursor-pointer"
+                  />
+                  <span className="font-body text-[13px]" style={{ color: SECONDARY, letterSpacing: LS_BODY }}>
+                    Email me Alpine&apos;s monthly ODD insights newsletter.
+                  </span>
+                </label>
 
                 {error && (
                   <p className="text-sm text-center" style={{ color: VIOLET }} aria-live="polite">{error}</p>

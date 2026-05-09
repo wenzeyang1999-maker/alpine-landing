@@ -30,18 +30,22 @@ export default function Subscribe({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, source }),
       });
-      const data = await res.json();
+      // Read body for diagnostics, but never surface server text to the user.
+      const data = await res.json().catch(() => null);
       if (!res.ok) {
+        console.error("Subscribe error:", res.status, data);
         setStatus("error");
-        setMessage(data.detail || "Something went wrong.");
+        setMessage("Something went wrong. Please try again.");
         return;
       }
       setStatus("success");
-      setMessage(data.message || "You're on the list.");
+      // Always show the same generic message on success — never trust server text.
+      setMessage("Almost there. Check your email to confirm your subscription.");
       setEmail("");
-    } catch {
+    } catch (err) {
+      console.error("Subscribe network error:", err);
       setStatus("error");
-      setMessage("Network error. Please try again.");
+      setMessage("Something went wrong. Please try again.");
     }
   }
 
@@ -84,6 +88,16 @@ export default function Subscribe({
         {message && status === "error" && (
           <span className="font-mono text-[11px] sm:ml-2 self-center" style={{ color: "#DC2626" }}>
             {message}
+          </span>
+        )}
+        {status === "success" && (
+          <span className="font-mono text-[11px] self-center" style={{ color: GREEN }}>
+            {message}
+          </span>
+        )}
+        {status === "success" && (
+          <span className="font-mono text-[11px] self-center" style={{ color: MUTED }}>
+            If you don&apos;t see it in 2 minutes, check your spam folder.
           </span>
         )}
       </form>
@@ -154,6 +168,11 @@ export default function Subscribe({
               style={{ color: status === "success" ? GREEN : status === "error" ? "#DC2626" : MUTED }}
             >
               {message}
+            </span>
+          )}
+          {status === "success" && (
+            <span className="font-mono text-[11px]" style={{ color: MUTED }}>
+              If you don&apos;t see it in 2 minutes, check your spam folder.
             </span>
           )}
         </form>

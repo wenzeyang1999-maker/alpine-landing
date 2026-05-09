@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import SubpageLayout from "@/components/SubpageLayout";
-import { BG_CARD, BG, INK, MUTED, SUBTLE, BORDER, VIOLET, GREEN } from "@/lib/constants";
+import { BG_CARD, BG, INK, MUTED, SECONDARY, SUBTLE, BORDER, VIOLET, GREEN, LS_BODY } from "@/lib/constants";
 
 type UserType = "asset_allocator" | "investment_manager" | "other" | "";
 
@@ -33,6 +33,7 @@ export default function SignupPage() {
   const [error, setError]                   = useState("");
   const [loading, setLoading]               = useState(false);
   const [done, setDone]                     = useState(false);
+  const [subscribeNewsletter, setSubscribeNewsletter] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,6 +86,18 @@ export default function SignupPage() {
       if (!res.ok) {
         setError(data.error || "Something went wrong. Please try again.");
         return;
+      }
+
+      if (subscribeNewsletter) {
+        // Fire-and-forget — never block the signup flow on newsletter sync.
+        fetch("/api/subscribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: email.trim().toLowerCase(),
+            source: "signup",
+          }),
+        }).catch(console.error);
       }
 
       setDone(true);
@@ -304,6 +317,18 @@ export default function SignupPage() {
                 className="field-input"
               />
             </div>
+
+            <label className="flex items-start gap-2 mt-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={subscribeNewsletter}
+                onChange={(e) => setSubscribeNewsletter(e.target.checked)}
+                className="mt-1 cursor-pointer"
+              />
+              <span className="font-body text-[13px]" style={{ color: SECONDARY, letterSpacing: LS_BODY }}>
+                Email me Alpine&apos;s monthly ODD insights newsletter.
+              </span>
+            </label>
 
             {error && (
               <p className="text-sm text-center" style={{ color: VIOLET }} aria-live="polite">
