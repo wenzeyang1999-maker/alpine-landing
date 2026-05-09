@@ -34,7 +34,9 @@ const FOUNDERS: Founder[] = [
       "1+ yrs Operational Due Diligence",
       "~4 yrs Alternative Investments",
     ],
+    photo: "/eva-yang-headshot.jpeg",
     initials: "EY",
+    linkedin: "https://www.linkedin.com/in/evaayang/",
     email: "eva.yang@alpinedd.com",
   },
 ];
