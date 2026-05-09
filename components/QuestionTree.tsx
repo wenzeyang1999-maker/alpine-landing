@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { ChevronRight } from "lucide-react";
 import { useInView } from "framer-motion";
-import { BG_CARD, BG_VIOLET, INK, SECONDARY, MUTED, SUBTLE, VIOLET, BORDER, BORDER_SUBTLE, LS_BODY } from "@/lib/constants";
+import { BG_CARD, BG_VIOLET, INK, SECONDARY, MUTED, VIOLET, BORDER, LS_BODY } from "@/lib/constants";
 
 function CountUp({ target, duration = 1.6, delay = 0 }: { target: number; duration?: number; delay?: number }) {
   const [count, setCount] = useState(0);
@@ -120,7 +120,7 @@ export default function QuestionTree() {
               style={{ background: BG_CARD, border: `1px solid ${BORDER}` }}
             >
               <div className="flex items-center gap-2 mb-4">
-                <span className="font-mono text-[11px] px-1.5 py-0.5 rounded-micro" style={{ background: BORDER_SUBTLE, color: MUTED, fontWeight: 600, letterSpacing: "0.04em" }}>
+                <span className="font-mono text-[11px] px-1.5 py-0.5 rounded-micro" style={{ background: BG_CARD, color: MUTED, border: `1px solid ${BORDER}`, fontWeight: 600, letterSpacing: "0.04em" }}>
                   {ft.code}
                 </span>
                 <span className="font-body text-[15px]" style={{ color: INK, fontWeight: 600, letterSpacing: "-0.01em" }}>
@@ -155,7 +155,7 @@ export default function QuestionTree() {
                 </div>
                 <div
                   className="metric-label mt-3"
-                  style={{ fontSize: "0.75rem", fontWeight: 500, color: SUBTLE, letterSpacing: "0.06em", textTransform: "uppercase" }}
+                  style={{ fontSize: "0.75rem", fontWeight: 500, color: SECONDARY, letterSpacing: "0.06em", textTransform: "uppercase" }}
                 >
                   {label}
                 </div>

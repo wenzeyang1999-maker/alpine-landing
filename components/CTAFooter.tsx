@@ -38,7 +38,7 @@ export default function CTAFooter() {
       >
         <div className="flex items-center gap-2.5">
           <Image src="/alpine-icon.svg" alt="Alpine" width={18} height={18} />
-          <span className="font-mono text-[11px]" style={{ color: MUTED, letterSpacing: LS_BODY }}>
+          <span className="font-mono text-[11px]" style={{ color: SECONDARY, letterSpacing: LS_BODY }}>
             &copy; 2026 Alpine Due Diligence Inc.
           </span>
         </div>
@@ -48,7 +48,7 @@ export default function CTAFooter() {
               key={l}
               href={`/${l}`}
               className="font-mono text-[11px] hover:opacity-70 transition-opacity capitalize flex items-center"
-              style={{ color: MUTED, letterSpacing: LS_BODY, minHeight: "44px" }}
+              style={{ color: SECONDARY, letterSpacing: LS_BODY, minHeight: "44px" }}
             >
               {l}
             </Link>

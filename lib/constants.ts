@@ -14,13 +14,18 @@ export const BG_AMBER   = "#FDF8EE";   // faint amber tint  — methodology / tr
 export const INK     = "#0F0F10";   // primary text — near-black
 export const SECONDARY = "#3A3A4A"; // secondary text — body, descriptions
 export const MUTED   = "#6B7280";   // tertiary — placeholders, metadata
-export const SUBTLE  = "#9CA3AF";   // quaternary — timestamps, disabled
+export const SUBTLE  = "#5B6470";   // quaternary — timestamps, disabled (bumped from #9CA3AF for WCAG AA contrast on light backgrounds)
 
 // ── Brand (Alpine violet — kept, replaces Linear indigo) ──────────────────
 export const VIOLET  = "#7B2CBF";   // primary CTA — Alpine brand
 export const VIOLET_HOVER = "#9333EA"; // hover state
-export const GREEN   = "#10B981";   // ACCEPT / positive status
-export const AMBER   = "#F59E0B";   // WATCHLIST / warning
+export const GREEN   = "#10B981";   // ACCEPT / positive status — use for backgrounds, dots, large stat numbers
+export const AMBER   = "#F59E0B";   // WATCHLIST / warning — use for backgrounds, dots, large stat numbers
+
+// Darker text-only variants — use for SMALL bold uppercase labels and pill text where WCAG AA contrast (4.5:1 normal / 3:1 large bold) is required.
+// GREEN/AMBER above fail contrast on small bold text (~2.2-2.5:1); these darker shades pass.
+export const GREEN_TEXT = "#047857";   // GREEN at 700 — 5.06:1 on white, 4.78:1 on BG_GREEN
+export const AMBER_TEXT = "#B45309";   // AMBER at 700 — 4.94:1 on white, 4.71:1 on BG_AMBER
 
 // ── Borders ───────────────────────────────────────────────────────────────
 export const BORDER  = "#E5E7EB";   // standard card border

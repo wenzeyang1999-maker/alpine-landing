@@ -12,6 +12,8 @@ import {
   VIOLET,
   GREEN,
   AMBER,
+  GREEN_TEXT,
+  AMBER_TEXT,
   BORDER,
   BORDER_SUBTLE,
   LS_BODY,
@@ -23,13 +25,15 @@ type Row = {
   desc: string;
   statValue: string;
   statLabel: string;
-  accent: string;
+  accent: string;     // bg tint for icon tile (12% opacity)
+  accentText: string; // text color for stat value — uses darker variant for AA contrast
 };
 
 const ITEMS: Row[] = [
   {
     icon: <FileText size={18} />,
     accent: VIOLET,
+    accentText: VIOLET,
     title: "Documents in",
     desc: "14+ document types auto-classified into the eight-chapter framework.",
     statValue: "<60s",
@@ -38,6 +42,7 @@ const ITEMS: Row[] = [
   {
     icon: <CheckCircle size={18} />,
     accent: GREEN,
+    accentText: GREEN_TEXT,
     title: "Cross-verified",
     desc: "54 regulators across 3 tiers — automated and kept current.",
     statValue: "54",
@@ -46,6 +51,7 @@ const ITEMS: Row[] = [
   {
     icon: <Brain size={18} />,
     accent: AMBER,
+    accentText: AMBER_TEXT,
     title: "Eight-chapter analysis",
     desc: "901 strategy-specific questions. RATED · RISKS FLAGGED · REMEDIATED.",
     statValue: "901",
@@ -54,6 +60,7 @@ const ITEMS: Row[] = [
   {
     icon: <Users size={18} />,
     accent: VIOLET,
+    accentText: VIOLET,
     title: "Human-owned review",
     desc: "A senior ODD analyst owns the final report. Defensible in front of your IC.",
     statValue: "3-5 days",
@@ -145,7 +152,7 @@ export default function Solution() {
                   style={{
                     fontSize: "1.25rem",
                     fontWeight: 700,
-                    color: d.accent,
+                    color: d.accentText,
                     letterSpacing: "-0.03em",
                     lineHeight: 1,
                   }}

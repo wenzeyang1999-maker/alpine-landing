@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { BG_CARD, BG_AMBER, INK, SECONDARY, MUTED, VIOLET, GREEN, AMBER, BORDER, BORDER_SUBTLE, LS_BODY, LS_H3 } from "@/lib/constants";
+import { BG_CARD, BG_AMBER, INK, SECONDARY, MUTED, VIOLET, GREEN, AMBER, AMBER_TEXT, BORDER, BORDER_SUBTLE, LS_BODY, LS_H3 } from "@/lib/constants";
 
 type Founder = {
   name: string;
@@ -213,7 +213,7 @@ export default function Team() {
                 <div className="flex items-center gap-2">
                   <span
                     className="font-mono text-[9px] uppercase px-1.5 py-0.5 rounded-full"
-                    style={{ background: `${AMBER}20`, color: AMBER, fontWeight: 700, letterSpacing: "0.08em" }}
+                    style={{ background: `${AMBER}20`, color: "#7C2D12", fontWeight: 700, letterSpacing: "0.08em" }}
                   >
                     In formation
                   </span>

@@ -8,7 +8,7 @@ import {
   SECONDARY,
   MUTED,
   VIOLET,
-  AMBER,
+  AMBER_TEXT,
   BORDER,
   LS_BODY,
 } from "@/lib/constants";
@@ -89,7 +89,7 @@ export default function Problem() {
                   style={{
                     fontSize: "2rem",
                     fontWeight: 700,
-                    color: AMBER,
+                    color: AMBER_TEXT,
                     letterSpacing: "-0.038em",
                     lineHeight: 1,
                   }}

@@ -12,6 +12,7 @@ import {
   VIOLET,
   GREEN,
   AMBER,
+  GREEN_TEXT,
   BORDER,
   LS_BODY,
 } from "@/lib/constants";
@@ -78,7 +79,7 @@ export default function SampleOutput() {
                 className="font-mono text-[10px] uppercase px-2 py-0.5 rounded-full"
                 style={{
                   background: `${GREEN}15`,
-                  color: GREEN,
+                  color: GREEN_TEXT,
                   fontWeight: 700,
                   letterSpacing: "0.08em",
                 }}

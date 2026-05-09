@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import {
-  BG_CARD, BG, INK, SECONDARY, MUTED, VIOLET, GREEN, AMBER, BORDER, BORDER_SUBTLE, LS_BODY, LS_H3,
+  BG_CARD, BG, INK, SECONDARY, MUTED, VIOLET, GREEN, AMBER, GREEN_TEXT, AMBER_TEXT, BORDER, BORDER_SUBTLE, LS_BODY, LS_H3,
 } from "@/lib/constants";
 
 type Chapter = { num: string; title: string; desc: string; questions: number };
@@ -22,9 +22,9 @@ const ACT_II: Chapter[] = [
 ];
 
 const OUTCOMES = [
-  { label: "RATED",         color: GREEN,  desc: "Eight-chapter R/Y/G ratings with structured rationale." },
-  { label: "RISKS FLAGGED", color: AMBER,  desc: "Every risk surfaced, scored, and traced to evidence." },
-  { label: "REMEDIATED",    color: VIOLET, desc: "Each risk paired with a remediation pathway." },
+  { label: "RATED",         color: GREEN_TEXT, dot: GREEN,  desc: "Eight-chapter R/Y/G ratings with structured rationale." },
+  { label: "RISKS FLAGGED", color: AMBER_TEXT, dot: AMBER,  desc: "Every risk surfaced, scored, and traced to evidence." },
+  { label: "REMEDIATED",    color: VIOLET,     dot: VIOLET, desc: "Each risk paired with a remediation pathway." },
 ];
 
 function ChapterCard({ ch, accent }: { ch: Chapter; accent: string }) {
@@ -179,7 +179,7 @@ export default function Framework() {
                 <div className="flex items-center gap-3 mb-4">
                   <span
                     className="font-mono text-[10px] uppercase px-2 py-1 rounded-full"
-                    style={{ background: `${GREEN}15`, color: GREEN, fontWeight: 700, letterSpacing: "0.1em" }}
+                    style={{ background: `${GREEN}15`, color: GREEN_TEXT, fontWeight: 700, letterSpacing: "0.1em" }}
                   >
                     Act II
                   </span>
@@ -220,7 +220,7 @@ export default function Framework() {
             {OUTCOMES.map((o) => (
               <div key={o.label} className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full" style={{ background: o.color }} />
+                  <span className="w-2 h-2 rounded-full" style={{ background: o.dot }} />
                   <span
                     className="font-heading"
                     style={{ fontSize: "0.9375rem", fontWeight: 700, color: o.color, letterSpacing: "0.04em" }}

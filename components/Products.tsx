@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ArrowRight, Shield } from "lucide-react";
 import {
-  BG_CARD, BG_GREEN, INK, SECONDARY, MUTED, VIOLET, GREEN, AMBER, BORDER, LS_H3, LS_BODY,
+  BG_CARD, BG_GREEN, INK, SECONDARY, MUTED, VIOLET, GREEN, AMBER, GREEN_TEXT, AMBER_TEXT, BORDER, LS_H3, LS_BODY,
 } from "@/lib/constants";
 
 type Product = {
@@ -12,7 +12,8 @@ type Product = {
   tagline: string;
   promise: string;
   outcome: string;
-  outcomeColor: string;
+  outcomeColor: string;     // dot/border accent — uses bright brand color
+  outcomeTextColor: string; // pill text — uses darker variant for AA contrast
   price: string;
   priceDetail: string;
   features: string[];
@@ -29,6 +30,7 @@ const PRODUCTS: Product[] = [
     promise: "Accelerated extraction. Strengthened verification. Human-owned assessments and conclusions.",
     outcome: "RATED",
     outcomeColor: GREEN,
+    outcomeTextColor: GREEN_TEXT,
     price: "< $5,000",
     priceDetail: "per review",
     features: [
@@ -49,6 +51,7 @@ const PRODUCTS: Product[] = [
     promise: "Risks identified → mitigation pathways mapped → operational gaps closed → more capital raised.",
     outcome: "REMEDIATED",
     outcomeColor: VIOLET,
+    outcomeTextColor: VIOLET,
     price: "Custom",
     priceDetail: "per engagement",
     features: [
@@ -69,6 +72,7 @@ const PRODUCTS: Product[] = [
     promise: "Self-serve tool for in-house teams to expedite and standardize reviews.",
     outcome: "CONTINUOUS",
     outcomeColor: AMBER,
+    outcomeTextColor: AMBER_TEXT,
     price: "Custom",
     priceDetail: "annual license",
     features: [
@@ -120,7 +124,7 @@ export default function Products() {
                 </span>
                 <span
                   className="font-mono text-[10px] uppercase px-2 py-0.5 rounded-full"
-                  style={{ background: `${p.outcomeColor}15`, color: p.outcomeColor, fontWeight: 700, letterSpacing: "0.08em" }}
+                  style={{ background: `${p.outcomeColor}15`, color: p.outcomeTextColor, fontWeight: 700, letterSpacing: "0.08em" }}
                 >
                   {p.outcome}
                 </span>
