@@ -15,7 +15,8 @@ export default function SubpageLayout({ children }: SubpageLayoutProps) {
         <div style={{ borderBottom: `1px solid ${BORDER}` }}>
           <div className="mx-auto max-w-5xl px-6 py-4 flex items-center justify-between">
             <Link href="/" className="flex items-center">
-              <Image src="/alpine-logo-dark.svg" alt="Alpine Due Diligence" width={180} height={48} style={{ height: 40, width: "auto" }} />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/alpine-logo-dark.svg?v=5" alt="Alpine Due Diligence" style={{ height: 40, width: "auto" }} />
             </Link>
           </div>
         </div>

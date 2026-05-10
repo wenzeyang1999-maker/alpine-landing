@@ -1,10 +1,11 @@
 <svg width="320" height="76" viewBox="0 0 320 76" fill="none" xmlns="http://www.w3.org/2000/svg">
   <!-- Alpine Due Diligence — Full Logo — Dark Background (v3 — app icon + wordmark) -->
   <defs>
-    <linearGradient id="icon-bg" x1="0" y1="60" x2="60" y2="0" gradientUnits="userSpaceOnUse">
+    <linearGradient id="icon-bg" x1="0" y1="0" x2="60" y2="60" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#10B981"/>
-      <stop offset="45%" stop-color="#F59E0B"/>
-      <stop offset="100%" stop-color="#7B2CBF"/>
+      <stop offset="60%" stop-color="#F59E0B"/>
+      <stop offset="72%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#C026D3"/>
     </linearGradient>
   </defs>
   <!-- App icon (scaled to 60x60) — double-peak mark from canonical 512×512 SVG -->

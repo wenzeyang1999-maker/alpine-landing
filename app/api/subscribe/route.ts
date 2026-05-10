@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { Resend } from "resend";
 import { supabase } from "@/lib/supabase";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { notifyAdminNewMember } from "@/lib/admin-notify";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -40,26 +41,44 @@ function newToken(): string {
 
 function confirmEmailHtml(confirmUrl: string): string {
   return `<!doctype html>
-<html><body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background:#F7F8F8; padding:32px;">
-  <div style="max-width:520px; margin:0 auto; background:#FFFFFF; border:1px solid #E5E7EB; border-radius:12px; padding:32px;">
-    <h1 style="font-size:18px; color:#0F0F10; margin:0 0 12px;">Confirm your Alpine subscription</h1>
-    <p style="font-size:14px; line-height:1.55; color:#3A3A4A; margin:0 0 20px;">
-      Click the button below to confirm your email and start receiving Alpine's monthly ODD insights.
-    </p>
-    <p style="margin:0 0 24px;">
-      <a href="${confirmUrl}" style="display:inline-block; background:#0F0F10; color:#FFFFFF; text-decoration:none; padding:12px 20px; border-radius:8px; font-size:14px; font-weight:600;">
-        Confirm subscription
-      </a>
-    </p>
-    <p style="font-size:12px; line-height:1.55; color:#6B7280; margin:0 0 8px;">
-      Or paste this link into your browser:
-    </p>
-    <p style="font-size:12px; line-height:1.55; color:#6B7280; word-break:break-all; margin:0;">
-      ${confirmUrl}
-    </p>
-    <p style="font-size:11px; line-height:1.55; color:#9CA3AF; margin:24px 0 0;">
-      If you didn't request this, you can safely ignore this email.
-    </p>
+<html><body style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#f1f0eb;padding:32px 0;margin:0;">
+  <div style="max-width:520px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;">
+    <div style="background:#1a1a2e;padding:20px 28px;">
+      <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+        <tr>
+          <td style="vertical-align:middle;padding-right:14px;">
+            <img src="https://alpinedd.com/logo.png" alt="Alpine" style="height:36px;width:auto;display:block;" />
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-size:15px;font-weight:700;color:#f5f0e8;">Alpine Due Diligence</div>
+            <div style="font-size:10px;color:#f5f0e8;opacity:0.5;letter-spacing:0.1em;text-transform:uppercase;">Newsletter</div>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div style="padding:32px;">
+      <h1 style="font-size:18px;color:#0f172a;margin:0 0 12px;">Confirm your Alpine subscription</h1>
+      <p style="font-size:14px;line-height:1.6;color:#475569;margin:0 0 20px;">
+        Click the button below to confirm your email and start receiving Alpine's monthly ODD insights.
+      </p>
+      <p style="margin:0 0 24px;">
+        <a href="${confirmUrl}" style="display:inline-block;background:#0f172a;color:#fff;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;">
+          Confirm subscription
+        </a>
+      </p>
+      <p style="font-size:12px;line-height:1.55;color:#94a3b8;margin:0 0 8px;">
+        Or paste this link into your browser:
+      </p>
+      <p style="font-size:12px;line-height:1.55;color:#94a3b8;word-break:break-all;margin:0 0 24px;">
+        ${confirmUrl}
+      </p>
+      <p style="font-size:11px;line-height:1.55;color:#cbd5e1;margin:0;">
+        If you didn't request this, you can safely ignore this email.
+      </p>
+    </div>
+    <div style="padding:16px 32px;background:#f8f7f4;border-top:1px solid #e8e6e1;font-size:11px;color:#94a3b8;text-align:center;">
+      Alpine Due Diligence Inc. · <a href="https://alpinedd.com" style="color:#7c3aed;text-decoration:none;">alpinedd.com</a>
+    </div>
   </div>
 </body></html>`;
 }
@@ -70,7 +89,7 @@ function confirmEmailText(confirmUrl: string): string {
 
 async function sendConfirmEmail(to: string, confirmUrl: string): Promise<void> {
   await resend.emails.send({
-    from: "Alpine <noreply@alpinedd.com>",
+    from: "Alpine <notifications@alpinedd.com>",
     to,
     subject: "Confirm your Alpine subscription",
     html: confirmEmailHtml(confirmUrl),
@@ -220,6 +239,9 @@ export async function POST(req: NextRequest) {
       }
       mustSendEmail = true;
       activeConfirmToken = confirmToken;
+
+      // Notify admin of new subscriber (fire-and-forget)
+      notifyAdminNewMember({ event: "subscribe", email: normalized, source: subSource });
     }
 
     // 8) Send confirmation email (best-effort)

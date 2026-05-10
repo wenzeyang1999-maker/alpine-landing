@@ -52,22 +52,6 @@ const ADVISORY_BOARD = [
   "Compliance & Regulatory Expert(s)",
 ];
 
-const AFFILIATIONS = [
-  "McGill University",
-  "University of Toronto",
-  "McMaster University",
-  "Rotman",
-  "Desautels (McGill)",
-  "Tsinghua University",
-  "CAIA Association",
-  "CFA Institute",
-  "IFSE Institute",
-  "Castle Hall",
-  "National Bank",
-  "equivesto",
-  "CICC",
-  "ZHSR",
-];
 
 function FounderCard({ f }: { f: Founder }) {
   const [imgErr, setImgErr] = useState(false);
@@ -231,24 +215,6 @@ export default function Team() {
                 ))}
               </ul>
             </div>
-          </div>
-        </div>
-
-        {/* Affiliation strip */}
-        <div className="rounded-panel p-5" style={{ background: BG_CARD, border: `1px solid ${BORDER}` }}>
-          <p className="font-mono text-[10px] uppercase mb-3" style={{ color: MUTED, fontWeight: 700, letterSpacing: "0.1em" }}>
-            Founder affiliations & credentials
-          </p>
-          <div className="flex flex-wrap gap-x-5 gap-y-2.5">
-            {AFFILIATIONS.map((a) => (
-              <span
-                key={a}
-                className="font-body text-[12px]"
-                style={{ color: SECONDARY, fontWeight: 500, letterSpacing: LS_BODY }}
-              >
-                {a}
-              </span>
-            ))}
           </div>
         </div>
 

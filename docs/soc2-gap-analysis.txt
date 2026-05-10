@@ -1,0 +1,162 @@
+================================================================================
+ALPINE DUE DILIGENCE INC.
+SOC 2 Gap Analysis
+As of: April 27, 2026
+Prepared against: Compliance Policy Manual v2.0 + codebase review
+================================================================================
+
+SOC 2 audits two stages:
+  Type I  — Point-in-time snapshot: are controls suitably designed?
+  Type II — 6-12 month observation: are controls operating effectively?
+
+The compliance policy (v2.0) is well-written. The primary gaps are in technical
+implementation — most controls are documented but not yet in the code.
+
+--------------------------------------------------------------------------------
+1. WHAT IS ALREADY IN PLACE
+--------------------------------------------------------------------------------
+
+  POLICY + CODE BOTH DONE:
+  - Privacy Policy, Terms of Service (published at alpinedd.com/privacy & /terms)
+  - Compliance Policy Manual v2.0 (14 appendices, PDF published)
+  - TLS 1.3 in transit (Cloudflare + Supabase infrastructure layer)
+  - AES-256 at rest (Supabase infrastructure layer)
+  - Vendor DPA inventory (Anthropic, Hetzner, Supabase, Resend, Cloudflare)
+  - Incident Response Plan (Appendix G — documented)
+  - Change Management via Git (Appendix H — practice matches policy)
+  - Risk Assessment register (Appendix M — documented)
+  - Anthropic Zero Data Retention (ZDR) — API contract level
+  - Data classification policy (Appendix E — documented)
+  - Business Continuity Plan (Appendix K — documented)
+
+--------------------------------------------------------------------------------
+2. CRITICAL GAPS (Policy says X, code does not implement X)
+--------------------------------------------------------------------------------
+
+  CC6 — LOGICAL ACCESS CONTROLS (largest gap / Type I blocker)
+  ---------------------------------------------------------------
+  Policy says:                          Actual code:
+  - bcrypt password hashing,            login/page.tsx uses hardcoded
+    never store plaintext               demo@alpinedd.com / demo123
+                                        stored in localStorage. No real auth.
+
+  - MFA required for all               Not implemented anywhere.
+    administrative access
+
+  - Account lockout after               Login just shows an error message.
+    5 consecutive failed attempts        No lockout logic.
+
+  - Role-Based Access Control (RBAC)   No role system. All demo users
+                                        have identical access.
+
+  - JWT sessions with expiry           localStorage string, no expiry,
+    and automatic timeout               no server-side session validation.
+
+  SOC 2 TYPE I CANNOT PASS WITHOUT CC6. This is the #1 priority.
+
+  CC7 — SYSTEM OPERATIONS / AUDIT LOGGING
+  -----------------------------------------
+  Policy says:                          Actual code:
+  - Every access event logged with      API routes have no audit log writes.
+    timestamp, user identity, IP,       No audit_events table in Supabase.
+    and action
+
+  - Automated monitoring and alerts     None. No Datadog, no Sentry,
+                                        no UptimeRobot.
+
+  - Login and access logs retained      No login log table.
+    for 1 year
+
+  CC4 — MONITORING ACTIVITIES
+  ----------------------------
+  - No uptime monitoring (no PagerDuty / UptimeRobot / BetterUptime)
+  - No error tracking (no Sentry)
+  - Policy references "automated monitoring alerts" — currently manual discovery
+
+  CC8 — CHANGE MANAGEMENT
+  ------------------------
+  - Git workflow is in place (GOOD)
+  - Gap: no formal deployment log recording date, commit hash, and change summary
+    (Policy Appendix H requires this documentation)
+
+  APPENDIX N — POLICY ACKNOWLEDGMENT
+  ------------------------------------
+  - Policy requires all personnel to sign Acknowledgment Form and email to
+    azhang@alpinedd.com within 5 business days
+  - No digital signing workflow or acknowledgment record exists
+
+--------------------------------------------------------------------------------
+3. WHAT NEEDS TO BE DONE
+--------------------------------------------------------------------------------
+
+  MUST DO (Type I blockers — without these, audit fails):
+
+  [1] Replace demo auth with real authentication
+      - Integrate Supabase Auth (email + password, real bcrypt by Supabase)
+      - Remove hardcoded demo credentials from login/page.tsx
+      - Drop localStorage session, use Supabase JWT sessions
+      - Estimated effort: 1-2 weeks dev
+
+  [2] Implement MFA
+      - Enable Supabase Auth TOTP (built-in)
+      - Require MFA for admin/internal accounts
+      - Estimated effort: 2-3 days
+
+  [3] Account lockout after 5 failed attempts
+      - Add rate limiting and lockout logic to login API
+      - Estimated effort: 1 day
+
+  [4] Audit log table in Supabase
+      - Create audit_events table (user_id, action, resource, ip, timestamp)
+      - Write to it from all API routes on access/mutation
+      - Estimated effort: 3-5 days
+
+  [5] Engage a SOC 2 audit firm
+      - Firms friendly to small companies: Johanson Group, Schellman, Prescient
+      - They provide a readiness checklist specific to your environment
+      - Budget: ~$15,000-30,000 for Type I
+      - Timeline: start Q2 2026 to hit Q3 2026 Type I target
+
+  SHOULD DO (complete before Type I audit):
+
+  [6] Error monitoring — Sentry (free tier sufficient)
+  [7] Uptime monitoring — BetterUptime or UptimeRobot (free tier sufficient)
+  [8] Deployment log — simple Notion page or spreadsheet recording:
+      date / commit hash / description / deployed by
+  [9] Penetration test — engage external firm (Cobalt, Synack, or freelance)
+      Budget: ~$3,000-8,000
+
+  TYPE II ONLY (2027, after 6-12 month observation period):
+
+  [10] Continuous evidence collection — audit logs, access reviews, deploy records
+  [11] Annual policy re-acknowledgment workflow for all team members
+  [12] Formal backup restoration test with written results
+  [13] Annual vendor review documentation
+
+--------------------------------------------------------------------------------
+4. TIMELINE ESTIMATE
+--------------------------------------------------------------------------------
+
+  Phase                                       Effort        Target
+  -----------------------------------------------------------------------
+  Technical controls (auth + audit + monitor) 3-4 wks dev   Now -> Q2 2026
+  Pentest                                     2-4 wks        Q2 2026
+  Select auditor + readiness assessment       2-4 wks        Q2 2026
+  SOC 2 Type I audit                          4-6 wks        Q3 2026
+  Type II observation period begins           6-12 months    Q3 2026
+  SOC 2 Type II audit                         4-6 wks        Q1 2027
+
+--------------------------------------------------------------------------------
+5. SINGLE MOST IMPORTANT FIRST STEP
+--------------------------------------------------------------------------------
+
+  Replace the demo login with real Supabase Auth.
+
+  Everything else (MFA, audit logging, RBAC, session management) builds on top
+  of having a real authentication layer. Until that is in place, none of the
+  CC6 controls can be evidenced to an auditor.
+
+================================================================================
+END OF DOCUMENT
+Alpine Due Diligence Inc. | Confidential | azhang@alpinedd.com
+================================================================================

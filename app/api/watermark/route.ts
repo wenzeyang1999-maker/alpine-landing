@@ -12,8 +12,17 @@ function buildEmailHtml(recipientName: string, filename: string, distributedBy: 
 <div style="background:#f1f0eb;padding:32px 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
   <div style="max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;">
     <div style="background:#1a1a2e;padding:20px 28px;">
-      <div style="font-size:15px;font-weight:700;color:#f5f0e8;">Alpine Due Diligence</div>
-      <div style="font-size:10px;color:#f5f0e8;opacity:0.5;letter-spacing:0.1em;text-transform:uppercase;">Operational Due Diligence</div>
+      <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+        <tr>
+          <td style="vertical-align:middle;padding-right:14px;">
+            <img src="https://alpinedd.com/logo.png" alt="Alpine" style="height:36px;width:auto;display:block;" />
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-size:15px;font-weight:700;color:#f5f0e8;">Alpine Due Diligence</div>
+            <div style="font-size:10px;color:#f5f0e8;opacity:0.5;letter-spacing:0.1em;text-transform:uppercase;">Operational Due Diligence</div>
+          </td>
+        </tr>
+      </table>
     </div>
     <div style="padding:32px 32px 24px;">
       <p style="font-size:15px;font-weight:600;color:#0f172a;margin:0 0 16px;">Dear ${recipientName},</p>
@@ -59,20 +68,32 @@ export async function POST(req: NextRequest) {
 
     const pdfBytes = await file.arrayBuffer();
     const pdfDoc = await PDFDocument.load(pdfBytes);
-    const watermarkText = `CONFIDENTIAL — ${recipientName}`;
+    const wmLine1 = `CONFIDENTIAL — ${recipientName}`;
+    const wmLine2 = recipientEmail ?? "";
 
     for (const page of pdfDoc.getPages()) {
       const { width, height } = page.getSize();
       for (let r = 0; r < 3; r++) {
         for (let c = 0; c < 3; c++) {
-          page.drawText(watermarkText, {
-            x: (width / 3) * c + width / 3 / 2 - 90,
-            y: (height / 3) * r + height / 3 / 2,
-            size: 18,
+          const x = (width / 3) * c + width / 3 / 2 - 90;
+          const y = (height / 3) * r + height / 3 / 2;
+          page.drawText(wmLine1, {
+            x, y,
+            size: 16,
             color: rgb(0.65, 0.65, 0.65),
             opacity: 0.18,
             rotate: degrees(45),
           });
+          if (wmLine2) {
+            page.drawText(wmLine2, {
+              x: x + 14,
+              y: y - 20,
+              size: 13,
+              color: rgb(0.65, 0.65, 0.65),
+              opacity: 0.18,
+              rotate: degrees(45),
+            });
+          }
         }
       }
     }

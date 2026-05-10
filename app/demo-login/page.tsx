@@ -8,7 +8,7 @@ import { BG_CARD, INK, MUTED, SUBTLE, BORDER, VIOLET } from "@/lib/constants";
 
 const SESSION_KEY = "alpine_demo_user";
 
-export default function LoginPage() {
+export default function DemoLoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,14 +29,13 @@ export default function LoginPage() {
 
       const data = await res.json();
 
-      if (!res.ok) {
-        setError(data.error || "Invalid email or password.");
+      if (!res.ok || !data.demo_access) {
+        setError("Access restricted. Contact Alpine to request demo access.");
         return;
       }
 
-      localStorage.setItem(SESSION_KEY, JSON.stringify({ ...data.user, demo_access: data.demo_access }));
-      const params = new URLSearchParams(window.location.search);
-      router.push(params.get("redirect") ?? "/alpine-space");
+      localStorage.setItem(SESSION_KEY, JSON.stringify({ ...data.user, demo_access: true }));
+      router.push("/portfolio2");
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
@@ -49,11 +48,20 @@ export default function LoginPage() {
       <div className="flex-1 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="font-heading font-emphasis text-2xl md:text-[1.75rem] leading-snug" style={{ color: INK }}>
-              Read our newest white paper
+            <div
+              className="inline-block text-[10px] font-mono font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4"
+              style={{ background: VIOLET, color: "#fff", letterSpacing: "0.12em" }}
+            >
+              Alpine ODD Demo
+            </div>
+            <h1
+              className="font-heading font-emphasis text-2xl md:text-[1.75rem] leading-snug"
+              style={{ color: INK }}
+            >
+              Analyst Portal
             </h1>
             <p className="mt-3 text-sm font-body leading-relaxed" style={{ color: MUTED }}>
-              Sign in or create a free account to get instant access.
+              Restricted access. Sign in with your Alpine-issued credentials.
             </p>
           </div>
 
@@ -63,7 +71,11 @@ export default function LoginPage() {
             style={{ background: BG_CARD, borderColor: BORDER }}
           >
             <div>
-              <label htmlFor="email" className="block text-xs font-mono font-semibold uppercase tracking-wider mb-1.5" style={{ color: SUBTLE }}>
+              <label
+                htmlFor="email"
+                className="block text-xs font-mono font-semibold uppercase tracking-wider mb-1.5"
+                style={{ color: SUBTLE }}
+              >
                 Email
               </label>
               <input
@@ -73,13 +85,17 @@ export default function LoginPage() {
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@firm.com"
+                placeholder="name@alpinedd.com"
                 className="field-input"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-xs font-mono font-semibold uppercase tracking-wider mb-1.5" style={{ color: SUBTLE }}>
+              <label
+                htmlFor="password"
+                className="block text-xs font-mono font-semibold uppercase tracking-wider mb-1.5"
+                style={{ color: SUBTLE }}
+              >
                 Password
               </label>
               <input
@@ -106,21 +122,17 @@ export default function LoginPage() {
               className="w-full mt-2 px-6 py-3.5 rounded-btn text-white font-body font-emphasis text-sm hover:opacity-90 transition-colors disabled:opacity-60 disabled:cursor-not-allowed min-h-[48px]"
               style={{ background: INK }}
             >
-              {loading ? "Signing in…" : "Sign In"}
+              {loading ? "Verifying…" : "Sign In"}
             </button>
           </form>
 
-          <Link
-            href="/signup"
-            className="mt-4 w-full inline-flex items-center justify-center px-6 py-3.5 rounded-btn font-body font-emphasis text-sm hover:opacity-80 transition-opacity border"
-            style={{ color: INK, borderColor: INK, background: "transparent" }}
-          >
-            Create an account
-          </Link>
-
           <p className="mt-5 text-center text-sm font-mono" style={{ color: MUTED }}>
-            Need a demo?{" "}
-            <Link href="/early-access" className="underline hover:opacity-80 transition-opacity" style={{ color: VIOLET }}>
+            Not a demo user?{" "}
+            <Link
+              href="/early-access"
+              className="underline hover:opacity-80 transition-opacity"
+              style={{ color: VIOLET }}
+            >
               Request early access
             </Link>
           </p>

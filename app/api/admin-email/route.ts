@@ -15,12 +15,18 @@ export async function POST(req: NextRequest) {
     const html = `
       <div style="background:#f1f0eb;padding:32px 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
         <div style="max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;">
-          <div style="background:#1a1a2e;padding:20px 28px;display:flex;align-items:center;gap:12px;">
-            <img src="https://alpinedd.com/alpine-icon.svg" alt="Alpine" style="height:28px;width:28px;" />
-            <div>
-              <div style="font-size:15px;font-weight:700;color:#f5f0e8;">Alpine Due Diligence</div>
-              <div style="font-size:10px;color:#f5f0e8;opacity:0.5;letter-spacing:0.1em;text-transform:uppercase;">ODD Admin</div>
-            </div>
+          <div style="background:#1a1a2e;padding:20px 28px;">
+            <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+              <tr>
+                <td style="vertical-align:middle;padding-right:14px;">
+                  <img src="https://alpinedd.com/logo.png" alt="Alpine" style="height:36px;width:auto;display:block;" />
+                </td>
+                <td style="vertical-align:middle;">
+                  <div style="font-size:15px;font-weight:700;color:#f5f0e8;">Alpine Due Diligence</div>
+                  <div style="font-size:10px;color:#f5f0e8;opacity:0.5;letter-spacing:0.1em;text-transform:uppercase;">ODD Admin</div>
+                </td>
+              </tr>
+            </table>
           </div>
           <div style="padding:28px 32px;">
             <div style="font-size:14px;color:#1a1a2e;line-height:1.8;white-space:pre-wrap;">${body.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>

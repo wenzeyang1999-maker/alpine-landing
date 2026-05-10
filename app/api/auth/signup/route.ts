@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { supabase } from "@/lib/supabase";
+import crypto from "crypto";
+import { notifyAdminNewMember } from "@/lib/admin-notify";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const ADMIN_EMAIL = "azhang@alpinedd.com";
@@ -11,13 +13,17 @@ function wrapEmail(body: string): string {
   <div style="background-color:#f1f0eb;padding:32px 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
     <div style="max-width:560px;margin:0 auto;">
       <div style="background-color:#ffffff;padding:24px 32px;border-radius:12px 12px 0 0;text-align:center;border-bottom:1px solid #e8e6e1;">
-        <div style="display:inline-flex;align-items:center;gap:10px;">
-          <img src="https://alpinedd.com/alpine-icon.svg" alt="Alpine" style="height:36px;width:36px;" />
-          <div style="text-align:left;margin-left:10px;">
-            <div style="font-size:17px;font-weight:700;color:#1a1a2e;letter-spacing:-0.02em;line-height:1.1;">ALPINE</div>
-            <div style="font-size:9px;font-weight:600;color:#64748B;letter-spacing:0.12em;text-transform:uppercase;">Due Diligence</div>
-          </div>
-        </div>
+        <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:0 auto;">
+          <tr>
+            <td style="vertical-align:middle;padding-right:12px;">
+              <img src="https://alpinedd.com/logo.png" alt="Alpine" style="height:36px;width:auto;display:block;" />
+            </td>
+            <td style="vertical-align:middle;text-align:left;">
+              <div style="font-size:17px;font-weight:700;color:#1a1a2e;letter-spacing:-0.02em;line-height:1.1;">ALPINE</div>
+              <div style="font-size:9px;font-weight:600;color:#64748B;letter-spacing:0.12em;text-transform:uppercase;">Due Diligence</div>
+            </td>
+          </tr>
+        </table>
       </div>
       <div style="background-color:#ffffff;padding:36px 32px 32px 32px;">
         ${body}
@@ -173,24 +179,36 @@ export async function POST(req: NextRequest) {
 
     const verificationUrl = linkData.properties.action_link;
 
-    // Persist all profile fields in the users table
-    await supabase.from("users").upsert(
-      {
-        email,
-        full_name,
-        organization,
-        user_type:  user_type  || null,
-        job_title:  job_title  || null,
-        aum:        aum        || null,
-        role: "analyst",
-        is_active: false, // becomes true after email verification
-      },
-      { onConflict: "email" }
-    );
-
-    // Fire both emails in parallel
+    // Persist all profile fields in the users table + auto-subscribe to newsletter
     await Promise.all([
-      notifyAdmin({ full_name, email, organization, user_type, job_title, aum }),
+      supabase.from("users").upsert(
+        {
+          email,
+          full_name,
+          organization,
+          user_type:  user_type  || null,
+          job_title:  job_title  || null,
+          aum:        aum        || null,
+          role: "analyst",
+          is_active: false,
+        },
+        { onConflict: "email" }
+      ),
+      supabase.from("newsletter_subscribers").upsert(
+        {
+          email,
+          source: "signup",
+          confirmed_at: new Date().toISOString(),
+          unsubscribe_token: crypto.randomBytes(32).toString("hex"),
+          consent_user_agent: req.headers.get("user-agent") ?? null,
+        },
+        { onConflict: "email", ignoreDuplicates: true }
+      ),
+    ]);
+
+    // Fire emails in parallel
+    await Promise.all([
+      notifyAdminNewMember({ event: "signup", email, name: full_name, organization, source: "signup" }),
       sendVerificationEmail(email, full_name, verificationUrl),
     ]);
 

@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { BG, BG_CARD, INK, MUTED, VIOLET, GREEN, AMBER, BORDER } from "@/lib/constants";
@@ -35,7 +34,7 @@ const NAV_ITEMS: NavItem[] = [
     ],
   },
   { kind: "link", label: "Blog",            href: "#blog" },
-  { kind: "page", label: "Alpine Space",    href: "/login", badge: "NEW" },
+  { kind: "page", label: "Alpine Space",    href: "/login?redirect=/alpine-space", badge: "NEW" },
 ];
 
 export default function Navbar() {
@@ -104,21 +103,19 @@ export default function Navbar() {
         backdropFilter: "blur(12px)",
         WebkitBackdropFilter: "blur(12px)",
       }}>
-        <div className="flex items-center justify-between max-w-6xl mx-auto px-6 h-[5rem]">
+        <div className="relative flex items-center max-w-6xl mx-auto px-6 h-[5rem]">
           {/* Logo */}
-          <Link href="/" className="flex h-full items-center" onClick={() => setOpen(false)}>
-            <Image
-              src="/alpine-logo-dark.svg"
+          <Link href="/" className="flex h-full items-center flex-none" onClick={() => setOpen(false)}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/alpine-logo-dark.svg?v=5"
               alt="Alpine Due Diligence"
-              width={200}
-              height={64}
               style={{ height: 48, width: "auto" }}
-              priority
             />
           </Link>
 
-          {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-8">
+          {/* Desktop nav — absolutely centered */}
+          <div className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
             {NAV_ITEMS.map((item) => {
               const isActive =
                 (item.kind === "link" && item.href.startsWith("#") && activeSection === item.href.slice(1)) ||
@@ -226,9 +223,9 @@ export default function Navbar() {
           </div>
 
           {/* Login (filled, persistent) + mobile hamburger */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 ml-auto">
             <Link
-              href="/login"
+              href="/demo-login"
               className="hidden md:inline-flex items-center rounded-btn px-5 py-2.5 text-[14px] font-body hover:opacity-90 transition-opacity"
               style={{
                 color: INK,
@@ -347,7 +344,7 @@ export default function Navbar() {
               {/* Mobile Login button — ghost */}
               <div className="pt-4 pb-2">
                 <Link
-                  href="/login"
+                  href="/demo-login"
                   onClick={() => setOpen(false)}
                   className="w-full text-center rounded-btn px-5 py-3 font-body text-[15px] hover:opacity-90 transition-opacity block"
                   style={{
