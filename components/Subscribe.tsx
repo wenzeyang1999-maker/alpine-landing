@@ -162,6 +162,9 @@ export default function Subscribe({
               )}
             </button>
           </div>
+          <span className="font-mono text-[11px]" style={{ color: MUTED }}>
+            You&apos;ll receive a confirmation email — the link is valid for 7 days.
+          </span>
           {message && (
             <span
               className="font-mono text-[11px]"

@@ -61,10 +61,13 @@ function confirmEmailHtml(confirmUrl: string): string {
       <p style="font-size:14px;line-height:1.6;color:#475569;margin:0 0 20px;">
         Click the button below to confirm your email and start receiving Alpine's monthly ODD insights.
       </p>
-      <p style="margin:0 0 24px;">
+      <p style="margin:0 0 12px;">
         <a href="${confirmUrl}" style="display:inline-block;background:#0f172a;color:#fff;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;">
           Confirm subscription
         </a>
+      </p>
+      <p style="font-size:12px;line-height:1.55;color:#94a3b8;margin:0 0 20px;">
+        This link expires in 7 days.
       </p>
       <p style="font-size:12px;line-height:1.55;color:#94a3b8;margin:0 0 8px;">
         Or paste this link into your browser:
@@ -84,7 +87,7 @@ function confirmEmailHtml(confirmUrl: string): string {
 }
 
 function confirmEmailText(confirmUrl: string): string {
-  return `Confirm your Alpine subscription\n\nClick the link below to confirm your email:\n${confirmUrl}\n\nIf you didn't request this, you can safely ignore this email.`;
+  return `Confirm your Alpine subscription\n\nClick the link below to confirm your email:\n${confirmUrl}\n\nThis link expires in 7 days.\n\nIf you didn't request this, you can safely ignore this email.`;
 }
 
 async function sendConfirmEmail(to: string, confirmUrl: string): Promise<void> {

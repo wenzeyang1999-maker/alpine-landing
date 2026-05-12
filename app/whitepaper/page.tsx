@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import SubpageLayout from "@/components/SubpageLayout";
+import { GREEN, AMBER, VIOLET, BORDER as NAV_BORDER } from "@/lib/constants";
 
 const SESSION_KEY = "alpine_demo_user";
 
@@ -87,6 +87,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 export default function WhitepaperPage() {
   const router = useRouter();
   const [demoAccess, setDemoAccess] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
     const raw = localStorage.getItem(SESSION_KEY);
@@ -120,19 +121,51 @@ export default function WhitepaperPage() {
     };
   }, []);
 
-  return (
-    <SubpageLayout>
-      <div style={{ background: CREAM, minHeight: "100vh", userSelect: "none" }}>
+  const headerBg  = darkMode ? "#111111" : "#ffffff";
+  const headerBdr = darkMode ? "rgba(255,255,255,0.1)" : NAV_BORDER;
 
-        {/* Demo banner */}
-        {demoAccess && (
-          <div style={{ background: "#7c3aed", padding: "10px 32px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
-            <p style={{ fontSize: 13, color: "#fff", margin: 0 }}>You have access to the Alpine ODD Demo.</p>
-            <Link href="/portfolio2" style={{ fontSize: 13, fontWeight: 600, color: "#7c3aed", background: "#fff", padding: "6px 16px", borderRadius: 6, textDecoration: "none" }}>
-              Open Demo →
+  return (
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: darkMode ? "#1a1a1a" : "#ebebeb", transition: "background 0.2s" }}>
+
+      {/* ── Header ─────────────────────────────────────────────────────────── */}
+      <header>
+        <div style={{ height: 2, background: `linear-gradient(90deg, ${GREEN}, ${AMBER}, ${VIOLET})` }} />
+        <div style={{ borderBottom: `1px solid ${headerBdr}`, background: headerBg, transition: "background 0.2s, border-color 0.2s" }}>
+          <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 16px", height: 64, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <Link href="/">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={darkMode ? "/alpine-logo-white.svg" : "/alpine-logo-dark.svg?v=5"} alt="Alpine Due Diligence" style={{ height: 40, width: "auto" }} />
             </Link>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              {demoAccess && (
+                <Link href="/portfolio2" style={{
+                  fontSize: 13, fontWeight: 600, textDecoration: "none", padding: "6px 16px", borderRadius: 6,
+                  background: darkMode ? "#7c3aed" : "#0f1f3d", color: "#fff", transition: "background 0.2s",
+                }}>
+                  Open Demo →
+                </Link>
+              )}
+              <button
+                onClick={() => setDarkMode(d => !d)}
+                style={{
+                  display: "flex", alignItems: "center", gap: 6,
+                  background: darkMode ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.07)",
+                  border: darkMode ? "1px solid rgba(255,255,255,0.15)" : "1px solid rgba(0,0,0,0.12)",
+                  color: darkMode ? "rgba(255,255,255,0.65)" : "rgba(0,0,0,0.5)",
+                  borderRadius: 6, padding: "6px 12px", fontSize: 12, fontWeight: 600,
+                  letterSpacing: "0.06em", cursor: "pointer", transition: "all 0.2s",
+                }}
+              >
+                {darkMode ? "☀ Light" : "☾ Dark"}
+              </button>
+            </div>
           </div>
-        )}
+        </div>
+      </header>
+
+      {/* ── Content ────────────────────────────────────────────────────────── */}
+      <div style={{ flex: 1, userSelect: "none", padding: "0 16px 64px" }}>
+      <div style={{ maxWidth: 900, margin: "0 auto", background: CREAM, boxShadow: darkMode ? "0 8px 40px rgba(0,0,0,0.4)" : "0 4px 24px rgba(0,0,0,0.12)", borderRadius: 2 }}>
 
         {/* ── COVER ───────────────────────────────────────────────────────── */}
         <div style={{ background: NAVY, padding: "0 0 0 0" }}>
@@ -153,7 +186,7 @@ export default function WhitepaperPage() {
             <h1 style={{ fontSize: 72, fontWeight: 800, color: "#fff", lineHeight: 1.05, letterSpacing: "-0.03em", margin: "0 0 8px" }}>
               The LP<br />Readiness
             </h1>
-            <h1 style={{ fontSize: 72, fontWeight: 800, color: GOLD, lineHeight: 1.05, letterSpacing: "-0.03em", fontStyle: "italic", margin: "0 0 36px" }}>
+            <h1 style={{ fontSize: 72, fontWeight: 800, color: GOLD, lineHeight: 1.05, letterSpacing: "-0.03em", margin: "0 0 36px" }}>
               Gap
             </h1>
             <p style={{ fontSize: 16, color: "rgba(255,255,255,0.65)", lineHeight: 1.7, maxWidth: 560, margin: "0 0 48px" }}>
@@ -281,7 +314,7 @@ export default function WhitepaperPage() {
           <div style={{ margin: "40px 0 32px" }}>
             <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", color: MUTED, textTransform: "uppercase", marginBottom: 16 }}>ODD Chapter Rating Legend</p>
             <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
-              {([["PASS", PASS_C, "Chapter meets institutional threshold"], ["STALL", STALL_C, "Constrained by emerging-manager scale"], ["FAIL", FAIL_C, "Non-revenue infrastructure deferred"]] as const).map(([r, c, d]) => (
+              {([["PASS", PASS_C, "Chapter meets institutional threshold"], ["STALL", STALL_C, "Constrained by emerging-manager scale"], ["FAIL", FAIL_C, "Non-revenue infrastructure deferred"]] as const).map(([r, , d]) => (
                 <div key={r} style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <RatingBadge rating={r} />
                   <span style={{ fontSize: 12, color: MUTED }}>{d}</span>
@@ -705,6 +738,7 @@ export default function WhitepaperPage() {
         </div>
 
       </div>
-    </SubpageLayout>
+      </div>
+    </div>
   );
 }

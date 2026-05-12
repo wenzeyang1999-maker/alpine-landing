@@ -154,7 +154,7 @@ export default function SampleOutput() {
           {/* Carousel body */}
           <div
             className="relative overflow-hidden"
-            style={{ minHeight: 260 }}
+            style={{ height: 380, overflowY: "auto" }}
             onMouseEnter={() => setPaused(true)}
             onMouseLeave={() => setPaused(false)}
             onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; setPaused(true); }}
