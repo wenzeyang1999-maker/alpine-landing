@@ -345,7 +345,7 @@ function _OverviewTabUnused({ reviewData, isTrellis }: { reviewData: any; isTrel
         <Card>
           <div style={{ fontSize: 12, color: "var(--r2-muted)" }}>Investment recommendation</div>
           <div style={{ display: "flex", alignItems: "center", gap: 14, margin: "10px 0 12px" }}>
-            <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.03em", color: "var(--r2-text)" }}>
+            <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.03em", color: "var(--r2-text)", fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>
               {ratingLabel}
             </div>
             <span style={{ ...rBadge, padding: "5px 10px", borderRadius: 999, fontSize: 11, fontWeight: 600 }}>
@@ -386,7 +386,7 @@ function _OverviewTabUnused({ reviewData, isTrellis }: { reviewData: any; isTrel
               border: `6px solid ${scoreColor}`,
               display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
             }}>
-              <div style={{ fontSize: 32, fontWeight: 800, letterSpacing: "-0.04em", color: scoreColor }}>{score}</div>
+              <div style={{ fontSize: 32, fontWeight: 800, letterSpacing: "-0.04em", color: scoreColor, fontFamily: "var(--font-alpine-mono), SFMono-Regular, Menlo, monospace" }}>{score}</div>
               <div style={{ fontSize: 11, color: "var(--r2-faint)", marginTop: 1 }}>/ 100</div>
             </div>
             <div>
@@ -497,11 +497,11 @@ function OddSummaryTab({ reviewData }: { reviewData: any }) {
             width: 110, height: 110, borderRadius: "50%", border: `6px solid ${scoreColor}`, flexShrink: 0,
             display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
           }}>
-            <div style={{ fontSize: 32, fontWeight: 800, color: scoreColor, letterSpacing: "-0.04em" }}>{score}</div>
+            <div style={{ fontSize: 32, fontWeight: 800, color: scoreColor, letterSpacing: "-0.04em", fontFamily: "var(--font-alpine-mono), SFMono-Regular, Menlo, monospace" }}>{score}</div>
             <div style={{ fontSize: 11, color: "var(--r2-faint)" }}>/ 100</div>
           </div>
           <div>
-            <div style={{ fontSize: 18, fontWeight: 700, color: "var(--r2-text)" }}>
+            <div style={{ fontSize: 18, fontWeight: 700, color: "var(--r2-text)", fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>
               {score >= 75 ? "ACCEPT" : score >= 55 ? "WATCHLIST" : "FLAG"}
             </div>
             <div style={{ fontSize: 12, color: "var(--r2-muted)", marginTop: 4 }}>
@@ -615,7 +615,7 @@ function RiskObsRow({ obs, slug, override, onSaved }: { obs: RiskObs; slug: stri
       {/* Row 1: ID · badge · edit button */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <span style={{ fontSize: 10, fontFamily: "monospace", color: "var(--r2-faint)", fontWeight: 600 }}>{merged.id}</span>
+          <span style={{ fontSize: 10, fontFamily: "var(--font-alpine-mono), monospace", color: "var(--r2-faint)", fontWeight: 600 }}>{merged.id}</span>
           <SevBadge sev={merged.severity} />
         </div>
         <button onClick={startEdit} title="Edit"
@@ -1000,7 +1000,7 @@ function ICMemoTab({ reviewData }: { reviewData: any }) {
             )}
             {sec.isRecommendation && (
               <>
-                <div style={{ fontSize: 18, fontWeight: 800, color: "var(--r2-text)", marginBottom: 10 }}>
+                <div style={{ fontSize: 18, fontWeight: 800, color: "var(--r2-text)", marginBottom: 10, fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>
                   {rating} — {rating === "ACCEPT" ? "Full Approval" : rating === "FLAG" ? "Do Not Invest" : "Conditional Approval"}
                 </div>
                 <p style={{ color: "var(--r2-muted)", lineHeight: 1.75, fontSize: 14, marginBottom: 14 }}>
@@ -1226,7 +1226,7 @@ function FullReportTab({ reviewData }: { reviewData: any }) {
         <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "var(--r2-faint)", marginBottom: 8 }}>
           Alpine Operational Due Diligence — Final Report
         </div>
-        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--r2-text)", letterSpacing: "-0.03em", marginBottom: 4 }}>{fundName}</div>
+        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--r2-text)", letterSpacing: "-0.03em", marginBottom: 4, fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>{fundName}</div>
         <div style={{ fontSize: 13, color: "var(--r2-faint)", marginBottom: 20 }}>Report Date: {new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })} · Version 2.1</div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 20 }}>
@@ -1955,7 +1955,7 @@ function AdminPortalTab({
                   </div>
                   <div>
                     <div style={{ fontSize: 11, color: "var(--r2-muted)", marginBottom: 2 }}>Engagement ID</div>
-                    <div style={{ fontSize: 12, fontFamily: "monospace", color: "var(--r2-text)" }}>{APEX_PORTAL.engagement_id}</div>
+                    <div style={{ fontSize: 12, fontFamily: "var(--font-alpine-mono), monospace", color: "var(--r2-text)" }}>{APEX_PORTAL.engagement_id}</div>
                   </div>
                 </div>
                 <div style={{ paddingTop: 10, borderTop: "1px solid var(--r2-border)", display: "flex", alignItems: "center", gap: 10 }}>
@@ -1978,7 +1978,7 @@ function AdminPortalTab({
                 {/* URL box */}
                 <div style={{ display: "flex", alignItems: "center", gap: 8, background: "var(--r2-surface)", borderRadius: 8, padding: "8px 12px", border: "1px solid var(--r2-border)" }}>
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--r2-muted)" strokeWidth="1.5" strokeLinecap="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-                  <span style={{ flex: 1, fontSize: 11, fontFamily: "monospace", color: "var(--r2-muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{portalUrl}</span>
+                  <span style={{ flex: 1, fontSize: 11, fontFamily: "var(--font-alpine-mono), monospace", color: "var(--r2-muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{portalUrl}</span>
                 </div>
                 {/* Actions */}
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
@@ -2405,7 +2405,7 @@ export default function Review2Page() {
     <ReviewCtx.Provider value={reviewCtxValue}>
     <>
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-      <div style={{ background: "var(--r2-bg)", minHeight: "100vh", color: "var(--r2-text)", fontFamily: "ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
+      <div style={{ background: "var(--r2-bg)", minHeight: "100vh", color: "var(--r2-text)", fontFamily: "var(--font-alpine-body), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
         <div style={{ width: "min(1440px, calc(100% - 80px))", margin: "24px auto" }}>
 
           {/* ── Topbar ── */}

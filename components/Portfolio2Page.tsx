@@ -510,7 +510,7 @@ function Sidebar({
               </svg>
             </div>
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "var(--br-text-primary, #1A1A2E)", lineHeight: 1.2, fontFamily: "var(--font-heading, sans-serif)" }}>Alpine ODD</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: "var(--br-text-primary, #1A1A2E)", lineHeight: 1.2, fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>Alpine ODD</div>
               <div style={{ fontSize: 10, color: "var(--br-text-muted, #64748B)", lineHeight: 1.3 }}>Powered by Alpine</div>
             </div>
           </div>
@@ -720,10 +720,10 @@ function FundUniverseTable({ funds, onNavigate }: { funds: any[]; onNavigate: (s
                   <td style={{ padding: "12px 12px", borderBottom: rowBorder, color: "var(--br-text-secondary, #98a7bb)", whiteSpace: "nowrap", fontSize: 13.5 }}>
                     {STRATEGY_LABELS[fund.strategy] || fund.strategy || "—"}
                   </td>
-                  <td style={{ padding: "12px 12px", borderBottom: rowBorder, color: "var(--br-text-secondary, #98a7bb)", fontFamily: "var(--font-mono, monospace)", whiteSpace: "nowrap", fontSize: 13.5 }}>
+                  <td style={{ padding: "12px 12px", borderBottom: rowBorder, color: "var(--br-text-secondary, #98a7bb)", fontFamily: "var(--font-alpine-mono), monospace", whiteSpace: "nowrap", fontSize: 13.5 }}>
                     {aumStr}
                   </td>
-                  <td style={{ padding: "12px 12px", borderBottom: rowBorder, fontFamily: "var(--font-mono, monospace)", fontWeight: 600, color: retColor, whiteSpace: "nowrap", fontSize: 13.5 }}>
+                  <td style={{ padding: "12px 12px", borderBottom: rowBorder, fontFamily: "var(--font-alpine-mono), monospace", fontWeight: 600, color: retColor, whiteSpace: "nowrap", fontSize: 13.5 }}>
                     {retStr}
                   </td>
                   <td style={{ padding: "12px 12px", borderBottom: rowBorder }}>
@@ -881,7 +881,7 @@ function ActiveReviewsList({ reviews, onNavigate, V }: { reviews: any[]; onNavig
               textAlign: "center",
             }}
           >
-            <div style={{ fontSize: 28, fontWeight: 800, color, letterSpacing: "-0.04em", fontFamily: "IBM Plex Mono, monospace", lineHeight: 1 }}>
+            <div style={{ fontSize: 28, fontWeight: 800, color, letterSpacing: "-0.04em", fontFamily: "var(--font-alpine-mono), SFMono-Regular, Menlo, monospace", lineHeight: 1 }}>
               {value}
             </div>
             <div style={{ fontSize: 11, color: V.muted, marginTop: 5, fontWeight: 500, letterSpacing: "0.05em" }}>
@@ -1109,7 +1109,7 @@ function ActiveReviewsList({ reviews, onNavigate, V }: { reviews: any[]; onNavig
                       <span style={{ fontSize: 10, color: V.muted }}>
                         {STRATEGY_LABELS[fund.strategy] || fund.strategy}
                       </span>
-                      <span style={{ fontSize: 10, color: V.faint || V.muted, fontFamily: "monospace" }}>0d</span>
+                      <span style={{ fontSize: 10, color: V.faint || V.muted, fontFamily: "var(--font-alpine-mono), monospace" }}>0d</span>
                     </div>
                   </div>
                 ))}
@@ -1151,7 +1151,7 @@ function ActiveReviewsList({ reviews, onNavigate, V }: { reviews: any[]; onNavig
               }}>
                 {item.tag}
               </span>
-              <span style={{ fontSize: 11, color: V.muted, fontFamily: "monospace", whiteSpace: "nowrap" }}>{item.date}</span>
+              <span style={{ fontSize: 11, color: V.muted, fontFamily: "var(--font-alpine-mono), monospace", whiteSpace: "nowrap" }}>{item.date}</span>
             </div>
           ))}
         </div>
@@ -1221,7 +1221,7 @@ function PeerComparisonView({ funds }: { funds: any[] }) {
             <div style={{ width: `${(t.yellow / (funds.length || 1)) * 100}%`, background: "#f59e0b", transition: "width 0.3s" }} />
             <div style={{ width: `${(t.red / (funds.length || 1)) * 100}%`, background: "#ef4444", transition: "width 0.3s" }} />
           </div>
-          <div style={{ fontSize: 11, fontWeight: 600, fontFamily: "monospace", color: t.pct >= 75 ? "#18b97e" : t.pct >= 50 ? "#f59e0b" : "#ef4444", width: 36, textAlign: "right" }}>{t.pct}%</div>
+          <div style={{ fontSize: 11, fontWeight: 600, fontFamily: "var(--font-alpine-mono), monospace", color: t.pct >= 75 ? "#18b97e" : t.pct >= 50 ? "#f59e0b" : "#ef4444", width: 36, textAlign: "right" }}>{t.pct}%</div>
           <div style={{ fontSize: 11, color: "var(--br-text-muted)", width: 80, whiteSpace: "nowrap" }}>{TOPIC_LABELS[t.key]}</div>
         </div>
       ))}
@@ -1364,7 +1364,7 @@ export default function Portfolio2Page() {
       style={{
         minHeight: "100vh",
         background: V.bg,
-        fontFamily: "DM Sans, sans-serif",
+        fontFamily: "var(--font-alpine-body), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
         "--br-bg-card": V.card,
         "--br-bg-sidebar": V.surface2,
         "--br-border": V.border,
@@ -1597,7 +1597,7 @@ export default function Portfolio2Page() {
           ) : activeTab === "active-reviews" ? (
             <div>
               <div style={{ marginBottom: 20 }}>
-                <h2 style={{ fontSize: 18, fontWeight: 700, color: V.text, letterSpacing: "-0.02em", marginBottom: 4 }}>Active Reviews</h2>
+                <h2 style={{ fontSize: 18, fontWeight: 700, color: V.text, letterSpacing: "-0.02em", marginBottom: 4, fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>Active Reviews</h2>
                 <p style={{ fontSize: 12, color: V.muted }}>In-progress reviews, pipeline, and upcoming schedule</p>
               </div>
               <ActiveReviewsList reviews={reviews} onNavigate={(s) => navigateToFund(s, "active-reviews")} V={V} />
@@ -1605,7 +1605,7 @@ export default function Portfolio2Page() {
           ) : activeTab === "fund-universe" ? (
             <div>
               <div style={{ marginBottom: 20 }}>
-                <h2 style={{ fontSize: 18, fontWeight: 700, color: V.text, letterSpacing: "-0.02em", marginBottom: 4 }}>Fund Universe</h2>
+                <h2 style={{ fontSize: 18, fontWeight: 700, color: V.text, letterSpacing: "-0.02em", marginBottom: 4, fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>Fund Universe</h2>
                 <p style={{ fontSize: 12, color: V.muted }}>{fundCount} monitored funds across {strategyCount} strategies</p>
               </div>
               <FundUniverseTable funds={funds} onNavigate={(s) => navigateToFund(s, "fund-universe")} />
@@ -1613,7 +1613,7 @@ export default function Portfolio2Page() {
           ) : activeTab === "peer-comparison" ? (
             <div>
               <div style={{ marginBottom: 20 }}>
-                <h2 style={{ fontSize: 18, fontWeight: 700, color: V.text, letterSpacing: "-0.02em", marginBottom: 4 }}>Peer Comparison</h2>
+                <h2 style={{ fontSize: 18, fontWeight: 700, color: V.text, letterSpacing: "-0.02em", marginBottom: 4, fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>Peer Comparison</h2>
                 <p style={{ fontSize: 12, color: V.muted }}>ODD topic health across portfolio</p>
               </div>
               <PeerComparisonView funds={funds} />
@@ -1621,7 +1621,7 @@ export default function Portfolio2Page() {
           ) : activeTab === "risk-heatmap" ? (
             <div>
               <div style={{ marginBottom: 20 }}>
-                <h2 style={{ fontSize: 18, fontWeight: 700, color: V.text, letterSpacing: "-0.02em", marginBottom: 4 }}>Risk Heatmap</h2>
+                <h2 style={{ fontSize: 18, fontWeight: 700, color: V.text, letterSpacing: "-0.02em", marginBottom: 4, fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>Risk Heatmap</h2>
                 <p style={{ fontSize: 12, color: V.muted }}>Topic-level risk across {fundCount} funds</p>
               </div>
               <RiskHeatmapView funds={funds} />
@@ -1686,6 +1686,7 @@ function PortfolioOverviewContent({
             <h1 style={{
               fontSize: 24, fontWeight: 800, color: V.text,
               letterSpacing: "-0.04em", lineHeight: 1.08, marginBottom: 12,
+              fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif",
             }}>
               {fundCount} funds · {strategyCount} strategies · {aumStr} AUM
             </h1>
@@ -1728,7 +1729,7 @@ function PortfolioOverviewContent({
                 </div>
                 <div style={{
                   fontSize: 20, fontWeight: 700, color,
-                  letterSpacing: "-0.03em", lineHeight: 1.05, fontFamily: "IBM Plex Mono, monospace",
+                  letterSpacing: "-0.03em", lineHeight: 1.05, fontFamily: "var(--font-alpine-mono), SFMono-Regular, Menlo, monospace",
                 }}>
                   {value}
                 </div>
@@ -1759,8 +1760,8 @@ function PortfolioOverviewContent({
                     gap: 1,
                   }}
                 >
-                  <span style={{ fontSize: 9, fontWeight: 700, color, fontFamily: "monospace" }}>{key}</span>
-                  <span style={{ fontSize: 9, color, fontFamily: "monospace" }}>{pct}%</span>
+                  <span style={{ fontSize: 9, fontWeight: 700, color, fontFamily: "var(--font-alpine-mono), monospace" }}>{key}</span>
+                  <span style={{ fontSize: 9, color, fontFamily: "var(--font-alpine-mono), monospace" }}>{pct}%</span>
                 </div>
               );
             })}
@@ -1804,7 +1805,7 @@ function PortfolioOverviewContent({
                   animation: "portfolioRingLabelIn 0.8s ease-out",
                 }}
               >
-                <span style={{ fontSize: 40, fontWeight: 800, color: V.text, letterSpacing: "-0.05em", lineHeight: 1 }}>
+                <span style={{ fontSize: 40, fontWeight: 800, color: V.text, letterSpacing: "-0.05em", lineHeight: 1, fontFamily: "var(--font-alpine-mono), SFMono-Regular, Menlo, monospace" }}>
                   {oddScore}
                 </span>
                 <span style={{ fontSize: 11, color: V.muted, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase" }}>
@@ -1869,7 +1870,7 @@ function PortfolioOverviewContent({
             </div>
             <div style={{
               fontSize: 26, fontWeight: 700, color,
-              letterSpacing: "-0.03em", lineHeight: 1.1, fontFamily: "IBM Plex Mono, monospace",
+              letterSpacing: "-0.03em", lineHeight: 1.1, fontFamily: "var(--font-alpine-mono), SFMono-Regular, Menlo, monospace",
               marginBottom: 4,
             }}>
               {value}
