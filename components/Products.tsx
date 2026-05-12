@@ -101,27 +101,31 @@ export default function Products() {
           <h2 className="font-heading mb-3" style={{ fontSize: "2rem", fontWeight: 700, lineHeight: 1.08, letterSpacing: "-0.038em", color: INK }}>
             One framework. Three Products.
           </h2>
-          <p className="font-body" style={{ fontSize: "1.0625rem", lineHeight: 1.65, color: SECONDARY, letterSpacing: LS_BODY }}>
+          <p className="font-body mb-5" style={{ fontSize: "1.0625rem", lineHeight: 1.65, color: SECONDARY, letterSpacing: LS_BODY }}>
             Accelerated process. Enhanced standard. Better decisions.
           </p>
+          {/* Grouped outcome labels — not numbered, treated as one unit */}
+          <div className="flex items-center gap-0">
+            {PRODUCTS.map((p, i) => (
+              <span key={p.outcome} className="flex items-center">
+                <span
+                  className="font-mono text-[12px] uppercase"
+                  style={{ color: p.outcomeTextColor, fontWeight: 700, letterSpacing: "0.1em" }}
+                >
+                  {p.outcome}
+                </span>
+                {i < PRODUCTS.length - 1 && (
+                  <span className="mx-2.5 font-mono text-[11px]" style={{ color: "#D1D5DB" }}>·</span>
+                )}
+              </span>
+            ))}
+          </div>
         </div>
 
         {/* Three product cards */}
         <div id="pricing" className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {PRODUCTS.map((p) => (
             <div key={p.name} className="flex flex-col">
-              {/* Outcome label above card */}
-              <div className="flex items-center gap-2 mb-2 px-1">
-                <span className="font-mono text-[11px]" style={{ color: VIOLET, fontWeight: 700, letterSpacing: "0.08em" }}>
-                  {p.num}
-                </span>
-                <span
-                  className="font-mono text-[13px] uppercase"
-                  style={{ color: p.outcomeTextColor, fontWeight: 700, letterSpacing: "0.08em" }}
-                >
-                  {p.outcome}
-                </span>
-              </div>
 
             <div
               className="rounded-card p-6 flex flex-col flex-1"
