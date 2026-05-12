@@ -986,6 +986,7 @@ function ActiveReviewsList({ reviews, onNavigate, V }: { reviews: any[]; onNavig
             {FINALIZED_REVIEWS.map((rev) => (
               <div
                 key={rev.slug}
+                onClick={() => canOpenFundReview(rev.slug) && onNavigate(rev.slug)}
                 style={{
                   background: V.card,
                   border: `1px solid rgba(24,185,126,0.2)`,
@@ -994,6 +995,17 @@ function ActiveReviewsList({ reviews, onNavigate, V }: { reviews: any[]; onNavig
                   display: "flex",
                   alignItems: "center",
                   gap: 14,
+                  cursor: canOpenFundReview(rev.slug) ? "pointer" : "default",
+                  transition: "background 0.12s, border-color 0.12s",
+                }}
+                onMouseEnter={(e) => {
+                  if (!canOpenFundReview(rev.slug)) return;
+                  (e.currentTarget as HTMLDivElement).style.background = V.cardHover;
+                  (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(24,185,126,0.4)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLDivElement).style.background = V.card;
+                  (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(24,185,126,0.2)";
                 }}
               >
                 {/* Green check dot */}
@@ -1015,10 +1027,11 @@ function ActiveReviewsList({ reviews, onNavigate, V }: { reviews: any[]; onNavig
                   {ratingLabel(rev.rating)}
                 </span>
 
-                {/* Download button */}
+                {/* Download button — stop propagation so it doesn't navigate */}
                 <a
                   href={rev.reportFile}
                   download={rev.reportLabel}
+                  onClick={(e) => e.stopPropagation()}
                   style={{
                     display: "flex", alignItems: "center", gap: 5,
                     padding: "6px 12px", borderRadius: 8, flexShrink: 0,
@@ -1033,6 +1046,11 @@ function ActiveReviewsList({ reviews, onNavigate, V }: { reviews: any[]; onNavig
                   </svg>
                   Download Report
                 </a>
+
+                {/* Chevron */}
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke={V.muted} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M6 12l4-4-4-4" />
+                </svg>
               </div>
             ))}
           </div>
