@@ -1223,31 +1223,41 @@ export default function Portfolio2Page() {
   const primaryReview = reviews.find((r: any) => r.slug === "ridgeline-capital") || reviews[0];
   const oddScore = primaryReview?.overall_score || primaryReview?.score || 68;
 
-  const V = {
+  const isDark = theme === "dark";
+
+  const V = isDark ? {
     bg: "#07111d",
-    surface: "#0d1727",
+    surface: "#111d30",
+    surface2: "#14233a",
     card: "#102038",
     cardHover: "#162742",
-    sidebar: "#08111e",
+    sidebar: "#14233a",
     border: "rgba(148,163,184,0.14)",
     borderSubtle: "rgba(148,163,184,0.07)",
     text: "#eff4fb",
     sub: "#98a7bb",
-    muted: "#6b7c95",
-    faint: "#4a5568",
+    muted: "#98a7bb",
+    faint: "#6b7c95",
     green: "#18b97e",
-    amber: "#f59e0b",
-    red: "#ef4444",
+    amber: "#f2a93b",
+    red: "#ef5b5b",
+  } : {
+    bg: "#F0F4F8",
+    surface: "#F8FAFC",
+    surface2: "#F1F5F9",
+    card: "#FFFFFF",
+    cardHover: "#F8FAFC",
+    sidebar: "#F1F5F9",
+    border: "rgba(15,23,42,0.10)",
+    borderSubtle: "rgba(15,23,42,0.05)",
+    text: "#0F172A",
+    sub: "#475569",
+    muted: "#475569",
+    faint: "#94A3B8",
+    green: "#18b97e",
+    amber: "#f2a93b",
+    red: "#ef5b5b",
   };
-
-  const isDark = theme === "dark";
-
-  if (!isDark) {
-    // Light theme overrides
-    V.bg = "#F8FAFC"; V.surface = "#FFFFFF"; V.card = "#FFFFFF"; V.cardHover = "#F1F5F9";
-    V.sidebar = "#F1F5F9"; V.border = "#E2E8F0"; V.borderSubtle = "#F1F5F9";
-    V.text = "#1A1A2E"; V.sub = "#475569"; V.muted = "#64748B";
-  }
 
   // ── Render ──
   return (
@@ -1256,7 +1266,12 @@ export default function Portfolio2Page() {
         minHeight: "100vh",
         background: V.bg,
         fontFamily: "DM Sans, sans-serif",
-      }}
+        "--br-bg-card": V.card,
+        "--br-bg-sidebar": V.surface2,
+        "--br-border": V.border,
+        "--br-text-primary": V.text,
+        "--br-text-muted": V.faint,
+      } as React.CSSProperties}
     >
       <style>{`
         @keyframes portfolioRingIn {
