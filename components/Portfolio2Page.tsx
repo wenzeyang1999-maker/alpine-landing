@@ -861,34 +861,45 @@ function ActiveReviewsList({ reviews, onNavigate, V }: { reviews: any[]; onNavig
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
 
-      {/* ── Stats Row ── */}
+      {/* ── Pipeline Status Banner ── */}
       <div style={{
-        display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12,
+        background: V.card,
+        border: `1px solid ${V.border}`,
+        borderRadius: 16,
+        padding: "24px 28px",
+        display: "flex",
+        alignItems: "stretch",
+        gap: 0,
       }}>
-        {[
-          { value: activeCount, label: "Active", color: "#8c7cff" },
-          { value: flagCount, label: "FLAG", color: "#f59e0b" },
-          { value: pipelineCount, label: "Pipeline", color: "#8c7cff" },
-          { value: upcomingCount, label: "Upcoming", color: V.sub },
-        ].map(({ value, label, color }) => (
-          <div
-            key={label}
-            style={{
-              background: V.card,
-              border: `1px solid ${V.border}`,
-              borderRadius: 16,
-              padding: "16px 20px",
-              textAlign: "center",
-            }}
-          >
-            <div style={{ fontSize: 28, fontWeight: 800, color, letterSpacing: "-0.04em", fontFamily: "var(--font-alpine-mono), SFMono-Regular, Menlo, monospace", lineHeight: 1 }}>
-              {value}
-            </div>
-            <div style={{ fontSize: 11, color: V.muted, marginTop: 5, fontWeight: 500, letterSpacing: "0.05em" }}>
-              {label}
-            </div>
+        {/* Left: primary stat */}
+        <div style={{ flex: "0 0 auto", paddingRight: 32, borderRight: `1px solid ${V.border}`, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: V.faint, marginBottom: 8 }}>
+            Review Pipeline
           </div>
-        ))}
+          <div style={{ fontSize: 52, fontWeight: 800, letterSpacing: "-0.04em", lineHeight: 1, color: "#8c7cff", fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>
+            {activeCount}
+          </div>
+          <div style={{ fontSize: 13, color: V.faint, marginTop: 6, fontWeight: 500 }}>
+            active review{activeCount !== 1 ? "s" : ""} in progress
+          </div>
+        </div>
+
+        {/* Right: supporting stats */}
+        <div style={{ flex: 1, paddingLeft: 32, display: "grid", gridTemplateColumns: "repeat(3, 1fr)", alignItems: "center" }}>
+          {[
+            { value: flagCount,    label: "Flagged",  color: V.red,   sub: "require immediate attention" },
+            { value: pipelineCount, label: "Pipeline", color: "#8c7cff", sub: "funds under evaluation" },
+            { value: upcomingCount, label: "Upcoming", color: V.faint,  sub: "scheduled next 60 days" },
+          ].map(({ value, label, color, sub }) => (
+            <div key={label} style={{ padding: "0 20px", borderRight: label !== "Upcoming" ? `1px solid ${V.border}` : "none" }}>
+              <div style={{ fontSize: 32, fontWeight: 800, color, letterSpacing: "-0.04em", lineHeight: 1, fontFamily: "var(--font-alpine-mono), SFMono-Regular, Menlo, monospace" }}>
+                {value}
+              </div>
+              <div style={{ fontSize: 12, fontWeight: 600, color, marginTop: 4 }}>{label}</div>
+              <div style={{ fontSize: 11, color: V.faint, marginTop: 2, lineHeight: 1.4 }}>{sub}</div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* ── In Progress ── */}
