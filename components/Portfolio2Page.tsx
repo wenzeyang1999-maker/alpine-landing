@@ -675,7 +675,7 @@ function FundUniverseTable({ funds, onNavigate }: { funds: any[]; onNavigate: (s
       </div>
 
       {/* Table */}
-      <div style={{ overflowX: "auto", borderRadius: 12, border: "1px solid var(--br-border, rgba(148,163,184,0.14))" }}>
+      <div style={{ overflowX: "auto", borderRadius: 16, border: "1px solid var(--br-border, rgba(148,163,184,0.14))" }}>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
           <thead>
             <tr style={{ background: "var(--br-bg-surface, #0d1727)" }}>
@@ -876,7 +876,7 @@ function ActiveReviewsList({ reviews, onNavigate, V }: { reviews: any[]; onNavig
             style={{
               background: V.card,
               border: `1px solid ${V.border}`,
-              borderRadius: 12,
+              borderRadius: 16,
               padding: "16px 20px",
               textAlign: "center",
             }}
@@ -907,7 +907,7 @@ function ActiveReviewsList({ reviews, onNavigate, V }: { reviews: any[]; onNavig
                 style={{
                   background: V.card,
                   border: `1px solid ${V.border}`,
-                  borderRadius: 12,
+                  borderRadius: 16,
                   padding: "14px 18px",
                   display: "flex",
                   alignItems: "center",
@@ -990,7 +990,7 @@ function ActiveReviewsList({ reviews, onNavigate, V }: { reviews: any[]; onNavig
                 style={{
                   background: V.card,
                   border: `1px solid rgba(24,185,126,0.2)`,
-                  borderRadius: 12,
+                  borderRadius: 16,
                   padding: "14px 18px",
                   display: "flex",
                   alignItems: "center",
@@ -1066,7 +1066,7 @@ function ActiveReviewsList({ reviews, onNavigate, V }: { reviews: any[]; onNavig
               style={{
                 background: V.surface,
                 border: `1px solid ${V.border}`,
-                borderRadius: 12,
+                borderRadius: 16,
                 overflow: "hidden",
               }}
             >
@@ -1127,7 +1127,7 @@ function ActiveReviewsList({ reviews, onNavigate, V }: { reviews: any[]; onNavig
         <div style={{
           background: V.card,
           border: `1px solid ${V.border}`,
-          borderRadius: 12,
+          borderRadius: 16,
           overflow: "hidden",
         }}>
           {UPCOMING_REVIEWS.map((item, idx) => (
@@ -1398,9 +1398,9 @@ export default function Portfolio2Page() {
             backdropFilter: "blur(16px)",
           }}
         >
-          {/* Left: logo + breadcrumb */}
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <a href="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none" }}>
+          {/* Left: logo + two-line title (matches Review2Page layout) */}
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            <a href="/" style={{ display: "flex", alignItems: "center", textDecoration: "none", flexShrink: 0 }}>
               <div
                 style={{
                   width: 26, height: 26, borderRadius: 6, flexShrink: 0,
@@ -1412,19 +1412,13 @@ export default function Portfolio2Page() {
                   <path d="M4 18L12 6L20 18" />
                 </svg>
               </div>
-              <span style={{ fontSize: 14, fontWeight: 600, color: V.text, letterSpacing: "-0.01em" }}>Alpine ODD</span>
             </a>
             <div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: V.text, letterSpacing: "-0.01em" }}>Alpine ODD</div>
               <div style={{ fontSize: 12, color: V.muted }}>
-                Portfolio
-                {activeTab !== "portfolio-overview" && (
-                  <>
-                    <span style={{ margin: "0 4px" }}>·</span>
-                    <span style={{ color: V.sub }}>
-                      {NAV_ITEMS.find((n) => n.id === activeTab)?.label}
-                    </span>
-                  </>
-                )}
+                Portfolio{activeTab !== "portfolio-overview"
+                  ? ` / ${NAV_ITEMS.find((n) => n.id === activeTab)?.label ?? ""}`
+                  : " / Overview"}
               </div>
             </div>
           </div>
@@ -1583,7 +1577,7 @@ export default function Portfolio2Page() {
           {loading ? (
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               {[1, 2, 3].map((i) => (
-                <div key={i} style={{ height: i === 1 ? 140 : 80, borderRadius: 12, background: V.card, opacity: 0.6 }} />
+                <div key={i} style={{ height: i === 1 ? 140 : 80, borderRadius: 16, background: V.card, opacity: 0.6 }} />
               ))}
             </div>
           ) : activeTab === "portfolio-overview" ? (
@@ -1667,7 +1661,7 @@ function PortfolioOverviewContent({
         style={{
           background: V.card,
           border: `1px solid ${V.border}`,
-          borderRadius: 14,
+          borderRadius: 16,
           padding: "18px 22px",
           display: "grid",
           gridTemplateColumns: "minmax(0, 1fr) 184px",
@@ -1858,7 +1852,7 @@ function PortfolioOverviewContent({
             style={{
               background: V.card,
               border: `1px solid ${V.border}`,
-              borderRadius: 12,
+              borderRadius: 16,
               padding: "16px 18px",
             }}
           >
