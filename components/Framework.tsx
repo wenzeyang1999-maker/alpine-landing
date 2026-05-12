@@ -90,9 +90,7 @@ export default function Framework() {
             One framework. Two acts. Eight chapters.
           </h2>
           <p className="font-body" style={{ fontSize: "1.0625rem", lineHeight: 1.65, letterSpacing: LS_BODY, color: SECONDARY }}>
-            The same structural spine institutional ODD providers use, applied at engine speed.
-            901 strategy-specific questions across the eight chapters, with up to 1,193 in practice
-            when the strategy appendix is walked through.
+            The same structural backbone used by institutional ODD providers, applied at engine speed — ~1,000 strategy-specific questions across eight chapters, expanding to 1,193 in practice with the strategy appendix.
           </p>
         </div>
 
@@ -105,7 +103,7 @@ export default function Framework() {
             The Spine
           </p>
           <h3 className="font-heading mb-3" style={{ fontSize: "1.5rem", fontWeight: 700, color: INK, letterSpacing: "-0.025em" }}>
-            Two Acts · Eight Chapters · 901 Questions
+            Two Acts · Eight Chapters · ~1,000 Questions
           </h3>
           <p className="font-body" style={{ fontSize: "0.9375rem", lineHeight: 1.65, letterSpacing: LS_BODY, color: SECONDARY }}>
             Act I covers the Manager (governance, compliance, technology, fund structure). Act II covers

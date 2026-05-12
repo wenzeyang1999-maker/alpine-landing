@@ -53,8 +53,8 @@ const ITEMS: Row[] = [
     accent: AMBER,
     accentText: AMBER_TEXT,
     title: "Eight-chapter analysis",
-    desc: "901 strategy-specific questions. RATED · RISKS FLAGGED · REMEDIATED.",
-    statValue: "901",
+    desc: "~1,000 strategy-specific questions. RATED · RISKS FLAGGED · REMEDIATED.",
+    statValue: "1,000+",
     statLabel: "questions",
   },
   {

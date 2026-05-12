@@ -34,10 +34,10 @@ const PRODUCTS: Product[] = [
     price: "< $5,000",
     priceDetail: "per review",
     features: [
-      "901 strategy-specific questions across 8 chapters",
+      "~1,000 strategy-specific questions across 8 chapters",
       "Two-act framework: Manager + Fund",
       "54-regulator verification across 3 tiers",
-      "RATED · RISKS FLAGGED outcomes with citations",
+      "Rated · Risks Flagged outcomes with citations",
       "3–5 day delivery, IC-ready package",
     ],
     cta: "Book a Demo",
@@ -109,27 +109,28 @@ export default function Products() {
         {/* Three product cards */}
         <div id="pricing" className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {PRODUCTS.map((p) => (
+            <div key={p.name} className="flex flex-col">
+              {/* Outcome label above card */}
+              <div className="flex items-center gap-2 mb-2 px-1">
+                <span className="font-mono text-[11px]" style={{ color: VIOLET, fontWeight: 700, letterSpacing: "0.08em" }}>
+                  {p.num}
+                </span>
+                <span
+                  className="font-mono text-[13px] uppercase"
+                  style={{ color: p.outcomeTextColor, fontWeight: 700, letterSpacing: "0.08em" }}
+                >
+                  {p.outcome}
+                </span>
+              </div>
+
             <div
-              key={p.name}
-              className="rounded-card p-6 flex flex-col"
+              className="rounded-card p-6 flex flex-col flex-1"
               style={{
                 background: BG_CARD,
                 border: `1px solid ${p.highlight ? VIOLET : BORDER}`,
                 boxShadow: p.highlight ? `0 0 0 1px ${VIOLET}15, 0 4px 16px rgba(0,0,0,0.06)` : "none",
               }}
             >
-              <div className="flex items-baseline justify-between mb-2">
-                <span className="font-mono text-[11px]" style={{ color: VIOLET, fontWeight: 700, letterSpacing: "0.08em" }}>
-                  {p.num}
-                </span>
-                <span
-                  className="font-mono text-[10px] uppercase px-2 py-0.5 rounded-full"
-                  style={{ background: `${p.outcomeColor}15`, color: p.outcomeTextColor, fontWeight: 700, letterSpacing: "0.08em" }}
-                >
-                  {p.outcome}
-                </span>
-              </div>
-
               <h3 className="font-heading" style={{ fontSize: "1.0625rem", fontWeight: 700, color: INK, letterSpacing: "-0.02em" }}>
                 {p.name}
               </h3>
@@ -174,6 +175,7 @@ export default function Products() {
                 {p.cta} <ArrowRight size={13} />
               </Link>
             </div>
+            </div>
           ))}
         </div>
 
@@ -197,7 +199,7 @@ export default function Products() {
             Institutional Quality Commitment
           </h3>
           <p className="font-body text-[13px] max-w-lg mx-auto" style={{ color: SECONDARY, lineHeight: 1.65, letterSpacing: LS_BODY }}>
-            Every report is analyst-reviewed against a defined scope of 901 strategy-specific questions across
+            Every report is analyst-reviewed against a defined scope of ~1,000 strategy-specific questions across
             8 chapters and regulatory verification across 54 regulators. If coverage falls short, we re-review at no additional cost.
           </p>
         </div>

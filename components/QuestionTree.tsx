@@ -62,9 +62,9 @@ const FUND_TYPES: Record<string, FundType[]> = {
 };
 
 const STATS = [
-  { value: "901", label: "Due diligence questions" },
-  { value: "38",  label: "Strategy profiles" },
-  { value: "8",   label: "Chapters · 2 Acts" },
+  { value: "1000", prefix: "~", label: "Due diligence questions" },
+  { value: "38",   prefix: "",  label: "Strategy profiles" },
+  { value: "8",    prefix: "",  label: "Chapters · 2 Acts" },
 ];
 
 export default function QuestionTree() {
@@ -83,9 +83,7 @@ export default function QuestionTree() {
             Every fund type. Every strategy.
           </h2>
           <p className="font-body" style={{ fontSize: "1.0625rem", lineHeight: 1.65, letterSpacing: LS_BODY, color: SECONDARY }}>
-            All eight chapters apply to every fund. The 901 strategy-specific questions inside them
-            adapt to your fund's structure, type, and strategy — up to 1,193 in practice when the
-            strategy appendix is walked through.
+            The framework is fixed. The questions adapt. Each fund's structure, type, and strategy determines which questions activate — so every review is built for the specific fund in front of you, not a generic checklist.
           </p>
         </div>
 
@@ -145,13 +143,13 @@ export default function QuestionTree() {
         {/* Stats — animated count-up */}
         <div className="mt-16 pt-12" style={{ borderTop: `1px solid ${BORDER}` }}>
           <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-3">
-            {STATS.map(({ value, label }, i) => (
+            {STATS.map(({ value, prefix, label }, i) => (
               <div key={label}>
                 <div
                   className="font-heading"
                   style={{ fontSize: "clamp(2.5rem, 5vw, 3.75rem)", fontWeight: 600, letterSpacing: "-0.03em", lineHeight: 1, color: MUTED }}
                 >
-                  <CountUp target={parseInt(value, 10)} delay={i * 0.15} />
+                  {prefix}<CountUp target={parseInt(value, 10)} delay={i * 0.15} />
                 </div>
                 <div
                   className="metric-label mt-3"

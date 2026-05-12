@@ -8,7 +8,7 @@ export const BG_CARD    = "#FFFFFF";   // card surface — pure white on warm bg
 // Tinted section backgrounds — very subtle color washes, not aggressive
 export const BG_VIOLET  = "#F5F1FC";   // faint violet tint — engine / question tree sections
 export const BG_GREEN   = "#F0FAF6";   // faint green tint  — pricing / value sections
-export const BG_AMBER   = "#FDF8EE";   // faint amber tint  — methodology / trust sections
+export const BG_AMBER   = "#FEF8E7";   // faint amber tint  — methodology / trust sections
 
 // ── Text ──────────────────────────────────────────────────────────────────
 export const INK     = "#0F0F10";   // primary text — near-black

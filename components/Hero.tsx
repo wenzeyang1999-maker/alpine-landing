@@ -82,7 +82,7 @@ export default function Hero() {
           {...headlineMotion}
         >
           ODD Engine for<br />
-          <span style={{ color: VIOLET }}>Institutional Capital.</span>
+          <span style={{ color: VIOLET }}>Institutional Capital</span>
         </motion.h1>
 
         {/* Subtitle — slide 3 of deck */}

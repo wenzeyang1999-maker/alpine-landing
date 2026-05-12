@@ -44,16 +44,16 @@ const STEPS: {
     cols: 4,
     items: [
       { text: "SEC / IAPD",          check: GREEN }, { text: "FCA (UK)",          check: GREEN },
-      { text: "MAS (Singapore)",     check: GREEN }, { text: "SFC (Hong Kong)",   check: GREEN },
-      { text: "CSSF (Luxembourg)",   check: GREEN }, { text: "ASIC (Australia)",  check: GREEN },
-      { text: "AMF (France)",        check: GREEN }, { text: "BaFin (Germany)",   check: GREEN },
+      { text: "OSC (Canada)",        check: GREEN }, { text: "MAS (Singapore)",   check: GREEN },
+      { text: "SFC (Hong Kong)",     check: GREEN }, { text: "CSSF (Luxembourg)", check: GREEN },
+      { text: "ASIC (Australia)",    check: GREEN }, { text: "AMF (France)",      check: GREEN },
     ],
   },
   {
     label: "Analyze",
     color: GREEN,
     stats: [
-      { value: "901", label: "questions asked" },
+      { value: "~1,000", label: "questions asked" },
       { value: "38",  label: "fund strategies" },
       { value: "8",   label: "Chapters · 2 Acts" },
     ],
@@ -78,7 +78,7 @@ const STEPS: {
       { value: "8 chapters",  label: "covered" },
       { value: "Verified",    label: "with the manager" },
     ],
-    body: "A live call with the Manager to verify findings, walk through operational gaps, and capture context that documents alone can't. The analyst leads. The Manager confirms or corrects.",
+    body: "A live video call with the Manager to verify findings, walk through operational gaps, and capture context that documents alone can't. The analyst leads. The Manager confirms or reconciles.",
     cols: 1,
     items: [
       { text: "Pre-call brief delivered to the Manager",       check: AMBER },

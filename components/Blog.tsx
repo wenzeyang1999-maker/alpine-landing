@@ -52,7 +52,7 @@ export default function Blog() {
             Founder commentary, grounded in live ODD issues.
           </h2>
           <p className="font-body text-[15px]" style={{ color: SECONDARY, lineHeight: 1.65, letterSpacing: LS_BODY }}>
-            A mix of Allen&apos;s recent thinking and current market signals shaping operational due diligence in 2026.
+            A mix of Alpine Team&apos;s recent thinking and current market signals shaping operational due diligence. Combining Alpine&apos;s research, team insights, and evolving market signals across the operational due diligence landscape.
           </p>
         </div>
 
