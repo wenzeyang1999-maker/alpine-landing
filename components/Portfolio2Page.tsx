@@ -258,7 +258,7 @@ function ProfileModal({
         <div style={{ padding: "22px", display: "flex", flexDirection: "column", gap: 18 }}>
           <div>
             <div style={{
-              fontSize: 10, fontWeight: 600, letterSpacing: "0.16em", textTransform: "uppercase",
+              fontSize: 10, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase",
               color: "var(--br-text-muted, #6b7c95)", marginBottom: 10,
             }}>Avatar</div>
             <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
@@ -302,7 +302,7 @@ function ProfileModal({
 
           <div>
             <label style={{
-              display: "block", fontSize: 10, fontWeight: 600, letterSpacing: "0.16em",
+              display: "block", fontSize: 10, fontWeight: 600, letterSpacing: "0.12em",
               textTransform: "uppercase", color: "var(--br-text-muted, #6b7c95)", marginBottom: 6,
             }}>Nickname</label>
             <input
@@ -314,7 +314,7 @@ function ProfileModal({
 
           <div>
             <div style={{
-              fontSize: 10, fontWeight: 600, letterSpacing: "0.16em", textTransform: "uppercase",
+              fontSize: 10, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase",
               color: "var(--br-text-muted, #6b7c95)", marginBottom: 10,
             }}>Change password</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -552,7 +552,7 @@ function Sidebar({
             <div key={section}>
               {!collapsed && (
                 <div style={{
-                  fontSize: 10, fontWeight: 600, letterSpacing: "0.16em",
+                  fontSize: 10, fontWeight: 600, letterSpacing: "0.12em",
                   textTransform: "uppercase", color: "var(--br-text-muted, #94A3B8)",
                   padding: "0 8px 4px", marginBottom: 2,
                 }}>
@@ -634,7 +634,7 @@ function FundUniverseTable({ funds, onNavigate }: { funds: any[]; onNavigate: (s
       onClick={() => toggle(k)}
       style={{
         padding: "9px 12px", fontSize: 11, fontWeight: 600,
-        letterSpacing: "0.18em", textTransform: "uppercase",
+        letterSpacing: "0.12em", textTransform: "uppercase",
         color: sortKey === k ? "var(--br-text-primary, #eff4fb)" : "var(--br-text-muted, #6b7c95)",
         textAlign: "left", cursor: "pointer", whiteSpace: "nowrap",
         background: "transparent", borderBottom: "1px solid var(--br-border, rgba(148,163,184,0.14))",
@@ -684,7 +684,7 @@ function FundUniverseTable({ funds, onNavigate }: { funds: any[]; onNavigate: (s
               <ColHead k="aum" label="AUM" />
               <ColHead k="annual_return" label="1Y Return" />
               <ColHead k="rating" label="Rating" />
-              <th style={{ padding: "9px 12px", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--br-text-muted, #6b7c95)", textAlign: "left", background: "transparent", borderBottom: "1px solid var(--br-border, rgba(148,163,184,0.14))" }}>12-Topic Coverage</th>
+              <th style={{ padding: "9px 12px", fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--br-text-muted, #6b7c95)", textAlign: "left", background: "transparent", borderBottom: "1px solid var(--br-border, rgba(148,163,184,0.14))" }}>12-Topic Coverage</th>
             </tr>
           </thead>
           <tbody>
@@ -873,47 +873,38 @@ function ActiveReviewsList({ reviews, onNavigate, V }: { reviews: any[]; onNavig
       }}>
         {/* Title row */}
         <div>
-          <h2 style={{ fontSize: 18, fontWeight: 700, color: V.text, letterSpacing: "-0.02em", marginBottom: 3, fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>Active Reviews</h2>
+          <h2 style={{ fontSize: 24, fontWeight: 800, color: V.text, letterSpacing: "-0.04em", lineHeight: 1.08, marginBottom: 3, fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>Active Reviews</h2>
           <p style={{ fontSize: 12, color: V.faint }}>In-progress reviews, pipeline, and upcoming schedule</p>
         </div>
 
-        {/* Stats row */}
-        <div style={{ display: "flex", alignItems: "stretch", borderTop: `1px solid ${V.border}`, paddingTop: 20, gap: 0 }}>
-        {/* Left: primary stat */}
-        <div style={{ flex: "0 0 auto", paddingRight: 32, borderRight: `1px solid ${V.border}`, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: V.faint, marginBottom: 8 }}>
-            Review Pipeline
-          </div>
-          <div style={{ fontSize: 52, fontWeight: 800, letterSpacing: "-0.04em", lineHeight: 1, color: "#8c7cff", fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>
-            {activeCount}
-          </div>
-          <div style={{ fontSize: 13, color: V.faint, marginTop: 6, fontWeight: 500 }}>
-            active review{activeCount !== 1 ? "s" : ""} in progress
-          </div>
-        </div>
-
-        {/* Right: supporting stats */}
-        <div style={{ flex: 1, paddingLeft: 32, display: "grid", gridTemplateColumns: "repeat(3, 1fr)", alignItems: "center" }}>
+        {/* Stats row — uniform 4-column grid */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", borderTop: `1px solid ${V.border}`, paddingTop: 20 }}>
           {[
-            { value: flagCount,    label: "Flagged",  color: V.red,   sub: "require immediate attention" },
+            { value: activeCount,   label: "Active",   color: "#8c7cff", sub: "reviews in progress" },
+            { value: flagCount,     label: "Flagged",  color: V.red,     sub: "require attention" },
             { value: pipelineCount, label: "Pipeline", color: "#8c7cff", sub: "funds under evaluation" },
-            { value: upcomingCount, label: "Upcoming", color: V.faint,  sub: "scheduled next 60 days" },
-          ].map(({ value, label, color, sub }) => (
-            <div key={label} style={{ padding: "0 20px", borderRight: label !== "Upcoming" ? `1px solid ${V.border}` : "none" }}>
-              <div style={{ fontSize: 32, fontWeight: 800, color, letterSpacing: "-0.04em", lineHeight: 1, fontFamily: "var(--font-alpine-mono), SFMono-Regular, Menlo, monospace" }}>
+            { value: upcomingCount, label: "Upcoming", color: V.faint,   sub: "next 60 days" },
+          ].map(({ value, label, color, sub }, i) => (
+            <div
+              key={label}
+              style={{
+                padding: "0 28px",
+                borderLeft: i > 0 ? `1px solid ${V.border}` : "none",
+              }}
+            >
+              <div style={{ fontSize: 36, fontWeight: 800, color, letterSpacing: "-0.04em", lineHeight: 1, fontFamily: "var(--font-alpine-mono), SFMono-Regular, Menlo, monospace" }}>
                 {value}
               </div>
-              <div style={{ fontSize: 12, fontWeight: 600, color, marginTop: 4 }}>{label}</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color, marginTop: 6 }}>{label}</div>
               <div style={{ fontSize: 11, color: V.faint, marginTop: 2, lineHeight: 1.4 }}>{sub}</div>
             </div>
           ))}
-        </div>
         </div>
       </div>
 
       {/* ── In Progress ── */}
       <div>
-        <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.16em", textTransform: "uppercase", color: V.muted, marginBottom: 10 }}>
+        <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: V.muted, marginBottom: 10 }}>
           In Progress
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -999,7 +990,7 @@ function ActiveReviewsList({ reviews, onNavigate, V }: { reviews: any[]; onNavig
       {/* ── Finalized ── */}
       {FINALIZED_REVIEWS.length > 0 && (
         <div>
-          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.16em", textTransform: "uppercase", color: V.muted, marginBottom: 10 }}>
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: V.muted, marginBottom: 10 }}>
             Finalized
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -1141,7 +1132,7 @@ function ActiveReviewsList({ reviews, onNavigate, V }: { reviews: any[]; onNavig
 
       {/* ── Upcoming Reviews ── */}
       <div>
-        <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.16em", textTransform: "uppercase", color: V.muted, marginBottom: 10 }}>
+        <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: V.muted, marginBottom: 10 }}>
           Upcoming Reviews
         </div>
         <div style={{
@@ -1190,7 +1181,7 @@ function RiskHeatmapView({ funds }: { funds: any[] }) {
       <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
         <thead>
           <tr style={{ background: "var(--br-bg-surface, #0d1727)" }}>
-            <th style={{ padding: "8px 12px", textAlign: "left", fontSize: 10, fontWeight: 600, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--br-text-muted)", borderBottom: "1px solid var(--br-border)", whiteSpace: "nowrap" }}>Fund</th>
+            <th style={{ padding: "8px 12px", textAlign: "left", fontSize: 10, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--br-text-muted)", borderBottom: "1px solid var(--br-border)", whiteSpace: "nowrap" }}>Fund</th>
             {TOPIC_KEYS.map((key) => (
               <th key={key} style={{ padding: "6px 4px", fontSize: 9, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--br-text-muted)", borderBottom: "1px solid var(--br-border)", textAlign: "center", minWidth: 36 }} title={TOPIC_LABELS[key]}>{key}</th>
             ))}
@@ -1554,7 +1545,7 @@ export default function Portfolio2Page() {
             <button
               onClick={toggleTheme}
               style={{
-                padding: "10px 16px", fontSize: 13, borderRadius: 999,
+                padding: "10px 16px", fontSize: 13, borderRadius: 10,
                 border: `1px solid ${V.border}`, background: "transparent",
                 color: V.muted, cursor: "pointer",
               }}
@@ -1567,7 +1558,7 @@ export default function Portfolio2Page() {
                 router.push("/");
               }}
               style={{
-                padding: "10px 16px", fontSize: 13, borderRadius: 16,
+                padding: "10px 16px", fontSize: 13, borderRadius: 10,
                 border: `1px solid ${V.border}`, background: "transparent",
                 color: V.muted, cursor: "pointer",
               }}
@@ -1615,7 +1606,7 @@ export default function Portfolio2Page() {
           ) : activeTab === "fund-universe" ? (
             <div>
               <div style={{ marginBottom: 20 }}>
-                <h2 style={{ fontSize: 18, fontWeight: 700, color: V.text, letterSpacing: "-0.02em", marginBottom: 4, fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>Fund Universe</h2>
+                <h2 style={{ fontSize: 24, fontWeight: 800, color: V.text, letterSpacing: "-0.04em", lineHeight: 1.08, marginBottom: 4, fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>Fund Universe</h2>
                 <p style={{ fontSize: 12, color: V.muted }}>{fundCount} monitored funds across {strategyCount} strategies</p>
               </div>
               <FundUniverseTable funds={funds} onNavigate={(s) => navigateToFund(s, "fund-universe")} />
@@ -1623,7 +1614,7 @@ export default function Portfolio2Page() {
           ) : activeTab === "peer-comparison" ? (
             <div>
               <div style={{ marginBottom: 20 }}>
-                <h2 style={{ fontSize: 18, fontWeight: 700, color: V.text, letterSpacing: "-0.02em", marginBottom: 4, fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>Peer Comparison</h2>
+                <h2 style={{ fontSize: 24, fontWeight: 800, color: V.text, letterSpacing: "-0.04em", lineHeight: 1.08, marginBottom: 4, fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>Peer Comparison</h2>
                 <p style={{ fontSize: 12, color: V.muted }}>ODD topic health across portfolio</p>
               </div>
               <PeerComparisonView funds={funds} />
@@ -1631,7 +1622,7 @@ export default function Portfolio2Page() {
           ) : activeTab === "risk-heatmap" ? (
             <div>
               <div style={{ marginBottom: 20 }}>
-                <h2 style={{ fontSize: 18, fontWeight: 700, color: V.text, letterSpacing: "-0.02em", marginBottom: 4, fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>Risk Heatmap</h2>
+                <h2 style={{ fontSize: 24, fontWeight: 800, color: V.text, letterSpacing: "-0.04em", lineHeight: 1.08, marginBottom: 4, fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>Risk Heatmap</h2>
                 <p style={{ fontSize: 12, color: V.muted }}>Topic-level risk across {fundCount} funds</p>
               </div>
               <RiskHeatmapView funds={funds} />
@@ -1688,7 +1679,7 @@ function PortfolioOverviewContent({
         <div style={{ display: "flex", flexDirection: "column", gap: 14, minWidth: 0 }}>
           <div>
             <div style={{
-              fontSize: 10, fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase",
+              fontSize: 10, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase",
               color: V.muted, marginBottom: 8,
             }}>
               Alpine ODD Platform · Portfolio Monitor
@@ -1732,7 +1723,7 @@ function PortfolioOverviewContent({
             ].map(({ label, value, color }) => (
               <div key={label} style={{ minWidth: 84 }}>
                 <div style={{
-                  fontSize: 9, fontWeight: 600, letterSpacing: "0.14em",
+                  fontSize: 9, fontWeight: 600, letterSpacing: "0.12em",
                   textTransform: "uppercase", color: V.muted, marginBottom: 5,
                 }}>
                   {label}
@@ -1748,7 +1739,7 @@ function PortfolioOverviewContent({
           </div>
 
           <div>
-          <div style={{ fontSize: 9, fontWeight: 600, letterSpacing: "0.16em", textTransform: "uppercase", color: V.muted, marginBottom: 8 }}>
+          <div style={{ fontSize: 9, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: V.muted, marginBottom: 8 }}>
             Portfolio Topic Health
           </div>
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
@@ -1818,13 +1809,13 @@ function PortfolioOverviewContent({
                 <span style={{ fontSize: 40, fontWeight: 800, color: V.text, letterSpacing: "-0.05em", lineHeight: 1, fontFamily: "var(--font-alpine-mono), SFMono-Regular, Menlo, monospace" }}>
                   {oddScore}
                 </span>
-                <span style={{ fontSize: 11, color: V.muted, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase" }}>
+                <span style={{ fontSize: 11, color: V.muted, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase" }}>
                   ODD
                 </span>
               </div>
             </div>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3, textAlign: "center" }}>
-              <span style={{ fontSize: 9, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: V.muted }}>
+              <span style={{ fontSize: 9, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: V.muted }}>
                 Portfolio Score
               </span>
               <span style={{ fontSize: 10, color: V.sub, lineHeight: 1.35 }}>
@@ -1873,7 +1864,7 @@ function PortfolioOverviewContent({
             }}
           >
             <div style={{
-              fontSize: 10, fontWeight: 600, letterSpacing: "0.18em",
+              fontSize: 10, fontWeight: 600, letterSpacing: "0.12em",
               textTransform: "uppercase", color: V.muted, marginBottom: 8,
             }}>
               {label}

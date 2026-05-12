@@ -265,7 +265,7 @@ function ReviewSidebar({ active, onNavigate, docCount, portalStatus }: { active:
         return (
           <div key={section} style={{ marginTop: si > 0 ? 4 : 0 }}>
             <div style={{
-              fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase",
+              fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase",
               color: "var(--r2-faint)", padding: si > 0 ? "12px 8px 4px" : "0 8px 4px",
               marginTop: si > 0 ? 0 : 0,
               borderTop: si > 0 ? "1px solid var(--r2-border)" : "none",
@@ -345,7 +345,7 @@ function _OverviewTabUnused({ reviewData, isTrellis }: { reviewData: any; isTrel
         <Card>
           <div style={{ fontSize: 12, color: "var(--r2-muted)" }}>Investment recommendation</div>
           <div style={{ display: "flex", alignItems: "center", gap: 14, margin: "10px 0 12px" }}>
-            <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.03em", color: "var(--r2-text)", fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>
+            <div style={{ fontSize: 24, fontWeight: 900, letterSpacing: "-0.04em", color: "var(--r2-text)", fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>
               {ratingLabel}
             </div>
             <span style={{ ...rBadge, padding: "5px 10px", borderRadius: 999, fontSize: 11, fontWeight: 600 }}>
@@ -426,7 +426,7 @@ function _OverviewTabUnused({ reviewData, isTrellis }: { reviewData: any; isTrel
       {/* Strengths + Conditions split */}
       <div style={{ display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: 16 }}>
         <Card>
-          <div style={{ fontSize: 16, fontWeight: 600, color: "var(--r2-text)", marginBottom: 14 }}>Key Strengths</div>
+          <div style={{ fontSize: 14, fontWeight: 600, color: "var(--r2-text)", marginBottom: 14 }}>Key Strengths</div>
           <div style={{ display: "grid", gap: 8 }}>
             {RIDGELINE_MOCK.strengths.map((s, i) => (
               <div key={i} style={{ padding: "12px 14px", borderRadius: 12, background: "rgba(255,255,255,0.03)", border: "1px solid var(--r2-border)", borderLeft: `3px solid ${D.green}` }}>
@@ -438,7 +438,7 @@ function _OverviewTabUnused({ reviewData, isTrellis }: { reviewData: any; isTrel
         </Card>
 
         <Card>
-          <div style={{ fontSize: 16, fontWeight: 600, color: "var(--r2-text)", marginBottom: 14 }}>Conditions for Accept</div>
+          <div style={{ fontSize: 14, fontWeight: 600, color: "var(--r2-text)", marginBottom: 14 }}>Conditions for Accept</div>
           <div style={{ display: "grid", gap: 8 }}>
             {[
               { text: "Hire a dedicated Chief Compliance Officer", detail: "Current interim CCO (COO) lacks separation of duties · target: within 6 months", color: D.red },
@@ -477,7 +477,7 @@ function OddSummaryTab({ reviewData }: { reviewData: any }) {
   return (
     <div style={{ display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: 16 }}>
       <Card>
-        <div style={{ fontSize: 16, fontWeight: 600, color: "var(--r2-text)", marginBottom: 16 }}>{topicCount}-Topic ODD Assessment</div>
+        <div style={{ fontSize: 14, fontWeight: 600, color: "var(--r2-text)", marginBottom: 16 }}>{topicCount}-Topic ODD Assessment</div>
         <div style={{ display: "grid", gap: 10 }}>
           {topics.map(({ num, name, score: sc, color, rating }) => (
             <div key={num} style={{ display: "grid", gridTemplateColumns: "130px 1fr 46px", gap: 10, alignItems: "center", fontSize: 13 }}>
@@ -657,7 +657,7 @@ function RiskObsTab() {
     <Card>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
         <div>
-          <div style={{ fontSize: 18, fontWeight: 600, color: "var(--r2-text)" }}>Risk Observations</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: "var(--r2-text)" }}>Risk Observations</div>
           <div style={{ fontSize: 12, color: "var(--r2-muted)", marginTop: 2 }}>{obs.length} observations · {highCount} High · {medCount} Medium</div>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
@@ -671,7 +671,7 @@ function RiskObsTab() {
           <div key={topic} style={{ borderRadius: 14, border: "1px solid var(--r2-border)", overflow: "hidden" }}>
             <div style={{
               padding: "10px 16px", background: "var(--r2-surface2)", borderBottom: "1px solid var(--r2-border)",
-              fontSize: 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase",
+              fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase",
               color: "var(--r2-faint)", display: "flex", alignItems: "center", justifyContent: "space-between",
             }}>
               <span>{topic}</span>
@@ -740,7 +740,7 @@ function FundProfileTab({ reviewData, isTrellis }: { reviewData: any; isTrellis?
   return (
     <div style={{ display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: 16 }}>
       <Card>
-        <div style={{ fontSize: 16, fontWeight: 600, color: "var(--r2-text)", marginBottom: 16 }}>Firm Overview</div>
+        <div style={{ fontSize: 14, fontWeight: 600, color: "var(--r2-text)", marginBottom: 16 }}>Firm Overview</div>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
           <tbody>
             {firmRows.map(([label, value]) => (
@@ -817,7 +817,7 @@ function PeerCompareTab({ reviewData }: { reviewData: any }) {
 
   return (
     <Card>
-      <div style={{ fontSize: 16, fontWeight: 600, color: "var(--r2-text)", marginBottom: 16 }}>
+      <div style={{ fontSize: 14, fontWeight: 600, color: "var(--r2-text)", marginBottom: 16 }}>
         Peer Comparison — Equity Hedge Funds ($1B–$3B AUM)
       </div>
       <div style={{ overflowX: "auto" }}>
@@ -825,7 +825,7 @@ function PeerCompareTab({ reviewData }: { reviewData: any }) {
           <thead>
             <tr style={{ background: "var(--r2-surface2)" }}>
               {["Fund", "ODD Score", "Rating", "AUM", "Governance", "Compliance", "BCP", "IT/Cyber", "Service Prov."].map((h) => (
-                <th key={h} style={{ textAlign: "left", padding: "10px 14px", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.14em", color: "var(--r2-faint)", borderBottom: "1px solid var(--r2-border)", whiteSpace: "nowrap" }}>{h}</th>
+                <th key={h} style={{ textAlign: "left", padding: "10px 14px", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--r2-faint)", borderBottom: "1px solid var(--r2-border)", whiteSpace: "nowrap" }}>{h}</th>
               ))}
             </tr>
           </thead>
@@ -892,7 +892,7 @@ function DocVaultTab() {
     <Card>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 18 }}>
         <div>
-          <div style={{ fontSize: 18, fontWeight: 600, color: "var(--r2-text)" }}>Document Vault</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: "var(--r2-text)" }}>Document Vault</div>
           <div style={{ fontSize: 12, color: "var(--r2-muted)", marginTop: 2 }}>{docs.length} documents · {docs.filter((d) => d.status === "flagged").length} flagged</div>
         </div>
         <button style={{ padding: "9px 16px", fontSize: 13, borderRadius: 12, border: "1px solid var(--r2-border)", background: "rgba(255,255,255,0.04)", color: "var(--r2-muted)", cursor: "pointer" }}>
@@ -968,7 +968,7 @@ function ICMemoTab({ reviewData }: { reviewData: any }) {
     <Card>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
         <div>
-          <div style={{ fontSize: 18, fontWeight: 600, color: "var(--r2-text)" }}>Investment Committee Memo</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: "var(--r2-text)" }}>Investment Committee Memo</div>
           <div style={{ fontSize: 12, color: "var(--r2-muted)", marginTop: 2 }}>{fundName} · Version 2.1 · Draft for IC</div>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
@@ -1055,7 +1055,7 @@ function VerificationTab2({ reviewData, isTrellis }: { reviewData: any; isTrelli
     <Card>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 18 }}>
         <div>
-          <div style={{ fontSize: 18, fontWeight: 600, color: "var(--r2-text)" }}>Regulatory Verification</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: "var(--r2-text)" }}>Regulatory Verification</div>
           <div style={{ fontSize: 12, color: "var(--r2-muted)", marginTop: 2 }}>{checks.length} checks completed · {passCount} Pass · {excCount} Exception</div>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
@@ -1136,7 +1136,7 @@ function MonitoringTab() {
     <Card>
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 18, gap: 16 }}>
         <div>
-          <div style={{ fontSize: 18, fontWeight: 600, color: "var(--r2-text)", marginBottom: 4 }}>Post-Close Monitoring</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: "var(--r2-text)", marginBottom: 4 }}>Post-Close Monitoring</div>
           <div style={{ fontSize: 12, color: "var(--r2-muted)" }}>{MONITORING_ITEMS.length} open conditions · Trellis Capital IV</div>
         </div>
         {/* Scan widget */}
@@ -1212,7 +1212,7 @@ function FullReportTab({ reviewData }: { reviewData: any }) {
     <Card>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
         <div>
-          <div style={{ fontSize: 18, fontWeight: 600, color: "var(--r2-text)" }}>Full ODD Report</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: "var(--r2-text)" }}>Full ODD Report</div>
           <div style={{ fontSize: 12, color: "var(--r2-muted)", marginTop: 2 }}>{fundName} · Final Draft</div>
         </div>
         <button style={{ padding: "9px 18px", fontSize: 13, borderRadius: 12, border: "1px solid transparent", background: "linear-gradient(135deg, #16b77c, #22c38a)", color: "#fff", cursor: "pointer", fontWeight: 600 }}>
@@ -1223,7 +1223,7 @@ function FullReportTab({ reviewData }: { reviewData: any }) {
         padding: 24, borderRadius: 14, border: "1px solid var(--r2-border)", background: "var(--r2-surface2)",
         fontSize: 14, color: "var(--r2-muted)", lineHeight: 1.8,
       }}>
-        <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "var(--r2-faint)", marginBottom: 8 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--r2-faint)", marginBottom: 8 }}>
           Alpine Operational Due Diligence — Final Report
         </div>
         <div style={{ fontSize: 22, fontWeight: 800, color: "var(--r2-text)", letterSpacing: "-0.03em", marginBottom: 4, fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>{fundName}</div>
@@ -1236,7 +1236,7 @@ function FullReportTab({ reviewData }: { reviewData: any }) {
             { label: "Open Conditions", value: "3 HIGH · 3 MEDIUM", color: D.amber },
           ].map(({ label, value, color }) => (
             <div key={label} style={{ padding: "14px 16px", borderRadius: 12, background: "var(--r2-card)", border: "1px solid var(--r2-border)" }}>
-              <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--r2-faint)", marginBottom: 6 }}>{label}</div>
+              <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--r2-faint)", marginBottom: 6 }}>{label}</div>
               <div style={{ fontSize: 18, fontWeight: 700, color, letterSpacing: "-0.02em" }}>{value}</div>
             </div>
           ))}
@@ -1368,7 +1368,7 @@ function CallPrepTab() {
             </svg>
           </div>
           <div>
-            <div style={{ fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 700, color: "#b45309", marginBottom: 4 }}>Call Objective</div>
+            <div style={{ fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 700, color: "#b45309", marginBottom: 4 }}>Call Objective</div>
             <div style={{ fontSize: 13, lineHeight: 1.7, color: "#78350f" }}>
               Obtain management responses to 6 risk observations. Focus on remediation timelines for the 3 HIGH-severity findings preventing ACCEPT.
             </div>
@@ -1383,8 +1383,8 @@ function CallPrepTab() {
               <div key={i} style={{ borderTop: "1px solid var(--r2-border)", paddingTop: 16 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", paddingBottom: 10, borderBottom: "1px solid var(--r2-border)", marginBottom: 12 }}>
                   <div>
-                    <div style={{ fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 700, color: "var(--r2-muted)", marginBottom: 4 }}>{s.label}</div>
-                    <div style={{ fontSize: 16, fontWeight: 600, color: "var(--r2-text)" }}>{s.topic}</div>
+                    <div style={{ fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 700, color: "var(--r2-muted)", marginBottom: 4 }}>{s.label}</div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: "var(--r2-text)" }}>{s.topic}</div>
                   </div>
                   <span style={{ width: 30, height: 30, borderRadius: "50%", border: "1px solid var(--r2-border)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: "var(--r2-muted)", flexShrink: 0, marginTop: 2 }}>
                     {s.questions.length}
@@ -1626,11 +1626,11 @@ function Overview2Tab({ reviewData, onNavigate }: { reviewData: any; onNavigate:
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
             {/* Left */}
             <div style={{ flex: "1 1 340px" }}>
-              <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--r2-faint)", marginBottom: 10 }}>
+              <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--r2-faint)", marginBottom: 10 }}>
                 Investment Recommendation
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", marginBottom: 14 }}>
-                <span style={{ fontSize: 36, fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1, color: "var(--r2-text)" }}>
+                <span style={{ fontSize: 25, fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.08, color: "var(--r2-text)", fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>
                   WATCHLIST
                 </span>
                 <span style={{ fontSize: 11, fontWeight: 600, padding: "5px 14px", borderRadius: 999, border: "1px solid var(--r2-border)", background: "var(--r2-surface2)", color: "var(--r2-muted)" }}>
@@ -1678,7 +1678,7 @@ function Overview2Tab({ reviewData, onNavigate }: { reviewData: any; onNavigate:
         </div>
         {/* Topic dot strip */}
         <div style={{ padding: "12px 28px", display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-          <span style={{ fontSize: 9, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--r2-faint)", marginRight: 4 }}>{topicNums.length}-topic status</span>
+          <span style={{ fontSize: 9, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--r2-faint)", marginRight: 4 }}>{topicNums.length}-topic status</span>
           {topicNums.map(num => {
             const r = ((topicData[num] as any)?.rating || "").toUpperCase();
             const bg = r === "GREEN" ? "#10B981" : r === "YELLOW" ? "#F59E0B" : r === "RED" ? "#EF4444" : "var(--r2-border)";
@@ -1698,7 +1698,7 @@ function Overview2Tab({ reviewData, onNavigate }: { reviewData: any; onNavigate:
       {ovActs.map(act => (
         <div key={act.label}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-            <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--r2-faint)" }}>{act.label}</span>
+            <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--r2-faint)" }}>{act.label}</span>
             <div style={{ flex: 1, height: 1, background: "var(--r2-border)" }} />
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 10 }}>
@@ -1753,7 +1753,7 @@ function Overview2Tab({ reviewData, onNavigate }: { reviewData: any; onNavigate:
               {Object.entries(grouped).map(([topic, items]) => (
                 <Card key={topic} style={{ padding: 0, overflow: "hidden" }}>
                   <div style={{ padding: "8px 16px", background: "var(--r2-surface2)", borderBottom: "1px solid var(--r2-border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--r2-faint)" }}>{topic}</span>
+                    <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--r2-faint)" }}>{topic}</span>
                     <span style={{ fontSize: 10, color: "var(--r2-faint)" }}>{items.length} observation{items.length !== 1 ? "s" : ""}</span>
                   </div>
                   {items.map((ro: any, i: number) => (
