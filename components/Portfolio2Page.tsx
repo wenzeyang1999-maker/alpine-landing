@@ -868,9 +868,17 @@ function ActiveReviewsList({ reviews, onNavigate, V }: { reviews: any[]; onNavig
         borderRadius: 16,
         padding: "24px 28px",
         display: "flex",
-        alignItems: "stretch",
-        gap: 0,
+        flexDirection: "column",
+        gap: 20,
       }}>
+        {/* Title row */}
+        <div>
+          <h2 style={{ fontSize: 18, fontWeight: 700, color: V.text, letterSpacing: "-0.02em", marginBottom: 3, fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>Active Reviews</h2>
+          <p style={{ fontSize: 12, color: V.faint }}>In-progress reviews, pipeline, and upcoming schedule</p>
+        </div>
+
+        {/* Stats row */}
+        <div style={{ display: "flex", alignItems: "stretch", borderTop: `1px solid ${V.border}`, paddingTop: 20, gap: 0 }}>
         {/* Left: primary stat */}
         <div style={{ flex: "0 0 auto", paddingRight: 32, borderRight: `1px solid ${V.border}`, display: "flex", flexDirection: "column", justifyContent: "center" }}>
           <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: V.faint, marginBottom: 8 }}>
@@ -899,6 +907,7 @@ function ActiveReviewsList({ reviews, onNavigate, V }: { reviews: any[]; onNavig
               <div style={{ fontSize: 11, color: V.faint, marginTop: 2, lineHeight: 1.4 }}>{sub}</div>
             </div>
           ))}
+        </div>
         </div>
       </div>
 
@@ -1601,10 +1610,6 @@ export default function Portfolio2Page() {
             />
           ) : activeTab === "active-reviews" ? (
             <div>
-              <div style={{ marginBottom: 20 }}>
-                <h2 style={{ fontSize: 18, fontWeight: 700, color: V.text, letterSpacing: "-0.02em", marginBottom: 4, fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>Active Reviews</h2>
-                <p style={{ fontSize: 12, color: V.muted }}>In-progress reviews, pipeline, and upcoming schedule</p>
-              </div>
               <ActiveReviewsList reviews={reviews} onNavigate={(s) => navigateToFund(s, "active-reviews")} V={V} />
             </div>
           ) : activeTab === "fund-universe" ? (
