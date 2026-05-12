@@ -1255,8 +1255,6 @@ export default function Portfolio2Page() {
       style={{
         minHeight: "100vh",
         background: V.bg,
-        display: "flex",
-        flexDirection: "column",
         fontFamily: "DM Sans, sans-serif",
       }}
     >
@@ -1270,114 +1268,111 @@ export default function Portfolio2Page() {
           100% { opacity: 1; transform: scale(1); }
         }
       `}</style>
-      {/* ── Top Bar ── */}
-      <header
-        style={{
-          height: 52,
-          background: V.surface,
-          borderBottom: `1px solid ${V.border}`,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "0 20px",
-          position: "sticky",
-          top: 0,
-          zIndex: 40,
-          flexShrink: 0,
-        }}
-      >
-        {/* Left: logo + breadcrumb */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <a href="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none" }}>
-            <div
-              style={{
-                width: 24, height: 24, borderRadius: 5,
-                background: "linear-gradient(135deg, #10B981 0%, #F59E0B 50%, #7B2CBF 100%)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}
-            >
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#F5F0E8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M4 18L12 6L20 18" />
-              </svg>
-            </div>
-            <span style={{ fontSize: 13, fontWeight: 700, color: V.text, letterSpacing: "-0.01em" }}>Alpine ODD</span>
-          </a>
-          <span style={{ color: V.muted, fontSize: 13 }}>/</span>
-          <span style={{ fontSize: 12, color: V.muted }}>
-            Portfolio
-            {activeTab !== "portfolio-overview" && (
-              <>
-                <span style={{ margin: "0 4px" }}>·</span>
-                <span style={{ color: V.sub }}>
-                  {NAV_ITEMS.find((n) => n.id === activeTab)?.label}
-                </span>
-              </>
-            )}
-          </span>
-        </div>
 
-        {/* Right: alerts + theme toggle + sign out */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          {alerts.length > 0 && (
-            <div
-              style={{
-                display: "flex", alignItems: "center", gap: 6,
-                padding: "4px 10px", borderRadius: 20,
-                background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.18)",
-                fontSize: 11, color: "#f87171", fontWeight: 600,
-              }}
-            >
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#ef4444", display: "inline-block" }} />
-              {alerts.length} Alert{alerts.length !== 1 ? "s" : ""}
-            </div>
-          )}
-          <button
-            onClick={toggleTheme}
-            style={{
-              padding: "5px 12px", borderRadius: 8,
-              background: "transparent", border: `1px solid ${V.border}`,
-              fontSize: 11, color: V.muted, cursor: "pointer",
-            }}
-          >
-            {isDark ? "☀ Light" : "☾ Dark"}
-          </button>
-          <button
-            onClick={() => {
-              localStorage.removeItem(alpineDemoBrand.userStorageKey);
-              router.push("/");
-            }}
-            style={{
-              padding: "5px 12px", borderRadius: 8,
-              background: "transparent", border: `1px solid ${V.border}`,
-              fontSize: 11, color: V.muted, cursor: "pointer",
-            }}
-          >
-            Sign Out
-          </button>
-        </div>
-      </header>
-
-      {/* ── Body ── */}
-      <div style={{ width: "min(1440px, calc(100% - 80px))", margin: "0 auto", alignSelf: "stretch", flex: 1, display: "flex", flexDirection: "column" }}>
-      <div style={{ display: "grid", gridTemplateColumns: `${collapsed ? 56 : 220}px 1fr`, gap: 16, marginTop: 16, alignItems: "start", flex: 1 }}>
-        {/* Sidebar */}
-        <Sidebar
-          activeTab={activeTab}
-          onNavigate={setActiveTab}
-          collapsed={collapsed}
-          onToggle={() => setCollapsed((c) => !c)}
-        />
-
-        {/* Main content */}
-        <main
+      <div style={{ width: "min(1440px, calc(100% - 80px))", margin: "24px auto" }}>
+        {/* ── Top Bar ── */}
+        <header
           style={{
-            flex: 1,
-            padding: "8px 12px 24px",
-            overflowY: "auto",
-            minWidth: 0,
-            background: V.bg,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 18,
+            padding: "14px 20px",
+            border: `1px solid ${V.border}`,
+            borderRadius: 18,
+            background: isDark ? "rgba(8,17,29,0.88)" : "rgba(255,255,255,0.92)",
+            backdropFilter: "blur(16px)",
           }}
         >
+          {/* Left: logo + breadcrumb */}
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <a href="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none" }}>
+              <div
+                style={{
+                  width: 26, height: 26, borderRadius: 6, flexShrink: 0,
+                  background: "linear-gradient(135deg, #10B981 0%, #F59E0B 50%, #7B2CBF 100%)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#F5F0E8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 18L12 6L20 18" />
+                </svg>
+              </div>
+              <span style={{ fontSize: 14, fontWeight: 600, color: V.text, letterSpacing: "-0.01em" }}>Alpine ODD</span>
+            </a>
+            <div>
+              <div style={{ fontSize: 12, color: V.muted }}>
+                Portfolio
+                {activeTab !== "portfolio-overview" && (
+                  <>
+                    <span style={{ margin: "0 4px" }}>·</span>
+                    <span style={{ color: V.sub }}>
+                      {NAV_ITEMS.find((n) => n.id === activeTab)?.label}
+                    </span>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Right: alerts + theme toggle + sign out */}
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            {alerts.length > 0 && (
+              <div
+                style={{
+                  display: "flex", alignItems: "center", gap: 6,
+                  padding: "4px 10px", borderRadius: 20,
+                  background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.18)",
+                  fontSize: 11, color: "#f87171", fontWeight: 600,
+                }}
+              >
+                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#ef4444", display: "inline-block" }} />
+                {alerts.length} Alert{alerts.length !== 1 ? "s" : ""}
+              </div>
+            )}
+            <button
+              onClick={toggleTheme}
+              style={{
+                padding: "10px 16px", fontSize: 13, borderRadius: 999,
+                border: `1px solid ${V.border}`, background: "transparent",
+                color: V.muted, cursor: "pointer",
+              }}
+            >
+              {isDark ? "☀ Light" : "☾ Dark"}
+            </button>
+            <button
+              onClick={() => {
+                localStorage.removeItem(alpineDemoBrand.userStorageKey);
+                router.push("/");
+              }}
+              style={{
+                padding: "10px 16px", fontSize: 13, borderRadius: 16,
+                border: `1px solid ${V.border}`, background: "transparent",
+                color: V.muted, cursor: "pointer",
+              }}
+            >
+              Sign Out
+            </button>
+          </div>
+        </header>
+
+        {/* ── Workspace ── */}
+        <div style={{ display: "grid", gridTemplateColumns: `${collapsed ? 56 : 220}px 1fr`, gap: 16, marginTop: 14, alignItems: "start" }}>
+          {/* Sidebar */}
+          <Sidebar
+            activeTab={activeTab}
+            onNavigate={setActiveTab}
+            collapsed={collapsed}
+            onToggle={() => setCollapsed((c) => !c)}
+          />
+
+          {/* Main content */}
+          <main
+            style={{
+              minWidth: 0,
+              paddingBottom: 48,
+            }}
+          >
           {loading ? (
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               {[1, 2, 3].map((i) => (
@@ -1427,8 +1422,8 @@ export default function Portfolio2Page() {
           ) : (
             <div style={{ textAlign: "center", padding: 64, color: V.muted, fontSize: 14 }}>Coming soon</div>
           )}
-        </main>
-      </div>
+          </main>
+        </div>
       </div>
     </div>
   );
