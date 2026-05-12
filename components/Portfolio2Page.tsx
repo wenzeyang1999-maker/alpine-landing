@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatCurrency, relativeTime } from "@/lib/demo-utils";
@@ -801,6 +801,12 @@ const IN_PROGRESS_REVIEWS = [
   },
 ];
 
+const FINALIZED_NOTIFS = [
+  { id: "fn1", fund: "Ridgeline Capital Partners, LLC", rating: "WATCHLIST", analyst: "Samantha Kim", date: "2 days ago" },
+  { id: "fn2", fund: "Harborview Long/Short Fund", rating: "ACCEPT", analyst: "James Park", date: "7 days ago" },
+  { id: "fn3", fund: "Meridian Asset Management", rating: "ACCEPT", analyst: "Priya Sharma", date: "3 weeks ago" },
+];
+
 const PIPELINE_COLUMNS = [
   {
     id: "screening",
@@ -1156,7 +1162,8 @@ export default function Portfolio2Page() {
   const [funds, setFunds] = useState<any[]>([]);
   const [reviews, setReviews] = useState<any[]>([]);
   const [kpis, setKpis] = useState<any>(null);
-  const [alerts, setAlerts] = useState<any[]>([]);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const notifRef = useRef<HTMLDivElement>(null);
 
   // Force dark blackrock theme while on this page
   useEffect(() => {
@@ -1181,12 +1188,10 @@ export default function Portfolio2Page() {
       api.listFunds().catch(() => ({ funds: [] })),
       api.listReviews().catch(() => ({ reviews: [] })),
       api.getPortfolioKPIs().catch(() => null),
-      api.getKPIAlerts().catch(() => ({ alerts: [] })),
-    ]).then(([fn, rv, kp, al]) => {
+    ]).then(([fn, rv, kp]) => {
       setFunds((fn as any)?.funds || fn || []);
       setReviews((rv as any)?.reviews || rv || []);
       setKpis(kp);
-      setAlerts((al as any)?.alerts || al || []);
       setLoading(false);
     });
   }, []);
@@ -1197,6 +1202,17 @@ export default function Portfolio2Page() {
     html.setAttribute("data-theme", next);
     setTheme(next);
   }, [theme]);
+
+  useEffect(() => {
+    if (!notifOpen) return;
+    function handleClick(e: MouseEvent) {
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+        setNotifOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [notifOpen]);
 
   function navigateToFund(slug: string, from?: string) {
     const qs = from ? `?from=${from}` : "";
@@ -1330,21 +1346,69 @@ export default function Portfolio2Page() {
             </div>
           </div>
 
-          {/* Right: alerts + theme toggle + sign out */}
+          {/* Right: notification bell + theme toggle + sign out */}
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            {alerts.length > 0 && (
-              <div
+
+            {/* Notification bell */}
+            <div ref={notifRef} style={{ position: "relative" }}>
+              <button
+                onClick={() => setNotifOpen((o) => !o)}
                 style={{
-                  display: "flex", alignItems: "center", gap: 6,
-                  padding: "4px 10px", borderRadius: 20,
-                  background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.18)",
-                  fontSize: 11, color: "#f87171", fontWeight: 600,
+                  width: 36, height: 36, borderRadius: 10,
+                  border: `1px solid ${V.border}`, background: notifOpen ? V.surface2 : "transparent",
+                  color: V.muted, cursor: "pointer",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  transition: "background 0.15s",
                 }}
+                title="Notifications"
               >
-                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#ef4444", display: "inline-block" }} />
-                {alerts.length} Alert{alerts.length !== 1 ? "s" : ""}
-              </div>
-            )}
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M8 2a5 5 0 00-5 5v2l-1 2h12l-1-2V7a5 5 0 00-5-5z" />
+                  <path d="M6.5 13a1.5 1.5 0 003 0" />
+                </svg>
+              </button>
+
+              {notifOpen && (
+                <div style={{
+                  position: "absolute", top: "calc(100% + 8px)", right: 0, zIndex: 100,
+                  width: 320,
+                  background: isDark ? "#111d30" : "#FFFFFF",
+                  border: `1px solid ${V.border}`,
+                  borderRadius: 14,
+                  boxShadow: isDark ? "0 8px 32px rgba(0,0,0,0.45)" : "0 8px 32px rgba(15,23,42,0.12)",
+                  overflow: "hidden",
+                }}>
+                  <div style={{ padding: "12px 16px", borderBottom: `1px solid ${V.border}`, fontSize: 12, fontWeight: 600, color: V.text, letterSpacing: "0.02em" }}>
+                    Notifications
+                  </div>
+                  {FINALIZED_NOTIFS.map((n, i) => (
+                    <div
+                      key={n.id}
+                      style={{
+                        padding: "12px 16px",
+                        borderBottom: i < FINALIZED_NOTIFS.length - 1 ? `1px solid ${V.border}` : "none",
+                        display: "flex", flexDirection: "column", gap: 3,
+                      }}
+                    >
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                        <span style={{ fontSize: 12, fontWeight: 600, color: V.text }}>{n.fund}</span>
+                        <span style={{
+                          fontSize: 10, fontWeight: 700, letterSpacing: "0.06em",
+                          padding: "2px 7px", borderRadius: 6,
+                          background: n.rating === "ACCEPT" ? "rgba(24,185,126,0.12)" : n.rating === "FLAG" ? "rgba(239,91,91,0.12)" : "rgba(242,169,59,0.12)",
+                          color: n.rating === "ACCEPT" ? "#18b97e" : n.rating === "FLAG" ? "#ef5b5b" : "#f2a93b",
+                        }}>
+                          {n.rating}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: 11, color: V.faint }}>ODD review finalized · {n.analyst}</div>
+                      <div style={{ fontSize: 10, color: V.faint, marginTop: 1 }}>{n.date}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
             <button
               onClick={toggleTheme}
               style={{
