@@ -786,25 +786,25 @@ const IN_PROGRESS_REVIEWS = [
     subtextColor: "#18b97e",
     greyed: true,
   },
+];
+
+const FINALIZED_REVIEWS = [
   {
     slug: "trellis-capital-iv",
     name: "Trellis Capital IV, L.P.",
     analyst: "Priya Sharma",
-    started: "2026-02-03",
+    finalizedDate: "2026-05-09",
     rating: "WATCHLIST",
-    stageBadge: "IC Review",
-    stageBadgeColor: "#ffd48c",
-    stageBadgeBg: "rgba(242,169,59,0.12)",
-    dotColor: "#f59e0b",
-    subtext: "2 RED topics flagged · Governance & Regulatory",
-    subtextColor: "#f59e0b",
+    dotColor: "#18b97e",
+    reportFile: "/demo-docs/sample_vc_fund_iv_alt.pdf",
+    reportLabel: "Trellis_Capital_IV_ODD_Report.pdf",
   },
 ];
 
 const FINALIZED_NOTIFS = [
-  { id: "fn1", fund: "Ridgeline Capital Partners, LLC", rating: "WATCHLIST", analyst: "Samantha Kim", date: "2 days ago" },
-  { id: "fn2", fund: "Harborview Long/Short Fund", rating: "ACCEPT", analyst: "James Park", date: "7 days ago" },
-  { id: "fn3", fund: "Meridian Asset Management", rating: "ACCEPT", analyst: "Priya Sharma", date: "3 weeks ago" },
+  { id: "fn-trellis", fund: "Trellis Capital IV, L.P.", rating: "WATCHLIST", analyst: "Priya Sharma", date: "2 days ago", isNew: true, reportFile: "/demo-docs/sample_vc_fund_iv_alt.pdf", reportLabel: "Trellis_Capital_IV_ODD_Report.pdf" },
+  { id: "fn2", fund: "Harborview Long/Short Fund", rating: "ACCEPT", analyst: "James Park", date: "7 days ago", isNew: false, reportFile: null, reportLabel: null },
+  { id: "fn3", fund: "Meridian Asset Management", rating: "ACCEPT", analyst: "Priya Sharma", date: "3 weeks ago", isNew: false, reportFile: null, reportLabel: null },
 ];
 
 const PIPELINE_COLUMNS = [
@@ -975,6 +975,69 @@ function ActiveReviewsList({ reviews, onNavigate, V }: { reviews: any[]; onNavig
           })}
         </div>
       </div>
+
+      {/* ── Finalized ── */}
+      {FINALIZED_REVIEWS.length > 0 && (
+        <div>
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.16em", textTransform: "uppercase", color: V.muted, marginBottom: 10 }}>
+            Finalized
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {FINALIZED_REVIEWS.map((rev) => (
+              <div
+                key={rev.slug}
+                style={{
+                  background: V.card,
+                  border: `1px solid rgba(24,185,126,0.2)`,
+                  borderRadius: 12,
+                  padding: "14px 18px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 14,
+                }}
+              >
+                {/* Green check dot */}
+                <div style={{ width: 10, height: 10, borderRadius: "50%", flexShrink: 0, background: "#18b97e", boxShadow: "0 0 0 3px rgba(24,185,126,0.18)" }} />
+
+                {/* Info */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: V.text }}>{rev.name}</div>
+                  <div style={{ fontSize: 11, color: V.faint, marginTop: 2 }}>
+                    {rev.analyst} · Finalized {rev.finalizedDate}
+                  </div>
+                </div>
+
+                {/* Rating badge */}
+                <span style={{
+                  ...ratingStyle(rev.rating),
+                  fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 20, flexShrink: 0,
+                }}>
+                  {ratingLabel(rev.rating)}
+                </span>
+
+                {/* Download button */}
+                <a
+                  href={rev.reportFile}
+                  download={rev.reportLabel}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 5,
+                    padding: "6px 12px", borderRadius: 8, flexShrink: 0,
+                    border: `1px solid rgba(24,185,126,0.3)`,
+                    background: "rgba(24,185,126,0.08)",
+                    color: "#18b97e", fontSize: 11, fontWeight: 600,
+                    textDecoration: "none",
+                  }}
+                >
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M8 2v8M5 7l3 3 3-3" /><path d="M2 13h12" />
+                  </svg>
+                  Download Report
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* ── Pipeline Kanban ── */}
       <div>
@@ -1163,7 +1226,9 @@ export default function Portfolio2Page() {
   const [reviews, setReviews] = useState<any[]>([]);
   const [kpis, setKpis] = useState<any>(null);
   const [notifOpen, setNotifOpen] = useState(false);
+  const [readNotifs, setReadNotifs] = useState<Set<string>>(new Set());
   const notifRef = useRef<HTMLDivElement>(null);
+  const unreadCount = FINALIZED_NOTIFS.filter((n) => n.isNew && !readNotifs.has(n.id)).length;
 
   // Force dark blackrock theme while on this page
   useEffect(() => {
@@ -1358,7 +1423,7 @@ export default function Portfolio2Page() {
                   border: `1px solid ${V.border}`, background: notifOpen ? V.surface2 : "transparent",
                   color: V.muted, cursor: "pointer",
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  transition: "background 0.15s",
+                  transition: "background 0.15s", position: "relative",
                 }}
                 title="Notifications"
               >
@@ -1366,12 +1431,20 @@ export default function Portfolio2Page() {
                   <path d="M8 2a5 5 0 00-5 5v2l-1 2h12l-1-2V7a5 5 0 00-5-5z" />
                   <path d="M6.5 13a1.5 1.5 0 003 0" />
                 </svg>
+                {unreadCount > 0 && (
+                  <span style={{
+                    position: "absolute", top: 5, right: 5,
+                    width: 7, height: 7, borderRadius: "50%",
+                    background: "#ef5b5b",
+                    border: `1.5px solid ${isDark ? "#111d30" : "#FFFFFF"}`,
+                  }} />
+                )}
               </button>
 
               {notifOpen && (
                 <div style={{
                   position: "absolute", top: "calc(100% + 8px)", right: 0, zIndex: 100,
-                  width: 320,
+                  width: 340,
                   background: isDark ? "#111d30" : "#FFFFFF",
                   border: `1px solid ${V.border}`,
                   borderRadius: 14,
@@ -1381,30 +1454,67 @@ export default function Portfolio2Page() {
                   <div style={{ padding: "12px 16px", borderBottom: `1px solid ${V.border}`, fontSize: 12, fontWeight: 600, color: V.text, letterSpacing: "0.02em" }}>
                     Notifications
                   </div>
-                  {FINALIZED_NOTIFS.map((n, i) => (
-                    <div
-                      key={n.id}
-                      style={{
-                        padding: "12px 16px",
-                        borderBottom: i < FINALIZED_NOTIFS.length - 1 ? `1px solid ${V.border}` : "none",
-                        display: "flex", flexDirection: "column", gap: 3,
-                      }}
-                    >
-                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                        <span style={{ fontSize: 12, fontWeight: 600, color: V.text }}>{n.fund}</span>
-                        <span style={{
-                          fontSize: 10, fontWeight: 700, letterSpacing: "0.06em",
-                          padding: "2px 7px", borderRadius: 6,
-                          background: n.rating === "ACCEPT" ? "rgba(24,185,126,0.12)" : n.rating === "FLAG" ? "rgba(239,91,91,0.12)" : "rgba(242,169,59,0.12)",
-                          color: n.rating === "ACCEPT" ? "#18b97e" : n.rating === "FLAG" ? "#ef5b5b" : "#f2a93b",
-                        }}>
-                          {n.rating}
-                        </span>
+                  {FINALIZED_NOTIFS.map((n, i) => {
+                    const isUnread = n.isNew && !readNotifs.has(n.id);
+                    return (
+                      <div
+                        key={n.id}
+                        style={{
+                          padding: "12px 16px",
+                          borderBottom: i < FINALIZED_NOTIFS.length - 1 ? `1px solid ${V.border}` : "none",
+                          background: isUnread ? (isDark ? "rgba(239,91,91,0.05)" : "rgba(239,91,91,0.03)") : "transparent",
+                          display: "flex", flexDirection: "column", gap: 4,
+                        }}
+                      >
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                            {isUnread && (
+                              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#ef5b5b", flexShrink: 0 }} />
+                            )}
+                            <span style={{ fontSize: 12, fontWeight: 600, color: V.text }}>{n.fund}</span>
+                          </div>
+                          <span style={{
+                            fontSize: 10, fontWeight: 700, letterSpacing: "0.06em",
+                            padding: "2px 7px", borderRadius: 6,
+                            background: n.rating === "ACCEPT" ? "rgba(24,185,126,0.12)" : n.rating === "FLAG" ? "rgba(239,91,91,0.12)" : "rgba(242,169,59,0.12)",
+                            color: n.rating === "ACCEPT" ? "#18b97e" : n.rating === "FLAG" ? "#ef5b5b" : "#f2a93b",
+                          }}>
+                            {n.rating}
+                          </span>
+                        </div>
+                        <div style={{ fontSize: 11, color: V.faint }}>ODD review finalized · {n.analyst}</div>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 2 }}>
+                          <span style={{ fontSize: 10, color: V.faint }}>{n.date}</span>
+                          <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                            {n.reportFile && (
+                              <a
+                                href={n.reportFile}
+                                download={n.reportLabel ?? undefined}
+                                onClick={() => setReadNotifs((s) => new Set(Array.from(s).concat(n.id)))}
+                                style={{
+                                  fontSize: 10, fontWeight: 600, color: "#18b97e",
+                                  textDecoration: "none", display: "flex", alignItems: "center", gap: 3,
+                                }}
+                              >
+                                <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <path d="M8 2v8M5 7l3 3 3-3" /><path d="M2 13h12" />
+                                </svg>
+                                Download Report
+                              </a>
+                            )}
+                            {isUnread && (
+                              <button
+                                onClick={() => setReadNotifs((s) => new Set(Array.from(s).concat(n.id)))}
+                                style={{ fontSize: 10, color: V.faint, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                              >
+                                Dismiss
+                              </button>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                      <div style={{ fontSize: 11, color: V.faint }}>ODD review finalized · {n.analyst}</div>
-                      <div style={{ fontSize: 10, color: V.faint, marginTop: 1 }}>{n.date}</div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
