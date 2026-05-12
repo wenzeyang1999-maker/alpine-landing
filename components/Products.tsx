@@ -109,13 +109,13 @@ export default function Products() {
             {PRODUCTS.map((p, i) => (
               <span key={p.outcome} className="flex items-center">
                 <span
-                  className="font-mono text-[12px] uppercase"
+                  className="font-mono text-[15px] uppercase"
                   style={{ color: p.outcomeTextColor, fontWeight: 700, letterSpacing: "0.1em" }}
                 >
                   {p.outcome}
                 </span>
                 {i < PRODUCTS.length - 1 && (
-                  <span className="mx-2.5 font-mono text-[11px]" style={{ color: "#D1D5DB" }}>·</span>
+                  <span className="mx-3 font-mono text-[13px]" style={{ color: "#D1D5DB" }}>·</span>
                 )}
               </span>
             ))}
