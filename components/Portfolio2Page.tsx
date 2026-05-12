@@ -471,16 +471,18 @@ function Sidebar({
     <aside
       style={{
         width: collapsed ? 56 : 220,
-        background: "var(--br-bg-sidebar, #08111e)",
-        borderRight: "1px solid var(--br-border, rgba(148,163,184,0.14))",
+        background: "var(--br-bg-card, #FFFFFF)",
+        border: "1px solid var(--br-border, rgba(148,163,184,0.14))",
+        borderRadius: 20,
         display: "flex",
         flexDirection: "column",
         flexShrink: 0,
         transition: "width 0.2s",
         position: "sticky",
-        top: 52,
-        alignSelf: "flex-start",
-        height: "calc(100vh - 52px)",
+        top: 16,
+        alignSelf: "start",
+        maxHeight: "calc(100vh - 80px)",
+        overflowY: "auto",
       }}
     >
       {/* Logo / header */}
@@ -508,8 +510,8 @@ function Sidebar({
               </svg>
             </div>
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "var(--br-text-primary, #eff4fb)", lineHeight: 1.2, fontFamily: "var(--font-heading, sans-serif)" }}>Alpine ODD</div>
-              <div style={{ fontSize: 10, color: "var(--br-text-muted, #6b7c95)", lineHeight: 1.3 }}>Powered by Alpine</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: "var(--br-text-primary, #1A1A2E)", lineHeight: 1.2, fontFamily: "var(--font-heading, sans-serif)" }}>Alpine ODD</div>
+              <div style={{ fontSize: 10, color: "var(--br-text-muted, #64748B)", lineHeight: 1.3 }}>Powered by Alpine</div>
             </div>
           </div>
         )}
@@ -551,7 +553,7 @@ function Sidebar({
               {!collapsed && (
                 <div style={{
                   fontSize: 10, fontWeight: 600, letterSpacing: "0.16em",
-                  textTransform: "uppercase", color: "var(--br-text-muted, #6b7c95)",
+                  textTransform: "uppercase", color: "var(--br-text-muted, #94A3B8)",
                   padding: "0 8px 4px", marginBottom: 2,
                 }}>
                   {section}
@@ -572,15 +574,15 @@ function Sidebar({
                         padding: collapsed ? "11px 0" : "9px 10px",
                         justifyContent: collapsed ? "center" : "flex-start",
                         borderRadius: 8,
-                        border: "none",
                         cursor: "pointer",
                         fontSize: 13,
                         fontWeight: isActive ? 600 : 400,
                         transition: "background 0.15s, color 0.15s",
-                        background: isActive ? "rgba(239,244,251,0.07)" : "transparent",
+                        background: isActive ? "var(--br-bg-sidebar, #F1F5F9)" : "transparent",
+                        border: `1px solid ${isActive ? "var(--br-border, rgba(148,163,184,0.14))" : "transparent"}`,
                         color: isActive
-                          ? "var(--br-text-primary, #eff4fb)"
-                          : "var(--br-text-secondary, #98a7bb)",
+                          ? "var(--br-text-primary, #1A1A2E)"
+                          : "var(--br-text-muted, #64748B)",
                         width: "100%",
                         textAlign: "left",
                       }}
@@ -1356,7 +1358,8 @@ export default function Portfolio2Page() {
       </header>
 
       {/* ── Body ── */}
-      <div style={{ display: "flex", flex: 1 }}>
+      <div style={{ width: "min(1440px, calc(100% - 80px))", margin: "0 auto", alignSelf: "stretch", flex: 1, display: "flex", flexDirection: "column" }}>
+      <div style={{ display: "grid", gridTemplateColumns: `${collapsed ? 56 : 220}px 1fr`, gap: 16, marginTop: 16, alignItems: "start", flex: 1 }}>
         {/* Sidebar */}
         <Sidebar
           activeTab={activeTab}
@@ -1369,7 +1372,7 @@ export default function Portfolio2Page() {
         <main
           style={{
             flex: 1,
-            padding: "24px 28px",
+            padding: "8px 12px 24px",
             overflowY: "auto",
             minWidth: 0,
             background: V.bg,
@@ -1425,6 +1428,7 @@ export default function Portfolio2Page() {
             <div style={{ textAlign: "center", padding: 64, color: V.muted, fontSize: 14 }}>Coming soon</div>
           )}
         </main>
+      </div>
       </div>
     </div>
   );
