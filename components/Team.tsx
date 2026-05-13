@@ -31,7 +31,7 @@ const FOUNDERS: Founder[] = [
 
 const OTHER_TEAM = [
   { role: "Founding Engineer",    detail: "5+ yrs" },
-  { role: "Full-Stack Engineer",  detail: "5+ yrs" },
+  { role: "ODD Analyst",          detail: "5+ yrs" },
 ];
 
 const ADVISORY_BOARD = [

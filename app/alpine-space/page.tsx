@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import SubpageLayout from "@/components/SubpageLayout";
 import { INK, MUTED, BORDER, VIOLET, BG_CARD, GREEN } from "@/lib/constants";
@@ -8,8 +9,14 @@ import { INK, MUTED, BORDER, VIOLET, BG_CARD, GREEN } from "@/lib/constants";
 const SESSION_KEY = "alpine_demo_user";
 
 export default function AlpineSpacePage() {
+  const router = useRouter();
   const [demoAccess, setDemoAccess] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+
+  function signOut() {
+    localStorage.removeItem(SESSION_KEY);
+    router.push("/");
+  }
 
   useEffect(() => {
     const raw = localStorage.getItem(SESSION_KEY);
@@ -58,9 +65,20 @@ export default function AlpineSpacePage() {
           >
             Your Alpine Portal
           </h1>
-          <p className="mt-2 text-sm font-body" style={{ color: MUTED }}>
-            {loggedIn ? "Select a resource below." : "Sign in to access Alpine resources."}
-          </p>
+          <div className="mt-2 flex items-center justify-between">
+            <p className="text-sm font-body" style={{ color: MUTED }}>
+              {loggedIn ? "Select a resource below." : "Sign in to access Alpine resources."}
+            </p>
+            {loggedIn && (
+              <button
+                onClick={signOut}
+                className="text-[12px] font-body"
+                style={{ color: MUTED, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+              >
+                Sign out
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

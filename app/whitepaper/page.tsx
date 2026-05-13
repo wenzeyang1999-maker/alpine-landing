@@ -111,6 +111,8 @@ export default function WhitepaperPage() {
   const router = useRouter();
   const [demoAccess, setDemoAccess] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const [zoom, setZoom] = useState(1);
+  const changeZoom = (delta: number) => setZoom(z => Math.min(2, Math.max(0.5, Math.round((z + delta) * 10) / 10)));
 
   useEffect(() => {
     const raw = localStorage.getItem(SESSION_KEY);
@@ -144,6 +146,16 @@ export default function WhitepaperPage() {
     };
   }, []);
 
+  useEffect(() => {
+    const onWheel = (e: WheelEvent) => {
+      if (!e.ctrlKey) return;
+      e.preventDefault();
+      setZoom(z => Math.min(2, Math.max(0.5, Math.round((z - e.deltaY * 0.01) * 100) / 100)));
+    };
+    window.addEventListener("wheel", onWheel, { passive: false });
+    return () => window.removeEventListener("wheel", onWheel);
+  }, []);
+
   const headerBg  = darkMode ? "#111111" : "#ffffff";
   const headerBdr = darkMode ? "rgba(255,255,255,0.1)" : NAV_BORDER;
 
@@ -155,10 +167,22 @@ export default function WhitepaperPage() {
         <div style={{ height: 2, background: `linear-gradient(90deg, ${GREEN}, ${AMBER}, ${VIOLET})` }} />
         <div style={{ borderBottom: `1px solid ${headerBdr}`, background: headerBg, transition: "background 0.2s, border-color 0.2s" }}>
           <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 16px", height: 64, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <Link href="/">
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              <button onClick={() => router.back()} style={{
+                display: "flex", alignItems: "center", gap: 6, textDecoration: "none",
+                color: darkMode ? "rgba(255,255,255,0.75)" : "#1a2744",
+                fontSize: 13, fontWeight: 600, letterSpacing: "0.02em",
+                padding: "6px 14px", borderRadius: 6, transition: "all 0.2s", cursor: "pointer",
+                border: darkMode ? "1px solid rgba(255,255,255,0.2)" : "1px solid rgba(0,0,0,0.15)",
+                background: darkMode ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)",
+              }}>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 11L5 7l4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                Back
+              </button>
+              <span style={{ width: 1, height: 18, background: darkMode ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)" }} />
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={darkMode ? "/alpine-logo-white.svg" : "/alpine-logo-dark.svg?v=5"} alt="Alpine Due Diligence" style={{ height: 40, width: "auto" }} />
-            </Link>
+            </div>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <a href="https://bookings.cloud.microsoft/book/AlpineDemo@alpinedd.com/?ismsaljsauthenabled=true" target="_blank" rel="noopener noreferrer" style={{
                 fontSize: 13, fontWeight: 600, textDecoration: "none", padding: "6px 16px", borderRadius: 6,
@@ -177,6 +201,30 @@ export default function WhitepaperPage() {
                   Open Demo →
                 </Link>
               )}
+              {/* Zoom controls */}
+              <div style={{
+                display: "flex", alignItems: "center", gap: 0,
+                border: darkMode ? "1px solid rgba(255,255,255,0.15)" : "1px solid rgba(0,0,0,0.12)",
+                borderRadius: 6, overflow: "hidden",
+              }}>
+                <button onClick={() => changeZoom(-0.1)} style={{
+                  background: darkMode ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)",
+                  border: "none", color: darkMode ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.5)",
+                  padding: "6px 10px", fontSize: 14, fontWeight: 600, cursor: "pointer", lineHeight: 1,
+                }}>−</button>
+                <span style={{
+                  fontSize: 11, fontWeight: 600, letterSpacing: "0.04em",
+                  color: darkMode ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.45)",
+                  padding: "0 8px", minWidth: 40, textAlign: "center",
+                  borderLeft: darkMode ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(0,0,0,0.08)",
+                  borderRight: darkMode ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(0,0,0,0.08)",
+                }}>{Math.round(zoom * 100)}%</span>
+                <button onClick={() => changeZoom(0.1)} style={{
+                  background: darkMode ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)",
+                  border: "none", color: darkMode ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.5)",
+                  padding: "6px 10px", fontSize: 14, fontWeight: 600, cursor: "pointer", lineHeight: 1,
+                }}>+</button>
+              </div>
               <button
                 onClick={() => setDarkMode(d => !d)}
                 style={{
@@ -197,56 +245,93 @@ export default function WhitepaperPage() {
 
       {/* ── Content ────────────────────────────────────────────────────────── */}
       <div style={{ flex: 1, userSelect: "none", padding: "0 16px 64px" }}>
-      <div style={{ maxWidth: 900, margin: "0 auto", background: CREAM, boxShadow: darkMode ? "0 8px 40px rgba(0,0,0,0.4)" : "0 4px 24px rgba(0,0,0,0.12)", borderRadius: 2 }}>
+      <div style={{ maxWidth: 900, margin: "0 auto", zoom, background: CREAM, boxShadow: darkMode ? "0 8px 40px rgba(0,0,0,0.4)" : "0 4px 24px rgba(0,0,0,0.12)", borderRadius: 2 }}>
 
         {/* ── PAGE 01: COVER ─────────────────────────────────────────────── */}
         <Page num={1} dark>
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <div style={{ padding: "20px 48px", display: "flex", alignItems: "center", borderBottom: `1px solid rgba(255,255,255,0.1)` }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-                <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", color: "rgba(255,255,255,0.7)" }}>ALPINE × ACEPHALT</span>
+          <div style={{ display: "flex", flexDirection: "column", height: "100%", position: "relative", overflow: "hidden" }}>
+
+            {/* Decorative background elements */}
+            <svg style={{ position: "absolute", top: 0, right: 0, width: 480, height: 480, opacity: 0.07, pointerEvents: "none" }} viewBox="0 0 480 480" fill="none">
+              <circle cx="380" cy="100" r="320" stroke="white" strokeWidth="1"/>
+              <circle cx="380" cy="100" r="240" stroke="white" strokeWidth="1"/>
+              <circle cx="380" cy="100" r="160" stroke="white" strokeWidth="1"/>
+              <circle cx="380" cy="100" r="80" stroke="white" strokeWidth="1"/>
+            </svg>
+            <svg style={{ position: "absolute", bottom: 80, right: 48, width: 260, height: 160, opacity: 0.12, pointerEvents: "none" }} viewBox="0 0 260 160" fill="none">
+              <polyline points="0,140 52,95 104,115 156,50 208,70 260,10" stroke={GOLD} strokeWidth="2" strokeLinejoin="round"/>
+              <polyline points="0,140 52,120 104,130 156,80 208,100 260,40" stroke="white" strokeWidth="1" strokeLinejoin="round" strokeDasharray="4 4"/>
+              {[0,52,104,156,208,260].map((x,i) => {
+                const y1 = [140,95,115,50,70,10][i];
+                return <circle key={x} cx={x} cy={y1} r="3.5" fill={GOLD}/>;
+              })}
+            </svg>
+            <div style={{ position: "absolute", top: 0, left: 0, width: 4, height: "100%", background: `linear-gradient(180deg, ${GOLD}80 0%, transparent 60%)` }} />
+
+            {/* Top bar */}
+            <div style={{ padding: "20px 48px 20px 52px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `1px solid rgba(255,255,255,0.08)`, position: "relative", zIndex: 1 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+                <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", color: "rgba(255,255,255,0.8)" }}>ALPINE × ACEPHALT</span>
                 <span style={{ color: "rgba(255,255,255,0.2)" }}>|</span>
-                <span style={{ fontSize: 11, letterSpacing: "0.12em", color: "rgba(255,255,255,0.4)" }}>CONFIDENTIAL</span>
+                <span style={{ fontSize: 11, letterSpacing: "0.12em", color: "rgba(255,255,255,0.35)" }}>CONFIDENTIAL</span>
               </div>
+              <span style={{ fontSize: 10, letterSpacing: "0.16em", color: "rgba(255,255,255,0.25)", fontWeight: 600 }}>2026</span>
             </div>
-            <div style={{ padding: "100px 48px 80px", maxWidth: 960, margin: "0 auto", width: "100%" }}>
-              <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.18em", color: GOLD, textTransform: "uppercase", marginBottom: 32 }}>
-                Venture Capital Due Diligence White Paper
-              </p>
-              <h1 style={{ fontSize: 72, fontWeight: 800, color: "#fff", lineHeight: 1.05, letterSpacing: "-0.03em", margin: "0 0 8px" }}>
-                The LP<br />Readiness
-              </h1>
-              <h1 style={{ fontSize: 72, fontWeight: 800, color: GOLD, lineHeight: 1.05, letterSpacing: "-0.03em", margin: "0 0 36px" }}>
-                Gap
-              </h1>
-              <p style={{ fontSize: 16, color: "rgba(255,255,255,0.65)", lineHeight: 1.7, maxWidth: 560, margin: "0 0 48px" }}>
-                Institutional ODD scorecards are useful tools. But the variable allocation committees need to read is not current state — it is readiness trajectory. This paper explains why the distinction matters, and what to do about it.
-              </p>
-              <div style={{ borderTop: `1px solid rgba(255,255,255,0.12)`, paddingTop: 24, display: "flex", gap: 32, flexWrap: "wrap" }}>
-                {["Eight-Chapter ODD Framework", "Structural vs Fixable Analysis"].map(t => (
-                  <div key={t} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: GOLD, display: "inline-block" }} />
-                    <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", color: "rgba(255,255,255,0.5)", textTransform: "uppercase" }}>{t}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div style={{ borderTop: `1px solid rgba(255,255,255,0.1)`, padding: "20px 48px", display: "flex", alignItems: "center", gap: 32 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/logo.png" alt="Alpine" style={{ height: 32, width: 32, objectFit: "contain", borderRadius: 6 }} />
-                <div>
-                  <p style={{ fontSize: 13, fontWeight: 700, color: "#fff", margin: "0 0 2px" }}>Alpine Due Diligence</p>
-                  <p style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", margin: 0 }}>alpinedd.com</p>
+
+            {/* Main content */}
+            <div style={{ flex: 1, padding: "72px 52px 48px", position: "relative", zIndex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              <div style={{ maxWidth: 580 }}>
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${GOLD}18`, border: `1px solid ${GOLD}40`, borderRadius: 4, padding: "5px 12px", marginBottom: 40 }}>
+                  <span style={{ width: 5, height: 5, borderRadius: "50%", background: GOLD, display: "inline-block" }} />
+                  <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.18em", color: GOLD, textTransform: "uppercase" }}>
+                    Venture Capital Due Diligence · White Paper
+                  </span>
+                </div>
+
+                <h1 style={{ fontSize: 80, fontWeight: 800, color: "#fff", lineHeight: 1.0, letterSpacing: "-0.035em", margin: "0 0 6px" }}>
+                  The LP
+                </h1>
+                <h1 style={{ fontSize: 80, fontWeight: 800, color: "#fff", lineHeight: 1.0, letterSpacing: "-0.035em", margin: "0 0 6px" }}>
+                  Readiness
+                </h1>
+                <h1 style={{ fontSize: 80, fontWeight: 800, lineHeight: 1.0, letterSpacing: "-0.035em", margin: "0 0 40px", display: "inline-block",
+                  background: `linear-gradient(90deg, ${GOLD}, #e8b84b)`,
+                  WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                  Gap
+                </h1>
+
+                <p style={{ fontSize: 16, color: "rgba(255,255,255,0.55)", lineHeight: 1.75, margin: "0 0 48px", maxWidth: 520 }}>
+                  Institutional ODD scorecards are useful tools. But the variable allocation committees need to read is not current state — it is readiness trajectory. This paper explains why the distinction matters, and what to do about it.
+                </p>
+
+                <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                  {["Eight-Chapter ODD Framework", "Structural vs Fixable Analysis", "LP Readiness Trajectory"].map(t => (
+                    <div key={t} style={{ display: "flex", alignItems: "center", gap: 7, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: "5px 14px" }}>
+                      <span style={{ width: 5, height: 5, borderRadius: "50%", background: GOLD, display: "inline-block", flexShrink: 0 }} />
+                      <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.09em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", whiteSpace: "nowrap" }}>{t}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
-              <div style={{ width: 1, height: 32, background: "rgba(255,255,255,0.15)" }} />
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/acephalt-logo-transparent.png" alt="Acephalt" style={{ height: 32, width: 32, objectFit: "contain" }} />
-                <div>
-                  <p style={{ fontSize: 13, fontWeight: 700, color: "#fff", margin: "0 0 2px" }}>Acephalt</p>
-                  <p style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", margin: 0 }}>acephalt.com</p>
+
+              {/* Bottom logos */}
+              <div style={{ borderTop: `1px solid rgba(255,255,255,0.08)`, paddingTop: 24, display: "flex", alignItems: "center", gap: 28, marginTop: 48 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/logo.png" alt="Alpine" style={{ height: 28, width: 28, objectFit: "contain", borderRadius: 5 }} />
+                  <div>
+                    <p style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.85)", margin: "0 0 1px" }}>Alpine Due Diligence</p>
+                    <p style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", margin: 0, letterSpacing: "0.04em" }}>alpinedd.com</p>
+                  </div>
+                </div>
+                <div style={{ width: 1, height: 28, background: "rgba(255,255,255,0.12)" }} />
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/acephalt-logo-transparent.png" alt="Acephalt" style={{ height: 28, width: 28, objectFit: "contain" }} />
+                  <div>
+                    <p style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.85)", margin: "0 0 1px" }}>Acephalt</p>
+                    <p style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", margin: 0, letterSpacing: "0.04em" }}>acephalt.com</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -255,53 +340,49 @@ export default function WhitepaperPage() {
 
         {/* ── PAGE 02: EXECUTIVE SUMMARY ─────────────────────────────────── */}
         <Page num={2}>
-          <div style={{ background: NAVY, padding: "48px 48px 40px" }}>
-            <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.5)", marginBottom: 8 }}>Executive Summary</p>
-            <p style={{ fontSize: 26, fontStyle: "italic", color: "#e8e0d0", lineHeight: 1.5, margin: "12px 0 0", maxWidth: 640 }}>
-              Institutional ODD scorecards are useful, but readiness trajectory is what allocation committees need to read.
+          {/* Hero */}
+          <div style={{ background: NAVY, padding: "48px 48px 44px" }}>
+            <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: GOLD, marginBottom: 20 }}>Executive Summary</p>
+            <p style={{ fontSize: 24, fontWeight: 600, color: "#fff", lineHeight: 1.55, margin: 0, maxWidth: 620, letterSpacing: "-0.01em" }}>
+              Institutional ODD scorecards are useful tools. But the variable allocation committees need to read is not current state — it is readiness trajectory.
             </p>
           </div>
-          <div style={{ padding: "48px 48px 0" }}>
-            <p style={{ fontSize: 15, color: BODY, lineHeight: 1.75, margin: "0 0 36px" }}>
-              Emerging VC managers rarely fail institutional operational due diligence randomly. Their scorecards tend to follow a predictable profile: clean fund terms, acceptable service providers, and cooperative transparency; yellow governance, operations, and valuation infrastructure; and red compliance or cybersecurity gaps.
-            </p>
-            <div style={{ border: `1px solid ${BORDER}`, borderRadius: 8, padding: "28px 32px", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 24, marginBottom: 32 }}>
-              {[
-                { stat: "$29T", label: "Projected global alternatives AUM by 2029 — the constraint is not finding managers, it is processing them" },
-                { stat: "2",    label: "Chapters most likely to fail — Compliance and Cybersecurity — require only attention, not scale", color: FAIL_C },
-                { stat: "1",    label: "Diligence cycle is often enough to close the fixable column entirely, if the right items are started first", color: PASS_C },
-              ].map(({ stat, label, color }) => (
-                <div key={stat}>
-                  <p style={{ fontSize: 40, fontWeight: 800, color: color ?? BODY, margin: "0 0 8px", letterSpacing: "-0.03em" }}>{stat}</p>
-                  <p style={{ fontSize: 12, color: MUTED, lineHeight: 1.6, margin: 0 }}>{label}</p>
-                </div>
-              ))}
-            </div>
-            <div style={{ borderLeft: `3px solid ${GOLD}`, background: "#faf7f2", borderRadius: "0 8px 8px 0", padding: "20px 24px", marginBottom: 32 }}>
-              <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", color: GOLD, textTransform: "uppercase", margin: "0 0 10px" }}>Core Claim</p>
-              <p style={{ fontSize: 15, fontStyle: "italic", color: BODY, lineHeight: 1.65, margin: 0 }}>
-                Structural findings resolve with scale. Fixable findings resolve with attention. Institutional readiness begins when a manager can tell the difference and act on it.
-              </p>
-            </div>
-            <p style={{ fontSize: 15, color: BODY, lineHeight: 1.75, margin: "0 0 32px" }}>
-              The scorecard is a snapshot of state. It does not, by itself, show whether a manager is moving toward institutional readiness. The strongest signal is trajectory — a manager that closes the fixable column before the next diligence cycle looks materially different from one that carries the same findings forward.
-            </p>
-            <div style={{ border: `1px solid ${BORDER}`, borderRadius: 8, overflow: "hidden" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "200px 1fr", background: NAVY, padding: "10px 20px" }}>
-                <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", color: "rgba(255,255,255,0.5)", textTransform: "uppercase", margin: 0 }}>Concept</p>
-                <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", color: "rgba(255,255,255,0.5)", textTransform: "uppercase", margin: 0 }}>What It Means</p>
+
+          {/* Stats row */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", borderBottom: `1px solid ${BORDER}` }}>
+            {[
+              { stat: "$29T",         label: "Projected global alternatives AUM by 2029" },
+              { stat: "2 chapters",   label: "Most likely to fail — yet fixable with attention alone" },
+              { stat: "1 cycle",      label: "Often enough to close the fixable column entirely" },
+            ].map(({ stat, label }, i) => (
+              <div key={stat} style={{ padding: "28px 32px", borderRight: i < 2 ? `1px solid ${BORDER}` : undefined }}>
+                <p style={{ fontSize: 28, fontWeight: 700, color: BODY, margin: "0 0 8px", letterSpacing: "-0.02em" }}>{stat}</p>
+                <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.6, margin: 0 }}>{label}</p>
               </div>
-              {[
-                { concept: "Structural findings", desc: "Reflect fund size, age, headcount, or capital — and usually resolve as the firm scales." },
-                { concept: "Fixable findings",    desc: "Reflect documentation gaps, vendor engagement, or role reassignment — and can often be closed with attention and a modest budget." },
-                { concept: "Trajectory",          desc: "The strongest signal — a manager that closes the fixable column before the next diligence cycle looks materially different from one that carries the same findings forward." },
-              ].map(({ concept, desc }, i) => (
-                <div key={concept} style={{ display: "grid", gridTemplateColumns: "200px 1fr", padding: "14px 20px", borderTop: `1px solid ${BORDER}`, background: i % 2 === 1 ? "#faf7f2" : "#fff" }}>
-                  <p style={{ fontSize: 14, fontWeight: 600, color: BODY, margin: 0 }}>{concept}</p>
-                  <p style={{ fontSize: 14, color: MUTED, lineHeight: 1.6, margin: 0 }}>{desc}</p>
-                </div>
-              ))}
-            </div>
+            ))}
+          </div>
+
+          {/* Body */}
+          <div style={{ padding: "40px 48px 0" }}>
+            <p style={{ fontSize: 15, color: BODY, lineHeight: 1.8, margin: "0 0 32px" }}>
+              Emerging VC managers rarely fail institutional operational due diligence randomly. Their scorecards tend to follow a predictable profile: clean fund terms and cooperative transparency at the top; governance and valuation infrastructure in the middle; compliance and cybersecurity gaps at the bottom. The pattern is consistent enough to be actionable.
+            </p>
+            <p style={{ fontSize: 15, color: BODY, lineHeight: 1.8, margin: "0 0 40px" }}>
+              The scorecard is a snapshot of state. The strongest signal is trajectory — a manager that closes the fixable column before the next diligence cycle looks materially different from one that carries the same findings forward.
+            </p>
+
+            {/* Key concepts */}
+            <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: MUTED, margin: "0 0 16px" }}>Key Concepts</p>
+            {[
+              { term: "Structural findings", def: "Reflect fund size, age, headcount, or capital — resolve as the firm scales." },
+              { term: "Fixable findings",    def: "Reflect documentation gaps or vendor engagement — can be closed with attention and a modest budget." },
+              { term: "Trajectory",          def: "A manager closing the fixable column before the next cycle looks materially different from one carrying the same findings forward." },
+            ].map(({ term, def }) => (
+              <div key={term} style={{ display: "flex", gap: 24, padding: "16px 0", borderTop: `1px solid ${BORDER}`, alignItems: "baseline" }}>
+                <p style={{ fontSize: 14, fontWeight: 600, color: BODY, margin: 0, minWidth: 180 }}>{term}</p>
+                <p style={{ fontSize: 14, color: MUTED, lineHeight: 1.65, margin: 0 }}>{def}</p>
+              </div>
+            ))}
           </div>
         </Page>
 
