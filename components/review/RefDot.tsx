@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { SOURCE_META } from "@/lib/ridgeline-data";
-import { downloadDemoFile } from "@/lib/demo-downloads";
+import { downloadDemoFile, getDemoFileUrl } from "@/lib/demo-downloads";
 
 export interface RefDotProps {
   source: string;
@@ -631,7 +631,7 @@ export function RefDot({ source, quote, context: _context, color }: RefDotProps)
                       Download PDF
                     </button>
                     <button
-                      onClick={() => window.open(`/demo-docs/${filename}`, "_blank")}
+                      onClick={() => { const u = getDemoFileUrl(filename); if (u) window.open(u, "_blank"); }}
                       style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 16px", fontSize: 11, fontWeight: 500, color: "#9ca3af", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 8, cursor: "pointer", fontFamily: "sans-serif" }}
                     >
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { FOLLOW_UP_MOCK, COLLECTION_DOCS } from "@/lib/ridgeline-data";
 import { TRELLIS_COLLECTION_DOCS } from "@/lib/trellis-data";
+import { AURORA_COLLECTION_DOCS } from "@/lib/aurora-data";
 import { downloadDemoFile, getDemoFileUrl } from "@/lib/demo-downloads";
 
 // ── PDF Viewer Modal ──────────────────────────────────────────────────────────
@@ -405,6 +406,14 @@ const FUND_META: Record<string, { token: string; portalSlug: string; email: stri
     fundName: "Trellis Capital IV, L.P.",
     sentDate: "February 3, 2026",
   },
+  "aurora-capital-iv": {
+    token: "demo-aurora-token",
+    portalSlug: "aurora",
+    email: "kevin.park@auroraventures.com",
+    salutation: "Kevin",
+    fundName: "Aurora Ventures IV, L.P.",
+    sentDate: "April 18, 2026",
+  },
 };
 
 type DocEntry = { id?: string; name: string; type: string; date: string; source: string; filename?: string; url?: string };
@@ -418,6 +427,7 @@ export function DocumentCollectionView({ mock, onNavigate, brandName, slug }: { 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const isTrellis = slug === "trellis-capital-iv";
+  const isAurora = slug === "aurora-capital-iv";
   const meta = FUND_META[slug ?? "ridgeline-capital"] ?? FUND_META["ridgeline-capital"];
 
   useEffect(() => {
@@ -472,7 +482,7 @@ export function DocumentCollectionView({ mock, onNavigate, brandName, slug }: { 
     setPortalDocs((prev) => prev.filter((d) => d.id !== id));
   }, []);
 
-  const staticDocs: DocEntry[] = isTrellis ? TRELLIS_COLLECTION_DOCS : COLLECTION_DOCS;
+  const staticDocs: DocEntry[] = isTrellis ? TRELLIS_COLLECTION_DOCS : isAurora ? AURORA_COLLECTION_DOCS : COLLECTION_DOCS;
   const staticFilenames = new Set(staticDocs.map((d) => d.filename).filter(Boolean));
   const extraPortalDocs = portalDocs.filter((d) => !staticFilenames.has(d.name));
   const ACTIVE_DOCS = [...staticDocs, ...extraPortalDocs];

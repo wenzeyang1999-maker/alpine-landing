@@ -7,6 +7,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { alpineDemoBrand } from "@/lib/demo-brands/alpine-demo";
 import { TOPIC_DATA as RIDGELINE_TOPIC_DATA, RIDGELINE_MOCK, VAULT_DATA as RIDGELINE_VAULT_DATA, FOLLOW_UP_MOCK as RIDGELINE_FOLLOW_UP_MOCK } from "@/lib/ridgeline-data";
 import { TRELLIS_TOPIC_DATA, TRELLIS_MOCK, TRELLIS_VAULT_DATA, TRELLIS_FOLLOW_UP_MOCK } from "@/lib/trellis-data";
+import { AURORA_TOPIC_DATA, AURORA_MOCK, AURORA_VAULT_DATA, AURORA_FOLLOW_UP_MOCK } from "@/lib/aurora-data";
 import { DocumentCollectionView } from "@/components/review/FollowUpSection";
 import { VerificationTab } from "@/components/review/VerificationTab";
 import { ReportWithMemo } from "@/components/review/ReportWithMemo";
@@ -461,8 +462,9 @@ function _OverviewTabUnused({ reviewData, isTrellis }: { reviewData: any; isTrel
 // ── TAB: ODD Summary ───────────────────────────────────────────────────────────
 
 function OddSummaryTab({ reviewData }: { reviewData: any }) {
-  const { topicData: TOPIC_DATA } = React.useContext(ReviewCtx);
-  const score = reviewData?.overall_score || 68;
+  const { topicData: TOPIC_DATA, mock, slug } = React.useContext(ReviewCtx);
+  const isAurora = slug === "aurora-capital-iv";
+  const score = reviewData?.overall_score || (mock as any).fund?.odd_score || 68;
   const scoreColor = score >= 75 ? D.green : score >= 55 ? D.amber : D.red;
   const topicRatings = reviewData?.topic_ratings || {};
   const topicCount = Object.keys(TOPIC_DATA).length;
@@ -510,14 +512,22 @@ function OddSummaryTab({ reviewData }: { reviewData: any }) {
             <div style={{ fontSize: 12, color: "var(--r2-faint)", marginTop: 8 }}>
               {topics.filter((t) => t.rating === "GREEN").length} green · {topics.filter((t) => t.rating === "YELLOW").length} amber · {topics.filter((t) => t.rating === "RED").length} red
             </div>
-            <div style={{ fontSize: 12, color: "var(--r2-faint)" }}>Percentile rank: 34th</div>
+            <div style={{ fontSize: 12, color: "var(--r2-faint)" }}>Percentile rank: {(mock as any).fund?.odd_percentile || "34th"}</div>
           </div>
         </Card>
 
         <Card>
           <div style={{ fontSize: 14, fontWeight: 600, color: "var(--r2-text)", marginBottom: 12 }}>Institutional Fit Checklist</div>
           <div style={{ display: "grid", gap: 8 }}>
-            {[
+            {(isAurora ? [
+              { label: "ERA-exempt adviser (venture capital)", status: "passed" },
+              { label: "Independent administrator", status: "passed" },
+              { label: "Big 4 auditor", status: "exception" },
+              { label: "Dedicated CCO", status: "failed" },
+              { label: "Expert network controls", status: "failed" },
+              { label: "Documented succession plan", status: "failed" },
+              { label: "External valuation agent", status: "failed" },
+            ] : [
               { label: "SEC-registered adviser", status: "passed" },
               { label: "Independent administrator", status: "passed" },
               { label: "Big 4 auditor", status: "passed" },
@@ -525,7 +535,7 @@ function OddSummaryTab({ reviewData }: { reviewData: any }) {
               { label: "Pre-trade compliance system", status: "failed" },
               { label: "Documented succession plan", status: "failed" },
               { label: "BCP tested annually", status: "exception" },
-            ].map(({ label, status }) => (
+            ]).map(({ label, status }) => (
               <div key={label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 13, padding: "8px 10px", borderRadius: 8, background: "var(--r2-surface2)" }}>
                 <span style={{ color: "var(--r2-muted)" }}>{label}</span>
                 <VerifyBadge status={status} />
@@ -693,7 +703,7 @@ function RiskObsTab() {
 
 // ── TAB: Fund Profile ──────────────────────────────────────────────────────────
 
-function FundProfileTab({ reviewData, isTrellis }: { reviewData: any; isTrellis?: boolean }) {
+function FundProfileTab({ reviewData, isTrellis, isAurora }: { reviewData: any; isTrellis?: boolean; isAurora?: boolean }) {
   const { mock } = React.useContext(ReviewCtx);
   const perf = mock.fund_performance;
 
@@ -712,6 +722,21 @@ function FundProfileTab({ reviewData, isTrellis }: { reviewData: any; isTrellis?
     ["Management Fee", "2.5% (commitment period) · 1.5% (invested capital thereafter)"],
     ["Carried Interest", "20% (American waterfall · no preferred return)"],
     ["Commitment Period", "5 years from first close · Recycling up to 120% of commitments"],
+  ] : isAurora ? [
+    ["Legal Name", "Aurora Capital Management, LLC"],
+    ["Fund", "Aurora Ventures IV, L.P. (GP: Aurora Ventures GP IV, LLC)"],
+    ["Headquarters", "Los Angeles, CA (fully remote)"],
+    ["Year Founded", "August 2017"],
+    ["SEC Filing", "Exempt Reporting Adviser (ERA) · VC Exemption · Since November 2018"],
+    ["Firm AUM", "$981.54M (excl. $215.59M uncalled) as of Dec 31, 2025"],
+    ["Fund IV Raise", "$135M raised · $300M target · Final close expected end of 2026"],
+    ["Fund Structure", "Delaware LP + Delaware GP LLC"],
+    ["Strategy", "Venture Capital — Seed to Series B, AI/SaaS/Technology"],
+    ["Principals", "Marcus Reeves 40% · Daniel Brenner 40% · Rebecca Stern 20% (Form ADV Sch. A/B)"],
+    ["Staff", "9 full-time (6 investment + 3 back office / operations)"],
+    ["Management Fee", "2.0% p.a. (steps down 0.25%/yr from 5th anniversary; floor 1.25%)"],
+    ["Carried Interest", "Tiered modified European waterfall (3x / 5x return thresholds)"],
+    ["Target Portfolio", "20–25 companies · 7–10% ownership stakes · ~30% follow-on reserves"],
   ] : [
     ["Legal Name", reviewData?.legal_name || "Ridgeline Capital Partners, LLC"],
     ["Headquarters", reviewData?.headquarters || "Greenwich, Connecticut"],
@@ -731,6 +756,12 @@ function FundProfileTab({ reviewData, isTrellis }: { reviewData: any; isTrellis?
     { name: "Arjun Mehta", role: "Co-Founder · Managing Partner", exp: "Investment lead · 50% ownership · prev. Sequoia Capital" },
     { name: "Priya Sharma", role: "Co-Founder · Managing Partner · CCO (⚠ investment professional)", exp: "Compliance oversight · 50% ownership · prev. a16z" },
     { name: "Sarah Collins", role: "Head of Operations", exp: "Sole operations professional · Fractional CFO (Raj Patel) joining Summer 2026" },
+  ] : isAurora ? [
+    { name: "Marcus Reeves", role: "Co-Founder · General Partner (40%)", exp: "Actor / film producer · Horizon Ventures co-founder (2012) · headline risk noted" },
+    { name: "Daniel Brenner", role: "Co-Founder · General Partner (40%)", exp: "Talent manager · Horizon co-founder · subject of Mythic/LunarPay class action inquiry" },
+    { name: "Rebecca Stern", role: "General Partner (20%) · Day-to-day lead", exp: "Stanford MBA · prev. Carson & Reid (NYSE: CRID), AudioReach Media, NYSE Continental" },
+    { name: "Kevin Park", role: "VP Finance & Operations · Compliance", exp: "Sole back office · prev. Senior Manager at Meridian Fund Services · joined Dec 2023" },
+    { name: "Elena Ruiz", role: "Operating Partner · Capital Formation", exp: "Prev. MD at Silver Oak Growth; decade at Crownhold Financial ($100B+ RIA) · joined Mar 2025" },
   ] : [
     { name: "David Chen, CFA", role: "CIO & Founder · PM (sole)", exp: "23 years experience · prev. Goldman Sachs" },
     { name: "Sarah Martinez", role: "COO · Interim CCO", exp: "12 years experience · prev. AQR Capital" },
@@ -770,15 +801,22 @@ function FundProfileTab({ reviewData, isTrellis }: { reviewData: any; isTrellis?
         <Card>
           <div style={{ fontSize: 14, fontWeight: 600, color: "var(--r2-text)", marginBottom: 12 }}>Service Providers</div>
           <div style={{ display: "grid", gap: 8, fontSize: 13 }}>
-            {isTrellis ? (
+            {(isTrellis || isAurora) ? (
               <>
-                {[
+                {(isTrellis ? [
                   { label: "Administrator", value: "Apex Fund Services, LLC (Xero + FundPanel)", color: D.text },
                   { label: "Auditor", value: "Baker Thompson & Co.", color: D.text },
                   { label: "Legal Counsel", value: "Morrison Cole Ashworth", color: D.text },
                   { label: "Banking", value: "Pacific Commerce → JP Morgan (transition)", color: D.text },
                   { label: "Prime Broker", value: "N/A — Venture Capital strategy", color: D.text },
-                ].map(({ label, value, color }) => (
+                ] : [
+                  { label: "Administrator", value: "Meridian Fund Services, LLC (Polaris)", color: D.text },
+                  { label: "Auditor", value: "Grant Baker LLP (expected — engagement letter pending)", color: D.text },
+                  { label: "Legal Counsel", value: "Brennan Kincaid LLP", color: D.text },
+                  { label: "Banking", value: "Pacific Tech Bank (main) · Continental Commercial Bank (backup)", color: D.text },
+                  { label: "IT / Cybersecurity", value: "Vantage Tech Partners, LLC", color: D.text },
+                  { label: "Compliance Consultant", value: "Apex Compliance Advisors (engaged Q3 2025)", color: D.text },
+                ]).map(({ label, value, color }) => (
                   <div key={label} style={{ display: "flex", justifyContent: "space-between" }}>
                     <span style={{ color: "var(--r2-faint)" }}>{label}</span>
                     <span style={{ color, fontWeight: 500, textAlign: "right", maxWidth: 200 }}>{value}</span>
@@ -812,13 +850,37 @@ function FundProfileTab({ reviewData, isTrellis }: { reviewData: any; isTrellis?
 // ── TAB: Peer Comparison ───────────────────────────────────────────────────────
 
 function PeerCompareTab({ reviewData }: { reviewData: any }) {
-  const fundName = reviewData?.name || "Ridgeline Capital Partners";
-  const score = reviewData?.overall_score || 68;
+  const { mock, slug } = React.useContext(ReviewCtx);
+  const isAurora = slug === "aurora-capital-iv";
+  const fundName = reviewData?.name || (mock as any).fund?.name || "Ridgeline Capital Partners";
+  const score = reviewData?.overall_score || (mock as any).fund?.odd_score || 68;
+
+  const tableTitle = isAurora
+    ? "Peer Comparison — Emerging VC Funds ($500M–$1.5B AUM)"
+    : "Peer Comparison — Equity Hedge Funds ($1B–$3B AUM)";
+  const myRating = score >= 75 ? "ACCEPT" : score >= 55 ? "WATCHLIST" : "FLAG";
+  const myRatingLabel = myRating === "ACCEPT" ? "Accept" : myRating === "WATCHLIST" ? "Watchlist" : "Flag";
+  const myAum = (mock as any).fund?.aum?.split(" ")[0] || (isAurora ? "$981.54M" : "$2.31B");
+  const myVals = isAurora ? [65, 70, 88, 84, 85] : [55, 82, 34, 52, 94];
+  const peers = isAurora ? [
+    { name: "Sequoia Scout Fund III", score: 88, rating: "ACCEPT", aum: "$1.10B", vals: [90, 94, 85, 88, 92] },
+    { name: "Founders First VC IV", score: 61, rating: "WATCHLIST", aum: "$620M", vals: [58, 65, 55, 62, 72] },
+    { name: "Apex Horizon Ventures II", score: 79, rating: "ACCEPT", aum: "$850M", vals: [82, 84, 78, 75, 85] },
+    { name: "Peer Group Average", score: 76, rating: "", aum: "$860M", vals: [77, 81, 73, 75, 83] },
+  ] : [
+    { name: "Harborview Long/Short Fund", score: 84, rating: "ACCEPT", aum: "$1.50B", vals: [88, 91, 85, 82, 92] },
+    { name: "Pacific Rim Opportunities", score: 44, rating: "FLAG", aum: "$1.10B", vals: [32, 55, 28, 36, 60] },
+    { name: "Lakeview Volatility Fund", score: 79, rating: "ACCEPT", aum: "$0.55B", vals: [80, 88, 72, 78, 90] },
+    { name: "Peer Group Average", score: 77, rating: "", aum: "$1.37B", vals: [75, 83, 72, 74, 84] },
+  ];
+  const commentary = isAurora
+    ? `${fundName} scores above the peer group average (82 vs avg 76) and achieves the highest ODD rating. Governance (65) and Compliance (70) trail peers due to ongoing litigation risk and compliance staffing gaps, offset by strong operational infrastructure and exceptional prior fund performance.`
+    : `${fundName} trails peers significantly on Governance (55 vs avg 75) and BCP (34 vs avg 72), but outperforms on Service Provider quality (94 vs avg 84). These gaps drive the Watchlist rating.`;
 
   return (
     <Card>
       <div style={{ fontSize: 14, fontWeight: 600, color: "var(--r2-text)", marginBottom: 16 }}>
-        Peer Comparison — Equity Hedge Funds ($1B–$3B AUM)
+        {tableTitle}
       </div>
       <div style={{ overflowX: "auto" }}>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
@@ -834,24 +896,21 @@ function PeerCompareTab({ reviewData }: { reviewData: any }) {
               <td style={{ padding: "12px 14px", borderBottom: "1px solid var(--r2-border)", color: "var(--r2-text)", fontWeight: 600 }}>
                 {fundName} <span style={{ fontSize: 10, color: D.violet }}>▶ you</span>
               </td>
-              <td style={{ padding: "12px 14px", borderBottom: "1px solid var(--r2-border)" }}><strong style={{ color: D.amber }}>{score}</strong></td>
               <td style={{ padding: "12px 14px", borderBottom: "1px solid var(--r2-border)" }}>
-                <span style={{ ...ratingBadge("WATCHLIST", D), padding: "5px 10px", borderRadius: 999, fontSize: 11, fontWeight: 600 }}>Watchlist</span>
+                <strong style={{ color: score >= 75 ? D.green : score >= 55 ? D.amber : D.red }}>{score}</strong>
               </td>
-              <td style={{ padding: "12px 14px", borderBottom: "1px solid var(--r2-border)", color: "var(--r2-muted)" }}>$2.31B</td>
-              {[55, 82, 34, 52, 94].map((v, i) => {
+              <td style={{ padding: "12px 14px", borderBottom: "1px solid var(--r2-border)" }}>
+                <span style={{ ...ratingBadge(myRating, D), padding: "5px 10px", borderRadius: 999, fontSize: 11, fontWeight: 600 }}>{myRatingLabel}</span>
+              </td>
+              <td style={{ padding: "12px 14px", borderBottom: "1px solid var(--r2-border)", color: "var(--r2-muted)" }}>{myAum}</td>
+              {myVals.map((v, i) => {
                 const c = v >= 75 ? D.green : v >= 50 ? D.amber : D.red;
                 return <td key={i} style={{ padding: "12px 14px", borderBottom: "1px solid var(--r2-border)", color: "var(--r2-muted)" }}>
                   <span style={{ width: 8, height: 8, borderRadius: "50%", background: c, display: "inline-block", marginRight: 4 }} />{v}
                 </td>;
               })}
             </tr>
-            {[
-              { name: "Harborview Long/Short Fund", score: 84, rating: "ACCEPT", aum: "$1.50B", vals: [88, 91, 85, 82, 92] },
-              { name: "Pacific Rim Opportunities", score: 44, rating: "FLAG", aum: "$1.10B", vals: [32, 55, 28, 36, 60] },
-              { name: "Lakeview Volatility Fund", score: 79, rating: "ACCEPT", aum: "$0.55B", vals: [80, 88, 72, 78, 90] },
-              { name: "Peer Group Average", score: 77, rating: "", aum: "$1.37B", vals: [75, 83, 72, 74, 84] },
-            ].map((peer, pi) => (
+            {peers.map((peer, pi) => (
               <tr key={pi} style={{ background: "transparent" }}
                 onMouseEnter={(e) => e.currentTarget.style.background = "var(--r2-surface2)"}
                 onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
@@ -876,8 +935,8 @@ function PeerCompareTab({ reviewData }: { reviewData: any }) {
           </tbody>
         </table>
       </div>
-      <div style={{ borderLeft: "3px solid var(--r2-amber)", paddingLeft: 14, marginTop: 16, color: "#f0d29c", fontSize: 14, lineHeight: 1.6 }}>
-        {fundName} trails peers significantly on Governance (55 vs avg 75) and BCP (34 vs avg 72), but outperforms on Service Provider quality (94 vs avg 84). These gaps drive the Watchlist rating.
+      <div style={{ borderLeft: `3px solid ${score >= 75 ? D.green : D.amber}`, paddingLeft: 14, marginTop: 16, color: score >= 75 ? "#a7f3d0" : "#f0d29c", fontSize: 14, lineHeight: 1.6 }}>
+        {commentary}
       </div>
     </Card>
   );
@@ -930,11 +989,43 @@ function DocVaultTab() {
 // ── TAB: IC Memo ───────────────────────────────────────────────────────────────
 
 function ICMemoTab({ reviewData }: { reviewData: any }) {
-  const fundName = reviewData?.name || "Ridgeline Capital Partners";
-  const score = reviewData?.overall_score || 68;
+  const { mock, slug } = React.useContext(ReviewCtx);
+  const isAurora = slug === "aurora-capital-iv";
+  const fundName = reviewData?.name || (mock as any).fund?.name || "Ridgeline Capital Partners";
+  const score = reviewData?.overall_score || (mock as any).fund?.odd_score || 68;
   const rating = score >= 75 ? "ACCEPT" : score >= 55 ? "WATCHLIST" : "FLAG";
 
-  const sections = [
+  const auroraSections = [
+    {
+      id: "§1", title: "Executive Summary",
+      content: `Alpine recommends an ACCEPT — Full Approval rating for Aurora Ventures IV, L.P. Aurora Capital Management, LLC is an LA-based Exempt Reporting Adviser (ERA) under the venture capital adviser exemption, founded November 2018. The firm manages $981.54M AUM (excl. $215.59M uncalled) across three prior vintages with top-quartile performance in Fund I. Fund IV targets $250M for early-stage consumer and entertainment technology investments. Alpine's review confirmed administrator independence through Meridian Fund Services, and validated the expected audit engagement with Grant Baker LLP. Two chapters were rated YELLOW: Manager/Governance (no formal succession plan; GP commitment partially cashless; principals with high-profile external interests) and Legal/Compliance (ongoing NFT litigation involving Daniel Brenner; no dedicated CCO; expert network controls insufficient). These issues are noted; the overall operational infrastructure is adequate for the fund's strategy and stage.`,
+    },
+    {
+      id: "§2", title: "Investment Strategy",
+      content: `Aurora Ventures IV, L.P. pursues an early-stage venture capital strategy, targeting Seed and Series A investments in consumer tech and entertainment tech. Target fund size: $250M; management fee: 2% on committed capital (years 1–5), 2% on invested capital (years 6–10); carried interest: 20% over 8% preferred return (non-compounding). Fund IV has one portfolio company to date — Book Club Inc. (Series A, $15.02M NAV as of March 2026). Prior vintages: Fund I ($52.4M, vintage 2019, top-quartile by TVPI), Fund II ($118.3M, vintage 2021), Fund III ($280.2M, vintage 2023, early-stage). Investment team: Marcus Reeves (40% GP), Daniel Brenner (40% GP), Rebecca Stern (20% GP). Day-to-day operations led by Rebecca Stern.`,
+    },
+    {
+      id: "§3", title: "Operational Assessment",
+      content: `Governance (YELLOW): Three-partner GP structure with no written succession plan at the management company level. LPA key person provision addresses simultaneous unavailability of two-of-three GPs only. GP commitment partially cashless ($4.5M via management fee reduction). External interests of Marcus Reeves and Daniel Brenner create headline risk. Service Providers (GREEN): Meridian Fund Services as administrator (LedgerCraft/Polaris); Grant Baker LLP as expected auditor (not yet signed). Fund Counsel: Brennan Kincaid LLP; LP Counsel: PTB/CCB; Tax: Vantage Tax. Legal/Compliance (YELLOW): Daniel Brenner is a defendant in an ongoing class action (Crystal Tiger Society NFTs) and subject to SEC investigation. No dedicated CCO — Kevin Park (VP Finance) dual-hatted. Expert network controls insufficient (no written policy, no pre-clearance, no chaperoning). No external valuation agent appointed.`,
+    },
+    {
+      id: "§4", title: "Risk Factors",
+      risks: [
+        { sev: "HIGH", text: "Daniel Brenner subject to ongoing class action lawsuit and SEC investigation re: Crystal Tiger Society NFTs and LunarPay — case ongoing as of March 2026", color: D.red },
+        { sev: "HIGH", text: "No formal succession plan at business level — LPA key person provision insufficient for single-partner incapacity scenario", color: D.red },
+        { sev: "HIGH", text: "Principals maintain significant external interests — Marcus Reeves (actor/producer) and Daniel Brenner (talent manager) create elevated headline risk", color: D.red },
+        { sev: "MEDIUM", text: "No dedicated CCO — Kevin Park handles compliance alongside all finance and back office responsibilities", color: D.amber },
+        { sev: "MEDIUM", text: "Expert network controls insufficient — no written policy, no pre-clearance, no compliance chaperoning of InsightSphere calls", color: D.amber },
+        { sev: "MEDIUM", text: "No external valuation agent appointed — all valuations prepared internally with no third-party review before final close", color: D.amber },
+      ],
+    },
+    {
+      id: "§5", title: "Recommendation & Conditions",
+      isRecommendation: true, rating,
+    },
+  ];
+
+  const ridgelineSections = [
     {
       id: "§1", title: "Executive Summary",
       content: `${fundName} recommends a WATCHLIST — Conditional Approval rating. The firm is a Greenwich, CT-based SEC-registered investment adviser (CRD #298741) founded in April 2018, managing approximately $2.31 billion in AUM across a Delaware LP and Cayman Islands feeder fund structure serving 412 investor accounts. The fund's investment performance and operational history are strong. Alpine's review identified no regulatory disclosures, confirmed administrator independence through direct verification with Citco Fund Services, and validated clean audit history (Ernst & Young, unqualified opinion). However, three high-severity operational gaps — absence of a dedicated CCO, no pre-trade compliance system, and lack of a formalized succession plan — preclude an Accept rating without remediation.`,
@@ -963,6 +1054,8 @@ function ICMemoTab({ reviewData }: { reviewData: any }) {
       isRecommendation: true, rating,
     },
   ];
+
+  const sections = isAurora ? auroraSections : ridgelineSections;
 
   return (
     <Card>
@@ -1007,14 +1100,20 @@ function ICMemoTab({ reviewData }: { reviewData: any }) {
                   Alpine recommends approval of an initial allocation subject to completion of the following conditions within 6 months.
                 </p>
                 <div style={{ display: "grid", gap: 8 }}>
-                  {[
+                  {(isAurora ? [
+                    { text: "Appoint external third-party valuation agent before final close", color: D.red },
+                    { text: "Implement written expert network controls before final close (written policy, pre-clearance, compliance chaperoning)", color: D.red },
+                    { text: "Monitor Daniel Brenner litigation and SEC investigation — quarterly status update required", color: D.amber },
+                    { text: "Formalize written succession plan at management company level (target: 12 months)", color: D.amber },
+                    { text: "Hire dedicated CCO as AUM scales beyond $1B (target: 24 months)", color: D.amber },
+                  ] : [
                     { text: "Hire a dedicated Chief Compliance Officer (target: 6 months)", color: D.red },
                     { text: "Implement automated pre-trade compliance system (target: 90 days)", color: D.red },
                     { text: "Document and board-approve a CIO succession plan (target: 90 days)", color: D.red },
                     { text: "Establish independent valuation committee (target: 6 months)", color: D.amber },
                     { text: "Complete BCP annual test with documented RTOs (target: 3 months)", color: D.amber },
                     { text: "Engage vendor for annual penetration testing (target: 6 months)", color: D.amber },
-                  ].map((c, i) => (
+                  ]).map((c, i) => (
                     <div key={i} style={{ padding: "10px 12px", borderRadius: 10, background: "rgba(255,255,255,0.02)", borderLeft: `3px solid ${c.color}`, fontSize: 13, color: "var(--r2-muted)" }}>
                       {c.text}
                     </div>
@@ -1031,8 +1130,15 @@ function ICMemoTab({ reviewData }: { reviewData: any }) {
 
 // ── TAB: Verification ──────────────────────────────────────────────────────────
 
-function VerificationTab2({ reviewData, isTrellis }: { reviewData: any; isTrellis?: boolean }) {
-  const checks = isTrellis ? [
+function VerificationTab2({ reviewData, isTrellis, isAurora }: { reviewData: any; isTrellis?: boolean; isAurora?: boolean }) {
+  const checks = isAurora ? [
+    { title: "SEC ERA Filing — Confirmed", status: "passed", detail: "Aurora Capital Management, LLC filed as an Exempt Reporting Adviser (ERA) under the venture capital adviser exemption since November 30, 2018. Current Form ADV dated March 26, 2026 reviewed. No discrepancies found.", source: "SEC IARD / EDGAR · ERA Form ADV · March 26, 2026" },
+    { title: "SEC Disciplinary Disclosures — Daniel Brenner Inquiry", status: "exception", detail: "Form ADV Section 11 disclosed ongoing class action lawsuit filed December 2024 against Daniel Brenner, Mythic Studios, and LunarPay related to Crystal Tiger Society NFT promotion. SEC is also investigating Mythic Studios re: TigerCoin and Crystal Tiger Society NFT offerings as potential unregistered securities. Manager represents this is not expected to be materially harmful. Case is ongoing — monitor closely.", source: "Form ADV Part 1A Section 11 · FINRA BrokerCheck · March 2026" },
+    { title: "Administrator — Meridian Fund Services Confirmed", status: "passed", detail: "Meridian Fund Services, LLC confirmed as administrator for Fund IV, continuing relationship from prior Aurora vintages. Meridian uses LedgerCraft Enterprise / Polaris for fund accounting. Administration agreement dated August 31, 2025 reviewed. Engagement confirmed via email April 9, 2026.", source: "Direct administrator verification · Apr 9, 2026" },
+    { title: "Form ADV Year-over-Year Comparison", status: "passed", detail: "Firm AUM grew from $814.59M (2024) to $981.54M (2025). Headcount at 9 FTEs. Ownership structure unchanged: Marcus Reeves 40%, Daniel Brenner 40%, Rebecca Stern 20%. New disciplinary item: Mythic/LunarPay class action (disclosed).", source: "Year-over-year ADV comparison · March 2026" },
+    { title: "Dedicated CCO — Finance Professional Only (YELLOW)", status: "exception", detail: "Kevin Park (VP Finance and Operations) serves as compliance officer in addition to all back office, accounting, and operations responsibilities. No dedicated CCO appointed. Aurora engaged Apex Compliance Advisors as external compliance consultant in Q3 2025 as a partial mitigant. Recommend dedicated CCO hire as AUM scales.", source: "Form ADV Part 1A · DDQ §4.2 · Alpine Compliance Standard" },
+    { title: "External Valuation Agent — Not Appointed", status: "exception", detail: "Aurora has not appointed an external third-party valuation agent. All valuations are prepared internally and subject only to external oversight annually from Grant Baker (expected auditor). Meridian accepts Aurora's pricing at quarter-end without verification. Alpine strongly recommends appointment of valuation agent before final close.", source: "DDQ §7.1 · Meridian Verification Call · Apr 9, 2026" },
+  ] : isTrellis ? [
     { title: "SEC ERA Filing — Confirmed", status: "passed", detail: "Trellis Capital Management, LLC filed as an Exempt Reporting Adviser (ERA) under the venture capital adviser exemption (Section 203(l) of the Advisers Act) since March 9, 2019. Current Form ADV dated March 22, 2026 reviewed. No discrepancies found.", source: "SEC IARD / EDGAR · ERA Form ADV · March 22, 2026" },
     { title: "SEC Disciplinary Disclosures — None Found", status: "passed", detail: "Form ADV Section 11 all answered No. No disciplinary actions, regulatory inquiries, or sanctions on DRP pages. No BrokerCheck reportable events for either principal (Arjun Mehta or Priya Sharma). Clean regulatory history since 2019.", source: "Form ADV Part 1A Section 11 · FINRA BrokerCheck · March 2026" },
     { title: "Administrator — Apex Fund Services Confirmed", status: "passed", detail: "Apex Fund Services, LLC confirmed as expected administrator for Fund IV, continuing from prior funds. Apex uses Xero for accounting and FundPanel for LP reporting. Engagement letter for Fund IV expected before first capital call — Alpine confirmed expected engagement via conference call April 3, 2026.", source: "Direct administrator verification · Apr 3, 2026" },
@@ -1099,7 +1205,22 @@ const MONITORING_ITEMS = [
   { id: 11, priority: "Low", target: "TBD",         action: "Monitor",          issue: "Engage third-party background check provider" },
 ];
 
+const AURORA_MONITORING_ITEMS = [
+  { id: 1, priority: "High", target: "Before final close", action: "Require executed engagement letter", issue: "Appoint external third-party valuation agent" },
+  { id: 2, priority: "High", target: "Before final close", action: "Require written policy + Apex sign-off", issue: "Implement written expert network controls (policy, pre-clearance, chaperoning)" },
+  { id: 3, priority: "High", target: "Ongoing — quarterly", action: "Receive written status update", issue: "Monitor Daniel Brenner litigation and SEC investigation" },
+  { id: 4, priority: "Med", target: "12 months", action: "Monitor progress", issue: "Formalize written succession plan at management company level" },
+  { id: 5, priority: "Med", target: "24 months", action: "Monitor progress", issue: "Hire dedicated CCO as AUM scales beyond $1B" },
+  { id: 6, priority: "Med", target: "TBD", action: "Monitor", issue: "Monitor GP commitment structure in future vintages (encourage fully cash-funded)" },
+  { id: 7, priority: "Low", target: "TBD", action: "Monitor", issue: "Engage third-party background check provider for new hires" },
+  { id: 8, priority: "Low", target: "Annual", action: "Receive report", issue: "Confirm cybersecurity policy and annual review by Apex Compliance Advisors" },
+];
+
 function MonitoringTab() {
+  const { mock, slug } = React.useContext(ReviewCtx);
+  const isAurora = slug === "aurora-capital-iv";
+  const activeItems = isAurora ? AURORA_MONITORING_ITEMS : MONITORING_ITEMS;
+  const fundDisplayName = (mock as any).fund?.name || (isAurora ? "Aurora Ventures IV, L.P." : "Trellis Capital IV, L.P.");
   const SCAN_INTERVAL = 120; // seconds
   const [countdown, setCountdown] = React.useState(SCAN_INTERVAL);
   const [scanning, setScanning] = React.useState(false);
@@ -1129,15 +1250,15 @@ function MonitoringTab() {
   const secs = countdown % 60;
   const pct = ((SCAN_INTERVAL - countdown) / SCAN_INTERVAL) * 100;
 
-  const priorityColor = (p: string) => p === "Med" ? "#F59E0B" : "#6b7280";
-  const priorityBg   = (p: string) => p === "Med" ? "rgba(245,158,11,0.10)" : "rgba(107,114,128,0.10)";
+  const priorityColor = (p: string) => p === "High" ? "#ef4444" : p === "Med" ? "#F59E0B" : "#6b7280";
+  const priorityBg   = (p: string) => p === "High" ? "rgba(239,68,68,0.10)" : p === "Med" ? "rgba(245,158,11,0.10)" : "rgba(107,114,128,0.10)";
 
   return (
     <Card>
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 18, gap: 16 }}>
         <div>
           <div style={{ fontSize: 15, fontWeight: 700, color: "var(--r2-text)", marginBottom: 4 }}>Post-Close Monitoring</div>
-          <div style={{ fontSize: 12, color: "var(--r2-muted)" }}>{MONITORING_ITEMS.length} open conditions · Trellis Capital IV</div>
+          <div style={{ fontSize: 12, color: "var(--r2-muted)" }}>{activeItems.length} open conditions · {fundDisplayName}</div>
         </div>
         {/* Scan widget */}
         <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 14px", borderRadius: 10, border: "1px solid var(--r2-border)", background: "var(--r2-surface2)", minWidth: 190 }}>
@@ -1183,7 +1304,7 @@ function MonitoringTab() {
       </div>
 
       <div style={{ display: "grid", gap: 6 }}>
-        {MONITORING_ITEMS.map(item => (
+        {activeItems.map(item => (
           <div key={item.id} style={{ display: "grid", gridTemplateColumns: "36px 1fr 60px 100px 130px", gap: "0 12px", alignItems: "center", padding: "12px 12px", borderRadius: 10, border: "1px solid var(--r2-border)", background: "var(--r2-card)" }}>
             <div style={{ fontSize: 12, fontWeight: 600, color: "var(--r2-faint)" }}>{item.id}</div>
             <div style={{ fontSize: 13, color: "var(--r2-text)", lineHeight: 1.5 }}>{item.issue}</div>
@@ -1204,9 +1325,11 @@ function MonitoringTab() {
 // ── TAB: Full Report ───────────────────────────────────────────────────────────
 
 function FullReportTab({ reviewData }: { reviewData: any }) {
-  const score = reviewData?.overall_score || 68;
+  const { mock, slug } = React.useContext(ReviewCtx);
+  const isAurora = slug === "aurora-capital-iv";
+  const score = reviewData?.overall_score || (mock as any).fund?.odd_score || 68;
   const rating = score >= 75 ? "ACCEPT" : score >= 55 ? "WATCHLIST" : "FLAG";
-  const fundName = reviewData?.name || "Ridgeline Capital Partners";
+  const fundName = reviewData?.name || (mock as any).fund?.name || "Ridgeline Capital Partners";
 
   return (
     <Card>
@@ -1233,7 +1356,7 @@ function FullReportTab({ reviewData }: { reviewData: any }) {
           {[
             { label: "ODD Rating", value: rating, color: score >= 75 ? D.green : score >= 55 ? D.amber : D.red },
             { label: "ODD Score", value: `${score}/100`, color: score >= 75 ? D.green : score >= 55 ? D.amber : D.red },
-            { label: "Open Conditions", value: "3 HIGH · 3 MEDIUM", color: D.amber },
+            { label: "Open Conditions", value: isAurora ? "3 HIGH · 12 MEDIUM" : "3 HIGH · 3 MEDIUM", color: D.amber },
           ].map(({ label, value, color }) => (
             <div key={label} style={{ padding: "14px 16px", borderRadius: 12, background: "var(--r2-card)", border: "1px solid var(--r2-border)" }}>
               <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--r2-faint)", marginBottom: 6 }}>{label}</div>
@@ -1243,7 +1366,11 @@ function FullReportTab({ reviewData }: { reviewData: any }) {
         </div>
 
         <p>This report presents Alpine's operational due diligence findings for {fundName}. The review was conducted over 8 weeks using documentary analysis, direct verification, and manager interviews. The fund is assigned a <strong style={{ color: score >= 75 ? D.green : D.amber }}>{rating}</strong> rating with {score}/100 ODD score.</p>
-        <p style={{ marginTop: 12 }}>Key findings: strong service provider infrastructure (Citco administrator, E&Y auditor), clean regulatory record (0 disclosures since 2018), and institutional-quality reporting. Material gaps: no dedicated CCO, no pre-trade compliance system, no succession plan. Recommend initial allocation subject to remediation of HIGH-severity conditions within 90–180 days.</p>
+        {isAurora ? (
+          <p style={{ marginTop: 12 }}>Key findings: adequate service provider infrastructure (Meridian Fund Services as administrator, Grant Baker LLP as expected auditor), clean regulatory record at firm level (ERA-exempt since November 2018, 0 firm-level disclosures), and top-quartile track record across prior vintages. Material gaps: ongoing NFT litigation and SEC investigation involving Daniel Brenner, no external valuation agent appointed, no dedicated CCO (Kevin Park dual-hatted), no formal succession plan. Recommend initial allocation subject to post-close monitoring conditions.</p>
+        ) : (
+          <p style={{ marginTop: 12 }}>Key findings: strong service provider infrastructure (Citco administrator, E&Y auditor), clean regulatory record (0 disclosures since 2018), and institutional-quality reporting. Material gaps: no dedicated CCO, no pre-trade compliance system, no succession plan. Recommend initial allocation subject to remediation of HIGH-severity conditions within 90–180 days.</p>
+        )}
       </div>
     </Card>
   );
@@ -1292,6 +1419,45 @@ const CALL_PREP_SECTIONS = [
   },
 ];
 
+const AURORA_CALL_PREP_SECTIONS = [
+  {
+    label: "P1 — Critical", color: "red" as const, topic: "Daniel Brenner Litigation & SEC Investigation",
+    riskTag: "RED RISK", categoryTag: "Legal",
+    questions: [
+      "Current status of the Crystal Tiger Society class action — any settlement discussions?",
+      "SEC investigation into Mythic Studios / LunarPay — has Aurora received any formal inquiry?",
+      "Daniel Brenner's ongoing time commitment to Aurora vs. external business interests?",
+    ],
+  },
+  {
+    label: "P1 — Critical", color: "red" as const, topic: "Governance & Succession",
+    riskTag: "RED RISK", categoryTag: "Key Person",
+    questions: [
+      "Written succession plan at management company level — timeline and responsible party?",
+      "Key person insurance — coverage in place for Marcus Reeves, Daniel Brenner, Rebecca Stern?",
+      "If Daniel Brenner reduces time commitment due to litigation, what is the governance protocol?",
+    ],
+  },
+  {
+    label: "P2 — Important", color: "amber" as const, topic: "Expert Network Controls",
+    riskTag: "YELLOW RISK", categoryTag: "Compliance",
+    questions: [
+      "Timeline for written expert network policy — draft available before final close?",
+      "Pre-clearance process via InsightSphere — who approves requests currently?",
+      "Compliance chaperoning of expert calls — will Kevin Park or Apex Compliance chaperone?",
+    ],
+  },
+  {
+    label: "P2 — Important", color: "amber" as const, topic: "External Valuation Agent",
+    riskTag: "YELLOW RISK", categoryTag: "Valuation",
+    questions: [
+      "Timeline for appointing an external valuation agent — any vendors under consideration?",
+      "Current Book Club Inc. valuation methodology — who prepared the $15.02M mark?",
+      "Will Meridian independently verify portfolio company valuations going forward?",
+    ],
+  },
+];
+
 // Pre-filled sample answers for ~half the questions (keys = "sectionIdx-questionIdx")
 const CALL_PREP_SAMPLE_NOTES: Record<string, string> = {
   "0-0": "Arjun confirmed CCO search is actively underway via Caldwell Partners. Target profile: 5–7 yrs compliance experience in venture or growth equity. One finalist currently in final-round interviews. Manager is targeting Q3 2026 hire, ahead of final fund close. Committed to sending written candidate brief and timeline by end of week. ACTION: Follow up in 5 business days if not received.",
@@ -1302,10 +1468,21 @@ const CALL_PREP_SAMPLE_NOTES: Record<string, string> = {
   "3-1": "No independent penetration test has been conducted on manager systems to date. Manager relies on SOC 2 Type I from Apex (fund administrator) for infrastructure-level assurance. Internal IT for email, file storage, and LP portal is managed by Sarah Collins with no dedicated IT resource. Manager agreed this is a gap and committed to commissioning an external pen test by Q2 2026. ACTION ITEM — require completion prior to or shortly after final close.",
 };
 
+const AURORA_CALL_PREP_SAMPLE_NOTES: Record<string, string> = {
+  "0-0": "Rebecca Stern confirmed no settlement discussions are underway. The class action is in early discovery phase; next court date is September 2026. Manager's outside counsel (Brennan Kincaid) is monitoring. Daniel Brenner has not been personally served by SEC — only Mythic Studios and LunarPay have received formal investigative subpoenas to date. Aurora's fund activities are entirely unrelated to NFT/crypto. ACTION: Request quarterly written update from counsel.",
+  "0-2": "Daniel Brenner is a named defendant in the class action but not a target of the SEC investigation in his individual capacity. Rebecca Stern confirmed Daniel continues to allocate ~60% of his time to Aurora investment activities. Mythic Studios is separately managed. Manager acknowledged reputational risk and committed to proactive LP communication if material developments arise. ACTION: Require quarterly written status updates.",
+  "1-0": "No written succession plan at management company level. LPA key person provision requires simultaneous unavailability of any two of three GPs, which Aurora views as protective. Alpine's position: single-partner incapacity (particularly Daniel Brenner due to litigation) is not addressed. Rebecca Stern confirmed she would assume day-to-day investment leadership in such a scenario but no formal document exists. Manager agreed to prepare a written interim management protocol within 6 months. ACTION: Require written plan as post-close condition.",
+  "2-0": "No written expert network policy exists. Rebecca Stern confirmed all InsightSphere calls are scheduled directly by investment staff without pre-clearance. Kevin Park is not involved in vetting expert calls. Manager acknowledged gap. Kevin Park committed to drafting a written policy covering pre-clearance, MNPI script, and blackout periods by the end of Q2 2026, with Apex Compliance Advisors reviewing. ACTION: Require written policy and Apex sign-off as condition of final close.",
+  "3-1": "Book Club Inc. $15.02M valuation is based on the Series A post-money valuation from the March 2025 financing round. Rebecca Stern confirmed there has been no subsequent equity financing. Meridian accepts the manager's investment-date cost basis without independent verification at quarter-end. No external valuation agent has been engaged. Manager indicated willingness to appoint a third-party valuation agent (suggested Houlihan Lokey or Duff & Phelps) by final close. ACTION: Require executed engagement letter with valuation agent as condition of final close.",
+};
+
 function CallPrepTab() {
   const { slug, mock } = React.useContext(ReviewCtx);
+  const isAurora = slug === "aurora-capital-iv";
+  const activeSections = isAurora ? AURORA_CALL_PREP_SECTIONS : CALL_PREP_SECTIONS;
+  const defaultNotes = isAurora ? AURORA_CALL_PREP_SAMPLE_NOTES : CALL_PREP_SAMPLE_NOTES;
   // key = "sectionIdx-questionIdx", value = note text
-  const [notes, setNotes] = useState<Record<string, string>>(CALL_PREP_SAMPLE_NOTES);
+  const [notes, setNotes] = useState<Record<string, string>>(defaultNotes);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [saving, setSaving] = useState<Record<string, boolean>>({});
 
@@ -1354,8 +1531,8 @@ function CallPrepTab() {
           <div style={{ fontSize: 20, fontWeight: 700, color: "var(--r2-text)", marginBottom: 4 }}>Management Analyst Call</div>
           <div style={{ fontSize: 13, color: "var(--r2-muted)" }}>{mock.fund.name}</div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 16 }}>
-            <span style={{ borderRadius: 999, border: "1px solid #fcd34d", background: "#fffbeb", padding: "5px 14px", fontSize: 13, fontWeight: 600, color: "#b45309" }}>6 risk observations</span>
-            <span style={{ borderRadius: 999, border: "1px solid #fca5a5", background: "#fef2f2", padding: "5px 14px", fontSize: 13, fontWeight: 600, color: "#b91c1c" }}>3 HIGH severity blockers</span>
+            <span style={{ borderRadius: 999, border: "1px solid #fcd34d", background: "#fffbeb", padding: "5px 14px", fontSize: 13, fontWeight: 600, color: "#b45309" }}>{isAurora ? "15 risk observations" : "6 risk observations"}</span>
+            <span style={{ borderRadius: 999, border: "1px solid #fca5a5", background: "#fef2f2", padding: "5px 14px", fontSize: 13, fontWeight: 600, color: "#b91c1c" }}>{isAurora ? "3 HIGH severity flags" : "3 HIGH severity blockers"}</span>
             <span style={{ borderRadius: 999, border: "1px solid var(--r2-border)", background: "var(--r2-surface2)", padding: "5px 14px", fontSize: 13, fontWeight: 600, color: "var(--r2-muted)" }}>4 discussion modules</span>
           </div>
         </div>
@@ -1370,14 +1547,16 @@ function CallPrepTab() {
           <div>
             <div style={{ fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 700, color: "#b45309", marginBottom: 4 }}>Call Objective</div>
             <div style={{ fontSize: 13, lineHeight: 1.7, color: "#78350f" }}>
-              Obtain management responses to 6 risk observations. Focus on remediation timelines for the 3 HIGH-severity findings preventing ACCEPT.
+              {isAurora
+                ? "Obtain management responses to the 3 HIGH-severity findings. Focus on Daniel Brenner litigation status, valuation agent appointment, and expert network controls implementation timeline."
+                : "Obtain management responses to 6 risk observations. Focus on remediation timelines for the 3 HIGH-severity findings preventing ACCEPT."}
             </div>
           </div>
         </div>
 
         {/* Sections */}
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {CALL_PREP_SECTIONS.map((s, i) => {
+          {activeSections.map((s, i) => {
             const isRed = s.color === "red";
             return (
               <div key={i} style={{ borderTop: "1px solid var(--r2-border)", paddingTop: 16 }}>
@@ -1617,6 +1796,24 @@ function Overview2Tab({ reviewData, onNavigate }: { reviewData: any; onNavigate:
         { label: "Act III: The Numbers", topics: topicNums.slice(8, 12) },
       ];
 
+  const mf = (mock as any).fund || {};
+  const overallRating: string = mf.overall_rating || reviewData?.rating?.toUpperCase() || "WATCHLIST";
+  const oddScore: number = mf.odd_score ?? reviewData?.overall_score ?? 68;
+  const oddPercentile: string = mf.odd_percentile || reviewData?.percentile || "34th";
+  const ratingLabel = overallRating === "GREEN" || overallRating === "ACCEPT" ? "ACCEPT"
+    : overallRating === "RED" || overallRating === "FLAG" ? "FLAG" : "WATCHLIST";
+  const ratingSubLabel = ratingLabel === "ACCEPT" ? "Full Approval" : ratingLabel === "FLAG" ? "Do Not Invest" : "Conditional Approval";
+  const ratingColor = ratingLabel === "ACCEPT" ? "var(--r2-green)" : ratingLabel === "FLAG" ? "var(--r2-red)" : "var(--r2-amber)";
+  const fundDisplayName = reviewData?.name || mf.name || "Fund";
+  const recommendationHtml = mf.recommendation_summary
+    || `recommends a <b>watchlist</b> rating. Investment performance and service provider quality are strong, but compliance infrastructure and governance gaps preclude full accept status at this time.`;
+  const conditionsText = mf.conditions_summary
+    || "Conditions to upgrade: hire a dedicated CCO, implement pre-trade compliance monitoring, formalize succession plan, establish independent valuation committee.";
+  const fundAum = reviewData?.aum || mf.aum || "$2.31B";
+  const fundStrategy = reviewData?.strategy || mf.strategy || "Global L/S Equity";
+  const fundDomicile = mf.domicile || "Delaware LP + Cayman";
+  const fundNav = mf.fund_nav || "$1.84B";
+
   return (
     <div style={{ display: "grid", gap: 14 }}>
 
@@ -1630,21 +1827,20 @@ function Overview2Tab({ reviewData, onNavigate }: { reviewData: any; onNavigate:
                 Investment Recommendation
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", marginBottom: 14 }}>
-                <span style={{ fontSize: 25, fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.08, color: "var(--r2-text)", fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>
-                  WATCHLIST
+                <span style={{ fontSize: 25, fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.08, color: ratingColor, fontFamily: "var(--font-alpine-heading), var(--font-alpine-body), sans-serif" }}>
+                  {ratingLabel}
                 </span>
                 <span style={{ fontSize: 11, fontWeight: 600, padding: "5px 14px", borderRadius: 999, border: "1px solid var(--r2-border)", background: "var(--r2-surface2)", color: "var(--r2-muted)" }}>
-                  Conditional Approval
+                  {ratingSubLabel}
                 </span>
               </div>
               <p style={{ fontSize: 13, color: "var(--r2-muted)", lineHeight: 1.7, maxWidth: 540 }}>
                 Alpine&rsquo;s operational due diligence review of{" "}
-                <strong style={{ color: "var(--r2-text)" }}>{reviewData?.name || "Ridgeline Capital Partners"}</strong>{" "}
-                recommends a <strong style={{ color: "var(--r2-text)" }}>watchlist</strong> rating.
-                Investment performance and service provider quality are strong, but compliance infrastructure and governance gaps preclude full accept status at this time.
+                <strong style={{ color: "var(--r2-text)" }}>{fundDisplayName}</strong>{" "}
+                <span dangerouslySetInnerHTML={{ __html: recommendationHtml }} />
               </p>
               <div style={{ marginTop: 14, borderLeft: "3px solid var(--r2-border)", paddingLeft: 12, fontSize: 12, color: "var(--r2-faint)", lineHeight: 1.65 }}>
-                Conditions to upgrade: hire a dedicated CCO, implement pre-trade compliance monitoring, formalize succession plan, establish independent valuation committee.
+                {conditionsText}
               </div>
             </div>
             {/* Right: score + fund facts */}
@@ -1653,20 +1849,20 @@ function Overview2Tab({ reviewData, onNavigate }: { reviewData: any; onNavigate:
                 <div style={{ position: "relative", width: 108, height: 108, flexShrink: 0 }}>
                   <OvHealthRing size={108} showCenterLegend={false} />
                   <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
-                    <span style={{ fontSize: 36, fontWeight: 900, lineHeight: 1, color: "var(--r2-text)" }}>68</span>
+                    <span style={{ fontSize: 36, fontWeight: 900, lineHeight: 1, color: "var(--r2-text)" }}>{oddScore}</span>
                   </div>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
                   <div style={{ fontSize: 12, fontWeight: 600, color: "var(--r2-text)" }}>ODD Score</div>
                   <div style={{ fontSize: 11, color: "var(--r2-faint)" }}>/100</div>
-                  <div style={{ fontSize: 11, color: "var(--r2-faint)" }}>Percentile: 34th</div>
+                  <div style={{ fontSize: 11, color: "var(--r2-faint)" }}>Percentile: {oddPercentile}</div>
                 </div>
               </div>
               {[
-                ["AUM", reviewData?.aum || "$2.31B"],
-                ["Strategy", "Global L/S Equity"],
-                ["Domicile", "Delaware LP + Cayman"],
-                ["Fund NAV", "$1.84B"],
+                ["AUM", fundAum],
+                ["Strategy", fundStrategy],
+                ["Domicile", fundDomicile],
+                ["Fund NAV", fundNav],
               ].map(([label, value]) => (
                 <div key={label} style={{ display: "flex", justifyContent: "space-between", gap: 12, fontSize: 12 }}>
                   <span style={{ color: "var(--r2-faint)" }}>{label}</span>
@@ -1788,6 +1984,18 @@ const APEX_PORTAL = {
   questions: 10,
 };
 
+const MERIDIAN_PORTAL = {
+  token: "demo-meridian-admin",
+  engagement_id: "ENG-2026-AV-04",
+  administrator: "Meridian Fund Services, LLC",
+  contact_name: "Dana Blackwell",
+  contact_title: "Senior Director, Fund Administration",
+  contact_email: "d.blackwell@meridianfundservices.com",
+  issued: "April 9, 2026",
+  expires: "April 23, 2026",
+  questions: 10,
+};
+
 const PORTAL_STATUS_STEPS: { id: PortalStatus; label: string; ts?: string }[] = [
   { id: "not_sent",    label: "Generated" },
   { id: "sent",        label: "Link Sent",    ts: "May 2, 2026 · 9:14 AM" },
@@ -1796,28 +2004,33 @@ const PORTAL_STATUS_STEPS: { id: PortalStatus; label: string; ts?: string }[] = 
   { id: "submitted",   label: "Submitted" },
 ];
 
-const ADMIN_EMAIL_TEMPLATES = [
-  {
-    label: "Portal Link Delivery",
-    subject: `Administrator Verification Request — Trellis Capital IV, L.P.`,
-    body: `Dear ${APEX_PORTAL.contact_name},\n\nAlpine Due Diligence is conducting an operational due diligence review of Trellis Capital IV, L.P. As part of this process, we are seeking independent confirmation from Apex Fund Services on a set of representations made by the Manager.\n\nPlease access the secure verification portal using the link below:\n\n[PORTAL_LINK]\n\nYou will be asked to confirm, qualify, or contradict 10 specific representations across areas including AUM, fee calculation, cash controls, valuation, and asset existence. The portal expires on ${APEX_PORTAL.expires}.\n\nPlease do not hesitate to contact us if you have any questions.\n\nBest regards,\nAlpine Due Diligence`,
-  },
-  {
-    label: "Portal Reminder",
-    subject: `Reminder: Verification Portal Expiring Soon — Trellis Capital IV`,
-    body: `Dear ${APEX_PORTAL.contact_name},\n\nThis is a friendly reminder that the administrator verification portal for Trellis Capital IV, L.P. expires on ${APEX_PORTAL.expires}.\n\nIf you have not yet completed the verification, please access it at your earliest convenience using the link previously provided.\n\nPlease let us know if you require a link resend or have any questions.\n\nBest regards,\nAlpine Due Diligence`,
-  },
-  {
-    label: "Request Documents",
-    subject: `Document Request — Trellis Capital IV, L.P.`,
-    body: `Dear ${APEX_PORTAL.contact_name},\n\nAs part of our ongoing ODD review, we would like to request the following additional documents:\n\n- [Document 1]\n- [Document 2]\n\nPlease upload these to the secure data room at your earliest convenience.\n\nBest regards,\nAlpine Due Diligence`,
-  },
-  {
-    label: "Schedule Analyst Call",
-    subject: `Analyst Call Scheduling — Trellis Capital IV`,
-    body: `Dear ${APEX_PORTAL.contact_name},\n\nWe would like to schedule a call to discuss the administrator verification responses. Please advise on your availability during the week of [date]. The call is expected to take approximately 30–45 minutes.\n\nBest regards,\nAlpine Due Diligence`,
-  },
-];
+function makeEmailTemplates(fundName: string, portal: typeof APEX_PORTAL) {
+  const shortName = fundName.replace(", L.P.", "").replace(", LP", "");
+  return [
+    {
+      label: "Portal Link Delivery",
+      subject: `Administrator Verification Request — ${fundName}`,
+      body: `Dear ${portal.contact_name},\n\nAlpine Due Diligence is conducting an operational due diligence review of ${fundName}. As part of this process, we are seeking independent confirmation from ${portal.administrator} on a set of representations made by the Manager.\n\nPlease access the secure verification portal using the link below:\n\n[PORTAL_LINK]\n\nYou will be asked to confirm, qualify, or contradict ${portal.questions} specific representations across areas including AUM, fee calculation, cash controls, valuation, and asset existence. The portal expires on ${portal.expires}.\n\nPlease do not hesitate to contact us if you have any questions.\n\nBest regards,\nAlpine Due Diligence`,
+    },
+    {
+      label: "Portal Reminder",
+      subject: `Reminder: Verification Portal Expiring Soon — ${shortName}`,
+      body: `Dear ${portal.contact_name},\n\nThis is a friendly reminder that the administrator verification portal for ${fundName} expires on ${portal.expires}.\n\nIf you have not yet completed the verification, please access it at your earliest convenience using the link previously provided.\n\nPlease let us know if you require a link resend or have any questions.\n\nBest regards,\nAlpine Due Diligence`,
+    },
+    {
+      label: "Request Documents",
+      subject: `Document Request — ${fundName}`,
+      body: `Dear ${portal.contact_name},\n\nAs part of our ongoing ODD review, we would like to request the following additional documents:\n\n- [Document 1]\n- [Document 2]\n\nPlease upload these to the secure data room at your earliest convenience.\n\nBest regards,\nAlpine Due Diligence`,
+    },
+    {
+      label: "Schedule Analyst Call",
+      subject: `Analyst Call Scheduling — ${shortName}`,
+      body: `Dear ${portal.contact_name},\n\nWe would like to schedule a call to discuss the administrator verification responses. Please advise on your availability during the week of [date]. The call is expected to take approximately 30–45 minutes.\n\nBest regards,\nAlpine Due Diligence`,
+    },
+  ];
+}
+
+const ADMIN_EMAIL_TEMPLATES = makeEmailTemplates("Trellis Capital IV, L.P.", APEX_PORTAL);
 
 function AdminPortalTab({
   fundName, onBack,
@@ -1829,12 +2042,17 @@ function AdminPortalTab({
   portalLog: LogEntry[];
   onSimulateNext: () => void;
 }) {
+  const { slug } = React.useContext(ReviewCtx);
+  const isAurora = slug === "aurora-capital-iv";
+  const activePortal = isAurora ? MERIDIAN_PORTAL : APEX_PORTAL;
+  const activeTemplates = fundName ? makeEmailTemplates(fundName, activePortal) : ADMIN_EMAIL_TEMPLATES;
+
   const [view, setView] = useState<"portal" | "compose">("portal");
   const [copied, setCopied] = useState(false);
   const [sendingLink, setSendingLink] = useState(false);
   const [linkSent, setLinkSent] = useState(status !== "not_sent");
 
-  const [to, setTo] = useState(status !== "not_sent" ? APEX_PORTAL.contact_email : "");
+  const [to, setTo] = useState(status !== "not_sent" ? activePortal.contact_email : "");
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
@@ -1844,8 +2062,8 @@ function AdminPortalTab({
   const currentStepIdx = PORTAL_STATUS_STEPS.findIndex(s => s.id === status);
 
   const portalUrl = typeof window !== "undefined"
-    ? `${window.location.origin}/admin/${APEX_PORTAL.token}`
-    : `/admin/${APEX_PORTAL.token}`;
+    ? `${window.location.origin}/admin/${activePortal.token}`
+    : `/admin/${activePortal.token}`;
 
   function handleCopy() {
     navigator.clipboard?.writeText(portalUrl).catch(() => {});
@@ -1860,8 +2078,8 @@ function AdminPortalTab({
     setLinkSent(true);
   }
 
-  function applyTemplate(tpl: typeof ADMIN_EMAIL_TEMPLATES[number]) {
-    setTo(APEX_PORTAL.contact_email);
+  function applyTemplate(tpl: ReturnType<typeof makeEmailTemplates>[number]) {
+    setTo(activePortal.contact_email);
     setSubject(tpl.subject);
     setBody(tpl.body.replace("[PORTAL_LINK]", portalUrl));
     setError(null);
@@ -1951,11 +2169,11 @@ function AdminPortalTab({
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                   <div>
                     <div style={{ fontSize: 11, color: "var(--r2-muted)", marginBottom: 2 }}>Administrator</div>
-                    <div style={{ fontSize: 12, fontWeight: 500, color: "var(--r2-text)" }}>{APEX_PORTAL.administrator}</div>
+                    <div style={{ fontSize: 12, fontWeight: 500, color: "var(--r2-text)" }}>{activePortal.administrator}</div>
                   </div>
                   <div>
                     <div style={{ fontSize: 11, color: "var(--r2-muted)", marginBottom: 2 }}>Engagement ID</div>
-                    <div style={{ fontSize: 12, fontFamily: "var(--font-alpine-mono), monospace", color: "var(--r2-text)" }}>{APEX_PORTAL.engagement_id}</div>
+                    <div style={{ fontSize: 12, fontFamily: "var(--font-alpine-mono), monospace", color: "var(--r2-text)" }}>{activePortal.engagement_id}</div>
                   </div>
                 </div>
                 <div style={{ paddingTop: 10, borderTop: "1px solid var(--r2-border)", display: "flex", alignItems: "center", gap: 10 }}>
@@ -1963,9 +2181,9 @@ function AdminPortalTab({
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--r2-muted)" strokeWidth="1.5" strokeLinecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                   </div>
                   <div>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: "var(--r2-text)" }}>{APEX_PORTAL.contact_name}</div>
-                    <div style={{ fontSize: 11, color: "var(--r2-muted)" }}>{APEX_PORTAL.contact_title}</div>
-                    <div style={{ fontSize: 11, color: "var(--r2-violet)" }}>{APEX_PORTAL.contact_email}</div>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: "var(--r2-text)" }}>{activePortal.contact_name}</div>
+                    <div style={{ fontSize: 11, color: "var(--r2-muted)" }}>{activePortal.contact_title}</div>
+                    <div style={{ fontSize: 11, color: "var(--r2-violet)" }}>{activePortal.contact_email}</div>
                   </div>
                 </div>
               </div>
@@ -1992,7 +2210,7 @@ function AdminPortalTab({
                     }
                   </button>
                   <button
-                    onClick={() => window.open(`/admin/${APEX_PORTAL.token}`, "_blank")}
+                    onClick={() => window.open(`/admin/${activePortal.token}`, "_blank")}
                     style={{ padding: "8px 0", borderRadius: 8, border: "1px solid var(--r2-border)", background: "var(--r2-surface)", fontSize: 12, fontWeight: 600, color: "var(--r2-text)", cursor: "pointer", transition: "all 0.12s", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
                     onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--r2-violet)"; (e.currentTarget as HTMLButtonElement).style.color = "var(--r2-violet)"; }}
                     onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--r2-border)"; (e.currentTarget as HTMLButtonElement).style.color = "var(--r2-text)"; }}
@@ -2004,9 +2222,9 @@ function AdminPortalTab({
                 {/* Expiry + questions */}
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, paddingTop: 8, borderTop: "1px solid var(--r2-border)" }}>
                   {[
-                    { label: "Issued", value: APEX_PORTAL.issued },
-                    { label: "Expires", value: APEX_PORTAL.expires },
-                    { label: "Questions", value: String(APEX_PORTAL.questions) },
+                    { label: "Issued", value: activePortal.issued },
+                    { label: "Expires", value: activePortal.expires },
+                    { label: "Questions", value: String(activePortal.questions) },
                   ].map(s => (
                     <div key={s.label} style={{ textAlign: "center" }}>
                       <div style={{ fontSize: 12, fontWeight: 700, color: "var(--r2-text)" }}>{s.value}</div>
@@ -2124,7 +2342,7 @@ function AdminPortalTab({
               <div style={{ padding: "12px 18px" }}>
                 <div style={{ fontSize: 11, color: "var(--r2-muted)", marginBottom: 8 }}>Quick actions</div>
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                  {ADMIN_EMAIL_TEMPLATES.map(tpl => (
+                  {activeTemplates.map(tpl => (
                     <button
                       key={tpl.label}
                       onClick={() => applyTemplate(tpl)}
@@ -2179,7 +2397,7 @@ function AdminPortalTab({
           <div style={card}>
             <div style={cardHeader}>Quick Templates</div>
             <div style={{ padding: "10px 8px", display: "flex", flexDirection: "column", gap: 4 }}>
-              {ADMIN_EMAIL_TEMPLATES.map((tpl) => (
+              {activeTemplates.map((tpl) => (
                 <button key={tpl.label} onClick={() => applyTemplate(tpl)}
                   style={{ padding: "9px 12px", borderRadius: 8, border: "1px solid transparent", background: "transparent", fontSize: 12, fontWeight: 500, color: "var(--r2-muted)", cursor: "pointer", transition: "all 0.12s", textAlign: "left" }}
                   onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = "var(--r2-surface)"; (e.currentTarget as HTMLButtonElement).style.color = "var(--r2-text)"; (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--r2-border)"; }}
@@ -2212,22 +2430,24 @@ export default function Review2Page() {
   const [topicRatingOverrides, setTopicRatingOverrides] = useState<Record<number, string>>({});
   const [riskObsOverrides, setRiskObsOverrides] = useState<Record<string, RiskObsEdit>>({});
 
-  const isTrellisSlug = slug === "trellis-capital-iv";
+  const isDemoSlug = slug === "trellis-capital-iv" || slug === "aurora-capital-iv";
+  const _isAuroraInit = slug === "aurora-capital-iv";
+  const _initPortal = _isAuroraInit ? MERIDIAN_PORTAL : APEX_PORTAL;
   const [portalStatus, setPortalStatus] = useState<PortalStatus>(() =>
-    isTrellisSlug ? "sent" : "not_sent"
+    isDemoSlug ? "sent" : "not_sent"
   );
   const [portalLog, setPortalLog] = useState<LogEntry[]>(() =>
-    isTrellisSlug ? [
-      { icon: "send", color: "var(--r2-violet)", text: `Portal link sent to ${APEX_PORTAL.contact_email}`, ts: "May 2, 2026 · 9:14 AM" },
-      { icon: "gen",  color: "var(--r2-green)",  text: `Token generated — ${APEX_PORTAL.token}`, ts: "May 2, 2026 · 9:12 AM" },
+    isDemoSlug ? [
+      { icon: "send", color: "var(--r2-violet)", text: `Portal link sent to ${_initPortal.contact_email}`, ts: "May 2, 2026 · 9:14 AM" },
+      { icon: "gen",  color: "var(--r2-green)",  text: `Token generated — ${_initPortal.token}`, ts: "May 2, 2026 · 9:12 AM" },
     ] : [
       { icon: "gen", color: "var(--r2-green)", text: `Token generated — ready to send`, ts: "Today" },
     ]
   );
 
   const SIMULATE_TRANSITIONS: Partial<Record<PortalStatus, { next: PortalStatus; entry: LogEntry }>> = {
-    not_sent:    { next: "sent",        entry: { icon: "send",  color: "var(--r2-violet)", text: `Portal link sent to ${APEX_PORTAL.contact_email}`, ts: "Just now" } },
-    sent:        { next: "opened",      entry: { icon: "open",  color: "var(--r2-amber)",  text: `Portal accessed by ${APEX_PORTAL.contact_name}`, ts: "Just now" } },
+    not_sent:    { next: "sent",        entry: { icon: "send",  color: "var(--r2-violet)", text: `Portal link sent to ${_initPortal.contact_email}`, ts: "Just now" } },
+    sent:        { next: "opened",      entry: { icon: "open",  color: "var(--r2-amber)",  text: `Portal accessed by ${_initPortal.contact_name}`, ts: "Just now" } },
     opened:      { next: "in_progress", entry: { icon: "edit",  color: "var(--r2-amber)",  text: `Verification started — 0 of 10 questions answered`, ts: "Just now" } },
     in_progress: { next: "submitted",   entry: { icon: "check", color: "var(--r2-green)",  text: `Verification submitted — all 10 responses received`, ts: "Just now" } },
   };
@@ -2311,14 +2531,20 @@ export default function Review2Page() {
       .catch(() => {});
   }, [slug]);
 
-  const fundName = reviewData?.name || (slug ? slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "Fund Review");
+  const DEMO_FUND_NAMES: Record<string, string> = {
+    "trellis-capital-iv": "Trellis Capital IV, L.P.",
+    "aurora-capital-iv":  "Aurora Ventures IV, L.P.",
+  };
+  const fundName = reviewData?.name || DEMO_FUND_NAMES[slug] || (slug ? slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "Fund Review");
   const isDark = theme === "dark";
   const isTrellis = slug === "trellis-capital-iv";
+  const isAurora = slug === "aurora-capital-iv";
+  const isDemoFund = isTrellis || isAurora;
   const reviewCtxValue: ReviewCtxValue = {
-    topicData: isTrellis ? TRELLIS_TOPIC_DATA : RIDGELINE_TOPIC_DATA,
-    mock: (isTrellis ? TRELLIS_MOCK : RIDGELINE_MOCK) as any,
-    vaultData: isTrellis ? TRELLIS_VAULT_DATA : RIDGELINE_VAULT_DATA,
-    followUpMock: (isTrellis ? TRELLIS_FOLLOW_UP_MOCK : RIDGELINE_FOLLOW_UP_MOCK) as typeof RIDGELINE_FOLLOW_UP_MOCK,
+    topicData: isTrellis ? TRELLIS_TOPIC_DATA : isAurora ? AURORA_TOPIC_DATA : RIDGELINE_TOPIC_DATA,
+    mock: (isTrellis ? TRELLIS_MOCK : isAurora ? AURORA_MOCK : RIDGELINE_MOCK) as any,
+    vaultData: isTrellis ? TRELLIS_VAULT_DATA : isAurora ? AURORA_VAULT_DATA : RIDGELINE_VAULT_DATA,
+    followUpMock: (isTrellis ? TRELLIS_FOLLOW_UP_MOCK : isAurora ? AURORA_FOLLOW_UP_MOCK : RIDGELINE_FOLLOW_UP_MOCK) as typeof RIDGELINE_FOLLOW_UP_MOCK,
     slug,
     topicRatingOverrides,
     riskObsOverrides,
@@ -2354,9 +2580,9 @@ export default function Review2Page() {
                 else setActiveTab(id);
               }}
               alpineReviewId={null}
-              topicDataOverride={isTrellis ? TRELLIS_TOPIC_DATA : undefined}
-              mockOverride={isTrellis ? TRELLIS_MOCK as any : undefined}
-              vaultDataOverride={isTrellis ? TRELLIS_VAULT_DATA : undefined}
+              topicDataOverride={isTrellis ? TRELLIS_TOPIC_DATA : isAurora ? AURORA_TOPIC_DATA : undefined}
+              mockOverride={isTrellis ? TRELLIS_MOCK as any : isAurora ? AURORA_MOCK as any : undefined}
+              vaultDataOverride={isTrellis ? TRELLIS_VAULT_DATA : isAurora ? AURORA_VAULT_DATA : undefined}
               slug={slug}
               initialRating={topicRatingOverrides[topicNum]}
               onRatingChange={(num, rating) => setTopicRatingOverrides((prev) => ({ ...prev, [num]: rating }))}
@@ -2374,7 +2600,7 @@ export default function Review2Page() {
             <style>{`
               .report-hide-callprep .flex.items-center.gap-1.border-b button:nth-child(4) { display: none !important; }
             `}</style>
-            <ReportWithMemo alpineReviewId={null} brReviewId={reviewData?.id} finalReportPending={!isTrellis} isTrellis={isTrellis} topicRatingOverrides={topicRatingOverrides} onRatingChange={(num, rating) => setTopicRatingOverrides((prev) => ({ ...prev, [num]: rating }))} slug={slug} />
+            <ReportWithMemo alpineReviewId={null} brReviewId={reviewData?.id} finalReportPending={!isDemoFund} isTrellis={isDemoFund} topicRatingOverrides={topicRatingOverrides} onRatingChange={(num, rating) => setTopicRatingOverrides((prev) => ({ ...prev, [num]: rating }))} slug={slug} />
           </div>
         );
       // ── Detail tabs (Review2Page custom components) ──
@@ -2390,14 +2616,14 @@ export default function Review2Page() {
       );
       case "odd-summary": return <OddSummaryTab reviewData={reviewData} />;
       case "risk-obs": return <RiskObsTab />;
-      case "fund-profile": return <FundProfileTab reviewData={reviewData} isTrellis={isTrellis} />;
+      case "fund-profile": return <FundProfileTab reviewData={reviewData} isTrellis={isTrellis} isAurora={isAurora} />;
       case "peer-compare": return <PeerCompareTab reviewData={reviewData} />;
       case "doc-vault": return <DocVaultTab />;
       case "ic-memo": return <ICMemoTab reviewData={reviewData} />;
-      case "verification": return <VerificationTab2 reviewData={reviewData} isTrellis={isTrellis} />;
+      case "verification": return <VerificationTab2 reviewData={reviewData} isTrellis={isTrellis} isAurora={isAurora} />;
       case "monitoring": return <MonitoringTab />;
       case "full-report": return <FullReportTab reviewData={reviewData} />;
-      case "admin-portal": return <AdminPortalTab fundName={reviewData?.name || (isTrellis ? "Trellis Capital IV, L.P." : undefined)} onBack={() => setActiveTab("reg-verification")} status={portalStatus} portalLog={portalLog} onSimulateNext={handleSimulateNext} />;
+      case "admin-portal": return <AdminPortalTab fundName={reviewData?.name || (isTrellis ? "Trellis Capital IV, L.P." : isAurora ? "Aurora Ventures IV, L.P." : undefined)} onBack={() => setActiveTab("reg-verification")} status={portalStatus} portalLog={portalLog} onSimulateNext={handleSimulateNext} />;
     }
   }
 
@@ -2447,7 +2673,7 @@ export default function Review2Page() {
                 onClick={() => {
                   const d = new Date();
                   const stamp = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, "0")}${String(d.getDate()).padStart(2, "0")}`;
-                  const file = isTrellis ? "/demo-docs/sample_vc_fund_iv_alt.pdf" : "/demo-docs/ridgeline_ddq_2026.pdf";
+                  const file = isTrellis ? "/demo-docs/trellis/sample_vc_fund_iv_alt.pdf" : isAurora ? "/demo-docs/aurora/sample_vc_aurora_iv.pdf" : "/demo-docs/ridgeline/ridgeline_ddq_2026.pdf";
                   const baseName = (fundName || "ODD_Report").replace(/[^A-Za-z0-9]+/g, "_").replace(/^_|_$/g, "");
                   const a = document.createElement("a");
                   a.href = file;
@@ -2465,7 +2691,7 @@ export default function Review2Page() {
 
           {/* ── Workspace ── */}
           <div style={{ display: "grid", gridTemplateColumns: "220px 1fr", gap: 16, marginTop: 14, alignItems: "start" }}>
-            <ReviewSidebar active={activeTab} onNavigate={setActiveTab} docCount={(isTrellis ? TRELLIS_VAULT_DATA : RIDGELINE_VAULT_DATA).documents.length} portalStatus={portalStatus} />
+            <ReviewSidebar active={activeTab} onNavigate={setActiveTab} docCount={(isTrellis ? TRELLIS_VAULT_DATA : isAurora ? AURORA_VAULT_DATA : RIDGELINE_VAULT_DATA).documents.length} portalStatus={portalStatus} />
             <div style={{ display: "grid", gap: 16 }}>
               <main style={{ display: "grid", gap: 16, paddingBottom: 48 }}>
                 {renderTabContent()}

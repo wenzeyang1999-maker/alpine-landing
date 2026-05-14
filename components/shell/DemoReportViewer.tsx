@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
-import { downloadDemoFile } from "@/lib/demo-downloads";
+import { downloadDemoFile, getDemoFileUrl } from "@/lib/demo-downloads";
 import { SOURCE_META } from "@/lib/ridgeline-data";
 import DataReportViewer, { RIDGELINE_DATA_REPORT } from "@/components/shell/DataReportViewer";
 import ExecutiveBriefViewer, { RIDGELINE_EXECUTIVE_BRIEF } from "@/components/shell/ExecutiveBriefViewer";
@@ -1293,7 +1293,7 @@ function WatermarkModal({ onClose }: { onClose: () => void }) {
     if (!recipientName.trim()) return;
     setStep("processing");
     try {
-      const pdfRes = await fetch("/demo-docs/sample_vc_fund_iv_alt.pdf");
+      const pdfRes = await fetch("/demo-docs/trellis/sample_vc_fund_iv_alt.pdf");
       const pdfBlob = await pdfRes.blob();
       const file = new File([pdfBlob], "sample_vc_fund_iv_alt.pdf", { type: "application/pdf" });
 
@@ -1491,7 +1491,7 @@ function FinalReport({ slug, topicRatingOverrides, onWatermark }: { slug?: strin
     const d = new Date();
     const stamp = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, "0")}${String(d.getDate()).padStart(2, "0")}`;
     const link = document.createElement("a");
-    link.href = "/demo-docs/sample_vc_fund_iv_alt.pdf";
+    link.href = "/demo-docs/trellis/sample_vc_fund_iv_alt.pdf";
     link.download = `${stamp}-Trellis_Capital_IV_ODD_Final_Report.pdf`;
     document.body.appendChild(link);
     link.click();
@@ -1970,7 +1970,7 @@ function DocViewerPanel({ filename, quote, label, onClose }: {
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
               Download PDF
             </button>
-            <button onClick={() => window.open(`/demo-docs/${filename}`, "_blank")} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 16px", fontSize: 11, fontWeight: 500, color: "#9ca3af", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 8, cursor: "pointer", fontFamily: "sans-serif" }}>
+            <button onClick={() => { const u = getDemoFileUrl(filename); if (u) window.open(u, "_blank"); }} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 16px", fontSize: 11, fontWeight: 500, color: "#9ca3af", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 8, cursor: "pointer", fontFamily: "sans-serif" }}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 3 21 3 21 9" /><polyline points="9 21 3 21 3 15" /><line x1="21" y1="3" x2="14" y2="10" /><line x1="3" y1="21" x2="10" y2="14" /></svg>
               Open Full PDF
             </button>
@@ -3551,8 +3551,8 @@ export default function DemoReportViewer(_props: { alpineReviewId?: string | nul
         // AI Draft and Final Report still ship a pre-rendered demo PDF.
         // All other tabs export only what's currently rendered in the tab via window.print() of a cloned subtree.
         const STATIC_PDF_TABS: Record<string, { file: string; saveAs: string }> = {
-          "AI Draft":     { file: "/demo-docs/ridgeline_ddq_2026.pdf",   saveAs: "Ridgeline_Full_ODD_Report.pdf" },
-          "Final Report": { file: "/demo-docs/sample_vc_fund_iv_alt.pdf", saveAs: "Trellis_Capital_IV_ODD_Final_Report.pdf" },
+          "AI Draft":     { file: "/demo-docs/ridgeline/ridgeline_ddq_2026.pdf",   saveAs: "Ridgeline_Full_ODD_Report.pdf" },
+          "Final Report": { file: "/demo-docs/trellis/sample_vc_fund_iv_alt.pdf", saveAs: "Trellis_Capital_IV_ODD_Final_Report.pdf" },
         };
         const isDisabled = finalReportPending && activeTab === "Final Report";
         const staticDl = STATIC_PDF_TABS[activeTab];

@@ -549,6 +549,13 @@ export const TRELLIS_MOCK = {
     manager: "Trellis Capital Management, LLC",
     strategy: "Pre-seed Venture Capital",
     aum: "$280.3M + $113.7M uncalled",
+    overall_rating: "YELLOW",
+    odd_score: 68,
+    odd_percentile: "34th",
+    domicile: "Delaware LP",
+    fund_nav: "Pre-deployment (first capital call pending)",
+    recommendation_summary: "recommends a <b>watchlist</b> rating. Strong VC pedigree and established service provider relationships. Significant compliance and cybersecurity deficiencies require remediation before ACCEPT designation.",
+    conditions_summary: "Required before close: transfer compliance oversight to non-investment professional, engage cybersecurity vendor with formal policy + penetration testing by end of 2026.",
   },
   risk_observations: [
     { id: "TO-001", severity: "HIGH", topic: "Manager, Ownership & Governance", title: "No formal succession plan", detail: "No documented succession plan exists. LPA key person provision only triggers if both Managing Partners are simultaneously unavailable. Key person life insurance not maintained.", remediation: "Document a formal succession plan identifying interim responsibility if either Managing Partner becomes unavailable. Consider key person insurance.", benchmark: { portfolio_pct: 72, portfolio_label: "of portfolio VC funds have documented succession plans", industry_pct: 68, industry_label: "industry benchmark (emerging managers)", is_outlier: false } },

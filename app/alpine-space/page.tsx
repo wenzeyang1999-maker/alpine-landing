@@ -82,36 +82,73 @@ export default function AlpineSpacePage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {cards.map((card) => (
-            <Link
-              key={card.label}
-              href={card.href}
-              className="rounded-panel border p-6 flex flex-col gap-3 hover:shadow-md transition-shadow"
-              style={{
-                background: BG_CARD,
-                borderColor: BORDER,
-                opacity: card.locked ? 0.5 : 1,
-              }}
-            >
-              <span
-                className="self-start text-[10px] font-mono font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
-                style={{ background: `${card.tagColor}18`, color: card.tagColor }}
+          {cards.map((card) =>
+            card.locked ? (
+              <div
+                key={card.label}
+                className="rounded-panel border p-6 flex flex-col gap-3"
+                style={{ background: BG_CARD, borderColor: BORDER }}
               >
-                {card.tag}
-              </span>
-              <div>
-                <p className="font-heading font-emphasis text-lg" style={{ color: INK }}>
-                  {card.label}
-                </p>
-                <p className="text-[13px] font-body mt-1" style={{ color: MUTED }}>
-                  {card.desc}
-                </p>
+                <span
+                  className="self-start text-[10px] font-mono font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
+                  style={{ background: `${card.tagColor}18`, color: card.tagColor }}
+                >
+                  {card.tag}
+                </span>
+                <div>
+                  <p className="font-heading font-emphasis text-lg" style={{ color: INK }}>
+                    {card.label}
+                  </p>
+                  <p className="text-[13px] font-body mt-1" style={{ color: MUTED }}>
+                    {card.desc}
+                  </p>
+                </div>
+                <div className="mt-auto flex flex-col gap-1.5">
+                  <Link
+                    href="https://bookings.cloud.microsoft/book/AlpineDemo@alpinedd.com/?ismsaljsauthenabled=true"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[13px] font-mono transition-opacity hover:opacity-70"
+                    style={{ color: VIOLET }}
+                  >
+                    Book a meeting →
+                  </Link>
+                  <Link
+                    href="/early-access"
+                    className="text-[13px] font-mono transition-opacity hover:opacity-70"
+                    style={{ color: MUTED }}
+                  >
+                    Contact Alpine to request access →
+                  </Link>
+                </div>
               </div>
-              <p className="text-[13px] font-mono mt-auto" style={{ color: card.locked ? "#94a3b8" : VIOLET }}>
-                {card.locked ? "Contact Alpine to request access →" : "Open →"}
-              </p>
-            </Link>
-          ))}
+            ) : (
+              <Link
+                key={card.label}
+                href={card.href}
+                className="rounded-panel border p-6 flex flex-col gap-3 hover:shadow-md transition-shadow"
+                style={{ background: BG_CARD, borderColor: BORDER }}
+              >
+                <span
+                  className="self-start text-[10px] font-mono font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
+                  style={{ background: `${card.tagColor}18`, color: card.tagColor }}
+                >
+                  {card.tag}
+                </span>
+                <div>
+                  <p className="font-heading font-emphasis text-lg" style={{ color: INK }}>
+                    {card.label}
+                  </p>
+                  <p className="text-[13px] font-body mt-1" style={{ color: MUTED }}>
+                    {card.desc}
+                  </p>
+                </div>
+                <p className="text-[13px] font-mono mt-auto" style={{ color: VIOLET }}>
+                  Open →
+                </p>
+              </Link>
+            )
+          )}
         </div>
 
         {!loggedIn && (

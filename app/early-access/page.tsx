@@ -227,6 +227,15 @@ export default function EarlyAccessPage() {
                 Thanks, {name}. Our team will review your request and reach out within 1 business day at <span style={{ color: INK }}>{email}</span>.
               </p>
 
+              <div className="mt-5 mx-auto max-w-sm flex items-start gap-2.5 rounded-lg px-4 py-3 text-left" style={{ background: `${GREEN}12`, border: `1px solid ${GREEN}30` }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={GREEN} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5">
+                  <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                </svg>
+                <p className="text-xs font-body leading-relaxed" style={{ color: GREEN }}>
+                  A confirmation email is on its way to <span className="font-semibold">{email}</span>. Check your inbox (and spam folder) shortly.
+                </p>
+              </div>
+
               <div className="mt-8">
                 <Link
                   href="/"

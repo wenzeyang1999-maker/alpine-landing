@@ -82,7 +82,7 @@ function topicDot(r: string): string {
 }
 
 function canOpenFundReview(slug?: string): boolean {
-  return slug === "trellis-capital-iv";
+  return slug === "trellis-capital-iv" || slug === "aurora-capital-iv";
 }
 
 // ── Rating Ring SVG ─────────────────────────────────────────────────────────
@@ -515,19 +515,6 @@ function Sidebar({
             </div>
           </div>
         )}
-        {collapsed && (
-          <div
-            style={{
-              width: 28, height: 28, borderRadius: 6,
-              background: "linear-gradient(135deg, #10B981 0%, #F59E0B 50%, #7B2CBF 100%)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-            }}
-          >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F5F0E8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4 18L12 6L20 18" />
-            </svg>
-          </div>
-        )}
         <button
           onClick={onToggle}
           style={{
@@ -773,6 +760,20 @@ function FundUniverseTable({ funds, onNavigate }: { funds: any[]; onNavigate: (s
 
 const IN_PROGRESS_REVIEWS = [
   {
+    slug: "aurora-capital-iv",
+    name: "Aurora Ventures IV, L.P.",
+    analyst: "James Park",
+    started: "2026-03-15",
+    rating: "WATCHLIST",
+    stageBadge: "Analysis",
+    stageBadgeColor: "#91f0c7",
+    stageBadgeBg: "rgba(24,185,126,0.12)",
+    dotColor: "#f59e0b",
+    subtext: "ODD analysis in progress — 6 of 8 chapters complete",
+    subtextColor: "#18b97e",
+    greyed: false,
+  },
+  {
     slug: "ridgeline-capital",
     name: "Ridgeline Capital Partners, LLC",
     analyst: "Samantha Kim",
@@ -796,13 +797,24 @@ const FINALIZED_REVIEWS = [
     finalizedDate: "2026-05-09",
     rating: "WATCHLIST",
     dotColor: "#18b97e",
-    reportFile: "/demo-docs/sample_vc_fund_iv_alt.pdf",
+    reportFile: "/demo-docs/trellis/sample_vc_fund_iv_alt.pdf",
     reportLabel: "Trellis_Capital_IV_ODD_Report.pdf",
+  },
+  {
+    slug: "aurora-capital-iv",
+    name: "Aurora Ventures IV, L.P.",
+    analyst: "James Park",
+    finalizedDate: "2026-04-18",
+    rating: "ACCEPT",
+    dotColor: "#18b97e",
+    reportFile: "/demo-docs/aurora/sample_vc_aurora_iv.pdf",
+    reportLabel: "Aurora_Ventures_IV_ODD_Report.pdf",
   },
 ];
 
 const FINALIZED_NOTIFS = [
-  { id: "fn-trellis", fund: "Trellis Capital IV, L.P.", rating: "WATCHLIST", analyst: "Priya Sharma", date: "2 days ago", isNew: true, reportFile: "/demo-docs/sample_vc_fund_iv_alt.pdf", reportLabel: "Trellis_Capital_IV_ODD_Report.pdf" },
+  { id: "fn-trellis", fund: "Trellis Capital IV, L.P.", rating: "WATCHLIST", analyst: "Priya Sharma", date: "2 days ago", isNew: true, reportFile: "/demo-docs/trellis/sample_vc_fund_iv_alt.pdf", reportLabel: "Trellis_Capital_IV_ODD_Report.pdf" },
+  { id: "fn-aurora", fund: "Aurora Ventures IV, L.P.", rating: "ACCEPT", analyst: "James Park", date: "3 weeks ago", isNew: false, reportFile: "/demo-docs/aurora/sample_vc_aurora_iv.pdf", reportLabel: "Aurora_Ventures_IV_ODD_Report.pdf" },
   { id: "fn2", fund: "Harborview Long/Short Fund", rating: "ACCEPT", analyst: "James Park", date: "7 days ago", isNew: false, reportFile: null, reportLabel: null },
   { id: "fn3", fund: "Meridian Asset Management", rating: "ACCEPT", analyst: "Priya Sharma", date: "3 weeks ago", isNew: false, reportFile: null, reportLabel: null },
 ];
