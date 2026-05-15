@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { SOURCE_META } from "@/lib/ridgeline-data";
+import { AURORA_SOURCE_META } from "@/lib/aurora-data";
 import { downloadDemoFile, getDemoFileUrl } from "@/lib/demo-downloads";
 
 export interface RefDotProps {
@@ -9,6 +10,28 @@ export interface RefDotProps {
   quote: string;
   context?: string;
   color: "blue" | "emerald" | "amber" | "purple";
+  slug?: string;
+}
+
+// ── Aurora doc metadata ──────────────────────────────────────────────────────
+function buildAuroraDocMeta(filename: string, label: string) {
+  const f = filename.toLowerCase();
+  if (f.includes("ilpa-ddq") || f.includes("ddq"))               return { title: "ILPA DDQ 2.0 — Aurora Capital Management",     subtitle: "Aurora Capital Management, LLC",   date: "April 8, 2026",     badge: "Fund Document" };
+  if (f.includes("form-adv") || f.includes("form_adv") || f.includes("adv-era")) return { title: "Form ADV ERA — Annual Filing",   subtitle: "Aurora Capital Management, LLC",   date: "Filed March 26, 2026", badge: "Regulatory Filing" };
+  if (f.includes("lpa"))                                          return { title: "Limited Partnership Agreement — Fund IV",     subtitle: "Aurora Ventures IV, L.P.",          date: "August 31, 2025",   badge: "Legal" };
+  if (f.includes("ppm"))                                          return { title: "Private Placement Memorandum — Fund IV",     subtitle: "Aurora Ventures IV, L.P.",          date: "August 2025",       badge: "Legal" };
+  if (f.includes("compliance-manual") || f.includes("compliance_manual")) return { title: "Compliance Manual + Code of Ethics", subtitle: "Aurora Capital Management, LLC",   date: "January 2026",      badge: "Compliance" };
+  if (f.includes("valuation"))                                    return { title: "Valuation Policy",                           subtitle: "Aurora Capital Management, LLC",   date: "Effective 2026",    badge: "Operations" };
+  if (f.includes("financials") || f.includes("fy2025"))           return { title: "Aurora Ventures III — Audited Financials FY2025", subtitle: "Aurora Ventures III, L.P.",   date: "Audited Q1 2026",  badge: "Financial" };
+  if (f.includes("firm-overview") || f.includes("firm_overview")) return { title: "Aurora Capital Management — Firm Overview", subtitle: "Aurora Capital Management, LLC",   date: "April 2026",        badge: "Marketing" };
+  if (f.includes("wisp"))                                         return { title: "Written Information Security Policy (WISP)", subtitle: "Aurora Capital Management, LLC",  date: "November 28, 2025", badge: "Technology" };
+  if (f.includes("incident-response") || f.includes("incident_response")) return { title: "Incident Response Plan",            subtitle: "Aurora Capital Management, LLC",   date: "November 28, 2025", badge: "Technology" };
+  if (f.includes("bcp"))                                          return { title: "Business Continuity Plan (BCP)",             subtitle: "Aurora Capital Management, LLC",   date: "November 27, 2025", badge: "Operations" };
+  if (f.includes("admin-agreement") || f.includes("admin_agreement") || f.includes("meridian")) return { title: "Administration Agreement — Meridian Fund Services", subtitle: "Aurora Ventures IV, L.P.", date: "August 31, 2025", badge: "Operations" };
+  if (f.includes("insightsphere"))                                return { title: "InsightSphere Expert Network Engagement",    subtitle: "Aurora Capital Management, LLC",   date: "2026",              badge: "Compliance" };
+  if (f.includes("vantage-tech") || f.includes("vantage_tech"))   return { title: "Vantage Tech Partners — IT Services Engagement", subtitle: "Aurora Capital Management, LLC", date: "2026",          badge: "Technology" };
+  if (f.includes("sample_vc_aurora") || f.includes("aurora_iv"))  return { title: "Aurora Ventures IV — ODD Report",            subtitle: "Aurora Capital Management, LLC",   date: "April 2026",        badge: "ODD Report" };
+  return { title: label, subtitle: "Aurora Capital Management, LLC", date: "2026", badge: "Document" };
 }
 
 const DOT_COLORS: Record<string, string> = {
@@ -396,13 +419,139 @@ function buildPassage(quote: string, filename: string): { before: string; after:
   };
 }
 
+// ── Aurora passage builder ────────────────────────────────────────────────────
+function buildAuroraPassage(quote: string, filename: string, sourceLabel: string): { before: string; after: string; section: string; pageLabel: string } {
+  const f = filename.toLowerCase();
+  const q = quote.toLowerCase();
+
+  if (f.includes("form-adv") || f.includes("form_adv") || f.includes("adv-era")) {
+    if (q.includes("aurora capital management")) return {
+      section: "Item 1 — Identifying Information",
+      before: "This Form ADV ERA filing is submitted by ",
+      after: ", LLC (CRD# 312044, SEC File# 802-128945) pursuant to the Exempt Reporting Adviser regime under Section 203(m) of the Investment Advisers Act of 1940. The Adviser is a Delaware limited liability company with its principal place of business in Los Angeles, California, operating on a fully remote basis. The Adviser was formed on August 17, 2017 and commenced advisory activities in January 2020. Principal owners: Marcus Reeves (40%), Daniel Brenner (40%), Rebecca Stern (20%). This filing reflects information as of March 26, 2026.",
+      pageLabel: "Page 1 of 15",
+    };
+    if (q.includes("aum") || q.includes("981") || q.includes("215") || q.includes("814")) return {
+      section: "Item 5 — Information About Your Advisory Business",
+      before: "As of December 31, 2025, the Adviser reports regulatory assets under management of ",
+      after: " across all advised private fund vehicles, excluding $215.59M of uncalled capital commitments to Aurora Ventures IV, L.P. Prior year regulatory AUM (December 31, 2024): $814.59M. The Adviser does not manage separately managed accounts or wrap programs. All advisory activity is conducted on a discretionary basis for qualified clients as defined under Rule 205-3.",
+      pageLabel: "Page 4 of 15",
+    };
+    if (q.includes("brenner") || q.includes("disciplinary") || q.includes("class action") || q.includes("mythic") || q.includes("lunarpay")) return {
+      section: "Item 11 — Disclosure Information",
+      before: "Disciplinary Disclosure (§11) — The Adviser reports the following matter regarding an associated person: ",
+      after: ". Daniel Brenner, a Managing Member of the Adviser, was named as a defendant in a purported class action filed in December 2024 (related to Mythic Technologies and the LunarPay Crystal Tiger Society NFT promotion). The matter is ongoing. The Adviser represents that the claims are without merit and intends to defend vigorously. Priya Desai, a former Principal of the Adviser, is a co-defendant in the action and departed the Adviser in September 2025. There are no other reportable disciplinary, regulatory, or criminal matters at the firm or principal level.",
+      pageLabel: "Page 9 of 15",
+    };
+    return {
+      section: "Item 7.B — Private Fund Reporting",
+      before: "The Adviser provides discretionary advisory services solely to private funds: Aurora Ventures III, L.P. (Delaware, formed 2021) and Aurora Ventures IV, L.P. (Delaware, formed August 31, 2025). The General Partner entity for Fund IV is Aurora Ventures IV GP, LLC. ",
+      after: ". Fund administrator: Meridian Fund Services, LLC (engaged August 31, 2025). Independent auditor: Grant Baker LLP (expected). The Adviser does not engage an external third-party valuation agent; all portfolio valuations are prepared internally and accepted by the administrator without independent verification.",
+      pageLabel: "Page 6 of 15",
+    };
+  }
+
+  if (f.includes("ilpa-ddq") || f.includes("ddq")) {
+    if (q.includes("kevin park") || q.includes("cco") || q.includes("compliance officer")) return {
+      section: "§4.2 — Compliance Oversight Structure",
+      before: "Compliance Oversight: The Adviser has designated ",
+      after: " as acting Chief Compliance Officer in addition to his responsibilities as VP, Finance and Operations. The Adviser engaged Apex Compliance Advisors as an external compliance consultant in Q3 2025 to provide periodic policy review, mock examination support, and ad-hoc compliance advice. Aurora intends to appoint a dedicated CCO as firm AUM scales past $1.0 billion. The acting-CCO designation has been disclosed on Form ADV Part 1A and is monitored by Alpine as a YELLOW item pending a dedicated hire.",
+      pageLabel: "Page 12 of 48",
+    };
+    if (q.includes("meridian") || q.includes("administrator") || q.includes("fund services")) return {
+      section: "§5 — Service Providers",
+      before: "Fund Administrator: ",
+      after: " serves as administrator for Aurora Ventures IV, L.P. pursuant to the Administration Agreement dated August 31, 2025. Meridian uses LedgerCraft Enterprise and Polaris for fund accounting. Meridian performs investor capital account recordkeeping, subscription processing, and quarterly NAV statements. Meridian accepts manager-prepared valuations at quarter-end without independent verification. External valuation agent: not engaged. Independent auditor: Grant Baker LLP (FY2025 audit expected Q2 2026).",
+      pageLabel: "Page 18 of 48",
+    };
+    return {
+      section: "§2 — Firm Background and Team",
+      before: "Aurora Capital Management, LLC is a Delaware limited liability company formed on August 17, 2017 and headquartered in Los Angeles, California on a fully remote basis. The Adviser's investment team consists of Marcus Reeves (Managing Partner), Daniel Brenner (Managing Partner), and Rebecca Stern (Partner). ",
+      after: ". The firm's back office is supported by Kevin Park (VP, Finance and Operations, joined December 2023) and Elena Ruiz (Operating Partner, joined March 2025). The Adviser does not maintain a physical office; principals work remotely and meet quarterly for strategy retreats. Total headcount: 9 FTEs (6 investment, 3 back office / operations).",
+      pageLabel: "Page 5 of 48",
+    };
+  }
+
+  if (f.includes("lpa")) {
+    return {
+      section: "Article II — Management and Authority",
+      before: "Aurora Ventures IV, L.P. is a Delaware limited partnership formed on August 31, 2025. The General Partner is Aurora Ventures IV GP, LLC, a Delaware limited liability company wholly owned by Aurora Capital Management, LLC. The Investment Adviser to the Partnership is Aurora Capital Management, LLC. ",
+      after: ". GP Commitment: at least $9.0 million (approximately 3% of expected commitments), with up to one-half satisfied via fee offset rather than cash contribution. The Partnership's term is ten (10) years from the Initial Closing Date, subject to up to two one-year extensions at the General Partner's discretion with LP Advisory Committee consultation.",
+      pageLabel: "Page 8 of 34",
+    };
+  }
+
+  if (f.includes("ppm")) {
+    return {
+      section: "Section 4 — Management Fees and Carried Interest",
+      before: "The General Partner is entitled to a Management Fee equal to 2.0% per annum during the Investment Period of aggregate commitments, stepping down to 2.0% of unreturned invested capital thereafter. Carried Interest is 20% of net profits subject to a European-style waterfall with an 8% preferred return and full GP catch-up. ",
+      after: ". No prior carry has been crystallized at the Adviser. Fee offset: 100% of monitoring, transaction, and break-up fees received by the Adviser from portfolio companies are credited against Management Fees. Side letter rights may grant fee reductions or co-investment priority to LPs subscribing $25M or more at the Initial Closing.",
+      pageLabel: "Page 14 of 28",
+    };
+  }
+
+  if (f.includes("compliance-manual") || f.includes("compliance_manual")) {
+    return {
+      section: "§3 — Compliance Program Administration",
+      before: "Aurora Capital Management, LLC has adopted this Compliance Manual pursuant to Rule 206(4)-7 under the Investment Advisers Act of 1940 (notwithstanding the Adviser's ERA status, the firm voluntarily maintains a written compliance program). The Adviser's compliance program is overseen by Kevin Park (acting CCO) with engagement support from Apex Compliance Advisors. ",
+      after: ". Annual compliance review is scheduled for the fourth quarter of each calendar year. The most recent review was completed in November 2025. The Adviser maintains a Code of Ethics, personal trading policy, gifts and entertainment policy, political contribution policy, and insider trading policy in accordance with applicable federal securities laws.",
+      pageLabel: "Page 6 of 20",
+    };
+  }
+
+  if (f.includes("valuation")) {
+    return {
+      section: "Section 2 — Valuation Process and Governance",
+      before: "Aurora Capital Management prepares quarterly fair-value estimates for all portfolio investments in accordance with ASC 820 and ILPA reporting guidelines. Each portfolio company is reviewed by the deal sponsor on the Aurora investment team, with valuation recommendations submitted to the Valuation Committee (Reeves, Brenner, Stern, Park). ",
+      after: ". The Adviser does not engage a third-party valuation agent. Meridian Fund Services accepts manager-prepared valuations at quarter-end without independent verification procedures. Annual audit by Grant Baker LLP provides the primary external pricing check. Alpine has recommended engagement of an external valuation agent prior to the Fund IV final close.",
+      pageLabel: "Page 3 of 7",
+    };
+  }
+
+  if (f.includes("financials") || f.includes("fy2025")) {
+    return {
+      section: "Independent Auditor's Report",
+      before: "To the Partners of Aurora Ventures III, L.P.: We have audited the accompanying financial statements of Aurora Ventures III, L.P., which comprise the statement of financial position as of December 31, 2024, and the related statements of operations, changes in partners' capital, and cash flows for the year then ended. ",
+      after: ". The audit opinion was issued by Grant Baker LLP and is unqualified. The Adviser has represented to Alpine that Grant Baker LLP is expected to perform the FY2025 audit for Aurora Ventures III and the inaugural FY2025 audit for Aurora Ventures IV. The Fund IV audit engagement letter has not yet been signed as of April 2026.",
+      pageLabel: "Page 2 of 62",
+    };
+  }
+
+  if (f.includes("wisp") || f.includes("incident-response") || f.includes("incident_response") || f.includes("bcp")) {
+    return {
+      section: "Document Overview",
+      before: "Aurora Capital Management, LLC adopted this policy effective November 2025 in response to follow-up requests during Alpine's operational due diligence review. ",
+      after: ". The policy applies to all employees, contractors, and authorized vendors with access to Aurora information systems. IT services are provided by Vantage Tech Partners under an engagement letter executed January 2026. The Adviser has not yet completed an external penetration test; one is targeted for Q3 2026.",
+      pageLabel: "Page 1",
+    };
+  }
+
+  if (f.includes("admin-agreement") || f.includes("meridian")) {
+    return {
+      section: "Article 1 — Engagement of Administrator",
+      before: "This Administration Agreement is entered into as of August 31, 2025 by and between Aurora Ventures IV, L.P. (the \"Fund\") and Meridian Fund Services, LLC (the \"Administrator\"). The Administrator agrees to provide fund accounting, investor recordkeeping, subscription processing, and quarterly NAV statement services to the Fund. ",
+      after: ". The Administrator's scope expressly excludes independent valuation verification; quarterly NAV statements reflect manager-prepared portfolio valuations without independent re-pricing or third-party validation. Administration fees are calculated on a tiered basis based on Fund AUM, with a minimum monthly fee of $4,500.",
+      pageLabel: "Page 2 of 11",
+    };
+  }
+
+  // Generic fallback — Aurora-branded
+  return {
+    section: "Document Reference — Alpine Due Diligence File",
+    before: `The following passage has been extracted from the referenced source (${sourceLabel}) maintained in Alpine Asset Management's operational due diligence file for Aurora Ventures IV, L.P. This document or record reflects information provided by Aurora Capital Management, LLC or obtained from independent registries and third-party verifications as of the date stated. Alpine has reviewed this material in connection with its ongoing ODD program but has not independently verified all factual representations contained herein except as specifically noted in the accompanying ODD report. The specific passage cited in the ODD analysis states: `,
+    after: ". Investors and Alpine personnel are reminded that any manager-provided document is proprietary and confidential. It may not be reproduced, redistributed, or disclosed to third parties without the prior written consent of Aurora Capital Management, LLC. Alpine's use of this material is governed by the confidentiality provisions of the applicable non-disclosure agreement between Alpine and Aurora Capital Management dated March 2026. Please refer to the complete source document for full context, all defined terms, and applicable disclaimers and limitations.",
+    pageLabel: "Page 1",
+  };
+}
+
 // ── RefDot ────────────────────────────────────────────────────────────────────
 
-export function RefDot({ source, quote, context: _context, color }: RefDotProps) {
+export function RefDot({ source, quote, context: _context, color, slug }: RefDotProps) {
   const [panel, setPanel] = useState<"left" | "right" | null>(null);
   const dotRef = useRef<HTMLSpanElement>(null);
 
-  const meta = SOURCE_META[source] || { label: source, type: "Source" };
+  const isAurora = slug === "aurora-capital-iv";
+  const meta = (isAurora ? AURORA_SOURCE_META[source] : SOURCE_META[source]) || { label: source, type: "Source" };
 
   const handleClick = () => {
     if (panel !== null) {
@@ -427,8 +576,10 @@ export function RefDot({ source, quote, context: _context, color }: RefDotProps)
 
   const filename = meta.filename ?? "";
   const label = meta.label ?? source;
-  const docMeta = buildDocMeta(filename, label);
-  const { before, after, section, pageLabel } = buildPassage(quote, filename);
+  const docMeta = isAurora ? buildAuroraDocMeta(filename, label) : buildDocMeta(filename, label);
+  const { before, after, section, pageLabel } = isAurora
+    ? buildAuroraPassage(quote, filename, label)
+    : buildPassage(quote, filename);
 
   const panelWidth = "min(540px, 44vw)";
 
@@ -528,7 +679,7 @@ export function RefDot({ source, quote, context: _context, color }: RefDotProps)
                   </div>
                 ) : (
                   <div style={{ background: "#1e3a5f", padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <span style={{ fontSize: 9, fontWeight: 700, color: "#93c5fd", letterSpacing: "0.12em" }}>ALPINE x RIDGELINE CAPITAL PARTNERS</span>
+                    <span style={{ fontSize: 9, fontWeight: 700, color: "#93c5fd", letterSpacing: "0.12em" }}>{isAurora ? "ALPINE x AURORA CAPITAL MANAGEMENT" : "ALPINE x RIDGELINE CAPITAL PARTNERS"}</span>
                     <span style={{ fontSize: 9, color: "#ef4444", fontWeight: 700, letterSpacing: "0.08em", border: "1px solid #ef4444", padding: "1px 6px", borderRadius: 2 }}>CONFIDENTIAL</span>
                   </div>
                 )}

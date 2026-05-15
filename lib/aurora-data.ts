@@ -18,39 +18,59 @@ export const AURORA_TOPIC_DATA: Record<number, TopicInfo> = {
     summary: "YELLOW: Marcus Reeves (actor) and Daniel Brenner (talent manager) maintain significant external business interests and public profiles, creating headline risk. No formal succession plan and no key person insurance. Single back office professional (Kevin Park). Insider investment does not represent a significant portion of principals' liquid net worth. GP commitment partially cashless — reduces alignment with LPs. No deferred compensation scheme.",
     findings: `### Management Company and Affiliates
 
-Aurora Capital Management, LLC ("Aurora", the "Manager") serves as Manager and was founded in 2017 by Marcus Reeves (Co-Founder / General Partner) and Daniel Brenner (Co-Founder / General Partner). Aurora operates as a fully remote company with no physical office space and employees based predominantly in Los Angeles, California. The team currently meets twice per week in person for investment committee discussions at either Marcus Reeves' or Daniel Brenner's personal residences. Aurora is in the process of identifying a new dedicated office space and anticipates staff attending the new location on a hybrid schedule of one-to-three days per week. A timeline for the move was not provided at the time of this review.
+Aurora Capital Management, LLC ("Aurora", the "Manager") serves as Manager and was founded in 2017 by Marcus Reeves (Co-Founder / General Partner) and Daniel Brenner (Co-Founder / General Partner). Aurora operates as a fully remote company with no physical office space and employees based predominantly in Los Angeles, California. The team currently meets twice per week in person for investment committee discussions at either Marcus Reeves' or Daniel Brenner's personal residences. Aurora is in the process of identifying a new dedicated office space and anticipates staff attending the new location on a hybrid schedule of one-to-three days per week. A timeline for the move was not provided at the time of this review. The Manager indicated that the firm had previously operated a dedicated office in Los Angeles but transitioned to a fully remote working model following the COVID-19 pandemic. While this working arrangement does not raise a material concern on its own, Alpine encourages investors to remain attentive to organizational dynamics that may emerge from the current structure.
 
-Prior to forming Aurora, Marcus Reeves and Daniel Brenner pursued angel investments sourced from their broader professional networks across the entertainment and media industries. In 2012, the two formalized their investment activities with the launch of Horizon Ventures, LLC ("Horizon"), alongside co-investor Richard Kaplan, the founder and managing partner of Kensington Companies. Horizon raised a single pooled product that invested in direct-to-consumer and mobile application opportunities in the technology industry. Early investments included Nestaway, Metro Rideshare, Pinboard, Lingolab, Swapmarket, Gridstack, and a number of other companies that subsequently listed on public markets. Horizon continues to hold certain legacy positions but has not made any new investments since 2016.
+Prior to forming Aurora, Marcus Reeves and Daniel Brenner pursued angel investments sourced from their broader professional networks across the entertainment and media industries. In 2012, the two formalized their investment activities with the launch of Horizon Ventures, LLC ("Horizon"), alongside co-investor Richard Kaplan, the founder and managing partner of Kensington Companies. Horizon raised a single pooled product that invested in direct-to-consumer and mobile application opportunities in the technology industry. Early investments included Nestaway, Metro Rideshare, Pinboard, Lingolab, Swapmarket, Gridstack, and a number of other companies that subsequently listed on public markets. Horizon continues to hold certain legacy positions but has not made any new investments since 2016. The Manager confirmed that Marcus and Daniel do not dedicate a significant amount of time to Horizon's remaining portfolio.
 
-A recurring theme throughout this report is that Marcus Reeves and Daniel Brenner maintain significant business interests outside their respective investment responsibilities at the firm. Marcus Reeves is a prominent actor and film producer active in the Hollywood community, while Daniel Brenner is a talent manager representing several internationally recognized entertainers. Alpine notes, however, that Aurora represented that beyond periodic taping engagements every two-to-three years for Marcus, and despite Daniel frequently attending touring obligations alongside the artists he represents, Marcus and Daniel are fully dedicated to Aurora's operations on a day-to-day basis, including while performing their external duties. The Manager indicated that no external interests are expected to require more than 20% of their time. Alpine nonetheless highlights that Marcus and Daniel are subject to a higher level of publicity, and therefore media scrutiny, than Alpine would traditionally expect for principals of an investment management firm. In the case of Marcus, this dynamic is compounded by his spouse Lena Torres, also a prominent actress. Investors are encouraged to closely monitor media developments regarding Marcus and Daniel.
+As discussed throughout this report, Marcus Reeves and Daniel Brenner maintain significant business interests outside their respective investment responsibilities at the firm. Marcus Reeves is a prominent actor and film producer, while Daniel Brenner is a talent manager representing several internationally recognized entertainers. Aurora represented that, aside from periodic taping engagements every two-to-three years for Marcus, and despite Daniel frequently attending touring obligations alongside the artists he represents, both Marcus and Daniel are fully dedicated to Aurora's operations on a day-to-day basis, including while performing their external responsibilities. The Manager indicated that external interests are not expected to require more than 20% of their time. Alpine nonetheless highlights that Marcus and Daniel are subject to a higher level of publicity, and therefore media scrutiny, than Alpine would traditionally expect for principals of an investment management firm. In the case of Marcus, this dynamic is compounded by his spouse Lena Torres, who is also a prominent actress. Negative press relating to Marcus or Daniel, whether with respect to these individuals' activities with Aurora or otherwise, may result in potential headline or reputational damage to the firm. For example, Marcus (and Lena) were recently subject to public and media scrutiny after writing letters of support for their friend and fellow Hollywood actor, who was subject to serious criminal accusations and subsequently convicted. After these letters were made public, Marcus and Lena were heavily scrutinized, especially given Marcus' involvement with a child-safety focused non-profit organization, and the resulting criticism led to Marcus' resignation as chairman of that organization's board. More generally, Alpine notes the potential for headline risk based on Marcus and Daniel's positions as public figures, which may not be expected for principals of other investment management firms. Investors are encouraged to closely monitor media developments including Marcus Reeves and Daniel Brenner, as these individuals' personal lives are subject to enhanced media coverage given their outside business interests.
 
 ### Assets under Management
 
-Aurora had total AUM of $981.54 million (excluding $215.59 million in uncalled capital commitments) as at December 31, 2025, which includes Horizon's AUM ($120.56 million). The firm operates the following strategies: Aurora Ventures (flagship early-stage VC, Funds I–IV); Aurora Chain Fund ($42 million, blockchain infrastructure); Aurora AI Fund ($242 million, AI-focused growth); a Silverline/Aurora Joint Venture ($45 million); and co-investment SPVs ($11.36 million combined). Firmwide AUM grew from $814.59 million in 2024 to $981.54 million as at December 31, 2025.
+Aurora had total assets under management ("AUM") of $981.54 million (excluding $215.59 million in uncalled capital commitments) as at December 31, 2025, which includes Horizon's AUM ($120.56 million). Alpine defines AUM as net asset value ("NAV") excluding uncommitted capital.
+
+Aurora is a venture capital firm focused on acquiring minority interests in software companies within the enterprise software-as-a-service ("SaaS") and cloud, artificial intelligence ("AI") and intelligent compute, blockchain infrastructure, and consumer mobile sectors. The Manager has achieved this through a variety of fund products employing different strategies:
+
+• Aurora Ventures: The Manager's flagship strategy, Aurora Ventures, is comprised of three vintages employing an early-stage venture capital strategy, that is, investing in Seed to Series B financing rounds of technology and technology-related companies. The first vintage of the strategy, Aurora Ventures I, L.L.C. ("Fund I"), only had a single limited partner, Silverline Media (NASDAQ: SLMA). Aurora has since repurchased Silverline's limited partnership interest to become the sole owner of Fund I. Aurora has launched new Aurora Ventures vintages every three years since initially commencing the strategy in 2017 and is now fundraising for the fourth vintage of the strategy, Aurora Ventures IV, L.P. ("Fund IV"). Fund IV is targeting a raise of $300 million to invest in enterprise SaaS and cloud, AI and intelligent compute, and other "emerging theme" opportunities as they arise in North America and Israel.
+
+• Aurora Chain Fund: The firm launched the first of its thematic funds in 2023 with the $42 million fundraising of Aurora Chain Fund, LP (the "Chain Fund"). The Chain Fund invests in pre-seed and seed opportunities in blockchain infrastructure.
+
+• Aurora AI Fund: Aurora launched its second thematic strategy in 2025 with the $242 million fundraising of Aurora AI Fund, L.P. (the "AI Fund"). The AI Fund invests in AI-related growth companies and had an AUM of $304.66 million as at December 31, 2025.
+
+• Silverline / Aurora Joint Venture (the "Joint Venture"): In 2017, Aurora pursued a joint venture with Silverline Media, a publicly listed mass media company (NASDAQ: SLMA), with a total fund size of $45 million. In this joint venture, Aurora invested in Series B and Series E financing rounds of Stockleaf (distributed to paid-in capital ("DPI") of 30x) and Bridge to C and Series C financing rounds of SignalOne (DPI of 28x). The Joint Venture continues to hold certain assets, with an AUM of $63.05 million as at December 31, 2025.
+
+• Horizon: As mentioned in Management Company and Affiliates, the Manager includes Horizon's performance and AUM in its firmwide reporting. As at December 31, 2025, Horizon had AUM of $120.56 million.
+
+The Manager indicated that, in addition to the vehicles described above, the firm has established co-investment vehicles for certain portfolio company investments. These vehicles had a combined AUM of $11.36 million as at December 31, 2025. As an update, since December 31, 2025, the Manager represented that it has formed an additional co-investment vehicle for a recent investment in the AI Fund.
 
 ### Insider Investment
 
-The Manager represented that insider investment as at December 31, 2025 was approximately 5.3% of total capital commitments, equivalent to $42.69 million (of which $25.04 million was paid in). However, Aurora stated that this amount of insider investment does not represent a significant portion of the liquid net worth of the firm's key employees. For Fund IV, Aurora is relying on a cashless contribution mechanism for general partner commitments whereby only half is funded in cash, with the balance via a reduction in management fees. Alpine considers that this arrangement reduces the alignment of interests with external investors by reducing upfront principal capital in the Fund.
+The Manager represented that insider investment as at December 31, 2025 was approximately 5.3% of total capital commitments, equivalent to $42.69 million (of which $25.04 million was paid in). However, Aurora stated that this amount of insider investment does not represent a significant portion of the liquid net worth of the firm's key employees. Investors should monitor the degree to which insiders choose to retain personal capital within the firm's products.
 
-Alpine notes that co-investment structures have been established on behalf of insiders to make personal co-investments alongside client portfolios, which are disclosed prior to making an investment.
+For Fund IV, Aurora is relying on a cashless contribution mechanism for general partner commitments whereby only half is funded in cash, with the balance via a reduction in management fees. The Manager indicated that it feels that this arrangement serves to enhance the alignment of interests with external investors, while also allowing the Manager to increase the general partner commitment in absolute terms. Alpine disagrees, however, and feels that this arrangement reduces the alignment of interests between management and external investors as it reduces the general partner's upfront "skin in the game". Looking forward, investors are recommended to monitor whether insiders will reinvest carried interest received from prior vintages and continue to commit 3% of capital commitments.
+
+Alpine notes that co-investment structures have been established on behalf of insiders to make personal co-investments alongside client portfolios. The Manager indicated that these investments occur infrequently, are small amounts, and that these investments are disclosed prior to making an investment. Aurora mentioned these investments are made at the request of the portfolio company for strategic purposes, presumably due to the public notoriety of Marcus Reeves (Co-Founder / General Partner) and Daniel Brenner (Co-Founder / General Partner). Additionally, Aurora confirmed that the compliance function oversees these personal co-investments. Alpine notes, however, that as these investments are made separately to the reference commingled vehicles, they do not share any portion of deal expenses.
 
 ### Ownership & Succession
 
 Marcus Reeves (Co-Founder / General Partner) and Daniel Brenner (Co-Founder / General Partner) each own 40% of Aurora, while Rebecca Stern (General Partner) owns the remaining 20% (as confirmed via Form ADV Schedules A & B).
 
-Alpine notes that the Manager has not established a formal succession plan and the firm does not carry key person / life insurance. Aurora confirmed that Marcus, Daniel, and Rebecca have discussed succession planning procedures informally, however, such procedures have not been formalized in writing. The Fund IV LPA key person provision indicates that if any two of Marcus, Daniel, and Rebecca cease to fulfill their time commitment requirement, investors will be notified and the investment period will be suspended. Alpine nonetheless feels that a succession plan should be formalized at the business level. Upon Alpine's suggestion, Aurora did not definitively indicate whether it would seek to formalize a succession plan.
+Alpine notes that the Manager has not established a formal succession plan and the firm does not carry key person / life insurance. Aurora confirmed that Marcus, Daniel, and Rebecca have discussed succession planning procedures informally, however, such procedures have not been formalized in writing. In practice, the Manager indicated that it maintains key person provisions in its offering documents that address this concern. With respect to Fund IV, the key person provision indicates that if any two of Marcus, Daniel, and Rebecca cease to fulfill their time commitment requirement to Fund IV, investors will be notified and the investment period will be suspended. Alpine nonetheless feels that a succession plan should be formalized to address these concerns at the business level rather than at the product level. Insurance policies would also provide some comfort regarding business continuity. Upon Alpine's suggestion, Aurora did not definitively indicate whether it would seek to formalize a succession plan. Investors are encouraged to monitor developments in this area.
 
 ### Human Resources
 
-As at December 31, 2025, Aurora had a total headcount of nine (of which six were investment professionals). The full team includes Marcus Reeves and Daniel Brenner (Co-Founders, GPs), Rebecca Stern (GP), Austin Knight (Principal, joined January 2023), Sofia Marchetti (Senior Associate, joined October 2025), Connor Lyle (Analyst, joined September 2025), Kevin Park (Vice President, Finance and Operations, joined December 2023), Elena Ruiz (Operating Partner, joined March 2025), and one additional team member. Kevin Park serves as the sole back office professional.
+As at December 31, 2025, Aurora had a total headcount of nine (of which six were investment professionals). As Aurora is a small organization with limited resources, Alpine highlights the unavoidable limitations to the segregation of duties in a firm of this size. Investors should monitor the growth in operational staff as assets under management accumulate.
 
-With respect to departures in the past three years: Thomas Wright (former Principal) was terminated effective May 31, 2025, and Priya Desai (former Principal) resigned on September 22, 2025. Aurora indicated that both departures were amicable.
+With respect to departures in the past three years, the Manager represented that Thomas Wright (former Principal) was terminated effective May 31, 2025, and Priya Desai (former Principal) resigned on September 22, 2025. Aurora provided the following reason for these departures: upon internal discussion, it was determined that there was no viable path to these professionals becoming partners, and it was in the best interest of all parties to part ways. The Manager indicated that these departures were amicable and did not result in any ensuing litigation.
 
-The Manager employs staff directly and conducts background checks on all new hires with the assistance of an external background check provider. However, there are no subsequent recurring checks on employees once hired. Staff are compensated with base salaries and discretionary bonuses. Investment team members and Kevin Park are eligible for carried interest participation. No form of compensation is deferred.
+With respect to hires in the past three years on the investment team, Austin Knight (Principal) joined the firm in January 2023, Connor Lyle (Analyst) joined Aurora in September 2025, and Sofia Marchetti (Senior Associate) joined Aurora in October 2025. Additionally, Kevin Park (Vice President, Finance and Operations) and Elena Ruiz (Operating Partner) were hired in December 2023 and March 2025, respectively. Looking forward, Aurora indicated that it is looking to expand its investment team with two-to-three hires at the Analyst / Associate level in the next year.
 
-### YELLOW Rating Rationale
+The Manager employs the firm's staff directly and indicated that it conducts background checks on all new hires, including references, education, credit, and criminal records with the assistance of an external background check provider; however, there are no subsequent checks on employees once hired. Alpine recommends performing recurring background checks on employees throughout their tenure with the firm.
 
-The YELLOW rating reflects: (1) Marcus Reeves and Daniel Brenner's significant external business interests and associated headline risk; (2) no formal succession plan at the business level; (3) no key person life insurance; (4) insider investment does not represent a significant portion of principals' liquid net worth; (5) GP commitment partially cashless, reducing alignment; and (6) no deferred compensation scheme. These are partially mitigated by the firm's experienced senior team, strong track record through prior Aurora and Horizon vintages, and Rebecca Stern's operational leadership.`,
+Staff are compensated with base salaries and discretionary bonuses, contingent on individual and firm performance. Additionally, employees of the investment team, as well as Kevin Park (Vice President, Finance and Operations), are eligible to participate in the carried interest generated by the firm's products. Additionally, the Manager represented that Elena Ruiz (Operating Partner) is expected to be eligible to participate in the carried interest generated by Fund IV. Alpine notes that no form of compensation is deferred: a deferred compensation program would support longer-term staff incentivization.
+
+### Chapter Summary
+
+While Alpine acknowledges that Marcus Reeves (Co-Founder / General Partner) and Daniel Brenner (Co-Founder / General Partner) lack prior work experience and formal education in the asset management industry (other than their investment experience with Aurora and Horizon), Alpine notes that Aurora has hired experienced individuals throughout the rest of the team. Additionally, Alpine agrees that in absolute terms, insider investment in the firm's products is significant; however, the alignment of interests with external investors is diminished as these amounts do not represent a significant portion of the liquid net worth of the principals and the firm will rely on a cashless general partner commitment mechanism for its upcoming Fund IV. The diminishment in the alignment of interests is compounded by staff not being subject to a deferred compensation plan. Separately, Aurora has not formalized a succession plan at the business level in the event that its General Partners (Marcus, Daniel, and Rebecca Stern) are no longer involved in the operations of the firm. As a final comment, Alpine notes that Aurora is a small firm with limited resources (only a single back office staff member): investors should monitor the growth in operational staff as assets under management accumulate. The culmination of these observations drives a Yellow rating for Manager, Ownership & Governance.`,
     docCategories: ["Governance"], riskObsIds: ["AO-001", "AO-002", "AO-003", "AO-004", "AO-005"],
     verificationCategory: "governance",
     dataPoints: [
@@ -138,9 +158,9 @@ Apart from the above, the Manager represented that it is not currently subject t
 
 Marcus Reeves and Daniel Brenner have significant external business interests and maintain directorship positions on portfolio companies (not compensated). The Manager maintains a formal restricted list (zero names at time of review) and a D&O/E&O insurance policy with $5 million coverage. Aurora's LPA (Section 8.3) permits General Partners to found, organize, or promote new companies anticipated to become portfolio companies — Aurora confirmed this has not occurred and is not expected to occur in practice.
 
-### YELLOW Rating Rationale
+### Chapter Summary
 
-Yellow rating based on: (1) Daniel Brenner's ongoing Mythic/LunarPay inquiry; (2) Marcus Reeves and Daniel Brenner's significant external business interests and associated headline risk; (3) no dedicated CCO; (4) insufficient expert network controls; (5) personal trading policy gaps; and (6) AML/KYC not performed by the Administrator. These are partially mitigated by the firm's compliance consultant engagement, annual training, and the limited trading in publicly listed securities typical of a venture capital strategy.`,
+While Alpine notes the Manager's representation that Daniel Brenner's (Co-Founder / General Partner) outstanding inquiry with respect to Mythic and LunarPay is not expected to result in material harm to the firm, this case remains ongoing and investors are encouraged to monitor developments in this area. Additionally, Alpine highlights Marcus Reeves and Daniel Brenner's significant business interests outside their respective responsibilities at Aurora. As a result, Marcus and Daniel are subject to a higher level of publicity, and therefore media scrutiny, than Alpine would traditionally expect for principals of an investment management firm. Furthermore, Alpine highlights that the Manager is not subject to regulatory oversight, as it is currently an ERA with the SEC. As a final comment, Aurora could usefully seek to implement more substantive expert network controls, although Alpine recognizes that expert network discussions are focused on sector-specific information and research rather than specific companies, limiting the risk of transmission of MNPI. Overall, the above observations drive a Yellow rating for Legal, Regulatory & Compliance.`,
     docCategories: ["Regulatory", "Compliance"], riskObsIds: ["AO-006", "AO-007", "AO-008", "AO-009", "AO-010"],
     verificationCategory: "regulatory",
     dataPoints: [
@@ -212,9 +232,9 @@ Alpine notes that Aurora has not implemented an endpoint data loss prevention so
 
 Aurora has a written business continuity and disaster recovery plan ("BCP"), dated November 27, 2025, that was made available for Alpine's review in soft copy. As Aurora operates on a fully remote basis with all employees able to work remotely, the Manager represented that the BCP is tested continuously. Remote access is secured by multi-factor authentication.
 
-### GREEN Rating Rationale
+### Chapter Summary
 
-Green rating. Aurora has implemented baseline IT and cybersecurity controls with formal policies (WISP, incident response plan, BCP), an external IT consultant, and annual cybersecurity training. Gaps include the absence of endpoint DLP and network penetration testing (cloud-based infrastructure rationale noted) and the absence of phishing tests (planned). These gaps, while flagged, do not materially impair the overall cybersecurity posture for a firm of this size and profile.`,
+Overall, Alpine's review identified that Aurora has implemented baseline IT and cybersecurity controls to support a Green rating for Technology, Cybersecurity & Business Resilience. Alpine highlights that Aurora has not implemented an endpoint data loss prevention solution to protect against data being moved off the network without the firm's knowledge. Furthermore, investors are encouraged to monitor developments with respect to Aurora implementing monthly phishing testing. As a final comment, Alpine highlights that the Manager represented that it does not perform penetration testing, as the IT infrastructure is hosted on cloud-based applications.`,
     docCategories: ["Technology"], riskObsIds: ["AO-011", "AO-012"],
     verificationCategory: "technology",
     dataPoints: [
@@ -278,9 +298,9 @@ The LPA requires the GP to establish an LPAC comprised of two to five limited pa
 
 The Fund is a venture capital vehicle that seeks to make minority investments in Seed to Series B companies in AI / intelligent compute, enterprise SaaS and cloud, and "emerging themes" in technology. Geographically focused on North America (primarily U.S.), with selective international opportunities (e.g., Israel). The Fund targets 7–10% ownership stakes in 20–25 portfolio companies and expects to retain approximately 30% of total capital commitments for follow-on investments. Single company limit: 20% of commitments. Digital assets: up to 10% (not expected in practice). The Fund may not invest in publicly traded companies.
 
-### GREEN Rating Rationale
+### Chapter Summary
 
-Green rating. No material issues were noted with respect to the Fund's legal structure and terms of investment. Terms are consistent with VC market norms. The management fee step-down structure, LPAC requirement, and tiered waterfall are investor-friendly features. The partially cashless GP commitment and absence of a no-fault divorce provision are noted but do not materially impair the overall assessment.`,
+No material issues were noted with respect to the Fund's legal structure and terms of investment, which drives a Green rating for Fund Structure, Terms & Investor Alignment. Alpine recommends, however, that investors monitor the Fund's expense ratio when the audited accounts are made available.`,
     docCategories: ["Legal"], riskObsIds: ["AO-013b"],
     dataPoints: [
       { group: "Fund Details", items: [
@@ -362,9 +382,9 @@ The Fund's expected auditor is Grant Baker LLP, with fieldwork to be completed r
 
 Alpine notes that Grant Baker has also been engaged to provide tax services to the management company. Alpine would prefer to see the Manager engage a separate firm for management company tax services to avoid the appearance of a conflict of interest over audit independence.
 
-### GREEN Rating Rationale
+### Chapter Summary
 
-Green rating. The continuation of established provider relationships from prior vintages provides comfort. The engagement of a Big 4 auditor (Grant Baker) represents an upgrade from the prior auditor. Items to monitor: (1) the use of two different administrators across the product line; (2) Grant Baker's cross-engagement for management company tax services; and (3) execution of the Grant Baker engagement letter before the first year-end audit.`,
+The continuation of established provider relationships from prior vintages provides comfort. Alpine notes the use of two different administrators across the firm's product line and the auditor's cross-engagement with the management company, and recommends investors monitor these arrangements over time. No other material issues were identified with respect to the Fund's service provider roster, supporting a Green rating for Service Providers, Delegation & Oversight.`,
     docCategories: ["Operations"], riskObsIds: [],
     verificationCategory: "administrator",
     dataPoints: [
@@ -432,9 +452,9 @@ New or changed payment instructions require a verification callback. Alpine note
 
 With respect to new bank accounts, Kevin Park completes the required paperwork, with Rebecca Stern or Daniel Brenner responsible for signing. While Alpine would prefer for two signatures to be required, Alpine acknowledges that two individuals are involved in the process in practice. The Administrator does not have signing authority over transfers relating to investor capital activity and non-investment expense payments.
 
-### GREEN Rating Rationale
+### Chapter Summary
 
-Green rating. The procedures adopted by Aurora provide adequate controls over the investment cycle — dual-approval wire process, monthly reconciliation, and appropriate documentation requirements. Gaps include: (1) no internal general ledger; (2) Administrator does not control the operating account; (3) single signature technically required for new bank accounts; and (4) no verification callback for transfers above materiality threshold. These gaps are noted but do not materially impair the overall assessment for a closed-ended fund of this profile.`,
+Overall, the procedures adopted by Aurora provide adequate controls over the investment cycle, supporting a Green rating for Investment Operations & Portfolio Controls. Alpine notes the absence of a fully featured internal accounting system with a general ledger and would prefer for Aurora to receive legal closing documentation at the inception of a deal from an independent third party (i.e. the legal counsel drafting the deal), rather than from Aurora. Additionally, while Alpine notes that multiple individuals are involved in the account opening process in practice, only one signature is required to open bank accounts.`,
     docCategories: ["Operations"], riskObsIds: ["AO-014", "AO-015"],
     dataPoints: [
       { group: "Deal Pipeline & Tracking", items: [
@@ -499,9 +519,9 @@ All partnership capital accounting records are maintained by the Administrator u
 
 Aurora does not maintain internal investor-level accounting records, relying on the Administrator for this aspect of the NAV calculation. Alpine has no particular concerns over Meridian's ability to account for such items but would prefer to see Aurora maintain parallel records.
 
-### GREEN Rating Rationale
+### Chapter Summary
 
-Green rating. Internal controls over the pricing environment appear adequate: the Manager has implemented a satisfactory valuation framework including a valuation committee with back office involvement and the closed-ended structure alleviates the risk of deliberate mispricing. Items to monitor: (1) appointment of an external valuation agent; (2) reconstitution of valuation committee with majority non-investment professionals; (3) dating the valuation policy; and (4) migration of waterfall calculations from Excel.`,
+Internal controls over the pricing environment appear adequate: the Manager has implemented a satisfactory valuation framework which includes the involvement of a valuation committee and the back office to oversee internal valuations. Alpine also reiterates that the closed-ended structure of the investment vehicles alleviates the risk of deliberate mispricing. The combination of these factors supports a Green rating for Valuation, Asset Existence & Investor Reporting. Nonetheless, Alpine would suggest the appointment of a third-party valuation agent, as valuations are currently only subject to external oversight annually from the Fund's auditor. Furthermore, while Alpine understands that it may not be feasible given the current headcount of the firm, Alpine would prefer to see the valuation committee represented by a majority of senior non-investment professionals to remove the appearance of conflicts of interest over the involvement of the front office in the pricing process.`,
     docCategories: ["Compliance", "Financial"], riskObsIds: ["AO-016", "AO-017", "AO-018"],
     dataPoints: [
       { group: "Valuation Process", items: [
@@ -552,9 +572,9 @@ Meridian was cooperative and provided independent confirmation of key operationa
 
 The Manager proactively disclosed areas of operational limitation, including the current absence of a dedicated Chief Compliance Officer, the timeline for expected phishing testing and penetration testing enhancements, and the ongoing Mythic/LunarPay inquiry. Alpine considers this level of candor to be constructive and indicative of a willingness to address operational gaps.
 
-### GREEN Rating Rationale
+### Chapter Summary
 
-Green rating. No material issues were noted with respect to transparency during the due diligence process. The Manager and Administrator were cooperative, responsive, and forthcoming. The Manager's proactive disclosure of operational limitations is constructive. Alpine notes the limitation of valuation committee minutes being declined.`,
+No material issues were noted with respect to transparency during the due diligence process, supporting a Green rating for Manager Transparency & LP Communications. Nonetheless, Alpine would have appreciated reviewing valuation committee meeting minutes to assess the discussions of those meetings, and notes this limitation in the due diligence process.`,
     docCategories: [], riskObsIds: [],
     dataPoints: [
       { group: "Diligence Process", items: [
@@ -851,14 +871,27 @@ export const AURORA_FOLLOW_UP_MOCK = {
   ],
 };
 
-// ── Document collection ──────────────────────────────────────────────────────
+// ── Document collection (manager-submitted input documents) ─────────────────
 
-export const AURORA_COLLECTION_DOCS = AURORA_VAULT_DATA.documents
-  .filter((doc) => doc.filename)
-  .map((doc) => ({
-    name: doc.name,
-    type: doc.category,
-    date: doc.date,
-    source: "Manager Upload" as const,
-    filename: doc.filename!,
-  }));
+export const AURORA_COLLECTION_DOCS: Array<{
+  name: string; type: string; date: string;
+  source: "Manager Upload" | "Follow-Up R1" | "Follow-Up R2";
+  filename?: string;
+}> = [
+  // ── Initial upload batch ──────────────────────────────────────────────────
+  { name: "ILPA DDQ 2.0 — Aurora Capital Management (2026)",                  type: "DDQ",        date: "2026-04-08", source: "Manager Upload", filename: "aurora-ilpa-ddq-2026.pdf" },
+  { name: "Form ADV ERA — Annual Filing (March 26, 2026)",                    type: "Regulatory", date: "2026-04-08", source: "Manager Upload", filename: "aurora-form-adv-era-2026.pdf" },
+  { name: "Limited Partnership Agreement — Fund IV (August 31, 2025)",        type: "Legal",      date: "2026-04-08", source: "Manager Upload", filename: "aurora-lpa-fund-iv.pdf" },
+  { name: "Private Placement Memorandum — Fund IV",                           type: "Legal",      date: "2026-04-08", source: "Manager Upload", filename: "aurora-ppm-fund-iv.pdf" },
+  { name: "Compliance Manual + Code of Ethics (January 2026)",                type: "Compliance", date: "2026-04-08", source: "Manager Upload", filename: "aurora-compliance-manual-2026.pdf" },
+  { name: "Valuation Policy",                                                 type: "Operations", date: "2026-04-08", source: "Manager Upload", filename: "aurora-valuation-policy.pdf" },
+  { name: "Aurora Ventures III — Audited Financial Statements FY2025",        type: "Financial",  date: "2026-04-08", source: "Manager Upload", filename: "aurora-financials-fy2025.pdf" },
+  { name: "Aurora Capital Management — Firm Overview & Team Biographies",     type: "Marketing",  date: "2026-04-08", source: "Manager Upload", filename: "aurora-firm-overview.pdf" },
+  // ── Follow-Up Round 1 ────────────────────────────────────────────────────
+  { name: "Written Information Security Policy (WISP) — November 28, 2025",  type: "Technology", date: "2026-04-18", source: "Follow-Up R1", filename: "aurora-wisp-2025.pdf" },
+  { name: "Incident Response Plan — November 28, 2025",                       type: "Technology", date: "2026-04-18", source: "Follow-Up R1", filename: "aurora-incident-response-plan.pdf" },
+  { name: "Business Continuity Plan (BCP) — November 27, 2025",               type: "Technology", date: "2026-04-18", source: "Follow-Up R1", filename: "aurora-bcp-2025.pdf" },
+  { name: "Administration Agreement — Meridian Fund Services, LLC (August 31, 2025)", type: "Operations", date: "2026-04-18", source: "Follow-Up R1", filename: "aurora-admin-agreement-meridian.pdf" },
+  { name: "InsightSphere Expert Network Engagement Agreement",                type: "Compliance", date: "2026-04-18", source: "Follow-Up R1", filename: "aurora-insightsphere-agreement.pdf" },
+  { name: "Vantage Tech Partners — IT Services Engagement Letter",            type: "Technology", date: "2026-04-18", source: "Follow-Up R1", filename: "aurora-vantage-tech-engagement.pdf" },
+];

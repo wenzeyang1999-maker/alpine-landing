@@ -56,7 +56,22 @@ export const DEMO_FILES: Record<string, string> = {
   "Trellis-Capital-Apex-Service-Description-Fund-III.pdf": "trellis/Trellis-Capital-Apex-Service-Description-Fund-III.pdf",
 
   // ── Aurora Capital IV ─────────────────────────────────────────────────────
-  "sample_vc_aurora_iv.pdf":              "aurora/sample_vc_aurora_iv.pdf",
+  "sample_vc_aurora_iv.pdf":                  "aurora/sample_vc_aurora_iv.pdf",
+  // Collection docs — Aurora-branded PDFs generated for this demo
+  "aurora-ilpa-ddq-2026.pdf":                 "aurora/aurora-ilpa-ddq-2026.pdf",
+  "aurora-form-adv-era-2026.pdf":             "aurora/aurora-form-adv-era-2026.pdf",
+  "aurora-lpa-fund-iv.pdf":                   "aurora/aurora-lpa-fund-iv.pdf",
+  "aurora-ppm-fund-iv.pdf":                   "aurora/aurora-ppm-fund-iv.pdf",
+  "aurora-compliance-manual-2026.pdf":        "aurora/aurora-compliance-manual-2026.pdf",
+  "aurora-valuation-policy.pdf":              "aurora/aurora-valuation-policy.pdf",
+  "aurora-financials-fy2025.pdf":             "aurora/aurora-financials-fy2025.pdf",
+  "aurora-firm-overview.pdf":                 "aurora/aurora-firm-overview.pdf",
+  "aurora-wisp-2025.pdf":                     "aurora/aurora-wisp-2025.pdf",
+  "aurora-incident-response-plan.pdf":        "aurora/aurora-incident-response-plan.pdf",
+  "aurora-bcp-2025.pdf":                      "aurora/aurora-bcp-2025.pdf",
+  "aurora-admin-agreement-meridian.pdf":      "aurora/aurora-admin-agreement-meridian.pdf",
+  "aurora-insightsphere-agreement.pdf":       "aurora/aurora-insightsphere-agreement.pdf",
+  "aurora-vantage-tech-engagement.pdf":       "aurora/aurora-vantage-tech-engagement.pdf",
 };
 
 /** Sources that are NOT downloadable files (show info text instead) */

@@ -387,7 +387,7 @@ export function TopicPage({ topicNumber, onNavigate, alpineReviewId, topicDataOv
                           )}
                         </span>
                         {dp.source && (
-                          <RefDot source={dp.source} quote={dp.value} color={srcColor} />
+                          <RefDot source={dp.source} quote={dp.value} color={srcColor} slug={slug} />
                         )}
                       </div>
                     </div>

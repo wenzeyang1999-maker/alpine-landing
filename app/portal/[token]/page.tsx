@@ -63,6 +63,19 @@ const PORTAL_CONFIG: Record<string, { fund_name: string; document_types: string[
       "Fund Administrator Service Description",
     ],
   },
+  "demo-aurora-token": {
+    fund_name: "Aurora Ventures IV, L.P.",
+    document_types: [
+      "ILPA DDQ 2.0 — Aurora Capital Management",
+      "Form ADV ERA — Annual Filing",
+      "Limited Partnership Agreement (LPA)",
+      "Private Placement Memorandum (PPM)",
+      "Compliance Manual + Code of Ethics",
+      "Valuation Policy",
+      "Audited Financial Statements FY2025",
+      "Firm Overview & Team Biographies",
+    ],
+  },
 };
 
 // Keywords used to match an uploaded filename against a requested document type
@@ -114,6 +127,34 @@ const TRELLIS_MOCK_DOCS: PortalDoc[] = [
   { id: "t08", filename: "Trellis-Capital-Valuation-Policy.pdf",               file_size: 420_000,  page_count: 8,  uploaded_at: "2026-04-01T09:26:00Z" },
   { id: "t09", filename: "Summit-Advisory-Compliance-Binder-2025.pdf",         file_size: 1_100_000, page_count: 22, uploaded_at: "2026-04-01T09:28:00Z" },
   { id: "t10", filename: "Apex-Fund-Services-Service-Description-FundIII.pdf", file_size: 560_000,  page_count: 10, uploaded_at: "2026-04-01T09:30:00Z" },
+];
+
+const AURORA_MOCK_DOCS: PortalDoc[] = [
+  { id: "a01", filename: "aurora-ilpa-ddq-2026.pdf",           file_size: 2_800_000, page_count: 48, uploaded_at: "2026-04-08T09:10:00Z" },
+  { id: "a02", filename: "aurora-form-adv-era-2026.pdf",        file_size: 840_000,  page_count: 15, uploaded_at: "2026-04-08T09:12:00Z" },
+  { id: "a03", filename: "aurora-lpa-fund-iv.pdf",              file_size: 1_950_000, page_count: 34, uploaded_at: "2026-04-08T09:15:00Z" },
+  { id: "a04", filename: "aurora-ppm-fund-iv.pdf",              file_size: 1_620_000, page_count: 28, uploaded_at: "2026-04-08T09:17:00Z" },
+  { id: "a05", filename: "aurora-compliance-manual-2026.pdf",   file_size: 1_100_000, page_count: 20, uploaded_at: "2026-04-08T09:19:00Z" },
+  { id: "a06", filename: "aurora-valuation-policy.pdf",         file_size: 390_000,  page_count: 7,  uploaded_at: "2026-04-08T09:21:00Z" },
+  { id: "a07", filename: "aurora-financials-fy2025.pdf",        file_size: 3_800_000, page_count: 62, uploaded_at: "2026-04-08T09:24:00Z" },
+  { id: "a08", filename: "aurora-firm-overview.pdf",            file_size: 720_000,  page_count: 14, uploaded_at: "2026-04-08T09:26:00Z" },
+  { id: "a09", filename: "aurora-wisp-2025.pdf",                file_size: 480_000,  page_count: 9,  uploaded_at: "2026-04-18T10:05:00Z" },
+  { id: "a10", filename: "aurora-incident-response-plan.pdf",   file_size: 310_000,  page_count: 6,  uploaded_at: "2026-04-18T10:07:00Z" },
+  { id: "a11", filename: "aurora-bcp-2025.pdf",                 file_size: 290_000,  page_count: 5,  uploaded_at: "2026-04-18T10:09:00Z" },
+  { id: "a12", filename: "aurora-admin-agreement-meridian.pdf", file_size: 650_000,  page_count: 11, uploaded_at: "2026-04-18T10:12:00Z" },
+  { id: "a13", filename: "aurora-insightsphere-agreement.pdf",  file_size: 280_000,  page_count: 5,  uploaded_at: "2026-04-18T10:14:00Z" },
+  { id: "a14", filename: "aurora-vantage-tech-engagement.pdf",  file_size: 320_000,  page_count: 6,  uploaded_at: "2026-04-18T10:16:00Z" },
+];
+
+const AURORA_FOLLOW_UP_ROUNDS = [
+  {
+    label: "Round 1",
+    questions: [
+      "Q1. The DDQ (§4.2) references a dedicated CCO role, but the Compliance Manual and Form ADV list Kevin Park (VP, Finance & Operations) as Acting CCO. Please confirm the current compliance oversight structure and timeline for appointing a dedicated CCO.",
+      "Q2. The Valuation Policy does not reference an external third-party valuation agent. Please confirm whether one has been engaged for Fund IV and, if not, the expected timeline for appointment.",
+      "Q3. Please provide the Written Information Security Policy (WISP), Incident Response Plan, Business Continuity Plan, Administration Agreement with Meridian, and any third-party technology vendor agreements.",
+    ],
+  },
 ];
 
 const FOLLOW_UP_ROUNDS = [
@@ -187,8 +228,10 @@ export default function PortalPage() {
   const allCovered = coveredCount === portalInfo.document_types.length;
 
   const isTrellis = token === "demo-trellis-token";
+  const isAurora = token === "demo-aurora-token";
+  const activeFollowUpRounds = isAurora ? AURORA_FOLLOW_UP_ROUNDS : FOLLOW_UP_ROUNDS;
 
-  // On mount: load docs from DB; fall back to mock data for demo-trellis-token
+  // On mount: load docs from DB; fall back to mock data for demo tokens
   useEffect(() => {
     fetch(`/api/portal/documents?token=${encodeURIComponent(token)}`)
       .then((r) => r.json())
@@ -197,12 +240,15 @@ export default function PortalPage() {
           setDocs(rows);
         } else if (isTrellis) {
           setDocs(TRELLIS_MOCK_DOCS);
+        } else if (isAurora) {
+          setDocs(AURORA_MOCK_DOCS);
         }
       })
       .catch(() => {
         if (isTrellis) setDocs(TRELLIS_MOCK_DOCS);
+        else if (isAurora) setDocs(AURORA_MOCK_DOCS);
       });
-  }, [token, isTrellis]);
+  }, [token, isTrellis, isAurora]);
 
   const handleUpload = useCallback(async (files: FileList | File[]) => {
     setUploadError("");
@@ -426,7 +472,7 @@ export default function PortalPage() {
           </div>
         )}
 
-        {/* AI Follow-Up Agent (Ridgeline only) */}
+        {/* AI Follow-Up Agent (Ridgeline + Aurora) */}
         {isDemo && !isTrellis && (
           <div className="bg-white rounded-xl border border-alpine-border p-5 mb-6">
             <div className="flex items-center justify-between mb-4">
@@ -445,7 +491,7 @@ export default function PortalPage() {
             </div>
 
             <div className="flex gap-2 mb-4">
-              {FOLLOW_UP_ROUNDS.map((round, i) => (
+              {activeFollowUpRounds.map((round, i) => (
                 <span
                   key={i}
                   className="text-xs px-2.5 py-1 rounded-full font-medium"

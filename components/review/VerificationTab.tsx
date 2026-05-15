@@ -21,17 +21,48 @@ const REGISTRY_DATA: Record<string, Array<{ entity: string; type: string; jurisd
     { entity: "Arjun Mehta / Priya Sharma", type: "Principal Background Check", jurisdiction: "United States", registry: "FINRA BrokerCheck · IARD Personal History", status: "verified", since: "March 2019" },
     { entity: "Priya Sharma — CCO Role", type: "Compliance Oversight Designation", jurisdiction: "Internal Assessment", registry: "Form ADV Part 1A · DDQ §4.2", status: "flagged", since: "August 2018" },
   ],
+  "aurora-capital-iv": [
+    { entity: "Aurora Capital Management, LLC", type: "Exempt Reporting Adviser (ERA)", jurisdiction: "United States — SEC", registry: "SEC IARD — ERA Filing · CRD 312044", status: "verified", since: "January 2020" },
+    { entity: "Aurora Capital Management, LLC", type: "Limited Liability Company", jurisdiction: "United States — Delaware", registry: "Delaware Division of Corporations", status: "verified", since: "August 2017" },
+    { entity: "Aurora Ventures IV, L.P.", type: "Limited Partnership", jurisdiction: "United States — Delaware", registry: "Delaware Division of Corporations", status: "verified", since: "August 2025" },
+    { entity: "Aurora Ventures IV GP, LLC", type: "General Partner Entity", jurisdiction: "United States — Delaware", registry: "Delaware Division of Corporations", status: "verified", since: "August 2025" },
+    { entity: "Marcus Reeves / Daniel Brenner / Rebecca Stern", type: "Principal Background Check", jurisdiction: "United States", registry: "FINRA BrokerCheck · IARD Personal History", status: "verified", since: "January 2020" },
+    { entity: "Daniel Brenner — Mythic / LunarPay Class Action", type: "Disciplinary Disclosure", jurisdiction: "United States — Federal Court", registry: "Form ADV Part 1A §11 · FINRA BrokerCheck", status: "flagged", since: "December 2024" },
+    { entity: "Kevin Park — Acting CCO Designation", type: "Compliance Oversight Designation", jurisdiction: "Internal Assessment", registry: "Form ADV Part 1A · DDQ §4.2", status: "flagged", since: "December 2023" },
+  ],
 };
 
+const AURORA_STATIC_POINTS: VerificationPoint[] = [
+  // Regulatory
+  { id: "av-reg-001", point_id: "AV-REG-001", category: "regulatory", title: "Form ADV ERA — Cross-Reference Complete", description: "Aurora Capital Management, LLC Form ADV ERA dated March 26, 2026 reviewed. AUM of $981.54M and ownership (Reeves 40%, Brenner 40%, Stern 20%) confirmed. No material discrepancies with DDQ representations. New disciplinary disclosure (Mythic/LunarPay) appropriately reflected in §11.", status: "verified", override_status: null, override_note: null },
+  { id: "av-reg-002", point_id: "AV-REG-002", category: "regulatory", title: "CRD & BrokerCheck — Principals Verified", description: "Background checks completed for Marcus Reeves, Daniel Brenner, and Rebecca Stern. Daniel Brenner: class action lawsuit (Mythic/LunarPay) disclosed on Form ADV §11 (filed December 2024, ongoing). Priya Desai (former Principal): co-defendant, departed September 2025. No unreported items found for remaining principals.", status: "verified", override_status: null, override_note: null },
+  // Financial
+  { id: "av-fin-001", point_id: "AV-FIN-001", category: "financial", title: "AUM Verification — Form ADV Cross-Reference", description: "Total AUM $981.54M (excl. $215.59M uncalled capital) per March 2026 Form ADV. Prior year AUM of $814.59M confirmed. AUM composition reviewed across fund vehicles. Note: Meridian Fund Services does not independently verify AUM — accepts Aurora's pricing at quarter-end without verification procedures.", status: "verified", override_status: null, override_note: null },
+  { id: "av-fin-002", point_id: "AV-FIN-002", category: "financial", title: "Audited Financial Statements — Reviewed", description: "Aurora Ventures III FY2024 audited financials reviewed; opinion issued by Grant Baker LLP. Fund IV audit engagement letter not yet signed (monitoring commitment: signed before FY2026 audit). FY2025 audit opinion expected Q2 2026.", status: "verified", override_status: null, override_note: null },
+  // Governance
+  { id: "av-gov-001", point_id: "AV-GOV-001", category: "governance", title: "Disciplinary Disclosure — Daniel Brenner (Mythic / LunarPay)", description: "Daniel Brenner named defendant in purported class action (filed December 2024) related to Mythic Technologies and LunarPay Crystal Tiger Society NFT promotion. SEC separately investigating Mythic Studios re: TigerCoin/NFT offerings as potential unregistered securities. Manager represents claims without merit. Monitor closely.", status: "flagged", override_status: null, override_note: null },
+  { id: "av-gov-002", point_id: "AV-GOV-002", category: "governance", title: "Acting CCO — Finance-Compliance Dual Role", description: "Kevin Park (VP, Finance and Operations) serves as acting CCO in addition to all back office responsibilities. No dedicated CCO appointed. External compliance consultant (Apex Compliance Advisors) engaged Q3 2025 as partial mitigant. Dedicated CCO hire recommended as firm AUM scales past $1B.", status: "flagged", override_status: null, override_note: null },
+  // Operations
+  { id: "av-ops-001", point_id: "AV-OPS-001", category: "operations", title: "Administrator Verification — Meridian Fund Services", description: "Meridian Fund Services, LLC confirmed as fund administrator for Aurora Ventures IV. Administration agreement dated August 31, 2025 reviewed. Engagement confirmed via direct verification call April 9, 2026. Meridian uses LedgerCraft Enterprise / Polaris for fund accounting. Does not control operating account or perform independent valuation verification.", status: "verified", override_status: null, override_note: null },
+  { id: "av-ops-002", point_id: "AV-OPS-002", category: "operations", title: "External Valuation Agent — Not Appointed", description: "Aurora has not engaged a third-party valuation agent. All portfolio valuations prepared internally; Meridian accepts Aurora's pricing without verification. Annual audit provides the only external pricing check. Alpine recommends engagement of external valuation agent before Fund IV final close.", status: "flagged", override_status: null, override_note: null },
+];
+
 export function VerificationTab({ reviewId, api, slug, onNavigate }: { reviewId: string; api: DemoApi; slug?: string; onNavigate?: (id: string) => void }) {
-  const [points, setPoints] = useState<VerificationPoint[]>([]);
-  const [summary, setSummary] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const isAurora = slug === "aurora-capital-iv";
+  const [points, setPoints] = useState<VerificationPoint[]>(isAurora ? AURORA_STATIC_POINTS : []);
+  const [summary, setSummary] = useState<any>(isAurora ? {
+    total: AURORA_STATIC_POINTS.length,
+    verified: AURORA_STATIC_POINTS.filter(p => p.status === "verified").length,
+    flagged: AURORA_STATIC_POINTS.filter(p => p.status === "flagged").length,
+    pending: AURORA_STATIC_POINTS.filter(p => p.status === "pending").length,
+  } : null);
+  const [loading, setLoading] = useState(!isAurora);
   const [overridePoint, setOverridePoint] = useState<string | null>(null);
   const [overrideStatus, setOverrideStatus] = useState("");
   const [overrideNote, setOverrideNote] = useState("");
 
   const fetchData = useCallback(async () => {
+    if (isAurora) return;
     try {
       const [rawPts, sum] = await Promise.all([
         api.getVerifications(reviewId),
@@ -52,7 +83,7 @@ export function VerificationTab({ reviewId, api, slug, onNavigate }: { reviewId:
     } finally {
       setLoading(false);
     }
-  }, [reviewId, api]);
+  }, [reviewId, api, isAurora]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 

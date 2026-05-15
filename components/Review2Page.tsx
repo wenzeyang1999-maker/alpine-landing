@@ -2563,8 +2563,8 @@ export default function Review2Page() {
       case "collection":
         return <DocumentCollectionView mock={reviewCtxValue.followUpMock} onNavigate={setActiveTab} brandName="Alpine ODD" slug={slug} />;
       case "reg-verification":
-        return reviewData?.id
-          ? <VerificationTab reviewId={reviewData.id} api={alpineDemoBrand.api} slug={slug} onNavigate={setActiveTab} />
+        return (reviewData?.id || slug === "aurora-capital-iv")
+          ? <VerificationTab reviewId={reviewData?.id ?? ""} api={alpineDemoBrand.api} slug={slug} onNavigate={setActiveTab} />
           : <PlaceholderTab label="Verification" detail="Registry and verification data loads with a linked review." />;
       case "analysis":
         return <AnalysisTopicsTab reviewData={reviewData} onNavigate={setActiveTab} />;

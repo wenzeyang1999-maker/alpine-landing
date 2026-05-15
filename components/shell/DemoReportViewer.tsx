@@ -3,6 +3,7 @@
 import { useRef, useEffect, useState } from "react";
 import { downloadDemoFile, getDemoFileUrl } from "@/lib/demo-downloads";
 import { SOURCE_META } from "@/lib/ridgeline-data";
+import { AURORA_SOURCE_META } from "@/lib/aurora-data";
 import DataReportViewer, { RIDGELINE_DATA_REPORT } from "@/components/shell/DataReportViewer";
 import ExecutiveBriefViewer, { RIDGELINE_EXECUTIVE_BRIEF } from "@/components/shell/ExecutiveBriefViewer";
 
@@ -29,6 +30,151 @@ const RATING_BADGE_COLORS: Record<string, { bg: string; text: string; dot: strin
   WATCHLIST: { bg: "#F59E0B18", text: "#D97706", dot: "#F59E0B" },
   FLAG:      { bg: "#EF444418", text: "#DC2626", dot: "#EF4444" },
 };
+
+// ── Static Aurora Ventures IV ODD Report (markdown) ─────────────────────────
+
+const AURORA_REPORT_MD = `# Operational Due Diligence Review
+
+**Aurora Capital Management, LLC**
+Aurora Ventures IV, L.P. · Early-Stage Venture Capital · AUM $981.54M (excl. $215.59M uncalled)
+
+Review Date: April 2026 · Report Date: April 30, 2026
+Prepared by Alpine Due Diligence Inc.
+
+*This report is intended solely for the use of the commissioning investor and should not be distributed without Alpine's prior written consent.*
+
+---
+
+## Overall Rating: ACCEPT
+
+Score: 82 / 100 · 6 GREEN · 2 YELLOW · 0 RED
+
+Aurora Capital Management, LLC has been assigned an **ACCEPT** rating following Alpine's operational due diligence review of Aurora Ventures IV, L.P. Core operational infrastructure is adequate with baseline controls across technology, cash management, and valuation. The firm engages institutional service providers (Meridian Fund Services as administrator; Grant Baker LLP expected as auditor) and has proactively formalized its compliance program with external consultant support from Apex Compliance Advisors. [[REF:DDQ:"Aurora engaged Apex Compliance Advisors in Q3 2025 to formalize the compliance program"]] Two chapters were rated YELLOW: Manager/Governance (principals' significant external business interests; no formal succession plan; partially cashless GP commitment) and Legal/Compliance (ongoing Mythic/LunarPay class action involving Daniel Brenner; no dedicated CCO; insufficient expert network controls).
+
+**Post-Close Monitoring Items:**
+1. Appoint external third-party valuation agent before Fund IV final close
+2. Implement all five recommended expert network controls (written policy, pre-clearance, blackout periods, MNPI script, compliance chaperoning)
+3. Formalize written succession plan at the management company level; consider key person insurance
+4. Implement endpoint DLP and quarterly phishing testing by year-end 2026
+5. Hire a dedicated CCO by 2027 as AUM and operational complexity scale
+
+---
+
+## Chapter 1: Manager, Ownership & Governance · Rating: YELLOW
+
+Aurora Capital Management, LLC is a Delaware LLC formed August 17, 2017 [[REF:California SoS:"Date of Formation August 17, 2017"]] and operates as a fully remote firm headquartered in Los Angeles, CA. The firm is owned by Marcus Reeves (40%), Daniel Brenner (40%), and Rebecca Stern (20%). [[REF:Form ADV:"Schedule A/B ownership: Reeves 40%, Brenner 40%, Stern 20%"]] Total headcount is 9 FTEs (6 investment professionals, 3 back office / operations). [[REF:DDQ:"9 FTEs: 6 investment, 3 back office / operations"]]
+
+Aurora Ventures IV, L.P. is a Delaware limited partnership formed August 31, 2025, with Aurora Ventures IV GP, LLC as the General Partner. [[REF:LPA:"Aurora Ventures IV, L.P. — Delaware LP formed August 31, 2025; GP: Aurora Ventures IV GP, LLC"]] GP commitment is at least $9.0M (~3% of target commitments) — half in cash, half satisfied via fee offset rather than additional cash contribution.
+
+**Risk Observation AO-002 (HIGH):** Principals maintain significant external business interests creating elevated headline risk. Marcus Reeves is a prominent actor and film producer; Daniel Brenner is a talent manager for internationally recognized entertainers. Both are subject to elevated media scrutiny — including public criticism after supporting a convicted individual — and the issue is compounded by Brenner's ongoing NFT-related inquiry (see Chapter 2). [[REF:ALPINE_ANALYSIS:"Marcus Reeves and Daniel Brenner external profiles create elevated headline risk"]] Alpine recommends investors monitor media coverage closely and conduct periodic background checks.
+
+**Risk Observation AO-001 (HIGH):** No formal succession plan exists at the business level. The LPA key person provision addresses the product level (any two of three GPs must cease time commitment to trigger) but does not address business-level continuity. No key person life insurance is in place. [[REF:LPA:"Key person provision triggers if any two of three GPs cease time commitment"]]
+
+**Risk Observation AO-005 (MEDIUM):** Fund IV GP commitment is partially cashless — $4.5M of the $9.0M commitment is satisfied via management fee reduction rather than upfront cash contribution. This reduces "skin in the game" relative to a fully cash-funded commitment.
+
+## Chapter 2: Legal, Regulatory & Compliance · Rating: YELLOW
+
+Aurora Capital Management is registered as an Exempt Reporting Adviser (ERA) with the SEC under the venture capital adviser exemption (CRD 312044, SEC File 802-128945). [[REF:SEC_EDGAR:"Exempt Reporting Adviser since November 30, 2018, CRD 312044"]] Current Form ADV dated March 26, 2026 reviewed. Aurora has engaged Apex Compliance Advisors as external compliance consultant since Q3 2025 and conducted annual compliance training in January 2026.
+
+**Risk Observation AO-003 (HIGH):** Daniel Brenner is a named defendant in a purported class action filed December 2024 in the U.S. District Court for the Central District of California (Montgomery & Reed LLP, plaintiffs' counsel) regarding the Mythic Technologies / LunarPay "Crystal Tiger Society" NFT promotion. The SEC is separately investigating Mythic Studios re: whether NFT/crypto offerings constituted unregistered securities. Former Aurora employee Priya Desai is a co-defendant and departed Aurora in September 2025. The matter is ongoing; Aurora represents the claims are without merit. [[REF:Form ADV:"Item 11 disclosure: Daniel Brenner — Mythic/LunarPay class action, filed December 2024, ongoing"]] Alpine recommends close monitoring of legal and reputational developments.
+
+**Risk Observation AO-006 (MEDIUM):** No dedicated Chief Compliance Officer. Kevin Park (VP Finance and Operations) serves as acting CCO in addition to all back office, accounting, finance, and operations responsibilities. [[REF:DDQ:"Kevin Park serves as acting CCO in addition to VP Finance and Operations duties"]] This creates segregation of duties concerns and limits compliance bandwidth as the firm scales. Alpine recommends hiring a dedicated CCO by 2027.
+
+**Risk Observation AO-007 (MEDIUM):** Expert network controls are insufficient. Aurora has contracted InsightSphere but has not adopted substantive controls: no written policy, no pre-clearance, no public-company blackout periods, no MNPI script at the onset of calls, and no compliance chaperoning. [[REF:ALPINE_ANALYSIS:"InsightSphere engagement lacks written policy, pre-clearance, blackout periods, MNPI script, and chaperoning"]]
+
+**Risk Observation AO-008 (MEDIUM):** Personal trading policy gaps — pre-clearance is required only for securities on the restricted list (currently zero names); no minimum holding period; brokerage statements not independently collected by compliance.
+
+**Risk Observation AO-009 (MEDIUM):** AML / KYC verification is performed by Aurora with assistance from Brennan Kincaid LLP (legal counsel) rather than by the Administrator. Alpine recommends transitioning AML/KYC to Meridian's investor services group for greater independence.
+
+## Chapter 3: Technology, Cybersecurity & Business Resilience · Rating: GREEN
+
+Aurora operates a fully cloud-based technology stack (Microsoft 365, AWS-hosted services, Vantage Tech Partners-managed endpoints). [[REF:DDQ:"Cloud-based infrastructure: Microsoft 365, AWS, Vantage Tech Partners managed endpoints"]] A Written Information Security Policy (WISP) and Incident Response Plan were adopted November 28, 2025 in response to Alpine's follow-up requests. Business Continuity Plan adopted November 27, 2025. Annual cybersecurity training implemented January 2026.
+
+**Risk Observation AO-010 (MEDIUM):** No endpoint data loss prevention (DLP) solution deployed. USB/removable media use is discouraged in practice but not technically restricted. Alpine recommends endpoint DLP implementation by year-end 2026.
+
+**Risk Observation AO-011 (LOW):** No network penetration testing has been performed. Aurora cites cloud-based infrastructure as the rationale. While reasonable for a fully cloud-based firm, an annual cloud-focused penetration test remains best practice.
+
+## Chapter 4: Fund Structure, Terms & Investor Alignment · Rating: GREEN
+
+Aurora Ventures IV, L.P. has a $250M target raise with $250M hard cap. [[REF:PPM:"Fund IV target: $250M; hard cap: $250M"]] Management fee is 2.0% on commitments during the investment period, stepping down 0.25% per year to a 1.25% floor on unreturned invested capital. Carried interest follows a European-style waterfall with tiered carry above 3x / 5x return thresholds (no preferred return). 100% of monitoring/transaction/break-up fees received by the Adviser are credited against management fees. Fund term is 10 years with up to two one-year extensions.
+
+**Risk Observation AO-013b (LOW):** The Fund's banking documentation requires only a single signature to open a new bank account, although two individuals are involved in practice. Alpine recommends contractual requirement for two signatories.
+
+## Chapter 5: Service Providers, Delegation & Oversight · Rating: GREEN
+
+**Administrator:** Meridian Fund Services, LLC (engaged August 31, 2025 per Administration Agreement). [[REF:ADMIN_VERIFICATION:"Meridian Fund Services confirmed as fund administrator via verification call April 9, 2026"]] Meridian uses LedgerCraft Enterprise and Polaris for fund accounting and partnership capital. Engagement confirmed via direct verification call with Dana Blackwell (Senior Director, Fund Administration) on April 9, 2026.
+
+**Auditor:** Grant Baker LLP (expected). Aurora Ventures III FY2024 audited financials reviewed; opinion issued by Grant Baker LLP was unqualified. [[REF:Fund III Financials:"Grant Baker LLP unqualified audit opinion FY2024"]] Fund IV audit engagement letter not yet signed as of April 2026 (monitoring item: signed prior to FY2026 audit).
+
+**Legal Counsel:** Brennan Kincaid LLP (fund formation, regulatory, AML/KYC assistance).
+
+**IT Services:** Vantage Tech Partners (engaged January 2026).
+
+**Expert Network:** InsightSphere (Compliance controls deficient — see Chapter 2).
+
+## Chapter 6: Investment Operations & Portfolio Controls · Rating: GREEN
+
+Aurora's investment process is documented in the Compliance Manual and PPM. The Investment Committee consists of Marcus Reeves, Daniel Brenner, and Rebecca Stern. Operating Partner Elena Ruiz and Principal Austin Knight participate in non-voting capacity.
+
+**Risk Observation AO-012 (MEDIUM):** IC approval threshold requires only one of three voting members to approve an investment. Alpine notes this is unusual; majority (2 of 3) or unanimous consent would be more typical. [[REF:DDQ:"IC voting: approval requires only one of three GPs (Reeves, Brenner, or Stern)"]] The single-veto right has not been exercised in practice. Alpine recommends amending to require at least majority consent.
+
+**Risk Observation AO-013 (MEDIUM):** The Administrator does not have signing authority over the operating account used to process investor capital activity and pay non-investment expenses. Aurora controls all transfers. Alpine recommends transferring operating account control to Meridian to reduce the risk of inappropriate cash movements.
+
+**Strength:** Dual-approval wire process. All outbound wires require approval and release by both Kevin Park (VP Finance) and Rebecca Stern (GP). Meridian initiates wires and requires original invoices to validate cash movements; verification callbacks are required for new or changed payment instructions.
+
+## Chapter 7: Valuation, Asset Existence & Investor Reporting · Rating: GREEN
+
+Aurora prepares quarterly fair-value estimates for portfolio investments in accordance with ASC 820 and ILPA reporting guidelines. The Valuation Committee currently consists of Rebecca Stern (GP), Kevin Park (VP Finance), Austin Knight (Principal), and Elena Ruiz (Operating Partner).
+
+**Risk Observation AO-014 (MEDIUM):** No external valuation agent has been appointed. All valuations are prepared internally and subject only to external oversight annually via audit. [[REF:Valuation Policy:"All portfolio valuations prepared internally; no third-party valuation agent engaged"]] Alpine strongly recommends appointment of a third-party valuation agent before Fund IV final close.
+
+**Risk Observation AO-015 (MEDIUM):** Valuation committee majority are investment professionals. Reconstitution to include majority senior non-investment professionals would mitigate the appearance of conflicts of interest.
+
+**Risk Observation AO-016 (MEDIUM):** The Administrator (Meridian) accepts Aurora's pricing at each quarter-end without conducting any verification procedures. [[REF:Meridian Verification Call:"Meridian accepts Aurora's pricing at quarter-end without independent verification"]] All valuation oversight is deferred to the annual audit. Alpine recommends minimum verification procedures at the Administrator level for positions above a materiality threshold.
+
+**Risk Observation AO-017 (LOW):** Carried interest waterfall calculation maintained in Excel. Meridian prepares the waterfall and Kevin Park approves it. Migration to a purpose-built waterfall system would reduce error risk.
+
+**Risk Observation AO-018 (LOW):** Aurora does not maintain in-house investor-level accounting records, relying entirely on Meridian's Polaris system for partnership capital accounting. Parallel internal records would provide defense-in-depth.
+
+## Chapter 8: Manager Transparency & LP Communications · Rating: GREEN
+
+Aurora provides quarterly investor letters and annual audited financials via Meridian. K-1 tax documents distributed within statutory deadlines. ILPA-aligned quarterly reporting templates adopted. Aurora's management proactively disclosed all operational gaps — including CCO absence, the Mythic/LunarPay inquiry, phishing/penetration testing limitations, and the cashless GP commitment mechanism — without prompting during the diligence process. This candor is constructive and reflects well on management culture.
+
+---
+
+## Verification Summary
+
+| Item | Status | Finding |
+|------|--------|---------|
+| SEC ERA Registration (IARD) | Verified | CRD 312044, no reportable items at firm level |
+| Form ADV ERA — Annual Filing | Verified | Filed March 26, 2026; cross-referenced with DDQ |
+| Daniel Brenner — Disciplinary Disclosure | Flagged | Mythic/LunarPay class action filed Dec 2024 — ongoing |
+| Principal Background Checks (FINRA / IAPD) | Verified | Reeves, Brenner, Stern — no other reportable events |
+| AUM Verification — Form ADV Cross-Reference | Verified | $981.54M reported (excl. $215.59M uncalled); prior year $814.59M |
+| Administrator — Meridian Fund Services | Verified | Confirmed via direct call April 9, 2026 (Dana Blackwell) |
+| External Valuation Agent | Not Appointed | Monitoring item — required before Fund IV final close |
+| Acting CCO — Kevin Park | Flagged | Dual role with VP Finance/Operations — dedicated CCO recommended |
+| Auditor — Grant Baker LLP | Pending | Fund IV engagement letter not yet signed |
+| Delaware Registration — Aurora Ventures IV, L.P. | Verified | Delaware Division of Corporations · August 2025 |
+
+---
+
+## Outstanding Items
+
+The following items are post-close monitoring commitments:
+
+1. **External Valuation Agent** — Engagement letter required prior to Fund IV final close. Status: Pending.
+2. **Expert Network Controls** — All five recommended controls (written policy, pre-clearance, blackout periods, MNPI script, chaperoning) to be implemented by Q3 2026. Status: Pending.
+3. **Succession Plan** — Written succession plan at the management company level; consider key person insurance. Status: Pending.
+4. **Endpoint DLP & Phishing Testing** — Endpoint DLP solution and quarterly simulated phishing program by year-end 2026. Status: Pending.
+5. **Dedicated CCO Hire** — Targeted for 2027 as AUM and operational complexity scale. Status: Monitoring.
+6. **Fund IV Audit Engagement** — Grant Baker LLP engagement letter to be executed prior to FY2026 audit. Status: Pending.
+
+---
+
+*Alpine Due Diligence Inc. · Confidential — For Institutional Use Only*
+*Aurora Capital Management, LLC — Aurora Ventures IV, L.P. — ODD Report · April 2026*
+`;
 
 // ── Static Ridgeline ODD Report (markdown) ────────────────────────────────────
 
@@ -505,6 +651,413 @@ function ICDeck() {
 }
 
 // ── Final Report — paginated document reader ─────────────────────────────────
+
+const AURORA_FINAL_REPORT_SECTIONS = [
+  {
+    id: "cover", group: null, title: "Cover Page",
+    render: () => (
+      <div style={{ background: "#ffffff", padding: "40px 48px 40px" }}>
+        <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.18em", color: "#7c3aed", textTransform: "uppercase" as const, marginBottom: 20 }}>Alpine Due Diligence Inc.</div>
+        <div style={{ fontSize: 30, fontWeight: 800, color: "#0f172a", letterSpacing: "-0.02em", lineHeight: 1.15 }}>ODD Report</div>
+        <div style={{ fontSize: 11, fontWeight: 600, color: "#94a3b8", letterSpacing: "0.1em", marginTop: 6, marginBottom: 20 }}>CONFIDENTIAL</div>
+        <div style={{ fontSize: 20, color: "#0f172a", fontWeight: 700, marginBottom: 4 }}>Aurora Ventures IV, L.P.</div>
+        <div style={{ fontSize: 13, color: "#475569", marginBottom: 28 }}>Early-Stage Venture Capital | Delaware LP | Full Review</div>
+        <div style={{ display: "flex", gap: 32, flexWrap: "wrap" as const, fontSize: 11, borderTop: "1px solid #f1f5f9", paddingTop: 20 }}>
+          {[["Review Date", "April 2026"], ["Review Type", "Initial (Pre-Final-Close)"], ["Strategy", "Early-Stage VC"], ["Domicile", "Delaware LP"]].map(([label, val]) => (
+            <div key={label}>
+              <div style={{ fontSize: 9, color: "#94a3b8", letterSpacing: "0.1em", textTransform: "uppercase" as const, marginBottom: 3, fontWeight: 600 }}>{label}</div>
+              <div style={{ color: "#334155", fontWeight: 600, fontSize: 12 }}>{val}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: "toc", group: null, title: "Table of Contents",
+    render: () => (
+      <div>
+        <SectionHeader title="Table of Contents" page="3" />
+        <div style={{ fontFamily: "Georgia, serif" }}>
+          {[
+            { section: "—", title: "Overview", page: "4", rating: undefined },
+            { section: "—", title: "Assessment", page: "5", rating: undefined },
+            { section: "—", title: "Scope & Verification", page: "7", rating: undefined },
+            { section: "—", title: "Alpine Ratings", page: "8", rating: undefined },
+            { section: "—", title: "Alpine Flags", page: "9", rating: undefined },
+            { section: "—", title: "Remediation & Monitoring", page: "11", rating: undefined },
+            { section: "Ch 1", title: "Manager, Ownership & Governance", page: "13", rating: "YELLOW" },
+            { section: "Ch 2", title: "Legal, Regulatory & Compliance", page: "16", rating: "YELLOW" },
+            { section: "Ch 3", title: "Technology, Cybersecurity & Business Resilience", page: "19", rating: "GREEN" },
+            { section: "Ch 4", title: "Fund Structure, Terms & Investor Alignment", page: "21", rating: "GREEN" },
+            { section: "Ch 5", title: "Service Providers, Delegation & Oversight", page: "24", rating: "GREEN" },
+            { section: "Ch 6", title: "Investment Operations & Portfolio Controls", page: "26", rating: "GREEN" },
+            { section: "Ch 7", title: "Valuation, Asset Existence & Investor Reporting", page: "29", rating: "GREEN" },
+            { section: "Ch 8", title: "Manager Transparency & LP Communications", page: "32", rating: "GREEN" },
+            { section: "—", title: "Reference Data", page: "33", rating: undefined },
+          ].map((item) => {
+            const rc = item.rating === "GREEN" ? "#059669" : item.rating === "YELLOW" ? "#D97706" : item.rating === "RED" ? "#DC2626" : undefined;
+            const rb = item.rating === "GREEN" ? "#d1fae5" : item.rating === "YELLOW" ? "#fef3c7" : item.rating === "RED" ? "#fee2e2" : undefined;
+            return (
+              <div key={item.section + item.title} style={{ marginBottom: 8, display: "flex", alignItems: "baseline", gap: 8 }}>
+                <span style={{ fontSize: 10, fontWeight: 600, color: "#7c3aed", width: 32, flexShrink: 0 }}>{item.section}</span>
+                <span style={{ flex: 1, fontSize: 13, color: "#1e293b" }}>{item.title}</span>
+                {item.rating && <span style={{ fontSize: 9, fontWeight: 700, padding: "1px 6px", borderRadius: 3, background: rb, color: rc, flexShrink: 0 }}>{item.rating}</span>}
+                <span style={{ fontSize: 11, color: "#94a3b8", flexShrink: 0, minWidth: 20, textAlign: "right" }}>{item.page}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: "overview", group: null, title: "Overview & Assessment",
+    render: () => (
+      <div>
+        <SectionHeader title="Overview" page="4" />
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
+          <div>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>Manager Overview</div>
+            <BodyText>Aurora Capital Management, LLC (&quot;Aurora&quot;) is an early-stage venture capital firm registered as an Exempt Reporting Adviser (CRD 312044). The firm reported regulatory AUM of $981.54M as of March 26, 2026 (excl. $215.59M uncalled). Headquartered in Los Angeles on a fully remote basis with 9 FTEs.</BodyText>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8, marginTop: 12 }}>Fund Overview</div>
+            <BodyText>Aurora Ventures IV, L.P. is a Delaware LP formed August 31, 2025 with Aurora Ventures IV GP, LLC as General Partner. Target $250M / hard cap $250M. Strategy: pre-seed and seed with selective Series A across consumer, entertainment, and emerging technology sectors.</BodyText>
+            <BodyText>GP commitment is at least $9.0M (~3% of commitments), with approximately half satisfied via management fee offset. Fund term: 10 years with up to two one-year extensions.</BodyText>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8, marginTop: 12 }}>Controls Overview</div>
+            <BodyText>Meridian Fund Services, LLC has been engaged as fund administrator per Admin Agreement dated August 31, 2025; Meridian uses LedgerCraft Enterprise and Polaris. Grant Baker LLP is expected as auditor (Fund IV engagement letter pending; FY2024 audit of Aurora Ventures III by Grant Baker, unqualified opinion). Legal counsel: Brennan Kincaid LLP. IT: Vantage Tech Partners. Compliance consultant: Apex Compliance Advisors.</BodyText>
+            <BodyText>All outbound wires require dual approval by Kevin Park (VP Finance) and Rebecca Stern (GP); Meridian initiates wires and verifies payment instructions via callback for new or changed beneficiaries.</BodyText>
+            <BodyText>Aurora has not engaged a third-party valuation agent; all portfolio valuations are prepared internally and Meridian accepts manager-prepared valuations at quarter-end without independent verification.</BodyText>
+          </div>
+          <div>
+            <FindingBox type="strength" title="Strengths">
+              <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.8, listStyleType: "disc", listStylePosition: "outside" }}>
+                <li style={{ marginBottom: 4 }}>Institutional service-provider infrastructure (Meridian admin; Grant Baker LLP expected auditor).</li>
+                <li style={{ marginBottom: 4 }}>Dual-approval outbound wire process with Meridian initiation.</li>
+                <li style={{ marginBottom: 4 }}>Strong prior-vintage performance, including 30x and 28x DPI on two Silverline / Aurora JV investments.</li>
+                <li style={{ marginBottom: 4 }}>Proactive disclosure of operational limitations during diligence.</li>
+              </ul>
+            </FindingBox>
+            <FindingBox type="concern" title="Risks">
+              <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.8, listStyleType: "disc", listStylePosition: "outside" }}>
+                <li style={{ marginBottom: 4 }}>Principals&apos; significant external business interests (actor/film producer; entertainer talent manager) create elevated headline risk.</li>
+                <li style={{ marginBottom: 4 }}>Daniel Brenner named defendant in ongoing Mythic / LunarPay class action (filed Dec 2024); SEC separately investigating Mythic re: NFT/crypto.</li>
+                <li style={{ marginBottom: 4 }}>No dedicated CCO; Kevin Park (VP Finance) serves as acting CCO.</li>
+                <li style={{ marginBottom: 4 }}>Expert network controls insufficient: no written policy, pre-clearance, blackout periods, MNPI script, or chaperoning.</li>
+                <li style={{ marginBottom: 4 }}>No third-party valuation agent appointed; Meridian accepts manager pricing without verification.</li>
+                <li style={{ marginBottom: 4 }}>GP commitment partially cashless (~$4.5M via fee offset).</li>
+                <li style={{ marginBottom: 4 }}>No formal succession plan at business level; no key person insurance.</li>
+              </ul>
+            </FindingBox>
+          </div>
+        </div>
+
+        <div style={{ borderTop: "2px solid #f1f5f9", paddingTop: 24, marginTop: 8 }}>
+          <SectionHeader title="Assessment" page="5–6" />
+          <BodyText>{AURORA_ASSESSMENT_INTRO1}</BodyText>
+          <BodyText>{AURORA_ASSESSMENT_INTRO2}</BodyText>
+          {AURORA_ASSESSMENT_NOTES.split("\n\n").map((para, i) => (
+            <BodyText key={i}>{para}</BodyText>
+          ))}
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: "ratings", group: null, title: "Ratings & Flags",
+    render: () => null,
+  },
+  {
+    id: "verification", group: null, title: "Scope & Verification",
+    render: () => (
+      <div>
+        <SectionHeader title="Scope & Verification" page="7" />
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>Scope of Review</div>
+        <BodyText>
+          Alpine&apos;s review included direct verification calls with Meridian Fund Services (administrator) and a review of the Fund&apos;s Limited Partnership Agreement, Private Placement Memorandum, Form ADV ERA (March 26, 2026), DDQ, Compliance Manual, Valuation Policy, Aurora Ventures III FY2024 audited financials (Grant Baker LLP), Administration Agreement, WISP, Incident Response Plan, BCP, and independent checks against public registers and regulatory databases.
+        </BodyText>
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 10, marginTop: 16 }}>Independent Verification Performed</div>
+        <div style={{ overflowX: "auto" as const }}>
+          <table style={{ width: "100%", borderCollapse: "collapse" as const, fontSize: 11 }}>
+            <thead>
+              <tr style={{ background: "#f8fafc", borderBottom: "2px solid #e2e8f0" }}>
+                {["Verification", "Result", "Evidence Basis"].map((h) => (
+                  <th key={h} style={{ padding: "8px 12px", textAlign: "left" as const, fontSize: 9, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.1em" }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ["Management Company Registration", "Confirmed", "California SoS · Delaware Division of Corporations · Date of Formation August 17, 2017"],
+                ["SEC ERA Status", "Confirmed", "Alpine direct check, IARD / EDGAR — CRD 312044"],
+                ["Form ADV (ERA) — Annual Filing", "Verified", "Filed March 26, 2026; cross-referenced with DDQ"],
+                ["Principal Background Checks", "Verified", "FINRA BrokerCheck / IAPD — Reeves, Brenner, Stern"],
+                ["Daniel Brenner — Disciplinary Disclosure", "Flagged", "Form ADV §11 — Mythic/LunarPay class action, filed December 2024 (ongoing)"],
+                ["Ownership Structure", "Consistent", "Form ADV Schedules A/B — Reeves 40% · Brenner 40% · Stern 20%"],
+                ["AUM Verification", "Consistent", "Form ADV cross-reference: $981.54M (excl. $215.59M uncalled); prior year $814.59M"],
+                ["Fund Registration (Delaware)", "Confirmed", "Delaware Division of Corporations · Aurora Ventures IV, L.P. · August 31, 2025"],
+                ["General Partner Registration", "Confirmed", "Delaware Division of Corporations · Aurora Ventures IV GP, LLC"],
+                ["Administrator Engagement", "Confirmed", "Meridian Fund Services verification call · Dana Blackwell · April 9, 2026"],
+                ["Auditor Engagement (Fund IV)", "Pending", "Grant Baker LLP expected; engagement letter not yet signed (FY2024 Fund III audit complete, unqualified)"],
+                ["External Valuation Agent", "Not Appointed", "Monitoring item — required before Fund IV final close"],
+                ["Acting CCO Designation", "Flagged", "Kevin Park (VP Finance and Operations) — dedicated CCO hire recommended by 2027"],
+              ].map(([verification, result, evidence], i) => {
+                const color = result === "Flagged" || result === "Not Appointed" || result === "Pending" ? "#D97706" : "#059669";
+                return (
+                  <tr key={verification as string} style={{ borderBottom: "1px solid #f1f5f9", background: i % 2 === 0 ? "#fff" : "#fafbfc" }}>
+                    <td style={{ padding: "8px 12px", fontWeight: 500, color: "#1e293b" }}>{verification}</td>
+                    <td style={{ padding: "8px 12px", color, fontWeight: 600, whiteSpace: "nowrap" as const }}>{result}</td>
+                    <td style={{ padding: "8px 12px", color: "#64748b", fontSize: 10 }}>{evidence}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: "remediation", group: null, title: "Remediation & Monitoring",
+    render: () => (
+      <div>
+        <SectionHeader title="Remediation & Monitoring" page="11–12" />
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#dc2626", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 10 }}>Required Before Final Close</div>
+        <div style={{ display: "flex", flexDirection: "column" as const, gap: 10, marginBottom: 24 }}>
+          {[
+            { n: 1, priority: "HIGH", target: "Before Fund IV final close", ia: "Require executed engagement letter as condition of close", text: "Appoint third-party valuation agent (e.g., Houlihan Lokey or Duff & Phelps) for quarterly portfolio valuation." },
+            { n: 2, priority: "HIGH", target: "Before Fund IV final close", ia: "Require executed engagement letter as condition of close", text: "Execute Fund IV audit engagement letter with Grant Baker LLP." },
+            { n: 3, priority: "HIGH", target: "Q3 2026", ia: "Require written commitment via side letter", text: "Implement all five recommended expert network controls (written policy, pre-clearance, blackout periods, MNPI script, compliance chaperoning)." },
+          ].map(({ n, priority, target, ia, text }) => (
+            <div key={n} style={{ padding: "14px 18px", borderRadius: 10, background: "#fff7f7", border: "1px solid #fca5a5" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+                <span style={{ width: 22, height: 22, borderRadius: "50%", background: "#dc2626", color: "#fff", fontSize: 10, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{n}</span>
+                <span style={{ fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 4, background: "#fee2e2", color: "#dc2626" }}>{priority}</span>
+                <span style={{ fontSize: 10, color: "#94a3b8", marginLeft: "auto" }}>Target: {target}</span>
+              </div>
+              <p style={{ fontSize: 12, lineHeight: 1.7, color: "#334155", marginLeft: 32, marginBottom: 4 }}>{text}</p>
+              <div style={{ fontSize: 10, color: "#7c3aed", marginLeft: 32 }}>Investor action: {ia}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#D97706", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 10 }}>Post-Close Monitoring</div>
+        <div style={{ display: "flex", flexDirection: "column" as const, gap: 6 }}>
+          {[
+            { n: 4, priority: "MED", target: "2027", text: "Hire dedicated Chief Compliance Officer as AUM scales past $1B." },
+            { n: 5, priority: "MED", target: "Year-End 2026", text: "Implement endpoint data loss prevention (DLP) solution." },
+            { n: 6, priority: "MED", target: "Q3 2026", text: "Conduct cloud-focused penetration test and quarterly simulated phishing program." },
+            { n: 7, priority: "MED", target: "2026", text: "Formalize written succession plan at management company level; consider key person insurance." },
+            { n: 8, priority: "MED", target: "2026", text: "Reconstitute valuation committee with majority non-investment professionals." },
+            { n: 9, priority: "MED", target: "Ongoing", text: "Monitor Mythic / LunarPay litigation and SEC investigation; conduct periodic background checks on principals." },
+            { n: 10, priority: "LOW", target: "2027", text: "Amend IC voting threshold from one of three to majority (2 of 3) consent." },
+            { n: 11, priority: "LOW", target: "Future vintages", text: "Encourage fully cash-funded GP commitment as AUM scales." },
+          ].map(({ n, priority, target, text }) => (
+            <div key={n} style={{ display: "flex", gap: 10, padding: "9px 12px", background: "#fffbf0", border: "1px solid #fde68a", borderRadius: 7 }}>
+              <span style={{ fontSize: 9, fontWeight: 700, color: "#94a3b8", width: 16 }}>#{n}</span>
+              <span style={{ flex: 1, fontSize: 11, color: "#334155" }}>{text}</span>
+              <span style={{ fontSize: 9, fontWeight: 700, color: "#D97706", flexShrink: 0 }}>{priority}</span>
+              <span style={{ fontSize: 9, color: "#94a3b8", flexShrink: 0 }}>{target}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: "ch1", group: "Chapters", title: "Ch 1 — Manager & Governance",
+    render: () => (
+      <div>
+        <SectionHeader title="Chapter 1 — Manager, Ownership & Governance" page="13–15" rating="YELLOW" />
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>Management Company</div>
+        <BodyText>Aurora Capital Management, LLC is a Delaware LLC formed August 17, 2017 (confirmed via California SoS and Delaware Division of Corporations) and operates on a fully remote basis from Los Angeles, CA. Marcus Reeves (Managing Partner) and Daniel Brenner (Managing Partner) founded the firm; Rebecca Stern joined as Partner in 2020. Marcus is a prominent actor and film producer; Daniel is a talent manager for internationally recognized entertainers; Rebecca holds a Stanford MBA and previously led Global Strategy at a NYSE-listed firm.</BodyText>
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>Ownership Structure</div>
+        <BodyText>Per Form ADV Schedules A/B: Marcus Reeves 40%, Daniel Brenner 40%, Rebecca Stern 20%. No external institutional ownership. The Adviser is not affiliated with any broker-dealer.</BodyText>
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>Assets Under Management</div>
+        <BodyText>Regulatory AUM of $981.54M as of March 26, 2026, excluding $215.59M of uncalled Fund IV commitments. Prior year (Form ADV March 2025): $814.59M. AUM growth reflects performance and new vehicle launches across the firm&apos;s vintages.</BodyText>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 8, marginBottom: 16 }}>
+          {[
+            ["Fund I", "2018", "Closed", "Realized exits in fintech/AI"],
+            ["Fund II", "2020", "Closed", "Top-quartile vintage"],
+            ["Fund III", "2021", "Closed", "Realized exits in consumer/mobility"],
+            ["Fund IV", "2025", "Pre-final-close", "Target / hard cap: $250M"],
+          ].map(([f, v, c, s]) => (
+            <div key={f} style={{ padding: "10px 12px", background: "#f8fafc", borderRadius: 8, border: "1px solid #e2e8f0" }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", marginBottom: 2 }}>{f}</div>
+              <div style={{ fontSize: 11, color: "#334155" }}>{c}</div>
+              <div style={{ fontSize: 9, color: "#64748b" }}>{v} vintage · {s}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>Human Resources</div>
+        <BodyText>Total headcount: 9 FTEs (6 investment, 3 back office / operations). Investment team: Marcus Reeves (Managing Partner), Daniel Brenner (Managing Partner), Rebecca Stern (Partner), Austin Knight (Principal), plus 2 Associates. Back office: Kevin Park (VP Finance & Operations, acting CCO; former Senior Manager at Meridian Fund Services; joined December 2023), Elena Ruiz (Operating Partner; former MD at Silver Oak Growth; decade-long tenure at Crownhold Financial; joined March 2025), and 1 Operations Analyst.</BodyText>
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>External Business Interests &amp; Headline Risk</div>
+        <BodyText>Both Marcus Reeves and Daniel Brenner maintain significant external business interests. Marcus is subject to media scrutiny following public criticism over support of a convicted individual; Daniel has ongoing exposure to the Mythic / LunarPay matter (see Chapter 2). Aurora&apos;s Conflicts policy requires disclosure and CCO approval for external boards; principals serve on portfolio company boards.</BodyText>
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>Succession Planning</div>
+        <BodyText>No formal succession plan exists at the management company level. The LPA key person provision addresses the product level: it triggers if any two of three Managing Partners cease to dedicate substantially all business time to the Fund. No key person life insurance is maintained.</BodyText>
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>GP Commitment</div>
+        <BodyText>Fund IV GP commitment: at least $9.0M (~3% of target commitments). Approximately half ($4.5M) is funded in cash; the remainder is satisfied via management fee reduction. Alpine recommends a fully cash-funded GP commitment in future vintages as AUM scales.</BodyText>
+        <div style={{ marginTop: 20, padding: "14px 18px", borderRadius: 8, background: "#fef3c7", border: "1px solid #fde68a" }}>
+          <div style={{ fontSize: 9, fontWeight: 700, color: "#D97706", textTransform: "uppercase" as const, letterSpacing: "0.1em", marginBottom: 6 }}>Chapter Summary — YELLOW</div>
+          <div style={{ fontSize: 12, lineHeight: 1.7, color: "#334155" }}>Yellow rating driven by: (1) principals&apos; significant external business interests and elevated headline risk profile (HIGH severity); (2) absence of formal business-level succession plan and no key person insurance (HIGH severity); (3) partially cashless GP commitment reducing alignment with LPs (MEDIUM severity). Partially mitigated by experienced operating team (Stern, Park, Ruiz) supplementing generalist GP backgrounds, and strong prior-vintage performance.</div>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: "ch2", group: "Chapters", title: "Ch 2 — Legal, Regulatory & Compliance",
+    render: () => (
+      <div>
+        <SectionHeader title="Chapter 2 — Legal, Regulatory & Compliance" page="16–18" rating="YELLOW" />
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>Regulatory Status</div>
+        <BodyText>Aurora is registered with the SEC as an Exempt Reporting Adviser under the venture capital adviser exemption (CRD 312044, SEC File 802-128945, ERA effective November 30, 2018). Current Form ADV dated March 26, 2026 reviewed. The firm is not registered with any state securities regulator. Aurora is not affiliated with any broker-dealer.</BodyText>
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>Disciplinary Disclosure — Daniel Brenner (Mythic / LunarPay)</div>
+        <BodyText>Daniel Brenner is a named defendant in a purported class action filed December 2024 in the U.S. District Court for the Central District of California (Montgomery &amp; Reed LLP, plaintiffs&apos; counsel) regarding the Mythic Technologies / LunarPay &quot;Crystal Tiger Society&quot; NFT promotion. The complaint alleges coordinated promotion of NFTs as unregistered securities. The SEC is separately investigating Mythic Studios regarding whether NFT/crypto offerings constituted unregistered securities. Former Aurora employee Priya Desai is a co-defendant and departed Aurora in September 2025. The matter is ongoing; the Manager represents that the claims are without merit and intends to defend vigorously. Alpine recommends close monitoring of legal and reputational developments and periodic background checks on principals.</BodyText>
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>Compliance Infrastructure</div>
+        <BodyText>Aurora does not have a dedicated Chief Compliance Officer. Kevin Park (VP Finance and Operations) serves as acting CCO in addition to all back office, accounting, finance, and operations responsibilities. Aurora engaged Apex Compliance Advisors as external compliance consultant in Q3 2025; annual compliance training was implemented in January 2026. The firm maintains a written Compliance Manual and Code of Ethics with annual attestation. Alpine recommends hiring a dedicated CCO by 2027 as AUM and complexity scale.</BodyText>
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>Expert Networks</div>
+        <BodyText>Aurora has contracted with InsightSphere but has not adopted substantive expert network controls. There is no written expert network policy, no pre-clearance requirement for calls, no public-company blackout periods, no MNPI script delivered at the onset of calls, and no compliance chaperoning. Alpine recommends implementation of all five controls before Fund IV final close.</BodyText>
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>Personal Trading &amp; AML/KYC</div>
+        <BodyText>Pre-clearance is required only for securities on the restricted list, which currently contains zero names. No minimum holding period; brokerage statements not independently collected by compliance. AML/KYC verification is performed by Aurora with assistance from Brennan Kincaid LLP (legal counsel) rather than by Meridian. Alpine recommends expanding pre-clearance to all reportable securities, implementing a minimum holding period, requiring independent brokerage statement collection, and transitioning AML/KYC to Meridian&apos;s investor services group.</BodyText>
+        <div style={{ marginTop: 20, padding: "14px 18px", borderRadius: 8, background: "#fef3c7", border: "1px solid #fde68a" }}>
+          <div style={{ fontSize: 9, fontWeight: 700, color: "#D97706", textTransform: "uppercase" as const, letterSpacing: "0.1em", marginBottom: 6 }}>Chapter Summary — YELLOW</div>
+          <div style={{ fontSize: 12, lineHeight: 1.7, color: "#334155" }}>Yellow rating driven by: (1) ongoing Mythic / LunarPay class action and SEC investigation involving Daniel Brenner (HIGH severity); (2) absence of dedicated CCO with Kevin Park serving in dual role (MEDIUM severity); (3) insufficient expert network controls (MEDIUM severity); (4) personal trading and AML/KYC gaps (MEDIUM severity). Partially mitigated by external compliance consultant engagement (Apex), formal Compliance Manual and Code of Ethics, and annual training program.</div>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: "ch3", group: "Chapters", title: "Ch 3 — Technology & Cybersecurity",
+    render: () => (
+      <div>
+        <SectionHeader title="Chapter 3 — Technology, Cybersecurity & Business Resilience" page="19–20" rating="GREEN" />
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>Infrastructure</div>
+        <BodyText>Aurora operates a fully cloud-based technology stack with no onsite infrastructure beyond internet connectivity. Core systems: Microsoft 365 (email and collaboration), AWS-hosted services, Vantage Tech Partners-managed endpoints. The firm engaged Vantage Tech Partners as IT services provider in January 2026 covering endpoint management, identity, patch management, and email security.</BodyText>
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>Cybersecurity Policies</div>
+        <BodyText>Written Information Security Policy (WISP) adopted November 28, 2025. Incident Response Plan adopted November 28, 2025. Both documents were prepared in response to Alpine&apos;s follow-up requests during diligence. MFA is enforced for all business applications. Annual cybersecurity training was implemented in January 2026 and includes phishing awareness modules. No endpoint DLP solution is deployed; USB and removable media use is discouraged in practice but not technically restricted. No network penetration testing has been performed (Aurora cites cloud-based infrastructure as the rationale).</BodyText>
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>Business Continuity</div>
+        <BodyText>Business Continuity Plan adopted November 27, 2025. Plan addresses service provider contingency, staff protection during a crisis, and stakeholder communications. The firm&apos;s fully-remote operating model provides inherent geographic resilience. Quarterly tabletop testing is planned.</BodyText>
+        <div style={{ marginTop: 20, padding: "14px 18px", borderRadius: 8, background: "#d1fae5", border: "1px solid #bbf7d0" }}>
+          <div style={{ fontSize: 9, fontWeight: 700, color: "#059669", textTransform: "uppercase" as const, letterSpacing: "0.1em", marginBottom: 6 }}>Chapter Summary — GREEN</div>
+          <div style={{ fontSize: 12, lineHeight: 1.7, color: "#334155" }}>Green rating. Formal policies (WISP, IRP, BCP) adopted in late November 2025; annual training implemented; MFA enforced; cloud-only stack with managed IT services provider. Monitoring items: endpoint DLP implementation and cloud-focused penetration test by year-end 2026.</div>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: "ch4", group: "Chapters", title: "Ch 4 — Fund Structure & Terms",
+    render: () => (
+      <div>
+        <SectionHeader title="Chapter 4 — Fund Structure, Terms & Investor Alignment" page="21–23" rating="GREEN" />
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>Legal Structure</div>
+        <BodyText>Aurora Ventures IV, L.P. is a Delaware limited partnership formed August 31, 2025 (confirmed via Delaware Division of Corporations). Aurora Ventures IV GP, LLC, a Delaware LLC, serves as the Fund&apos;s General Partner. Aurora Capital Management, LLC serves as the Investment Adviser.</BodyText>
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>Key Terms</div>
+        <BodyText>Target raise: $250M; hard cap: $250M. Minimum LP commitment: negotiated. GP commitment: at least $9.0M (~3%), with approximately half funded in cash and half satisfied via management fee offset. Fund term: 10 years from Initial Closing Date, subject to up to two one-year extensions at the General Partner&apos;s discretion with LP Advisory Committee consultation. Investment period: 5 years; recycling permitted up to 120% of commitments.</BodyText>
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>Fees &amp; Waterfall</div>
+        <BodyText>Management fee: 2.0% per annum on commitments during the investment period, stepping down 0.25% per year to a 1.25% floor on unreturned invested capital thereafter. Carried interest: tiered, with thresholds at 3x and 5x return; European-style waterfall. No preferred return hurdle (consistent with VC market). 100% management fee offset on monitoring, transaction, and break-up fees received by the Adviser from portfolio companies.</BodyText>
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>Investment Strategy</div>
+        <BodyText>Pre-seed and seed stage venture capital with selective Series A participation, across consumer, entertainment, AI infrastructure, and emerging technology sectors. The Fund leverages Aurora&apos;s network across entertainment industry founders and operators as a sourcing differentiator.</BodyText>
+        <div style={{ marginTop: 20, padding: "14px 18px", borderRadius: 8, background: "#d1fae5", border: "1px solid #bbf7d0" }}>
+          <div style={{ fontSize: 9, fontWeight: 700, color: "#059669", textTransform: "uppercase" as const, letterSpacing: "0.1em", marginBottom: 6 }}>Chapter Summary — GREEN</div>
+          <div style={{ fontSize: 12, lineHeight: 1.7, color: "#334155" }}>Green rating. Fund terms are consistent with VC market norms. 2.0% management fee with step-down is in line with peers. 100% fee offset and European waterfall favor LPs. Monitoring item (LOW): single-signatory bank account opening procedure; encourage two-signatory contractual requirement.</div>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: "ch5", group: "Chapters", title: "Ch 5 — Service Providers",
+    render: () => (
+      <div>
+        <SectionHeader title="Chapter 5 — Service Providers, Delegation & Oversight" page="24–25" rating="GREEN" />
+        <div style={{ overflowX: "auto" as const, marginBottom: 16 }}>
+          <table style={{ width: "100%", borderCollapse: "collapse" as const, fontSize: 11 }}>
+            <thead>
+              <tr style={{ background: "#f8fafc", borderBottom: "2px solid #e2e8f0" }}>
+                {["Provider", "Function", "Entity", "Status", "Tenure"].map((h) => (
+                  <th key={h} style={{ padding: "8px 12px", textAlign: "left" as const, fontSize: 9, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.1em" }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ["Meridian Fund Services, LLC", "Administrator", "Aurora Ventures IV, L.P.", "Engaged", "Per Admin Agreement Aug 31, 2025"],
+                ["Grant Baker LLP", "Auditor (expected)", "Aurora Ventures IV, L.P.", "Pending", "Fund IV engagement letter not yet signed"],
+                ["Brennan Kincaid LLP", "Legal Counsel", "Aurora Ventures IV, L.P.", "Engaged", "Ongoing"],
+                ["Vantage Tech Partners", "IT Services", "Aurora Capital Management", "Engaged", "Engagement letter January 2026"],
+                ["Apex Compliance Advisors", "Compliance Consultant", "Aurora Capital Management", "Engaged", "Since Q3 2025"],
+                ["InsightSphere", "Expert Network", "Aurora Capital Management", "Engaged", "Controls deficient — see Ch 2"],
+              ].map(([provider, fn, entity, status, tenure], i) => (
+                <tr key={provider as string} style={{ borderBottom: "1px solid #f1f5f9", background: i % 2 === 0 ? "#fff" : "#fafbfc" }}>
+                  <td style={{ padding: "8px 12px", fontWeight: 600, color: "#1e293b" }}>{provider}</td>
+                  <td style={{ padding: "8px 12px", color: "#334155" }}>{fn}</td>
+                  <td style={{ padding: "8px 12px", color: "#64748b", fontSize: 10 }}>{entity}</td>
+                  <td style={{ padding: "8px 12px", color: status === "Pending" ? "#D97706" : "#059669", fontWeight: 600 }}>{status}</td>
+                  <td style={{ padding: "8px 12px", color: "#64748b", fontSize: 10 }}>{tenure}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <BodyText>Meridian Fund Services was engaged pursuant to the Administration Agreement dated August 31, 2025. Verified via direct call with Dana Blackwell (Senior Director, Fund Administration) on April 9, 2026. Meridian uses LedgerCraft Enterprise and Polaris for fund accounting and partnership capital recordkeeping. Meridian initiates outbound wires and requires original invoices to validate cash movements; verification callbacks are required for new or changed payment instructions.</BodyText>
+        <div style={{ marginTop: 20, padding: "14px 18px", borderRadius: 8, background: "#d1fae5", border: "1px solid #bbf7d0" }}>
+          <div style={{ fontSize: 9, fontWeight: 700, color: "#059669", textTransform: "uppercase" as const, letterSpacing: "0.1em", marginBottom: 6 }}>Chapter Summary — GREEN</div>
+          <div style={{ fontSize: 12, lineHeight: 1.7, color: "#334155" }}>Green rating. Institutional service provider infrastructure with Meridian as administrator and Grant Baker LLP as expected auditor. Engagement verified directly with Meridian. Monitoring item: Grant Baker Fund IV engagement letter to be executed before FY2026 audit.</div>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: "ch6", group: "Chapters", title: "Ch 6 — Investment Operations",
+    render: () => (
+      <div>
+        <SectionHeader title="Chapter 6 — Investment Operations & Portfolio Controls" page="26–28" rating="GREEN" />
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>Investment Committee</div>
+        <BodyText>Aurora&apos;s Investment Committee consists of Marcus Reeves, Daniel Brenner, and Rebecca Stern (voting members). Elena Ruiz (Operating Partner) and Austin Knight (Principal) participate in a non-voting capacity. Investment Committee approval requires only one of three voting members. Alpine notes this threshold is unusual; majority (2 of 3) or unanimous consent would be more typical. The veto right has not been exercised in practice.</BodyText>
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>Cash Controls</div>
+        <BodyText>All outbound wires require dual approval and release by Kevin Park (VP Finance) and Rebecca Stern (GP). Meridian initiates wires and requires original invoices to validate cash movements. Verification callbacks are required for new or changed payment instructions. Meridian does not have signing authority over the Fund&apos;s operating account used for investor capital activity and non-investment expenses; Aurora controls all transfers. Alpine recommends transferring operating account control to Meridian to strengthen segregation of duties.</BodyText>
+        <div style={{ marginTop: 20, padding: "14px 18px", borderRadius: 8, background: "#d1fae5", border: "1px solid #bbf7d0" }}>
+          <div style={{ fontSize: 9, fontWeight: 700, color: "#059669", textTransform: "uppercase" as const, letterSpacing: "0.1em", marginBottom: 6 }}>Chapter Summary — GREEN</div>
+          <div style={{ fontSize: 12, lineHeight: 1.7, color: "#334155" }}>Green rating. Strong dual-approval wire process with Administrator initiation and original-invoice validation. Monitoring items: (1) amend IC threshold from one of three to majority consent; (2) transfer operating account control to Meridian.</div>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: "ch7", group: "Chapters", title: "Ch 7 — Valuation & Reporting",
+    render: () => (
+      <div>
+        <SectionHeader title="Chapter 7 — Valuation, Asset Existence & Investor Reporting" page="29–31" rating="GREEN" />
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>Valuation Policy &amp; Process</div>
+        <BodyText>Aurora prepares quarterly fair-value estimates for portfolio investments in accordance with ASC 820 and ILPA reporting guidelines. The Valuation Committee consists of Rebecca Stern (GP), Kevin Park (VP Finance), Austin Knight (Principal), and Elena Ruiz (Operating Partner). The committee meets quarterly within 5 business days of quarter-end.</BodyText>
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>External Valuation Agent</div>
+        <BodyText>Aurora has not appointed a third-party valuation agent. All portfolio valuations are prepared internally; Meridian accepts manager-prepared valuations at quarter-end without independent verification procedures. The annual audit (by Grant Baker LLP, expected) provides the only external pricing check. Alpine strongly recommends appointment of an external valuation agent before Fund IV final close.</BodyText>
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>Asset Existence Controls</div>
+        <BodyText>Multi-party verification architecture involving Aurora, Meridian, the expected auditor, and Carta (cap table). For each portfolio investment, share certificates / convertible note documentation are obtained directly from Carta. Meridian receives all investment documents and wire instructions from Aurora and independently verifies wire details with portfolio companies prior to initiating wires.</BodyText>
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 8 }}>Carry Calculation</div>
+        <BodyText>Carried interest waterfall calculations are maintained by Meridian in Excel, approved by Kevin Park. Alpine recommends migration to a purpose-built waterfall system to reduce error risk as Fund IV scales.</BodyText>
+        <div style={{ marginTop: 20, padding: "14px 18px", borderRadius: 8, background: "#d1fae5", border: "1px solid #bbf7d0" }}>
+          <div style={{ fontSize: 9, fontWeight: 700, color: "#059669", textTransform: "uppercase" as const, letterSpacing: "0.1em", marginBottom: 6 }}>Chapter Summary — GREEN</div>
+          <div style={{ fontSize: 12, lineHeight: 1.7, color: "#334155" }}>Green rating. Multi-party asset existence architecture (Meridian, Carta, expected auditor) is appropriate. Required-before-close: appointment of third-party valuation agent. Monitoring items: reconstitute valuation committee with majority non-investment professionals; migrate waterfall from Excel.</div>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: "ch8", group: "Chapters", title: "Ch 8 — Manager Transparency",
+    render: () => (
+      <div>
+        <SectionHeader title="Chapter 8 — Manager Transparency & LP Communications" page="32" rating="GREEN" />
+        <BodyText>Aurora provides quarterly investor letters and annual audited financials via Meridian. K-1 tax documents are distributed within statutory deadlines. ILPA-aligned quarterly reporting templates have been adopted. Aurora&apos;s management proactively disclosed all operational gaps — including the absence of a dedicated CCO, the Mythic / LunarPay matter, the cashless GP commitment mechanism, and limitations in expert network controls — without prompting during the diligence process. This level of candor is constructive and reflects well on management culture.</BodyText>
+        <div style={{ marginTop: 20, padding: "14px 18px", borderRadius: 8, background: "#d1fae5", border: "1px solid #bbf7d0" }}>
+          <div style={{ fontSize: 9, fontWeight: 700, color: "#059669", textTransform: "uppercase" as const, letterSpacing: "0.1em", marginBottom: 6 }}>Chapter Summary — GREEN</div>
+          <div style={{ fontSize: 12, lineHeight: 1.7, color: "#334155" }}>Green rating. ILPA-aligned reporting, proactive disclosure of operational limitations, and constructive engagement throughout the diligence process.</div>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: "refdata", group: null, title: "Reference Data",
+    render: () => null,
+  },
+] as const;
 
 const FINAL_REPORT_SECTIONS = [
   {
@@ -1424,14 +1977,19 @@ function WatermarkModal({ onClose }: { onClose: () => void }) {
 // ── Final Report ──────────────────────────────────────────────────────────────
 
 function FinalReport({ slug, topicRatingOverrides, onWatermark }: { slug?: string; topicRatingOverrides?: Record<number, string>; onWatermark: () => void }) {
-  const [activeSectionId, setActiveSectionId] = useState<string>(FINAL_REPORT_SECTIONS[0].id);
-  const activeIdx = FINAL_REPORT_SECTIONS.findIndex((s) => s.id === activeSectionId);
-  const activeSection = FINAL_REPORT_SECTIONS[activeIdx];
+  const isAuroraFR = slug === "aurora-capital-iv";
+  const SECTIONS: readonly { id: string; group: string | null; title: string; render: () => React.ReactNode }[] =
+    isAuroraFR ? (AURORA_FINAL_REPORT_SECTIONS as unknown as typeof FINAL_REPORT_SECTIONS) : FINAL_REPORT_SECTIONS;
+  const reportFundName = isAuroraFR ? "Aurora Ventures IV, L.P." : "Trellis Capital IV, L.P.";
 
-  const groups = Array.from(new Set(FINAL_REPORT_SECTIONS.map((s) => s.group)));
+  const [activeSectionId, setActiveSectionId] = useState<string>(SECTIONS[0].id);
+  const activeIdx = SECTIONS.findIndex((s) => s.id === activeSectionId);
+  const activeSection = SECTIONS[activeIdx];
+
+  const groups = Array.from(new Set(SECTIONS.map((s) => s.group)));
 
   // ── Live flags synced from Flag tab (/api/flag-draft) ──
-  const defaultFlags = TRELLIS_FLAGS.map(({ text, chapter }) => ({ text, chapter }));
+  const defaultFlags = (isAuroraFR ? AURORA_FLAGS : TRELLIS_FLAGS).map(({ text, chapter }) => ({ text, chapter }));
   const [liveFlags, setLiveFlags] = useState<{ text: string; chapter: string }[]>(defaultFlags);
 
   useEffect(() => {
@@ -1491,8 +2049,10 @@ function FinalReport({ slug, topicRatingOverrides, onWatermark }: { slug?: strin
     const d = new Date();
     const stamp = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, "0")}${String(d.getDate()).padStart(2, "0")}`;
     const link = document.createElement("a");
-    link.href = "/demo-docs/trellis/sample_vc_fund_iv_alt.pdf";
-    link.download = `${stamp}-Trellis_Capital_IV_ODD_Final_Report.pdf`;
+    link.href = isAuroraFR ? "/demo-docs/aurora/sample_vc_aurora_iv.pdf" : "/demo-docs/trellis/sample_vc_fund_iv_alt.pdf";
+    link.download = isAuroraFR
+      ? `${stamp}-Aurora_Ventures_IV_ODD_Final_Report.pdf`
+      : `${stamp}-Trellis_Capital_IV_ODD_Final_Report.pdf`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -1505,7 +2065,7 @@ function FinalReport({ slug, topicRatingOverrides, onWatermark }: { slug?: strin
       <div style={{ width: 220, flexShrink: 0, background: "#fff", borderRight: "1px solid #e2e8f0", overflowY: "auto", display: "flex", flexDirection: "column" }}>
         <div style={{ padding: "16px 16px 12px", borderBottom: "1px solid #f1f5f9" }}>
           <div style={{ fontSize: 9, fontWeight: 700, color: "#7c3aed", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 2 }}>Final Report</div>
-          <div style={{ fontSize: 11, color: "#64748b", marginBottom: 8 }}>Trellis Capital IV, L.P.</div>
+          <div style={{ fontSize: 11, color: "#64748b", marginBottom: 8 }}>{reportFundName}</div>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "3px 8px", borderRadius: 999, background: "#ecfdf5", border: "1px solid #a7f3d0" }}>
             <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#10b981" }} />
             <span style={{ fontSize: 10, fontWeight: 600, color: "#047857" }}>AI drafted Report ready</span>
@@ -1513,7 +2073,7 @@ function FinalReport({ slug, topicRatingOverrides, onWatermark }: { slug?: strin
         </div>
         <div style={{ flex: 1, padding: "10px 0" }}>
           {groups.map((group) => {
-            const groupSections = FINAL_REPORT_SECTIONS.filter((s) => s.group === group);
+            const groupSections = SECTIONS.filter((s) => s.group === group);
             return (
               <div key={group ?? "__ungrouped"}>
                 {group && (
@@ -1572,7 +2132,7 @@ function FinalReport({ slug, topicRatingOverrides, onWatermark }: { slug?: strin
         {/* Bottom navigation */}
         <div style={{ borderTop: "1px solid #e2e8f0", background: "#fff", padding: "12px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
           <button
-            onClick={() => activeIdx > 0 && setActiveSectionId(FINAL_REPORT_SECTIONS[activeIdx - 1].id)}
+            onClick={() => activeIdx > 0 && setActiveSectionId(SECTIONS[activeIdx - 1].id)}
             disabled={activeIdx === 0}
             style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 14px", fontSize: 12, fontWeight: 500, color: activeIdx === 0 ? "#cbd5e1" : "#475569", background: "transparent", border: "1px solid " + (activeIdx === 0 ? "#f1f5f9" : "#e2e8f0"), borderRadius: 8, cursor: activeIdx === 0 ? "default" : "pointer" }}
           >
@@ -1580,12 +2140,12 @@ function FinalReport({ slug, topicRatingOverrides, onWatermark }: { slug?: strin
             Previous
           </button>
           <span style={{ fontSize: 11, color: "#94a3b8" }}>
-            {activeIdx + 1} / {FINAL_REPORT_SECTIONS.length} sections
+            {activeIdx + 1} / {SECTIONS.length} sections
           </span>
           <button
-            onClick={() => activeIdx < FINAL_REPORT_SECTIONS.length - 1 && setActiveSectionId(FINAL_REPORT_SECTIONS[activeIdx + 1].id)}
-            disabled={activeIdx === FINAL_REPORT_SECTIONS.length - 1}
-            style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 14px", fontSize: 12, fontWeight: 500, color: activeIdx === FINAL_REPORT_SECTIONS.length - 1 ? "#cbd5e1" : "#475569", background: "transparent", border: "1px solid " + (activeIdx === FINAL_REPORT_SECTIONS.length - 1 ? "#f1f5f9" : "#e2e8f0"), borderRadius: 8, cursor: activeIdx === FINAL_REPORT_SECTIONS.length - 1 ? "default" : "pointer" }}
+            onClick={() => activeIdx < SECTIONS.length - 1 && setActiveSectionId(SECTIONS[activeIdx + 1].id)}
+            disabled={activeIdx === SECTIONS.length - 1}
+            style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 14px", fontSize: 12, fontWeight: 500, color: activeIdx === SECTIONS.length - 1 ? "#cbd5e1" : "#475569", background: "transparent", border: "1px solid " + (activeIdx === SECTIONS.length - 1 ? "#f1f5f9" : "#e2e8f0"), borderRadius: 8, cursor: activeIdx === SECTIONS.length - 1 ? "default" : "pointer" }}
           >
             Next
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
@@ -2379,6 +2939,287 @@ const TRELLIS_REF_SECTIONS = [
   },
 ];
 
+const AURORA_ROW_META: Record<string, { source: string; quote: string }> = {
+  // Manager
+  "Manager name":                       { source: "Form ADV",     quote: "The registrant's legal name is Aurora Capital Management, LLC, organized as a Limited Liability Company under the laws of the State of Delaware." },
+  "Date of formation":                  { source: "California SoS", quote: "Date of Formation: August 17, 2017 — confirmed via California Secretary of State Registry and Delaware Division of Corporations." },
+  "Legal structure":                    { source: "Form ADV",     quote: "Aurora Capital Management, LLC is organized as a Limited Liability Company. The registrant is not publicly traded." },
+  "Publicly traded":                    { source: "Form ADV",     quote: "The registrant is not publicly traded and has no parent organization that is publicly traded." },
+  "Primary location":                   { source: "Form ADV",     quote: "Los Angeles, CA — the registrant operates on a fully remote basis with no physical office. Principals work remotely and meet quarterly for strategy retreats." },
+  // Principals
+  "Managing Partner — Marcus Reeves":   { source: "Form ADV",     quote: "Marcus Reeves (Managing Partner) — 40% ownership. Prior to founding Aurora, Marcus pursued a career as an actor and film producer." },
+  "Managing Partner — Daniel Brenner":  { source: "Form ADV",     quote: "Daniel Brenner (Managing Partner) — 40% ownership. Daniel is a talent manager for internationally recognized entertainers, in addition to his role at Aurora." },
+  "Partner — Rebecca Stern":            { source: "Form ADV",     quote: "Rebecca Stern (Partner) — 20% ownership. Rebecca holds a Stanford MBA and previously led Global Strategy at a NYSE-listed firm." },
+  // AUM
+  "Total AUM (regulatory)":             { source: "Form ADV",     quote: "As of March 26, 2026, regulatory assets under management are $981.54 million, excluding $215.59 million of uncalled capital commitments to Aurora Ventures IV, L.P." },
+  "Uncalled capital":                   { source: "Form ADV",     quote: "Total uncalled capital commitments are approximately $215.59 million as of the date of this filing, primarily attributable to Aurora Ventures IV, L.P." },
+  "Prior year AUM":                     { source: "Form ADV",     quote: "Prior year regulatory AUM (March 2025 filing): $814.59 million." },
+  // Ownership
+  "Internal investors":                 { source: "Form ADV",     quote: "Marcus Reeves holds 40.00% equity ownership. Daniel Brenner holds 40.00%. Rebecca Stern holds 20.00%. No external institutional ownership." },
+  "Controlling equity interest":        { source: "Form ADV",     quote: "No single person holds a controlling equity interest in the registrant. Ownership is held by the three Managing Members." },
+  "GP commitment (Fund IV)":            { source: "LPA",          quote: "The General Partner shall make a capital commitment to the Fund of at least $9.0 million (approximately 3% of expected commitments), with up to one-half satisfied via fee offset rather than cash contribution." },
+  // HR
+  "Total headcount":                    { source: "DDQ",          quote: "Total headcount: 9 FTEs (6 investment professionals, 3 back office / operations)." },
+  "Investment professionals":           { source: "DDQ",          quote: "6 investment professionals: Marcus Reeves (Managing Partner), Daniel Brenner (Managing Partner), Rebecca Stern (Partner), Austin Knight (Principal), plus 2 Associates." },
+  "Back office professionals":          { source: "DDQ",          quote: "3 back office / operations professionals: Kevin Park (VP Finance and Operations, acting CCO), Elena Ruiz (Operating Partner), 1 Operations Analyst." },
+  "Part-time / consultants":            { source: "DDQ",          quote: "Apex Compliance Advisors (compliance consultant, Q3 2025); Vantage Tech Partners (IT services, January 2026); Brennan Kincaid LLP (legal counsel)." },
+  "Employees are related/married":      { source: "DDQ",          quote: "No employees of the Firm are related by family or marriage to one another." },
+  // Regulatory
+  "SEC registration":                   { source: "SEC_EDGAR",    quote: "Aurora Capital Management, LLC is registered as an Exempt Reporting Adviser (ERA) with the SEC under the venture capital adviser exemption (CRD 312044, SEC File 802-128945)." },
+  "CRD number":                         { source: "IARD Register", quote: "CRD 312044. Confirmed via IAPD / IARD ERA Register direct check." },
+  "Regulatory sanctions (past ten years)": { source: "SEC_EDGAR", quote: "No firm-level regulatory sanctions or enforcement actions identified within the past ten years. Daniel Brenner is subject to an ongoing class action (Mythic / LunarPay) disclosed on Form ADV §11." },
+  "Disciplinary disclosure — Daniel Brenner": { source: "Form ADV", quote: "Item 11 disclosure: Daniel Brenner — Mythic Technologies / LunarPay Crystal Tiger Society class action, filed December 2024 in U.S. District Court for the Central District of California (Montgomery & Reed LLP, plaintiffs' counsel). Matter ongoing. SEC separately investigating Mythic re: NFT/crypto offerings." },
+  // Compliance
+  "Compliance officer (Acting CCO)":    { source: "DDQ",          quote: "Kevin Park (VP Finance and Operations) serves as acting Chief Compliance Officer in addition to all back office, accounting, finance, and operations responsibilities." },
+  "Compliance consultant":              { source: "DDQ",          quote: "Apex Compliance Advisors engaged Q3 2025 as external compliance consultant; provides policy review, mock examination support, and ad-hoc compliance advice." },
+  "Compliance manual":                  { source: "DDQ",          quote: "Compliance Manual + Code of Ethics adopted January 2026. Annual attestation required from all employees." },
+  "Annual compliance training":         { source: "DDQ",          quote: "Annual compliance training implemented January 2026." },
+  "Personal trading — pre-clearance":   { source: "DDQ",          quote: "Pre-clearance required only for securities on the restricted list (currently zero names). No minimum holding period; brokerage statements not independently collected by compliance." },
+  "Expert network policy":              { source: "ALPINE_ANALYSIS", quote: "InsightSphere engagement lacks written policy, pre-clearance requirement, public-company blackout periods, MNPI script delivered at the onset of calls, and compliance chaperoning. Alpine recommends implementation of all five controls." },
+  "AML / KYC verification":             { source: "DDQ",          quote: "AML/KYC verification performed by Aurora with assistance from Brennan Kincaid LLP (legal counsel) rather than by Meridian Fund Services." },
+  // Technology
+  "Technology consultant":              { source: "DDQ",          quote: "Vantage Tech Partners engaged as IT services provider per engagement letter dated January 2026; covers endpoint management, identity, patch management, and email security." },
+  "IT infrastructure model":            { source: "DDQ",          quote: "Fully cloud-based stack: Microsoft 365 (email and collaboration), AWS-hosted services, Vantage Tech Partners-managed endpoints. No onsite infrastructure beyond internet connectivity." },
+  "Cybersecurity policy (WISP)":        { source: "DDQ",          quote: "Written Information Security Policy (WISP) adopted November 28, 2025 in response to Alpine follow-up requests." },
+  "Incident response plan":             { source: "DDQ",          quote: "Incident Response Plan adopted November 28, 2025." },
+  "Annual cybersecurity training":      { source: "DDQ",          quote: "Annual cybersecurity training implemented January 2026; includes phishing-awareness modules." },
+  "Endpoint data loss prevention":      { source: "ALPINE_ANALYSIS", quote: "No endpoint DLP solution deployed. USB and removable media use is discouraged in practice but not technically restricted." },
+  "Network penetration testing":        { source: "ALPINE_ANALYSIS", quote: "No network penetration testing performed (Aurora cites cloud-based infrastructure as the rationale). Alpine recommends cloud-focused penetration test by year-end 2026." },
+  "Multi-factor authentication":        { source: "DDQ",          quote: "Multi-factor authentication enforced for all business applications." },
+  "Business continuity plan":           { source: "DDQ",          quote: "Business Continuity Plan adopted November 27, 2025; addresses service provider contingency, staff protection, and stakeholder communications." },
+  "Remote work capability":             { source: "DDQ",          quote: "All personnel work fully remote; remote operations are the firm's default operating model." },
+  // Fund structure
+  "Domicile":                           { source: "LPA",          quote: "Aurora Ventures IV, L.P. is organized as a limited partnership under the laws of the State of Delaware pursuant to the Delaware Revised Uniform Limited Partnership Act." },
+  "Date of incorporation":              { source: "LPA",          quote: "The Partnership was formed on August 31, 2025, as evidenced by the Certificate of Limited Partnership filed with the Delaware Secretary of State." },
+  "General Partner":                    { source: "LPA",          quote: "Aurora Ventures IV GP, LLC, a Delaware limited liability company wholly owned by Aurora Capital Management, LLC, serves as the General Partner of the Partnership." },
+  "Target / hard cap":                  { source: "PPM",          quote: "Target raise: $250 million; hard cap: $250 million." },
+  "Fund term":                          { source: "LPA",          quote: "10 years from Initial Closing Date, subject to up to two one-year extensions at the General Partner's discretion." },
+  "Investment period":                  { source: "LPA",          quote: "5 years from Initial Closing Date. Recycling of distributions permitted up to 120% of aggregate commitments." },
+  "Management fee (commitment period)": { source: "PPM",          quote: "2.0% per annum on aggregate commitments during the investment period." },
+  "Management fee (post-commitment)":   { source: "PPM",          quote: "Steps down 0.25% per year to a 1.25% floor on unreturned invested capital." },
+  "Carried interest":                   { source: "PPM",          quote: "Tiered carry with thresholds at 3x and 5x return; European-style waterfall." },
+  "Preferred return":                   { source: "PPM",          quote: "None — return thresholds (3x / 5x) function in place of a traditional preferred return hurdle." },
+  "Fee offset":                         { source: "PPM",          quote: "100% of monitoring, transaction, and break-up fees received by the Adviser from portfolio companies are credited against management fees." },
+  "Clawback":                           { source: "LPA",          quote: "GP clawback applies if cumulative carry distributions exceed amounts permitted by the waterfall on a fund-wide basis." },
+  "LPAC":                               { source: "LPA",          quote: "LP Advisory Committee provided for under the LPA; consultation required for fund-term extensions and certain conflict matters." },
+  // Service providers
+  "Fund administrator":                 { source: "ADMIN_VERIFICATION", quote: "Meridian Fund Services, LLC engaged as administrator per the Administration Agreement dated August 31, 2025. Confirmed via direct call with Dana Blackwell (Senior Director) on April 9, 2026." },
+  "Accounting platform":                { source: "ADMIN_VERIFICATION", quote: "Meridian uses LedgerCraft Enterprise and Polaris for fund accounting and partnership capital recordkeeping." },
+  "Auditor (expected)":                 { source: "Fund III Financials", quote: "Grant Baker LLP issued an unqualified audit opinion on Aurora Ventures III FY2024 audited financial statements. Grant Baker is expected as Fund IV auditor; engagement letter not yet signed." },
+  "Audit standard":                     { source: "Fund III Financials", quote: "U.S. GAAP." },
+  "Fund legal counsel":                 { source: "LPA",          quote: "Brennan Kincaid LLP serves as legal counsel to the Fund." },
+  "Compliance consultant ":             { source: "DDQ",          quote: "Apex Compliance Advisors — engaged Q3 2025." },
+  "IT services":                        { source: "DDQ",          quote: "Vantage Tech Partners — engagement letter January 2026." },
+  "Expert network":                     { source: "DDQ",          quote: "InsightSphere — controls deficient (see Compliance section)." },
+  // Investment ops
+  "Investment Committee voting":        { source: "DDQ",          quote: "IC consists of Marcus Reeves, Daniel Brenner, and Rebecca Stern. Approval requires only one of three voting members. Veto right not exercised in practice." },
+  "Investment approval":                { source: "DDQ",          quote: "Approval requires one of three IC voting members per LPA / IC Charter; majority or unanimous consent not required." },
+  "Portfolio management system":        { source: "ALPINE_ANALYSIS", quote: "Carta (cap table); Aurora uses internal deal pipeline tracking tools and supplemental financial dashboards." },
+  "Cash controls":                      { source: "ADMIN_VERIFICATION", quote: "All outbound wires require dual approval by Kevin Park (VP Finance) and Rebecca Stern (GP). Meridian initiates wires and requires original invoices to validate cash movements. Verification callbacks are required for new or changed payment instructions." },
+  "Operating account control":          { source: "ALPINE_ANALYSIS", quote: "Meridian does not have signing authority over the Fund's operating account used for investor capital activity and non-investment expenses. Aurora controls all transfers." },
+  // Valuation
+  "Valuation policy":                   { source: "Valuation Policy", quote: "Aurora prepares quarterly fair-value estimates in accordance with ASC 820 and ILPA reporting guidelines." },
+  "Valuation committee":                { source: "Valuation Policy", quote: "Valuation Committee consists of Rebecca Stern (GP), Kevin Park (VP Finance), Austin Knight (Principal), Elena Ruiz (Operating Partner). Majority are investment professionals." },
+  "External valuation agent":           { source: "Valuation Policy", quote: "No third-party valuation agent engaged. All portfolio valuations prepared internally; Meridian accepts manager-prepared valuations at quarter-end without independent verification." },
+  "Administrator verification of valuations": { source: "Meridian Verification Call", quote: "Meridian accepts Aurora's pricing at each quarter-end without conducting any verification procedures." },
+  "Annual audit":                       { source: "Fund III Financials", quote: "Annual audit by Grant Baker LLP (expected) provides the only external pricing check." },
+  // Investor reporting
+  "Quarterly reporting":                { source: "DDQ",          quote: "Quarterly investor letters and capital account statements distributed via Meridian." },
+  "Annual audited financials":          { source: "DDQ",          quote: "Annual audited financial statements distributed within statutory deadlines via Meridian." },
+  "K-1 distribution":                   { source: "DDQ",          quote: "K-1 tax documents distributed within statutory deadlines." },
+  "Waterfall calculation":              { source: "ALPINE_ANALYSIS", quote: "Carried interest waterfall calculations maintained by Meridian in Excel, approved by Kevin Park." },
+  "Investor-level accounting records":  { source: "ALPINE_ANALYSIS", quote: "Aurora does not maintain in-house investor-level accounting records; relies entirely on Meridian's Polaris system for partnership capital accounting." },
+  // Transparency
+  "Manager cooperation during diligence": { source: "ALPINE_ANALYSIS", quote: "Full cooperation; Aurora management proactively disclosed all operational gaps (CCO absence, Mythic/LunarPay matter, partially cashless GP commitment, expert network limitations) without prompting." },
+  "Administrator cooperation":          { source: "ADMIN_VERIFICATION", quote: "Meridian provided full cooperation; verification call confirmed engagement and key operational parameters." },
+  "Proactive disclosure of weaknesses": { source: "ALPINE_ANALYSIS", quote: "Yes — Aurora proactively disclosed acting-CCO status, Mythic/LunarPay matter, cashless GP commitment, expert network gaps, and absence of external valuation agent." },
+};
+
+const AURORA_REF_SECTIONS = [
+  {
+    title: "1. Manager, Ownership & Governance",
+    groups: [
+      { heading: "Manager", rows: [
+        ["Manager name", "Aurora Capital Management, LLC"],
+        ["Date of formation", "August 17, 2017"],
+        ["Legal structure", "Limited Liability Company"],
+        ["Publicly traded", "No"],
+        ["Primary location", "Los Angeles, CA (fully remote)"],
+      ]},
+      { heading: "Principals", rows: [
+        ["Managing Partner — Marcus Reeves", "Marcus Reeves (40%) — Actor / Film Producer"],
+        ["Managing Partner — Daniel Brenner", "Daniel Brenner (40%) — Entertainment Talent Manager"],
+        ["Partner — Rebecca Stern", "Rebecca Stern (20%) — Stanford MBA, ex-Global Strategy at NYSE-listed firm"],
+      ]},
+      { heading: "Assets Under Management (as of March 26, 2026)", rows: [
+        ["Total AUM (regulatory)", "$981.54 million"],
+        ["Uncalled capital", "$215.59 million"],
+        ["Prior year AUM", "$814.59 million (March 2025)"],
+      ]},
+      { heading: "Ownership & GP Commitment", rows: [
+        ["Internal investors", "Reeves 40%, Brenner 40%, Stern 20%"],
+        ["Controlling equity interest", "No"],
+        ["GP commitment (Fund IV)", "≥ $9.0M (~3%); ~half via fee offset"],
+      ]},
+      { heading: "Human Resources", rows: [
+        ["Total headcount", "9 FTEs"],
+        ["Investment professionals", "6"],
+        ["Back office professionals", "3"],
+        ["Part-time / consultants", "Apex Compliance Advisors; Vantage Tech Partners; Brennan Kincaid LLP"],
+        ["Employees are related/married", "No"],
+      ]},
+    ],
+  },
+  {
+    title: "2. Legal, Regulatory & Compliance",
+    groups: [
+      { heading: "Regulatory Oversight", rows: [
+        ["SEC registration", "Exempt Reporting Adviser (ERA) — VC adviser exemption"],
+        ["CRD number", "312044"],
+        ["Regulatory sanctions (past ten years)", "No firm-level sanctions"],
+        ["Disciplinary disclosure — Daniel Brenner", "Mythic / LunarPay class action — filed Dec 2024, ongoing"],
+      ]},
+      { heading: "Compliance Infrastructure", rows: [
+        ["Compliance officer (Acting CCO)", "Kevin Park (VP Finance and Operations) — acting CCO"],
+        ["Compliance consultant", "Apex Compliance Advisors (since Q3 2025)"],
+        ["Compliance manual", "Compliance Manual + Code of Ethics (January 2026)"],
+        ["Annual compliance training", "Implemented January 2026"],
+        ["Personal trading — pre-clearance", "Restricted list only (currently 0 names); no minimum holding period"],
+        ["Expert network policy", "InsightSphere engaged; controls insufficient (5 recommended)"],
+        ["AML / KYC verification", "Performed by Aurora with Brennan Kincaid LLP assistance"],
+      ]},
+    ],
+  },
+  {
+    title: "3. Technology, Cybersecurity & Business Resilience",
+    groups: [
+      { heading: "Information Technology", rows: [
+        ["Technology consultant", "Vantage Tech Partners (engaged January 2026)"],
+        ["IT infrastructure model", "Fully cloud-based (Microsoft 365, AWS)"],
+      ]},
+      { heading: "Cybersecurity Controls", rows: [
+        ["Cybersecurity policy (WISP)", "Adopted November 28, 2025"],
+        ["Incident response plan", "Adopted November 28, 2025"],
+        ["Annual cybersecurity training", "Implemented January 2026"],
+        ["Endpoint data loss prevention", "Not implemented"],
+        ["Network penetration testing", "Not performed"],
+        ["Multi-factor authentication", "Enforced (all business apps)"],
+      ]},
+      { heading: "Business Continuity", rows: [
+        ["Business continuity plan", "Adopted November 27, 2025"],
+        ["Remote work capability", "Yes (fully remote operating model)"],
+      ]},
+    ],
+  },
+  {
+    title: "4. Fund Structure, Terms & Investor Alignment",
+    groups: [
+      { heading: "Corporate Structure", rows: [
+        ["Domicile", "Delaware"],
+        ["Date of incorporation", "August 31, 2025"],
+        ["General Partner", "Aurora Ventures IV GP, LLC"],
+        ["Target / hard cap", "$250M / $250M"],
+        ["LPAC", "Yes (LPA provides for advisory committee)"],
+      ]},
+      { heading: "Terms", rows: [
+        ["Fund term", "10 years + up to 2 × 1-year extensions"],
+        ["Investment period", "5 years; recycling up to 120%"],
+        ["Clawback", "Yes"],
+      ]},
+      { heading: "Fee Structure", rows: [
+        ["Management fee (commitment period)", "2.0% on commitments"],
+        ["Management fee (post-commitment)", "Step-down 0.25%/yr to 1.25% floor on unreturned invested capital"],
+        ["Carried interest", "Tiered (3x / 5x thresholds)"],
+        ["Preferred return", "None"],
+        ["Fee offset", "100% of monitoring/transaction/break-up fees"],
+      ]},
+    ],
+  },
+  {
+    title: "5. Service Providers, Delegation & Oversight",
+    groups: [
+      { heading: "Administrator", rows: [
+        ["Fund administrator", "Meridian Fund Services, LLC"],
+        ["Accounting platform", "LedgerCraft Enterprise / Polaris"],
+      ]},
+      { heading: "Auditor", rows: [
+        ["Auditor (expected)", "Grant Baker LLP (Fund IV engagement letter pending)"],
+        ["Audit standard", "U.S. GAAP"],
+      ]},
+      { heading: "Other Providers", rows: [
+        ["Fund legal counsel", "Brennan Kincaid LLP"],
+        ["Compliance consultant ", "Apex Compliance Advisors"],
+        ["IT services", "Vantage Tech Partners"],
+        ["Expert network", "InsightSphere (controls deficient — see Ch 2)"],
+      ]},
+    ],
+  },
+  {
+    title: "6. Investment Operations & Portfolio Controls",
+    groups: [
+      { heading: "Investment Process", rows: [
+        ["Investment Committee voting", "1 of 3 GPs (Reeves, Brenner, or Stern)"],
+        ["Investment approval", "Single-GP approval threshold"],
+        ["Portfolio management system", "Carta (cap table)"],
+      ]},
+      { heading: "Cash Controls", rows: [
+        ["Cash controls", "Dual-approval wire process (Park + Stern); Meridian initiates"],
+        ["Operating account control", "Aurora-controlled (Meridian no signing authority)"],
+      ]},
+    ],
+  },
+  {
+    title: "7. Valuation, Asset Existence & Investor Reporting",
+    groups: [
+      { heading: "Valuation Controls", rows: [
+        ["Valuation policy", "Quarterly fair-value (ASC 820 / ILPA)"],
+        ["Valuation committee", "Stern, Park, Knight, Ruiz (investment-professional majority)"],
+        ["External valuation agent", "No (Alpine recommends appointment before final close)"],
+        ["Administrator verification of valuations", "None — Meridian accepts manager pricing"],
+        ["Annual audit", "Grant Baker LLP (expected)"],
+      ]},
+      { heading: "Investor Reporting", rows: [
+        ["Quarterly reporting", "Quarterly statements via Meridian"],
+        ["Annual audited financials", "Within statutory deadlines"],
+        ["K-1 distribution", "Within statutory deadlines"],
+        ["Waterfall calculation", "Excel (Meridian-prepared, Park-approved)"],
+        ["Investor-level accounting records", "Meridian Polaris (no internal parallel)"],
+      ]},
+    ],
+  },
+  {
+    title: "8. Manager Transparency & LP Communications",
+    groups: [
+      { heading: "Diligence Cooperation", rows: [
+        ["Manager cooperation during diligence", "Full cooperation"],
+        ["Administrator cooperation", "Full cooperation (Meridian verification call April 9, 2026)"],
+        ["Proactive disclosure of weaknesses", "Yes — CCO, Mythic/LunarPay, GP commitment, expert network, valuation"],
+      ]},
+    ],
+  },
+];
+
+const AURORA_FLAGS = [
+  { id: 1,  text: "Principals maintain significant external business interests creating elevated headline risk.",  chapter: "Manager, Ownership & Governance" },
+  { id: 2,  text: "No formal succession plan at the business level; no key person insurance.",                       chapter: "Manager, Ownership & Governance" },
+  { id: 3,  text: "GP commitment is partially cashless (~half via management fee offset).",                          chapter: "Manager, Ownership & Governance" },
+  { id: 4,  text: "Daniel Brenner — ongoing Mythic / LunarPay class action (filed Dec 2024); SEC investigating Mythic re: NFTs.", chapter: "Legal, Regulatory & Compliance" },
+  { id: 5,  text: "No dedicated Chief Compliance Officer; Kevin Park serves as acting CCO in addition to VP Finance and Operations duties.", chapter: "Legal, Regulatory & Compliance" },
+  { id: 6,  text: "Expert network controls insufficient: no written policy, pre-clearance, blackout periods, MNPI script, or chaperoning.", chapter: "Legal, Regulatory & Compliance" },
+  { id: 7,  text: "Personal trading policy gaps: pre-clearance only on (empty) restricted list; no minimum holding period; brokerage statements not independently collected.", chapter: "Legal, Regulatory & Compliance" },
+  { id: 8,  text: "AML / KYC verification performed by Aurora with legal counsel assistance rather than by Administrator.", chapter: "Legal, Regulatory & Compliance" },
+  { id: 9,  text: "No endpoint data loss prevention solution deployed.",                                              chapter: "Technology, Cybersecurity & Business Resilience" },
+  { id: 10, text: "No network penetration testing performed.",                                                       chapter: "Technology, Cybersecurity & Business Resilience" },
+  { id: 11, text: "Single-signatory required to open new Fund bank accounts (two-signatory requirement recommended).", chapter: "Fund Structure, Terms & Investor Alignment" },
+  { id: 12, text: "Fund IV audit engagement letter with Grant Baker LLP not yet signed.",                            chapter: "Service Providers, Delegation & Oversight" },
+  { id: 13, text: "Investment Committee approval requires only one of three voting members (typically majority/unanimous).", chapter: "Investment Operations & Portfolio Controls" },
+  { id: 14, text: "Administrator does not have signing authority over the Fund's operating account.",                chapter: "Investment Operations & Portfolio Controls" },
+  { id: 15, text: "No third-party valuation agent appointed.",                                                       chapter: "Valuation, Asset Existence & Investor Reporting" },
+  { id: 16, text: "Valuation committee majority consists of investment professionals.",                              chapter: "Valuation, Asset Existence & Investor Reporting" },
+  { id: 17, text: "Administrator accepts Manager pricing at quarter-end without independent verification procedures.", chapter: "Valuation, Asset Existence & Investor Reporting" },
+  { id: 18, text: "Carried interest waterfall calculation maintained in Excel.",                                     chapter: "Valuation, Asset Existence & Investor Reporting" },
+  { id: 19, text: "Manager does not maintain internal investor-level accounting records (relies entirely on Meridian Polaris).", chapter: "Valuation, Asset Existence & Investor Reporting" },
+];
 
 const TRELLIS_FLAGS = [
   { id: 1,  text: "No formal succession plan.",                                                          chapter: "Manager, Ownership & Governance" },
@@ -2439,8 +3280,12 @@ const FLAG_CHAPTER_BG: Record<string, string> = {
 type FlagItem = { text: string; chapter: string };
 
 function TrellisFlag({ slug }: { slug?: string }) {
+  const isAuroraFlag = slug === "aurora-capital-iv";
+  const flagFundName = isAuroraFlag ? "Aurora Ventures IV, L.P." : "Trellis Capital IV, L.P.";
+  const flagManagerName = isAuroraFlag ? "Aurora Capital Management, LLC" : "Trellis Capital Management, LLC";
+  const baseFlags = isAuroraFlag ? AURORA_FLAGS : TRELLIS_FLAGS;
   const [flags, setFlags] = useState<FlagItem[]>(
-    TRELLIS_FLAGS.map(({ text, chapter }) => ({ text, chapter }))
+    baseFlags.map(({ text, chapter }) => ({ text, chapter }))
   );
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState<FlagItem[]>([]);
@@ -2493,8 +3338,8 @@ function TrellisFlag({ slug }: { slug?: string }) {
       <div style={{ marginBottom: 28, paddingBottom: 20, borderBottom: "2px solid #111827", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
         <div>
           <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "#9ca3af", marginBottom: 6 }}>Alpine Flags</div>
-          <div style={{ fontSize: 22, fontWeight: 700, color: "#111827", marginBottom: 2 }}>Trellis Capital IV, L.P.</div>
-          <div style={{ fontSize: 13, color: "#6b7280" }}>Trellis Capital Management, LLC · {displayFlags.length} Flags Identified · April 2026</div>
+          <div style={{ fontSize: 22, fontWeight: 700, color: "#111827", marginBottom: 2 }}>{flagFundName}</div>
+          <div style={{ fontSize: 13, color: "#6b7280" }}>{flagManagerName} · {displayFlags.length} Flags Identified · April 2026</div>
         </div>
         <div className="flex items-center gap-2 shrink-0 pt-1">
           {editing ? (
@@ -2595,6 +3440,26 @@ const POST_CLOSE_MONITORING = [
   { n: 11, issue: "Engage third-party background check provider", priority: "Low", target: "TBD", action: "Monitor" },
 ];
 
+const AURORA_REQUIRED_BEFORE_CLOSE = [
+  { n: 1, issue: "Appoint third-party valuation agent (e.g., Houlihan Lokey or Duff & Phelps)", priority: "High", target: "Before Fund IV final close", action: "Require executed engagement letter as condition of close" },
+  { n: 2, issue: "Execute Fund IV audit engagement letter with Grant Baker LLP", priority: "High", target: "Before Fund IV final close", action: "Require executed engagement letter as condition of close" },
+  { n: 3, issue: "Implement five expert network controls (written policy, pre-clearance, blackout periods, MNPI script, chaperoning)", priority: "High", target: "Q3 2026", action: "Require written commitment via side letter" },
+];
+
+const AURORA_POST_CLOSE_MONITORING = [
+  { n: 4,  issue: "Hire dedicated Chief Compliance Officer as AUM scales past $1B", priority: "Med", target: "2027", action: "Monitor progress" },
+  { n: 5,  issue: "Implement endpoint data loss prevention (DLP) solution", priority: "Med", target: "Year-End 2026", action: "Monitor progress" },
+  { n: 6,  issue: "Conduct cloud-focused penetration test and quarterly simulated phishing", priority: "Med", target: "Q3 2026", action: "Monitor progress" },
+  { n: 7,  issue: "Formalize written succession plan at management company level; consider key person insurance", priority: "Med", target: "2026", action: "Monitor progress" },
+  { n: 8,  issue: "Reconstitute valuation committee with majority non-investment professionals", priority: "Med", target: "2026", action: "Monitor progress" },
+  { n: 9,  issue: "Transfer operating account control to Meridian Fund Services", priority: "Med", target: "TBD", action: "Monitor progress" },
+  { n: 10, issue: "Monitor Mythic / LunarPay litigation and SEC investigation involving Daniel Brenner", priority: "Med", target: "Ongoing", action: "Periodic background checks on principals" },
+  { n: 11, issue: "Amend IC voting threshold from one-of-three to majority (2 of 3) consent", priority: "Low", target: "2027", action: "Request amendment" },
+  { n: 12, issue: "Encourage fully cash-funded GP commitment in future vintages", priority: "Low", target: "Future vintages", action: "Monitor" },
+  { n: 13, issue: "Transition AML/KYC verification to Meridian investor services group", priority: "Low", target: "TBD", action: "Monitor" },
+  { n: 14, issue: "Migrate carried interest waterfall from Excel to purpose-built system", priority: "Low", target: "TBD", action: "Monitor" },
+];
+
 type RemItem = { issue: string; priority: string; target: string; action: string };
 
 const PRIORITY_OPTIONS = ["High", "Med", "Low"] as const;
@@ -2602,8 +3467,13 @@ const priorityColor = (p: string) => p === "High" ? "#DC2626" : p === "Med" ? "#
 const priorityBg    = (p: string) => p === "High" ? "#fee2e2" : p === "Med" ? "#fef3c7" : "#f1f5f9";
 
 function TrellisRemediation({ slug }: { slug?: string }) {
-  const defaultBefore: RemItem[] = REQUIRED_BEFORE_CLOSE.map(({ issue, priority, target, action }) => ({ issue, priority, target, action }));
-  const defaultPost:   RemItem[] = POST_CLOSE_MONITORING.map(({ issue, priority, target, action }) => ({ issue, priority, target, action }));
+  const isAuroraRem = slug === "aurora-capital-iv";
+  const remFundName = isAuroraRem ? "Aurora Ventures IV, L.P." : "Trellis Capital IV, L.P.";
+  const remManagerName = isAuroraRem ? "Aurora Capital Management, LLC" : "Trellis Capital Management, LLC";
+  const beforeSource = isAuroraRem ? AURORA_REQUIRED_BEFORE_CLOSE : REQUIRED_BEFORE_CLOSE;
+  const postSource = isAuroraRem ? AURORA_POST_CLOSE_MONITORING : POST_CLOSE_MONITORING;
+  const defaultBefore: RemItem[] = beforeSource.map(({ issue, priority, target, action }) => ({ issue, priority, target, action }));
+  const defaultPost:   RemItem[] = postSource.map(({ issue, priority, target, action }) => ({ issue, priority, target, action }));
 
   const [beforeClose, setBeforeClose] = useState<RemItem[]>(defaultBefore);
   const [postClose,   setPostClose]   = useState<RemItem[]>(defaultPost);
@@ -2733,8 +3603,8 @@ function TrellisRemediation({ slug }: { slug?: string }) {
       <div style={{ marginBottom: 28, paddingBottom: 20, borderBottom: "2px solid #111827", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
         <div>
           <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase" as const, color: "#9ca3af", marginBottom: 6 }}>Remediation & Monitoring</div>
-          <div style={{ fontSize: 22, fontWeight: 700, color: "#111827", marginBottom: 2 }}>Trellis Capital IV, L.P.</div>
-          <div style={{ fontSize: 13, color: "#6b7280" }}>Trellis Capital Management, LLC · April 2026</div>
+          <div style={{ fontSize: 22, fontWeight: 700, color: "#111827", marginBottom: 2 }}>{remFundName}</div>
+          <div style={{ fontSize: 13, color: "#6b7280" }}>{remManagerName} · April 2026</div>
         </div>
         <div className="flex items-center gap-2 shrink-0 pt-1">
           {editing ? (
@@ -2769,14 +3639,29 @@ const TRELLIS_CHAPTER_RATINGS = [
   { chapter: "Manager Transparency & LP Communications",       rating: "GREEN"  },
 ];
 
+const AURORA_CHAPTER_RATINGS = [
+  { chapter: "Manager, Ownership & Governance",                rating: "YELLOW" },
+  { chapter: "Legal, Regulatory & Compliance",                 rating: "YELLOW" },
+  { chapter: "Technology, Cybersecurity & Business Resilience",rating: "GREEN"  },
+  { chapter: "Fund Structure, Terms & Investor Alignment",     rating: "GREEN"  },
+  { chapter: "Service Providers, Delegation & Oversight",      rating: "GREEN"  },
+  { chapter: "Investment Operations & Portfolio Controls",      rating: "GREEN"  },
+  { chapter: "Valuation, Asset Existence & Investor Reporting",rating: "GREEN"  },
+  { chapter: "Manager Transparency & LP Communications",       rating: "GREEN"  },
+];
+
 const RATING_DOT: Record<string, string> = { GREEN: "#10B981", YELLOW: "#F59E0B", RED: "#EF4444" };
 const RATING_BG:  Record<string, string> = { GREEN: "#f0fdf4",  YELLOW: "#fffbeb",  RED: "#fef2f2"  };
 
 function TrellisRating({ topicRatingOverrides, onRatingChange, slug }: { topicRatingOverrides?: Record<number, string>; onRatingChange?: (topicNumber: number, rating: string) => void; slug?: string }) {
   const [editingRow, setEditingRow] = useState<number | null>(null);
+  const isAurora = slug === "aurora-capital-iv";
+  const baseRatings = isAurora ? AURORA_CHAPTER_RATINGS : TRELLIS_CHAPTER_RATINGS;
+  const fundName = isAurora ? "Aurora Ventures IV, L.P." : "Trellis Capital IV, L.P.";
+  const managerLine = isAurora ? "Aurora Capital Management, LLC · April 2026" : "Trellis Capital Management, LLC · April 2026";
 
-  // topic_number is 1-indexed; TRELLIS_CHAPTER_RATINGS is 0-indexed
-  const rows = TRELLIS_CHAPTER_RATINGS.map((cr, i) => ({
+  // topic_number is 1-indexed; ratings array is 0-indexed
+  const rows = baseRatings.map((cr, i) => ({
     ...cr,
     rating: (topicRatingOverrides?.[i + 1] ?? cr.rating).toUpperCase(),
     topicNum: i + 1,
@@ -2803,8 +3688,8 @@ function TrellisRating({ topicRatingOverrides, onRatingChange, slug }: { topicRa
     <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e5e7eb", padding: "36px 40px", fontFamily: "ui-sans-serif, -apple-system, sans-serif" }}>
       <div style={{ marginBottom: 28, paddingBottom: 20, borderBottom: "2px solid #111827" }}>
         <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "#9ca3af", marginBottom: 6 }}>Chapter Ratings</div>
-        <div style={{ fontSize: 22, fontWeight: 700, color: "#111827", marginBottom: 2 }}>Trellis Capital IV, L.P.</div>
-        <div style={{ fontSize: 13, color: "#6b7280" }}>Trellis Capital Management, LLC · April 2026</div>
+        <div style={{ fontSize: 22, fontWeight: 700, color: "#111827", marginBottom: 2 }}>{fundName}</div>
+        <div style={{ fontSize: 13, color: "#6b7280" }}>{managerLine}</div>
       </div>
       <div style={{ display: "flex", gap: 12, marginBottom: 28 }}>
         {([["GREEN", green, "#10B981", "#f0fdf4"], ["YELLOW", yellow, "#F59E0B", "#fffbeb"], ["RED", red, "#EF4444", "#fef2f2"]] as const).map(([label, count, color, bgc]) => (
@@ -2870,6 +3755,28 @@ function TrellisRating({ topicRatingOverrides, onRatingChange, slug }: { topicRa
   );
 }
 
+const AURORA_ASSESSMENT_INTRO1 = `Aurora Capital Management, LLC ("Aurora," the "Manager") is an early-stage venture capital firm founded August 17, 2017 and operating on a fully-remote basis from Los Angeles, California. The firm is owned by Marcus Reeves (40%), Daniel Brenner (40%), and Rebecca Stern (20%) and is registered as an Exempt Reporting Adviser with the SEC under the venture capital adviser exemption (CRD 312044). As of March 26, 2026, the Manager reported regulatory AUM of $981.54 million across all advised private fund vehicles (excluding $215.59 million of uncalled capital commitments to Aurora Ventures IV, L.P.), up from $814.59 million at the prior year. Total headcount is 9 FTEs (6 investment professionals, 3 back office / operations).`;
+
+const AURORA_ASSESSMENT_INTRO2 = `The Manager is currently raising Aurora Ventures IV, L.P. (the "Fund"), a Delaware limited partnership formed August 31, 2025 with a $250M target and $250M hard cap. The Fund's General Partner is Aurora Ventures IV GP, LLC. GP commitment is at least $9.0M (~3% of target commitments), of which roughly half is satisfied via management fee offset rather than additional cash contribution. The Fund intends to invest at the pre-seed and seed stage with selective Series A participation across consumer, entertainment, and emerging technology sectors. The Fund's predecessor, Aurora Ventures III, is a 2021 vintage that produced top-quartile performance including realized exits in fintech, consumer, AI infrastructure, and mobility. The Silverline / Aurora Joint Venture produced DPIs of 30x and 28x on two investments.`;
+
+const AURORA_ASSESSMENT_NOTES = `As our primary observation, we highlight that principals' significant external business interests create elevated headline risk that warrants close ongoing monitoring. Marcus Reeves is a prominent actor and film producer; Daniel Brenner is a talent manager for internationally recognized entertainers. Both are subject to elevated media scrutiny. This issue is compounded by Daniel Brenner being a named defendant in a purported class action filed December 2024 in the U.S. District Court for the Central District of California (Montgomery & Reed LLP, plaintiffs' counsel) related to the Mythic Technologies / LunarPay "Crystal Tiger Society" NFT promotion. The SEC is separately investigating Mythic Studios regarding whether NFT/crypto offerings constituted unregistered securities. Former Aurora employee Priya Desai is a co-defendant and departed Aurora in September 2025. The matter is ongoing; the Manager represents that the claims are without merit and intends to defend vigorously. Investors are recommended to monitor legal and reputational developments closely.
+
+Separately, we highlight that Aurora does not have a dedicated Chief Compliance Officer. Kevin Park (VP Finance and Operations) serves as acting CCO in addition to all back office, accounting, finance, and operations responsibilities. This creates segregation of duties concerns and limits compliance bandwidth as the firm scales. In partial mitigation, Aurora engaged Apex Compliance Advisors in Q3 2025 as external compliance consultant to formalize the compliance program and conducted annual compliance training in January 2026. We recommend hiring a dedicated CCO by 2027 as AUM and operational complexity scale beyond $1.0 billion.
+
+With respect to expert networks, Aurora has contracted InsightSphere but has not adopted substantive controls. There is no written expert network policy, no pre-clearance requirement for calls, no blackout periods for experts at public companies, no MNPI script delivered at the onset of calls, and no compliance chaperoning of calls. We recommend implementation of all five controls before final close.
+
+From a fund structure perspective, the Fund's GP commitment is partially cashless — approximately $4.5M of the $9.0M target commitment is satisfied via management fee reduction rather than upfront cash contribution. This reduces "skin in the game" relative to a fully cash-funded commitment. We recommend monitoring of this in future vintages and encourage a fully cash-funded GP commitment as AUM scales.
+
+On the technology and resilience front, the firm operates a fully cloud-based stack (Microsoft 365, AWS-hosted services, Vantage Tech Partners-managed endpoints), and adopted a Written Information Security Policy (WISP), Incident Response Plan, and Business Continuity Plan in late November 2025 in response to Alpine follow-up requests. Annual cybersecurity training was implemented in January 2026. We note that no endpoint data loss prevention (DLP) solution is deployed and no network penetration testing has been performed, and recommend endpoint DLP implementation and a cloud-focused penetration test by year-end 2026.
+
+Service provider infrastructure is appropriate. Meridian Fund Services, LLC has been engaged as fund administrator pursuant to the Administration Agreement dated August 31, 2025; Meridian uses LedgerCraft Enterprise and Polaris for fund accounting and partnership capital. Aurora Ventures III FY2024 audited financials reviewed; opinion issued by Grant Baker LLP was unqualified, and Grant Baker is expected to perform Fund IV's inaugural audit. Outbound wires require dual approval from Kevin Park (VP Finance) and Rebecca Stern (GP); Meridian initiates wires and requires original invoices and verification callbacks for new or changed payment instructions.
+
+From a valuation perspective, Aurora has not engaged a third-party valuation agent. All portfolio valuations are prepared internally; Meridian accepts manager-prepared valuations at quarter-end without independent verification procedures, with annual audit providing the only external pricing check. Carried interest waterfall calculations are maintained in Excel. The valuation committee (Stern, Park, Knight, Ruiz) consists predominantly of investment professionals. We strongly recommend appointment of a third-party valuation agent before Fund IV final close and reconstitution of the valuation committee to include majority senior non-investment professionals.
+
+Overall, based on the Manager's institutional service provider infrastructure, dual-approval wire process, proactive disclosure of operational limitations during diligence, and strong prior-vintage performance — balanced against the headline risk profile of the principals, the ongoing Mythic/LunarPay matter, and the absence of an external valuation agent and dedicated CCO — we are providing an Accept overall rating with active post-close monitoring across the items identified above.
+
+Pre-Launch Note: Our assessment is based on the Manager's representations at the time of this review, including the in-progress engagement of Grant Baker LLP as Fund IV auditor and the planned implementation of expert network controls and endpoint DLP. Any material changes in these areas, or in the trajectory of the Mythic/LunarPay matter, may affect our rating.`;
+
 const ASSESSMENT_INTRO1_DEFAULT = `Trellis Capital Management, LLC ("Trellis," the "Manager") is a pre-seed stage venture capital firm founded in 2018 by Arjun Mehta (Co-Founder, Managing Partner) and Priya Sharma (Co-Founder, Managing Partner). The Manager reported net assets of $280.3 million as of December 31, 2025, plus $113.7 million in uncalled capital out of $274 million in total commitments across its first three funds. In addition, the firm manages several co-investment special purpose vehicles with $24.7 million in aggregate assets as of the same date.`;
 const ASSESSMENT_INTRO2_DEFAULT = `The Manager is currently raising Trellis Capital IV, L.P. (the "Fund"), which has a $175 million target and a $200 million hard cap. The initial closing was held on April 1, 2026, with approximately $125 million in commitments; the final closing is expected within 1–2 months. The Fund's predecessor, Fund III, is a 2024 vintage that raised $150 million—a meaningful step-up from Fund II, a 2021 vintage that raised $78 million, and Fund I, a 2018 vintage that raised $47 million. Fund III was 64% deployed and reserved as of December 31, 2025; accordingly, the Manager does not anticipate commencing investment activity from the Fund until late 2026, when Fund III is expected to be substantially deployed.`;
 
@@ -2896,12 +3803,21 @@ Overall, based on the firm's current lack of back office function, its cybersecu
 Pre-Launch Note: Our assessment is based on the Manager's assertions at the time of this review considering the Fund has not formally commenced operations and service providers for the Fund have not yet been formally engaged (though they remain consistent with the prior funds). Any changes in these areas might affect our rating.`;
 
 function TrellisAssessment({ slug }: { slug?: string }) {
-  const [intro1, setIntro1] = useState(ASSESSMENT_INTRO1_DEFAULT);
-  const [intro2, setIntro2] = useState(ASSESSMENT_INTRO2_DEFAULT);
-  const [notes, setNotes] = useState(ASSESSMENT_NOTES_DEFAULT);
+  const isAurora = slug === "aurora-capital-iv";
+  const defaultIntro1 = isAurora ? AURORA_ASSESSMENT_INTRO1 : ASSESSMENT_INTRO1_DEFAULT;
+  const defaultIntro2 = isAurora ? AURORA_ASSESSMENT_INTRO2 : ASSESSMENT_INTRO2_DEFAULT;
+  const defaultNotes = isAurora ? AURORA_ASSESSMENT_NOTES : ASSESSMENT_NOTES_DEFAULT;
+  const fundName = isAurora ? "Aurora Ventures IV, L.P." : "Trellis Capital IV, L.P.";
+  const subLine = isAurora
+    ? "Aurora Capital Management, LLC · Early-Stage Venture Capital · April 2026"
+    : "Trellis Capital Management, LLC · Pre-seed Venture Capital · April 2026";
+
+  const [intro1, setIntro1] = useState(defaultIntro1);
+  const [intro2, setIntro2] = useState(defaultIntro2);
+  const [notes, setNotes] = useState(defaultNotes);
   const [editing, setEditing] = useState(false);
-  const [draftIntro1, setDraftIntro1] = useState(ASSESSMENT_INTRO1_DEFAULT);
-  const [draftIntro2, setDraftIntro2] = useState(ASSESSMENT_INTRO2_DEFAULT);
+  const [draftIntro1, setDraftIntro1] = useState(defaultIntro1);
+  const [draftIntro2, setDraftIntro2] = useState(defaultIntro2);
   const [savedFlash, setSavedFlash] = useState(false);
 
   // Load from DB on mount
@@ -2960,8 +3876,8 @@ function TrellisAssessment({ slug }: { slug?: string }) {
       <div style={{ marginBottom: 28, paddingBottom: 20, borderBottom: "2px solid #111827", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
         <div>
           <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "#9ca3af", marginBottom: 6 }}>ODD Assessment</div>
-          <div style={{ fontSize: 22, fontWeight: 700, color: "#111827", marginBottom: 2 }}>Trellis Capital IV, L.P.</div>
-          <div style={{ fontSize: 13, color: "#6b7280" }}>Trellis Capital Management, LLC · Pre-seed Venture Capital · April 2026</div>
+          <div style={{ fontSize: 22, fontWeight: 700, color: "#111827", marginBottom: 2 }}>{fundName}</div>
+          <div style={{ fontSize: 13, color: "#6b7280" }}>{subLine}</div>
         </div>
         <div className="flex items-center gap-2 shrink-0 pt-1">
           {editing ? (
@@ -3030,6 +3946,28 @@ type OverviewFields = {
   risksAmber: string[];
 };
 
+const AURORA_OVERVIEW_DEFAULTS: OverviewFields = {
+  managerOverview: `Aurora Capital Management, LLC ("Aurora," the "Manager") is an early-stage venture capital firm registered as an Exempt Reporting Adviser with the SEC (CRD 312044). The Manager reported regulatory AUM of $981.54 million as of March 26, 2026, excluding $215.59 million of uncalled capital commitments to Fund IV. The firm is owned by Marcus Reeves (40%), Daniel Brenner (40%), and Rebecca Stern (20%) and operates on a fully-remote basis from Los Angeles, CA with 9 FTEs (6 investment, 3 back office / operations).`,
+  fundOverview: `Aurora Ventures IV, L.P. (the "Fund") is a Delaware limited partnership formed August 31, 2025 with Aurora Ventures IV GP, LLC as its General Partner. The Fund targets a $250M raise with a $250M hard cap and invests at the pre-seed and seed stage with selective Series A participation across consumer, entertainment, and emerging technology sectors. GP commitment is at least $9.0M (~3% of target commitments), with approximately half satisfied via management fee offset rather than additional cash contribution. Fund term is 10 years with up to two one-year extensions.`,
+  controlsOverview: `Meridian Fund Services, LLC ("Meridian") has been engaged as fund administrator pursuant to the Administration Agreement dated August 31, 2025; Meridian uses LedgerCraft Enterprise and Polaris for fund accounting. Grant Baker LLP is expected as auditor (Fund IV engagement letter pending; FY2024 audit of Aurora Ventures III completed by Grant Baker, unqualified opinion). Legal counsel is Brennan Kincaid LLP. Aurora has engaged Apex Compliance Advisors as external compliance consultant (Q3 2025) and Vantage Tech Partners for IT services (January 2026). Outbound wires require dual approval from Kevin Park (VP Finance) and Rebecca Stern (GP).`,
+  footerNote: `As a closed-ended fund, valuations are produced quarterly for indicative purposes only, with no capital transactions following the fundraising period. The General Partner receives carried interest solely upon a realization event. Aurora has not engaged a third-party valuation agent; all portfolio valuations are prepared internally and Meridian accepts manager-prepared valuations at quarter-end without independent verification.`,
+  strengths: [
+    "Institutional service-provider infrastructure with Meridian Fund Services as administrator and Grant Baker LLP as expected auditor.",
+    "Dual-approval outbound wire process with Meridian initiation and original-invoice validation.",
+    "Strong prior-vintage performance, including DPI of 30x and 28x on two investments in the Silverline / Aurora Joint Venture.",
+    "Proactive disclosure of operational limitations during due diligence, including the Mythic / LunarPay matter, partially cashless GP commitment, and absence of dedicated CCO.",
+  ],
+  risksRed: [],
+  risksAmber: [
+    "Principals maintain significant external business interests (actor/film producer; entertainer talent management); elevated headline risk compounded by Daniel Brenner's ongoing Mythic / LunarPay class action.",
+    "No dedicated Chief Compliance Officer — Kevin Park serves as acting CCO in addition to VP Finance and Operations duties.",
+    "Expert network controls insufficient: no written policy, pre-clearance, blackout periods, MNPI script, or compliance chaperoning.",
+    "No third-party valuation agent appointed; Meridian accepts manager-prepared valuations at quarter-end without independent verification.",
+    "GP commitment is partially cashless — approximately half satisfied via management fee offset rather than cash contribution.",
+    "No formal succession plan at the business level; no key person insurance.",
+  ],
+};
+
 const OVERVIEW_DEFAULTS: OverviewFields = {
   managerOverview: `Trellis Capital Management, LLC ("Trellis," the "Manager") is a pre-seed stage venture capital firm with net assets of $280.3 million as of December 31, 2025, plus $113.7 million in uncalled capital. The firm is headquartered in San Francisco and operates with seven full-time staff.`,
   fundOverview: `Trellis Capital IV, L.P. (the "Fund") is a Delaware limited partnership formed on March 28, 2026, investing in pre-seed technology companies under a closed-ended structure. The Fund held its initial closing on April 1, 2026 with approximately $125 million in commitments. The target raise is $175 million with a $200 million hard cap; the final closing is expected within 1–2 months.`,
@@ -3052,7 +3990,12 @@ const OVERVIEW_DEFAULTS: OverviewFields = {
   ],
 };
 
-function TrellisOverview({ fields, onSave }: { fields: OverviewFields; onSave: (f: OverviewFields) => void }) {
+function TrellisOverview({ fields, onSave, slug }: { fields: OverviewFields; onSave: (f: OverviewFields) => void; slug?: string }) {
+  const isAuroraOverview = slug === "aurora-capital-iv";
+  const overviewFundName = isAuroraOverview ? "Aurora Ventures IV, L.P." : "Trellis Capital IV, L.P.";
+  const overviewSubLine = isAuroraOverview
+    ? "Aurora Capital Management, LLC · Early-Stage Venture Capital · April 2026"
+    : "Trellis Capital Management, LLC · Pre-seed Venture Capital · April 2026";
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState<OverviewFields>(fields);
 
@@ -3127,8 +4070,8 @@ function TrellisOverview({ fields, onSave }: { fields: OverviewFields; onSave: (
       <div style={{ marginBottom: 20, paddingBottom: 16, borderBottom: "2px solid #111827", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
         <div>
           <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "#9ca3af", marginBottom: 6 }}>ODD Overview</div>
-          <div style={{ fontSize: 22, fontWeight: 700, color: "#111827", marginBottom: 2 }}>Trellis Capital IV, L.P.</div>
-          <div style={{ fontSize: 13, color: "#6b7280" }}>Trellis Capital Management, LLC · Pre-seed Venture Capital · April 2026</div>
+          <div style={{ fontSize: 22, fontWeight: 700, color: "#111827", marginBottom: 2 }}>{overviewFundName}</div>
+          <div style={{ fontSize: 13, color: "#6b7280" }}>{overviewSubLine}</div>
         </div>
         <div className="flex items-center gap-2 shrink-0 pt-1">
           {editing ? (
@@ -3214,6 +4157,13 @@ const SECTION_SRC_DEFAULT = [
 ];
 
 function TrellisReferenceData({ slug, onOpenDoc }: { slug?: string; onOpenDoc?: (filename: string, quote: string, label: string) => void }) {
+  const isAuroraRef = slug === "aurora-capital-iv";
+  const refFundName = isAuroraRef ? "Aurora Ventures IV, L.P." : "Trellis Capital IV, L.P.";
+  const refSubLine = isAuroraRef
+    ? "Aurora Capital Management, LLC · Early-Stage Venture Capital · April 2026"
+    : "Trellis Capital Management, LLC · Pre-seed Venture Capital · April 2026";
+  const REF_SECTIONS = isAuroraRef ? AURORA_REF_SECTIONS : TRELLIS_REF_SECTIONS;
+  const ROW_META = isAuroraRef ? AURORA_ROW_META : TRELLIS_ROW_META;
   const STORAGE_KEY = `alpine-refdata-draft-${slug || "default"}`;
   const [overrides, setOverrides] = useState<Record<string, string>>(() => {
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); } catch { return {}; }
@@ -3291,8 +4241,12 @@ function TrellisReferenceData({ slug, onOpenDoc }: { slug?: string; onOpenDoc?: 
   }
 
   function getRowMeta(label: string, si: number): { source: string; quote: string } {
-    const direct = TRELLIS_ROW_META[label];
+    const direct = ROW_META[label];
     if (direct) return direct;
+    if (isAuroraRef) {
+      const fallbackSources = ["Form ADV","SEC_EDGAR","ALPINE_ANALYSIS","LPA","ADMIN_VERIFICATION","ALPINE_ANALYSIS","Valuation Policy","DDQ"];
+      return { source: fallbackSources[si] ?? "Form ADV", quote: `Source data for "${label}" as confirmed during the Alpine due diligence review of Aurora Ventures IV, L.P.` };
+    }
     return { source: ["trellis_form_adv.pdf","SEC_EDGAR","ALPINE_ANALYSIS","trellis_lpa.pdf","Trellis-Capital-Apex-Service-Description-Fund-III.pdf","ALPINE_ANALYSIS","Trellis-Capital-Valuation-Policy.pdf","trellis_ppm.pdf"][si] ?? "trellis_form_adv.pdf", quote: `Source data for "${label}" as confirmed during the Alpine due diligence review of Trellis Capital IV, L.P.` };
   }
 
@@ -3300,10 +4254,15 @@ function TrellisReferenceData({ slug, onOpenDoc }: { slug?: string; onOpenDoc?: 
     return SOURCE_DOT_COLORS[source] ?? "#60A5FA";
   }
 
+  function lookupSourceMeta(source: string) {
+    if (isAuroraRef) return AURORA_SOURCE_META[source] ?? SOURCE_META[source];
+    return SOURCE_META[source];
+  }
+
   function handleDotClick(label: string, si: number) {
     if (!onOpenDoc || editMode) return;
     const { source, quote } = getRowMeta(label, si);
-    const meta = SOURCE_META[source];
+    const meta = lookupSourceMeta(source);
     if (meta?.filename) {
       onOpenDoc(meta.filename, quote, meta.label);
     }
@@ -3317,8 +4276,8 @@ function TrellisReferenceData({ slug, onOpenDoc }: { slug?: string; onOpenDoc?: 
       <div style={{ marginBottom: 20, display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
         <div>
           <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "#9ca3af", marginBottom: 6 }}>Reference Data</div>
-          <div style={{ fontSize: 22, fontWeight: 700, color: "#111827", marginBottom: 2 }}>Trellis Capital IV, L.P.</div>
-          <div style={{ fontSize: 13, color: "#6b7280" }}>Trellis Capital Management, LLC · Pre-seed Venture Capital · April 2026</div>
+          <div style={{ fontSize: 22, fontWeight: 700, color: "#111827", marginBottom: 2 }}>{refFundName}</div>
+          <div style={{ fontSize: 13, color: "#6b7280" }}>{refSubLine}</div>
         </div>
         <div className="flex items-center gap-2 shrink-0 pt-1">
           {savedFlash && <span style={{ fontSize: 11, color: "#059669", fontWeight: 600 }}>Saved</span>}
@@ -3353,7 +4312,7 @@ function TrellisReferenceData({ slug, onOpenDoc }: { slug?: string; onOpenDoc?: 
         <span style={{ fontSize: 11, color: "#9ca3af", marginLeft: 4 }}>· {editMode ? "Editing values — click Save to persist" : "Click dot to view source"}</span>
       </div>
 
-      {TRELLIS_REF_SECTIONS.map((section, si) => (
+      {REF_SECTIONS.map((section, si) => (
         <div key={section.title} style={{ marginBottom: 36 }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: "#111827", borderBottom: "2px solid #111827", paddingBottom: 6, marginBottom: 16 }}>{section.title}</div>
           {section.groups.map((group, gi) => (
@@ -3393,7 +4352,7 @@ function TrellisReferenceData({ slug, onOpenDoc }: { slug?: string; onOpenDoc?: 
                             )}
                             <button
                               onClick={() => handleDotClick(label, si)}
-                              title={editMode ? "Disabled while editing" : `View source: ${SOURCE_META[source]?.label ?? source}`}
+                              title={editMode ? "Disabled while editing" : `View source: ${lookupSourceMeta(source)?.label ?? source}`}
                               style={{ width: 10, height: 10, borderRadius: "50%", background: dc, border: "none", cursor: editMode ? "default" : "pointer", flexShrink: 0, marginTop: 8, outline: "none", opacity: editMode ? 0.4 : 1 }}
                             />
                           </div>
@@ -3422,8 +4381,16 @@ export default function DemoReportViewer(_props: { alpineReviewId?: string | nul
   const [refPopover, setRefPopover] = useState<RefPopoverState | null>(null);
   const [docViewer, setDocViewer] = useState<{ filename: string; quote: string; label: string } | null>(null);
 
+  const isAurora = slug === "aurora-capital-iv";
+  const defaultReportMd = isAurora ? AURORA_REPORT_MD : RIDGELINE_REPORT_MD;
   const [draftContent, setDraftContent] = useState<string>(() => {
-    try { return localStorage.getItem(DRAFT_STORAGE_KEY) || RIDGELINE_REPORT_MD; } catch { return RIDGELINE_REPORT_MD; }
+    try {
+      const cached = localStorage.getItem(DRAFT_STORAGE_KEY);
+      // Invalidate stale cache that doesn't match the active fund
+      if (cached && isAurora && cached.includes("Ridgeline Capital Partners")) return defaultReportMd;
+      if (cached && !isAurora && cached.includes("Aurora Capital Management")) return defaultReportMd;
+      return cached || defaultReportMd;
+    } catch { return defaultReportMd; }
   });
   const [draftMode, setDraftMode] = useState<"view" | "edit">("view");
   const [savedFlash, setSavedFlash] = useState(false);
@@ -3460,7 +4427,7 @@ export default function DemoReportViewer(_props: { alpineReviewId?: string | nul
   }
 
   function resetDraft() {
-    setDraftContent(RIDGELINE_REPORT_MD);
+    setDraftContent(defaultReportMd);
     // Remove from DB
     if (slug) {
       fetch(`/api/report-draft?slug=${encodeURIComponent(slug)}`, { method: "DELETE" }).catch(() => {});
@@ -3470,13 +4437,14 @@ export default function DemoReportViewer(_props: { alpineReviewId?: string | nul
   }
 
   // ── Overview fields state ──────────────────────────────────────────────────
-  const [overviewFields, setOverviewFields] = useState<OverviewFields>(OVERVIEW_DEFAULTS);
+  const overviewSeed = isAurora ? AURORA_OVERVIEW_DEFAULTS : OVERVIEW_DEFAULTS;
+  const [overviewFields, setOverviewFields] = useState<OverviewFields>(overviewSeed);
 
   useEffect(() => {
     if (!slug) return;
     fetch(`/api/overview-draft?slug=${encodeURIComponent(slug)}`)
       .then(r => r.json())
-      .then(({ fields }) => { if (fields) setOverviewFields({ ...OVERVIEW_DEFAULTS, ...fields }); })
+      .then(({ fields }) => { if (fields) setOverviewFields({ ...overviewSeed, ...fields }); })
       .catch(() => {});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
@@ -3566,7 +4534,7 @@ export default function DemoReportViewer(_props: { alpineReviewId?: string | nul
           const el = contentAreaRef.current;
           if (!el) return;
           const stamp = dateStamp();
-          const fund = isTrellis ? "Trellis_Capital_IV" : "Ridgeline";
+          const fund = isAurora ? "Aurora_Ventures_IV" : isTrellis ? "Trellis_Capital_IV" : "Ridgeline";
           const tabSafe = activeTab.replace(/[^A-Za-z0-9]+/g, "_").replace(/^_|_$/g, "");
           const title = `${stamp}-${fund}-${tabSafe}`;
 
@@ -3738,7 +4706,7 @@ export default function DemoReportViewer(_props: { alpineReviewId?: string | nul
           )}
         </div>
       ) : activeTab === "Overview" ? (
-        <div ref={contentAreaRef}><TrellisOverview fields={overviewFields} onSave={saveOverview} /></div>
+        <div ref={contentAreaRef}><TrellisOverview fields={overviewFields} onSave={saveOverview} slug={slug} /></div>
       ) : activeTab === "Assessment" ? (
         <div ref={contentAreaRef}><TrellisAssessment slug={slug} /></div>
       ) : activeTab === "Rating" ? (
