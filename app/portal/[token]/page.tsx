@@ -506,7 +506,7 @@ export default function PortalPage() {
               ))}
             </div>
 
-            {FOLLOW_UP_ROUNDS.map((round, ri) => (
+            {activeFollowUpRounds.map((round, ri) => (
               <div key={ri} className="mb-4 last:mb-0">
                 <p className="text-[10px] font-semibold uppercase tracking-wide text-alpine-slate mb-2">{round.label} Questions — Answered</p>
                 <div className="space-y-2">

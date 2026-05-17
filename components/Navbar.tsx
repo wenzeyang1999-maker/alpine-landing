@@ -16,9 +16,9 @@ const NAV_ITEMS: NavItem[] = [
   {
     kind: "menu",
     label: "Alpine",
-    href: "#solution",
+    href: "#framework",
     children: [
-      { label: "How it works", href: "#solution" },
+      { label: "How it works", href: "#framework" },
       { label: "Sample output", href: "#sample-output" },
       { label: "Framework", href: "#framework" },
       { label: "Engine", href: "#engine" },

@@ -75,7 +75,7 @@ const REVIEW_NAV = [
     icon: <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M8 2l5 3v4c0 3-2.5 4.5-5 5.5-2.5-1-5-2.5-5-5.5V5L8 2z"/><path d="M6 8l1.5 1.5L10 7"/></svg> },
   { id: "analysis", label: "Analysis", section: "ODD Review", badge: "Complete",
     icon: <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M4 13V7M8 13V4M12 13V9"/></svg> },
-  { id: "call-prep", label: "Analyst Call", section: "ODD Review", badge: "Pending",
+  { id: "call-prep", label: "Interviews", section: "ODD Review", badge: "Pending",
     icon: <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M4 4a1 1 0 011-1h2l1 3-1.5 1a8 8 0 004.5 4.5L12.5 10l3 1v2a1 1 0 01-1 1A13 13 0 013 5"/></svg> },
   { id: "report-gen", label: "Report", section: "ODD Review", badge: "Pending",
     icon: <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M4 2h8a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M6 5h4M6 7.5h4M6 10h2"/></svg> },
@@ -164,7 +164,7 @@ const STEPPER_STEPS = [
   { label: "Collection",   sub: "14 docs",  tabId: "collection",       completed: true },
   { label: "Verification", sub: "Ready",     tabId: "reg-verification", completed: true },
   { label: "Analysis",     sub: "Complete",  tabId: "analysis",         completed: true },
-  { label: "Analyst Call",    sub: "Ready",     tabId: "call-prep",        completed: true },
+  { label: "Interviews",      sub: "Ready",     tabId: "call-prep",        completed: true },
   { label: "Report",       sub: "Pending",   tabId: "report-gen",       completed: false },
 ];
 
@@ -1787,12 +1787,12 @@ function Overview2Tab({ reviewData, onNavigate }: { reviewData: any; onNavigate:
   const topicNums = Object.keys(topicData).map(Number).sort((a, b) => a - b);
   const ovActs = topicNums.length <= 8
     ? [
-        { label: "Act I: The Manager", topics: topicNums.slice(0, 4) },
-        { label: "Act II: The Fund", topics: topicNums.slice(4, 8) },
+        { label: "Act I: The Manager", topics: topicNums.slice(0, 3) },
+        { label: "Act II: The Fund", topics: topicNums.slice(3, 8) },
       ]
     : [
-        { label: "Act I: The Manager", topics: topicNums.slice(0, 4) },
-        { label: "Act II: The Fund", topics: topicNums.slice(4, 8) },
+        { label: "Act I: The Manager", topics: topicNums.slice(0, 3) },
+        { label: "Act II: The Fund", topics: topicNums.slice(3, 8) },
         { label: "Act III: The Numbers", topics: topicNums.slice(8, 12) },
       ];
 

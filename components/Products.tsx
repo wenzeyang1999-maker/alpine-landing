@@ -25,62 +25,62 @@ type Product = {
 const PRODUCTS: Product[] = [
   {
     num: "01",
-    name: "Alpine Report",
-    tagline: "Full-Scope Institutional-Grade ODD Report",
-    promise: "Accelerated extraction. Strengthened verification. Human-owned assessments and conclusions.",
+    name: "Alpine Lite",
+    tagline: "Engine-Authored ODD Report",
+    promise: "A structured ODD report by Alpine's proprietary engine, with risk ratings, citations, and scoped human review.",
     outcome: "RATED",
     outcomeColor: GREEN,
     outcomeTextColor: GREEN_TEXT,
+    price: "< $2,000",
+    priceDetail: "per review",
+    features: [
+      "~1,000 strategy-specific ODD checks across 8 chapters",
+      "Manager-level and fund-level review",
+      "Verification across 54 regulators",
+      "Risk ratings with source citations",
+      "Delivered in 1–2 business days",
+    ],
+    cta: "Book a Demo",
+    ctaHref: "/early-access",
+    highlight: false,
+  },
+  {
+    num: "02",
+    name: "Alpine Review",
+    tagline: "Analyst-Reviewed ODD Report",
+    promise: "An analyst-reviewed ODD report with manager and administrator interviews and decision-shaped conclusions.",
+    outcome: "CROSS-VERIFIED",
+    outcomeColor: VIOLET,
+    outcomeTextColor: VIOLET,
     price: "< $5,000",
     priceDetail: "per review",
     features: [
-      "~1,000 strategy-specific questions across 8 chapters",
-      "Two-act framework: Manager + Fund",
-      "54-regulator verification across 3 tiers",
-      "Rated · Risks Flagged outcomes with citations",
-      "3–5 day delivery, IC-ready package",
+      "Everything in Alpine Lite",
+      "Analyst review of findings, ratings, and exceptions",
+      "Manager and administrator interviews incorporated into the report",
+      "Actionable remediations",
+      "Delivered in 5–8 business days",
     ],
     cta: "Book a Demo",
     ctaHref: "/early-access",
     highlight: true,
   },
   {
-    num: "02",
-    name: "Alpine Therapy",
-    tagline: "Consulting & Remediation",
-    promise: "Risks identified → mitigation pathways mapped → operational gaps closed → more capital raised.",
-    outcome: "REMEDIATED",
-    outcomeColor: VIOLET,
-    outcomeTextColor: VIOLET,
-    price: "Custom",
-    priceDetail: "per engagement",
-    features: [
-      "Gap analysis from prior ODD reports",
-      "Mitigation pathway design",
-      "Remediation work alongside operations",
-      "Fundraising readiness support",
-      "Pre-LP-meeting walkthrough",
-    ],
-    cta: "Talk to us",
-    ctaHref: "/early-access",
-    highlight: false,
-  },
-  {
     num: "03",
-    name: "Alpine Infrastructure",
-    tagline: "Allocator Platform",
-    promise: "Self-serve tool for in-house teams to expedite and standardize reviews.",
-    outcome: "CONTINUOUS",
+    name: "Alpine Platform",
+    tagline: "ODD Workflow Platform",
+    promise: "A workflow platform for internal teams running repeatable ODD reviews across managers, funds, and portfolios.",
+    outcome: "WORKFLOW",
     outcomeColor: AMBER,
     outcomeTextColor: AMBER_TEXT,
     price: "Custom",
     priceDetail: "annual license",
     features: [
-      "Self-serve workspace for in-house ODD teams",
-      "Standardized 8-chapter framework",
-      "Continuous portfolio monitoring",
-      "Custom workflows · SSO · on-prem option",
-      "White-label + API access",
+      "Workspace for internal ODD teams",
+      "Standardized manager and fund review framework",
+      "Portfolio-level review tracking",
+      "Custom workflows, SSO, and deployment options",
+      "API access and reporting exports",
     ],
     cta: "Talk to us",
     ctaHref: "/early-access",
@@ -192,7 +192,7 @@ export default function Products() {
             Continuous Monitoring
           </span>
           <p className="font-body text-[12px] mt-1" style={{ color: MUTED, letterSpacing: LS_BODY }}>
-            Optional 24/7 monitoring for key person changes, regulatory actions, and material events. Available alongside any product.
+            Optional monitoring for key person changes, regulatory actions, and material events. Available alongside any product.
           </p>
         </div>
 
@@ -203,8 +203,9 @@ export default function Products() {
             Institutional Quality Commitment
           </h3>
           <p className="font-body text-[13px] max-w-lg mx-auto" style={{ color: SECONDARY, lineHeight: 1.65, letterSpacing: LS_BODY }}>
-            Every report is analyst-reviewed against a defined scope of ~1,000 strategy-specific questions across
-            8 chapters and regulatory verification across 54 regulators. If coverage falls short, we re-review at no additional cost.
+            Every report is reviewed against a defined scope of ~1,000 strategy-specific ODD checks across 8 chapters
+            and regulatory verification across 54 regulators. Alpine Review adds manager and administrator
+            interviews, analyst-owned conclusions, and actionable remediations.
           </p>
         </div>
       </div>

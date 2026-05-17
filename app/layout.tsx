@@ -32,7 +32,7 @@ const alpineMono = localFont({
 
 export const metadata: Metadata = {
   title: "Alpine Due Diligence — ODD Engine for Institutional Capital",
-  description: "An ODD engine for institutional capital. 901 strategy-specific questions across 8 chapters, verified against 54 regulators. Practitioner-built. Human-owned conclusions. Drafted in 3–5 days.",
+  description: "An ODD engine for institutional capital. ~1,000 strategy-specific questions across 8 chapters, verified against 54 regulators. Practitioner-built. Human-owned conclusions. Drafted in 3–5 days.",
   icons: { icon: "/alpine-icon.svg" },
   openGraph: {
     title: "Alpine Due Diligence — ODD Engine for Institutional Capital",

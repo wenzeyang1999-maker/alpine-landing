@@ -2,29 +2,23 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import {
-  BG_CARD, BG, INK, SECONDARY, MUTED, VIOLET, GREEN, AMBER, GREEN_TEXT, AMBER_TEXT, BORDER, BORDER_SUBTLE, LS_BODY, LS_H3,
+  BG_CARD, BG, INK, SECONDARY, MUTED, VIOLET, GREEN, GREEN_TEXT, BORDER, LS_BODY, LS_H3,
 } from "@/lib/constants";
 
-type Chapter = { num: string; title: string; desc: string; questions: number };
+type Chapter = { num: string; title: string; desc: string };
 
 const ACT_I: Chapter[] = [
-  { num: "01", title: "Manager, Ownership & Governance",        desc: "Management company, AUM, insider investment, ownership & succession, human resources.", questions: 143 },
-  { num: "02", title: "Legal, Regulatory & Compliance",         desc: "Regulatory oversight, compliance infrastructure and policies, claims, actions, conflicts.",  questions: 129 },
-  { num: "03", title: "Technology, Cybersecurity & Resilience", desc: "IT overview, cybersecurity controls, business continuity, incident response.",              questions:  77 },
-  { num: "04", title: "Fund Structure, Terms & Alignment",      desc: "Legal structure, key terms, fee structure, corporate governance, investment strategy.",     questions: 164 },
+  { num: "01", title: "Manager, Ownership & Governance",        desc: "Management company, AUM, insider investment, ownership & succession, human resources." },
+  { num: "02", title: "Legal, Regulatory & Compliance",         desc: "Regulatory oversight, compliance infrastructure and policies, claims, actions, conflicts." },
+  { num: "03", title: "Technology, Cybersecurity & Resilience", desc: "IT overview, cybersecurity controls, business continuity, incident response." },
 ];
 
 const ACT_II: Chapter[] = [
-  { num: "05", title: "Service Providers & Oversight",          desc: "Administrator, auditor, banker, custodian, prime broker — engaged and verified.",          questions:  54 },
-  { num: "06", title: "Investment Operations & Portfolio Controls", desc: "Portfolio management systems, decision process, allocation, cash tracking and controls.", questions: 232 },
-  { num: "07", title: "Valuation, Asset Existence & Reporting", desc: "Valuation controls, asset existence verification, investor reporting, financial controls.",  questions:  88 },
-  { num: "08", title: "Manager Transparency & LP Communications",   desc: "Diligence cooperation, administrator cooperation, disclosure quality.",                  questions:  14 },
-];
-
-const OUTCOMES = [
-  { label: "RATED",         color: GREEN_TEXT, dot: GREEN,  desc: "Eight-chapter R/Y/G ratings with structured rationale." },
-  { label: "RISKS FLAGGED", color: AMBER_TEXT, dot: AMBER,  desc: "Every risk surfaced, scored, and traced to evidence." },
-  { label: "REMEDIATED",    color: VIOLET,     dot: VIOLET, desc: "Each risk paired with a remediation pathway." },
+  { num: "04", title: "Fund Structure, Terms & Alignment",      desc: "Legal structure, key terms, fee structure, corporate governance, investment strategy." },
+  { num: "05", title: "Service Providers & Oversight",          desc: "Administrator, auditor, banker, custodian, prime broker — engaged and verified." },
+  { num: "06", title: "Investment Operations & Portfolio Controls", desc: "Portfolio management systems, decision process, allocation, cash tracking and controls." },
+  { num: "07", title: "Valuation, Asset Existence & Reporting", desc: "Valuation controls, asset existence verification, investor reporting, financial controls." },
+  { num: "08", title: "Manager Transparency & LP Communications",   desc: "Diligence cooperation, administrator cooperation, disclosure quality." },
 ];
 
 function ChapterCard({ ch, accent }: { ch: Chapter; accent: string }) {
@@ -33,12 +27,9 @@ function ChapterCard({ ch, accent }: { ch: Chapter; accent: string }) {
       className="rounded-card p-5 flex flex-col h-full"
       style={{ background: BG_CARD, border: `1px solid ${BORDER}` }}
     >
-      <div className="flex items-baseline justify-between gap-2 mb-2">
+      <div className="flex items-baseline gap-2 mb-2">
         <span className="font-mono text-[11px]" style={{ color: accent, fontWeight: 700, letterSpacing: "0.08em" }}>
           {ch.num}
-        </span>
-        <span className="font-mono text-[10px]" style={{ color: MUTED, letterSpacing: "0.06em" }}>
-          {ch.questions} questions
         </span>
       </div>
       <h3
@@ -106,8 +97,8 @@ export default function Framework() {
             Two Acts · Eight Chapters · ~1,000 Questions
           </h3>
           <p className="font-body" style={{ fontSize: "0.9375rem", lineHeight: 1.65, letterSpacing: LS_BODY, color: SECONDARY }}>
-            Act I covers the Manager (governance, compliance, technology, fund structure). Act II covers
-            the Fund (service providers, ops, valuation, transparency). Drafted in 3-5 days. Defensible
+            Act I covers the Manager (governance, compliance, technology). Act II covers
+            the Fund (structure, service providers, ops, valuation, transparency). Defensible
             in front of your IC.
           </p>
         </div>
@@ -153,9 +144,6 @@ export default function Framework() {
                   <h3 className="font-heading" style={{ fontSize: "1rem", fontWeight: 700, color: INK, letterSpacing: "-0.02em" }}>
                     The Manager
                   </h3>
-                  <span className="font-mono text-[10px]" style={{ color: MUTED, letterSpacing: "0.06em" }}>
-                    · {ACT_I.reduce((a, c) => a + c.questions, 0)} questions
-                  </span>
                 </div>
                 <motion.div
                   {...actContainerMotion}
@@ -184,9 +172,6 @@ export default function Framework() {
                   <h3 className="font-heading" style={{ fontSize: "1rem", fontWeight: 700, color: INK, letterSpacing: "-0.02em" }}>
                     The Fund
                   </h3>
-                  <span className="font-mono text-[10px]" style={{ color: MUTED, letterSpacing: "0.06em" }}>
-                    · {ACT_II.reduce((a, c) => a + c.questions, 0)} questions
-                  </span>
                 </div>
                 <motion.div
                   {...actContainerMotion}
@@ -205,34 +190,6 @@ export default function Framework() {
             </div>
           </div>
         </details>
-
-        {/* Outcomes band */}
-        <div
-          className="rounded-panel p-6 sm:p-7"
-          style={{ background: BG_CARD, border: `1px solid ${BORDER}` }}
-        >
-          <p className="font-mono text-[10px] uppercase mb-4" style={{ color: MUTED, fontWeight: 700, letterSpacing: "0.1em" }}>
-            Every report ships three outcomes
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            {OUTCOMES.map((o) => (
-              <div key={o.label} className="flex flex-col gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full" style={{ background: o.dot }} />
-                  <span
-                    className="font-heading"
-                    style={{ fontSize: "0.9375rem", fontWeight: 700, color: o.color, letterSpacing: "0.04em" }}
-                  >
-                    {o.label}
-                  </span>
-                </div>
-                <p className="font-body" style={{ fontSize: "0.8125rem", lineHeight: 1.55, color: SECONDARY, letterSpacing: LS_BODY }}>
-                  {o.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
 
       </div>
     </section>

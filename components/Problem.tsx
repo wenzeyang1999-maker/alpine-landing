@@ -32,8 +32,8 @@ const STATS: Stat[] = [
   },
   {
     value: "0",
-    label: "options for emerging",
-    desc: "managers under $200M AUM",
+    label: "options for early",
+    desc: "institutional allocators and managers",
   },
 ];
 

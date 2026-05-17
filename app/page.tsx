@@ -1,7 +1,6 @@
 import Navbar       from "@/components/Navbar";
 import Hero         from "@/components/Hero";
 import Problem      from "@/components/Problem";
-import Solution     from "@/components/Solution";
 import SampleOutput from "@/components/SampleOutput";
 import Framework    from "@/components/Framework";
 import QuestionTree from "@/components/QuestionTree";
@@ -19,11 +18,10 @@ export default function LandingPage() {
       <main id="main-content" style={{ background: BG }}>
         <Hero />
         <Problem />
-        <Solution />
-        <SampleOutput />
         <Framework />
-        <QuestionTree />
         <Products />
+        <SampleOutput />
+        <QuestionTree />
         <Blog />
         <Team />
         <Subscribe variant="band" source="landing" />

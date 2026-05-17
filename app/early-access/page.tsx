@@ -7,8 +7,8 @@ import SubpageLayout from "@/components/SubpageLayout";
 import { BG_CARD, INK, MUTED, SECONDARY, SUBTLE, GREEN, BORDER, VIOLET, LS_BODY } from "@/lib/constants";
 
 const ROLES = [
-  { value: "allocator", label: "Allocator", sub: "LP, fund of funds, family office" },
-  { value: "manager",   label: "Asset manager", sub: "GP, fund manager" },
+  { value: "allocator", label: "Allocator", sub: "Limited partners, endowments, pensions, fund of funds, family offices" },
+  { value: "manager",   label: "Asset manager", sub: "General partner, fund manager" },
   { value: "other",     label: "Service provider or other", sub: "" },
 ] as const;
 
