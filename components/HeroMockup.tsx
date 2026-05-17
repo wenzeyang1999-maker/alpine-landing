@@ -57,7 +57,7 @@ const STEPS: {
       { value: "38",  label: "fund strategies" },
       { value: "8",   label: "Chapters" },
     ],
-    body: "The same eight chapters apply to every fund. Inside them, the question set adapts to your fund's structure, type, and strategy — surfacing gaps a generic checklist would miss. Up to 1,193 questions in practice when the strategy appendix is walked through.",
+    body: "The same eight chapters apply to every fund. Inside them, the question set adapts to your fund's structure, type, and strategy — surfacing gaps a generic checklist would miss.",
     cols: 4,
     items: [
       { text: "01 · Manager Ownership & Governance",      dot: GREEN },
@@ -97,7 +97,7 @@ const STEPS: {
       { value: "100% Human",     label: "reviewed" },
       { value: "Risks flagged",  label: "with remediations" },
     ],
-    body: "A senior ODD analyst owns the final review. Every finding cited to source. Every risk paired with a remediation pathway. Defensible in front of your IC.",
+    body: "An ODD expert owns the final review. Every finding cited to source. Every risk paired with a remediation pathway. Defensible in front of your IC.",
     cols: 2,
     items: [
       { text: "Evidence map & source citations" },             { text: "Remediation pathway per risk" },

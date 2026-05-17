@@ -42,7 +42,7 @@ function deriveSteps(reviewData: any): WorkflowStep[] {
     },
     {
       id: "wf-call",
-      label: "Analyst Call",
+      label: "Interviews",
       status: hasAnalysis ? "complete" : hasVerification ? "active" : "pending",
       detail: hasAnalysis ? "Ready" : hasVerification ? "In Progress" : "Pending",
     },

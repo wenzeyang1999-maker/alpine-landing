@@ -81,7 +81,7 @@ export default function Framework() {
             One framework. Two acts. Eight chapters.
           </h2>
           <p className="font-body" style={{ fontSize: "1.0625rem", lineHeight: 1.65, letterSpacing: LS_BODY, color: SECONDARY }}>
-            The same structural backbone used by institutional ODD providers, applied at engine speed — ~1,000 strategy-specific questions across eight chapters, expanding to 1,193 in practice with the strategy appendix.
+            The same structural backbone used by institutional ODD providers, applied at engine speed — ~1,000 strategy-specific questions across eight chapters.
           </p>
         </div>
 

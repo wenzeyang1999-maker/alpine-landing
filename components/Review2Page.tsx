@@ -1528,7 +1528,7 @@ function CallPrepTab() {
           <div style={{ fontSize: 10, letterSpacing: "0.28em", textTransform: "uppercase", color: "#7c3aed", fontWeight: 700, marginBottom: 6 }}>
             Alpine Due Diligence
           </div>
-          <div style={{ fontSize: 20, fontWeight: 700, color: "var(--r2-text)", marginBottom: 4 }}>Management Analyst Call</div>
+          <div style={{ fontSize: 20, fontWeight: 700, color: "var(--r2-text)", marginBottom: 4 }}>Manager & Administrator Interviews</div>
           <div style={{ fontSize: 13, color: "var(--r2-muted)" }}>{mock.fund.name}</div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 16 }}>
             <span style={{ borderRadius: 999, border: "1px solid #fcd34d", background: "#fffbeb", padding: "5px 14px", fontSize: 13, fontWeight: 600, color: "#b45309" }}>{isAurora ? "15 risk observations" : "6 risk observations"}</span>
@@ -2023,8 +2023,8 @@ function makeEmailTemplates(fundName: string, portal: typeof APEX_PORTAL) {
       body: `Dear ${portal.contact_name},\n\nAs part of our ongoing ODD review, we would like to request the following additional documents:\n\n- [Document 1]\n- [Document 2]\n\nPlease upload these to the secure data room at your earliest convenience.\n\nBest regards,\nAlpine Due Diligence`,
     },
     {
-      label: "Schedule Analyst Call",
-      subject: `Analyst Call Scheduling — ${shortName}`,
+      label: "Schedule Interview",
+      subject: `Interview Scheduling — ${shortName}`,
       body: `Dear ${portal.contact_name},\n\nWe would like to schedule a call to discuss the administrator verification responses. Please advise on your availability during the week of [date]. The call is expected to take approximately 30–45 minutes.\n\nBest regards,\nAlpine Due Diligence`,
     },
   ];
