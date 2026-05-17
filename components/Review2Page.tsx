@@ -14,6 +14,7 @@ import { ReportWithMemo } from "@/components/review/ReportWithMemo";
 import { PlaceholderTab } from "@/components/review/PlaceholderTab";
 import OverviewSection from "@/components/shell/OverviewSection";
 import { TopicPage } from "@/components/review/TopicPage";
+import { formatAum } from "@/lib/demo-utils";
 
 // ── Design tokens (from blackrock static demo styles.css) ─────────────────────
 
@@ -1788,12 +1789,14 @@ function Overview2Tab({ reviewData, onNavigate }: { reviewData: any; onNavigate:
   const ovActs = topicNums.length <= 8
     ? [
         { label: "Act I: The Manager", topics: topicNums.slice(0, 3) },
-        { label: "Act II: The Fund", topics: topicNums.slice(3, 8) },
+        { label: "Act II: The Fund", topics: topicNums.slice(3, 5) },
+        { label: "Act III: The Controls", topics: topicNums.slice(5, 8) },
       ]
     : [
         { label: "Act I: The Manager", topics: topicNums.slice(0, 3) },
-        { label: "Act II: The Fund", topics: topicNums.slice(3, 8) },
-        { label: "Act III: The Numbers", topics: topicNums.slice(8, 12) },
+        { label: "Act II: The Fund", topics: topicNums.slice(3, 5) },
+        { label: "Act III: The Controls", topics: topicNums.slice(5, 8) },
+        { label: "Act IV: The Numbers", topics: topicNums.slice(8, 12) },
       ];
 
   const mf = (mock as any).fund || {};
@@ -1809,7 +1812,8 @@ function Overview2Tab({ reviewData, onNavigate }: { reviewData: any; onNavigate:
     || `recommends a <b>watchlist</b> rating. Investment performance and service provider quality are strong, but compliance infrastructure and governance gaps preclude full accept status at this time.`;
   const conditionsText = mf.conditions_summary
     || "Conditions to upgrade: hire a dedicated CCO, implement pre-trade compliance monitoring, formalize succession plan, establish independent valuation committee.";
-  const fundAum = reviewData?.aum || mf.aum || "$2.31B";
+  const rawAum = reviewData?.aum ?? mf.aum;
+  const fundAum = rawAum != null ? formatAum(rawAum) : "$2.31B";
   const fundStrategy = reviewData?.strategy || mf.strategy || "Global L/S Equity";
   const fundDomicile = mf.domicile || "Delaware LP + Cayman";
   const fundNav = mf.fund_nav || "$1.84B";

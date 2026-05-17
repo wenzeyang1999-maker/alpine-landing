@@ -17,12 +17,25 @@ export function relativeTime(date: Date | string): string {
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
-/** Format currency: $42.0M, $1.2B, $850K */
+/** Format currency: $42.0M, $1.2B, $850K (short form for tables/banners) */
 export function formatCurrency(value: number): string {
   if (value >= 1_000_000_000) return `$${(value / 1_000_000_000).toFixed(1)}B`;
   if (value >= 1_000_000) return `$${(value / 1_000_000).toFixed(1)}M`;
   if (value >= 1_000) return `$${(value / 1_000).toFixed(0)}K`;
   return `$${value.toFixed(0)}`;
+}
+
+/**
+ * Format AUM verbosely: "USD 280.30 million", "USD 2.31 billion", "USD 999,999".
+ * Accepts a number (formats) or string (passes through unchanged).
+ */
+export function formatAum(value: number | string | null | undefined): string {
+  if (value == null) return "—";
+  if (typeof value === "string") return value;
+  if (value >= 1_000_000_000_000) return `USD ${(value / 1_000_000_000_000).toFixed(2)} trillion`;
+  if (value >= 1_000_000_000) return `USD ${(value / 1_000_000_000).toFixed(2)} billion`;
+  if (value >= 1_000_000) return `USD ${(value / 1_000_000).toFixed(2)} million`;
+  return `USD ${value.toLocaleString("en-US")}`;
 }
 
 /** Score-based color: green ≥75, amber 50-74, red <50 */

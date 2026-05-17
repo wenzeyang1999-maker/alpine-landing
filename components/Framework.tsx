@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import {
-  BG_CARD, BG, INK, SECONDARY, MUTED, VIOLET, GREEN, GREEN_TEXT, BORDER, LS_BODY, LS_H3,
+  BG_CARD, BG, INK, SECONDARY, MUTED, VIOLET, GREEN, AMBER, GREEN_TEXT, AMBER_TEXT, BORDER, LS_BODY, LS_H3,
 } from "@/lib/constants";
 
 type Chapter = { num: string; title: string; desc: string };
@@ -16,6 +16,9 @@ const ACT_I: Chapter[] = [
 const ACT_II: Chapter[] = [
   { num: "04", title: "Fund Structure, Terms & Alignment",      desc: "Legal structure, key terms, fee structure, corporate governance, investment strategy." },
   { num: "05", title: "Service Providers & Oversight",          desc: "Administrator, auditor, banker, custodian, prime broker — engaged and verified." },
+];
+
+const ACT_III: Chapter[] = [
   { num: "06", title: "Investment Operations & Portfolio Controls", desc: "Portfolio management systems, decision process, allocation, cash tracking and controls." },
   { num: "07", title: "Valuation, Asset Existence & Reporting", desc: "Valuation controls, asset existence verification, investor reporting, financial controls." },
   { num: "08", title: "Manager Transparency & LP Communications",   desc: "Diligence cooperation, administrator cooperation, disclosure quality." },
@@ -78,7 +81,7 @@ export default function Framework() {
             The Framework
           </p>
           <h2 className="font-heading mb-4" style={{ fontSize: "2rem", fontWeight: 700, lineHeight: 1.08, letterSpacing: "-0.038em", color: INK }}>
-            One framework. Two acts. Eight chapters.
+            One framework. Three acts. Eight chapters.
           </h2>
           <p className="font-body" style={{ fontSize: "1.0625rem", lineHeight: 1.65, letterSpacing: LS_BODY, color: SECONDARY }}>
             The same structural backbone used by institutional ODD providers, applied at engine speed — ~1,000 strategy-specific questions across eight chapters.
@@ -94,12 +97,12 @@ export default function Framework() {
             The Spine
           </p>
           <h3 className="font-heading mb-3" style={{ fontSize: "1.5rem", fontWeight: 700, color: INK, letterSpacing: "-0.025em" }}>
-            Two Acts · Eight Chapters · ~1,000 Questions
+            Three Acts · Eight Chapters · ~1,000 Questions
           </h3>
           <p className="font-body" style={{ fontSize: "0.9375rem", lineHeight: 1.65, letterSpacing: LS_BODY, color: SECONDARY }}>
             Act I covers the Manager (governance, compliance, technology). Act II covers
-            the Fund (structure, service providers, ops, valuation, transparency). Defensible
-            in front of your IC.
+            the Fund (structure, service providers). Act III covers the Controls
+            (investment ops, valuation, transparency). Defensible in front of your IC.
           </p>
         </div>
 
@@ -130,8 +133,8 @@ export default function Framework() {
           </summary>
 
           <div className="mt-6">
-            {/* Two acts grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            {/* Three acts grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
               {/* Act I */}
               <div>
                 <div className="flex items-center gap-3 mb-4">
@@ -147,7 +150,7 @@ export default function Framework() {
                 </div>
                 <motion.div
                   {...actContainerMotion}
-                  className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+                  className="grid grid-cols-1 gap-3"
                 >
                   {ACT_I.map((ch) => (
                     <motion.div
@@ -175,7 +178,7 @@ export default function Framework() {
                 </div>
                 <motion.div
                   {...actContainerMotion}
-                  className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+                  className="grid grid-cols-1 gap-3"
                 >
                   {ACT_II.map((ch) => (
                     <motion.div
@@ -183,6 +186,34 @@ export default function Framework() {
                       {...cardMotion}
                     >
                       <ChapterCard ch={ch} accent={GREEN} />
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </div>
+
+              {/* Act III */}
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <span
+                    className="font-mono text-[10px] uppercase px-2 py-1 rounded-full"
+                    style={{ background: `${AMBER}15`, color: AMBER_TEXT, fontWeight: 700, letterSpacing: "0.1em" }}
+                  >
+                    Act III
+                  </span>
+                  <h3 className="font-heading" style={{ fontSize: "1rem", fontWeight: 700, color: INK, letterSpacing: "-0.02em" }}>
+                    The Controls
+                  </h3>
+                </div>
+                <motion.div
+                  {...actContainerMotion}
+                  className="grid grid-cols-1 gap-3"
+                >
+                  {ACT_III.map((ch) => (
+                    <motion.div
+                      key={ch.num}
+                      {...cardMotion}
+                    >
+                      <ChapterCard ch={ch} accent={AMBER} />
                     </motion.div>
                   ))}
                 </motion.div>
