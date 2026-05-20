@@ -7,7 +7,7 @@ import { BG_CARD, INK, MUTED, VIOLET, GREEN, BORDER, LS_BODY } from "@/lib/const
 
 export default function FloatingSubscribe({
   source = "whitepaper",
-  heading = "Subscribe for our bi-weekly case analysis",
+  heading = "New ODD case study every other Tuesday.",
 }: {
   source?: string;
   heading?: string;
