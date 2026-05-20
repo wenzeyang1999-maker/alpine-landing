@@ -1,5 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
+import { supabase } from "@/lib/supabase";
+
+async function persistRequest(payload: {
+  full_name: string;
+  email: string;
+  organization?: string;
+  phone?: string;
+  message?: string;
+  source: string;
+  user_agent: string | null;
+}) {
+  try {
+    await supabase.from("early_access_requests").insert({
+      full_name: payload.full_name,
+      email: payload.email.trim().toLowerCase(),
+      organization: payload.organization || null,
+      phone: payload.phone || null,
+      message: payload.message || null,
+      source: payload.source,
+      status: "new",
+      user_agent: payload.user_agent,
+    });
+  } catch (err) {
+    console.warn("[form/early-access] persist failed (non-blocking):", err);
+  }
+}
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const ADMIN_EMAIL = "azhang@alpinedd.com";
@@ -114,7 +140,7 @@ async function sendConfirmation(email: string, full_name: string) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { full_name, email, organization, phone } = await req.json();
+    const { full_name, email, organization, phone, message } = await req.json();
 
     if (!full_name || !email) {
       return NextResponse.json({ detail: "Name and email are required." }, { status: 400 });
@@ -123,6 +149,15 @@ export async function POST(req: NextRequest) {
     await Promise.all([
       notifyAdmin(full_name, email, organization, phone),
       sendConfirmation(email, full_name),
+      persistRequest({
+        full_name,
+        email,
+        organization,
+        phone,
+        message,
+        source: "form/early-access",
+        user_agent: req.headers.get("user-agent"),
+      }),
     ]);
 
     return NextResponse.json({ status: "ok", message: "You're on the list! We'll contact you within 1 business day." });

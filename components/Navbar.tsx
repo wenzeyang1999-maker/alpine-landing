@@ -34,24 +34,16 @@ const NAV_ITEMS: NavItem[] = [
     ],
   },
   { kind: "link", label: "Blog",            href: "#blog" },
-  { kind: "page", label: "Alpine Space",    href: "/login?redirect=/alpine-space", badge: "NEW" },
+  { kind: "page", label: "Alpine Space",    href: "/whitepaper", badge: "NEW" },
 ];
-
-const SESSION_KEY = "alpine_demo_user";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const [openMenu, setOpenMenu] = useState<string | null>(null);
-  const [loggedIn, setLoggedIn] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(SESSION_KEY);
-      if (raw) { JSON.parse(raw); setLoggedIn(true); }
-    } catch { /* invalid session */ }
-  }, []);
+  const navItems: NavItem[] = NAV_ITEMS;
 
   // Close menu on resize to desktop
   useEffect(() => {
@@ -126,7 +118,7 @@ export default function Navbar() {
 
           {/* Desktop nav — absolutely centered */}
           <div className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-            {NAV_ITEMS.map((item) => {
+            {navItems.map((item) => {
               const isActive =
                 (item.kind === "link" && item.href.startsWith("#") && activeSection === item.href.slice(1)) ||
                 (item.kind === "menu" && (
@@ -135,13 +127,10 @@ export default function Navbar() {
                 ));
 
               if (item.kind === "page") {
-                const resolvedHref = item.label === "Alpine Space" && loggedIn
-                  ? "/alpine-space"
-                  : item.href;
                 return (
                   <Link
                     key={item.label}
-                    href={resolvedHref}
+                    href={item.href}
                     className="font-body text-[15.5px] transition-colors flex items-center gap-1.5"
                     style={{ color: INK, fontWeight: 600, letterSpacing: "0", minHeight: "44px" }}
                   >
@@ -302,7 +291,7 @@ export default function Navbar() {
             }}
           >
             <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col">
-              {NAV_ITEMS.map((item, i) => {
+              {navItems.map((item, i) => {
                 if (item.kind === "menu") {
                   return (
                     <div key={item.label} style={{ borderBottom: `1px solid ${BORDER}` }}>
@@ -328,7 +317,7 @@ export default function Navbar() {
                 return (
                   <motion.a
                     key={item.label}
-                    href={item.kind === "page" && item.label === "Alpine Space" && loggedIn ? "/alpine-space" : item.href}
+                    href={item.href}
                     onClick={() => setOpen(false)}
                     className="flex items-center justify-between py-3 font-body text-[16px] border-b last:border-b-0"
                     style={{

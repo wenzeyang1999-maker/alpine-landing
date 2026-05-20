@@ -80,10 +80,10 @@ export default function QuestionTree() {
             The Engine
           </p>
           <h2 className="font-heading mb-4" style={{ fontSize: "2rem", fontWeight: 700, lineHeight: 1.08, letterSpacing: "-0.038em", color: INK }}>
-            Every fund type. Every strategy.
+            Tuned to each fund's structure and strategy.
           </h2>
           <p className="font-body" style={{ fontSize: "1.0625rem", lineHeight: 1.65, letterSpacing: LS_BODY, color: SECONDARY }}>
-            The framework is fixed. The questions adapt. Each fund's structure, type, and strategy determines which questions activate — so every review is built for the specific fund in front of you, not a generic checklist.
+            The 8 chapters stay the same across every review. Inside each chapter, ~1,000 questions activate based on the fund's structure, type, and strategy, so every review reflects the specific manager you're evaluating instead of a generic checklist.
           </p>
         </div>
 

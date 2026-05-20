@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import SubpageLayout from "@/components/SubpageLayout";
 import { INK, MUTED, BORDER, VIOLET, BG_CARD, GREEN } from "@/lib/constants";
+import { isAppAdmin } from "@/lib/app-allowlist";
 
 const SESSION_KEY = "alpine_demo_user";
 
@@ -12,23 +13,41 @@ export default function AlpineSpacePage() {
   const router = useRouter();
   const [demoAccess, setDemoAccess] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
+  const [appHref, setAppHref] = useState("https://app.alpinedd.com");
 
-  function signOut() {
+  async function signOut() {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {
+      // best-effort; continue clearing client state regardless
+    }
     localStorage.removeItem(SESSION_KEY);
     router.push("/");
   }
 
   useEffect(() => {
     const raw = localStorage.getItem(SESSION_KEY);
-    if (!raw) return;
-    try {
-      const user = JSON.parse(raw);
-      setLoggedIn(true);
-      setDemoAccess(!!user.demo_access);
-    } catch {
-      // session invalid, stay logged out
+    if (raw) {
+      try {
+        const user = JSON.parse(raw);
+        setLoggedIn(true);
+        setDemoAccess(!!user.demo_access);
+        setUserEmail(typeof user.email === "string" ? user.email.toLowerCase() : "");
+      } catch {
+        // session invalid, stay logged out
+      }
+    }
+    if (typeof window !== "undefined") {
+      const h = window.location.hostname;
+      if (h === "localhost" || h === "127.0.0.1") {
+        const port = window.location.port ? `:${window.location.port}` : "";
+        setAppHref(`http://app.localhost${port}`);
+      }
     }
   }, []);
+
+  const showAppCard = isAppAdmin(userEmail);
 
   const cards = [
     {
@@ -36,7 +55,7 @@ export default function AlpineSpacePage() {
       desc: "The LP Readiness Gap — Alpine × Acephalt",
       tag: "Research",
       tagColor: VIOLET,
-      href: loggedIn ? "/whitepaper" : "/login?redirect=/whitepaper",
+      href: "/whitepaper",
       locked: false,
     },
     {
@@ -47,6 +66,26 @@ export default function AlpineSpacePage() {
       href: demoAccess ? "/portfolio2" : "/demo-login",
       locked: !demoAccess,
     },
+    ...(showAppCard
+      ? [
+          {
+            label: "ODD app",
+            desc: "Alpine app workspace at app.alpinedd.com",
+            tag: "Beta",
+            tagColor: VIOLET,
+            href: appHref,
+            locked: false,
+          },
+          {
+            label: "ODD admin",
+            desc: "Manage users, subscribers, and customer portals",
+            tag: "Internal",
+            tagColor: VIOLET,
+            href: `${appHref}/admin`,
+            locked: false,
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -67,7 +106,7 @@ export default function AlpineSpacePage() {
           </h1>
           <div className="mt-2 flex items-center justify-between">
             <p className="text-sm font-body" style={{ color: MUTED }}>
-              {loggedIn ? "Select a resource below." : "Sign in to access Alpine resources."}
+              Select a resource below.
             </p>
             {loggedIn && (
               <button

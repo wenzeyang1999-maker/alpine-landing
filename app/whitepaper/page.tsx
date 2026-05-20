@@ -2,12 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { GREEN, AMBER, VIOLET, BORDER as NAV_BORDER } from "@/lib/constants";
+import FloatingSubscribe from "@/components/FloatingSubscribe";
+import DownloadWhitepaperModal from "@/components/DownloadWhitepaperModal";
 
-const SESSION_KEY = "alpine_demo_user";
-
-const NAVY   = "#0f1f3d";
 const CREAM  = "#f5f0e8";
 const GOLD   = "#c8923a";
 const PASS_C = "#2d6a4f";
@@ -17,19 +15,22 @@ const BODY   = "#1a2744";
 const MUTED  = "#4a5568";
 const BORDER = "#ddd8cf";
 
+const LIGHT_HERO  = "rgb(247, 248, 248)";
+const LIGHT_HERO_BORDER = "#e5e7eb";
+
 function SectionHero({ num, title }: { num: string; title: string }) {
   return (
-    <div className="relative overflow-hidden" style={{ background: NAVY, padding: "48px 48px 40px" }}>
+    <div className="relative overflow-hidden" style={{ background: LIGHT_HERO, padding: "48px 48px 40px", borderBottom: `1px solid ${LIGHT_HERO_BORDER}` }}>
       <div
         className="absolute right-8 top-1/2 -translate-y-1/2 font-bold select-none pointer-events-none"
-        style={{ fontSize: 160, color: "rgba(255,255,255,0.06)", lineHeight: 1, letterSpacing: "-0.05em" }}
+        style={{ fontSize: 160, color: "rgba(15,31,61,0.05)", lineHeight: 1, letterSpacing: "-0.05em" }}
       >
         {num}
       </div>
       <p style={{ fontSize: 11, fontWeight: 700, color: GOLD, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 12 }}>
         Section {num}
       </p>
-      <h2 style={{ fontSize: 40, fontWeight: 700, color: "#fff", lineHeight: 1.15, letterSpacing: "-0.02em", margin: 0, maxWidth: 560 }}>
+      <h2 style={{ fontSize: 40, fontWeight: 700, color: BODY, lineHeight: 1.15, letterSpacing: "-0.02em", margin: 0, maxWidth: 560 }}>
         {title}
       </h2>
     </div>
@@ -67,8 +68,8 @@ function Divider() {
 
 function PullQuote({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ background: NAVY, borderRadius: 8, padding: "28px 36px", margin: "36px 0" }}>
-      <p style={{ fontSize: 17, fontStyle: "italic", color: "#e8e0d0", lineHeight: 1.7, margin: 0 }}>
+    <div style={{ background: LIGHT_HERO, borderRadius: 8, padding: "28px 36px", margin: "36px 0", border: `1px solid ${LIGHT_HERO_BORDER}` }}>
+      <p style={{ fontSize: 17, fontStyle: "italic", color: BODY, lineHeight: 1.7, margin: 0 }}>
         {children}
       </p>
     </div>
@@ -85,19 +86,19 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 
 const PAGE_H = 1165;
 
-function Page({ num, children, dark = false }: { num: number; children: React.ReactNode; dark?: boolean }) {
+function Page({ num, children }: { num: number; children: React.ReactNode }) {
   return (
     <>
-      <div style={{ minHeight: PAGE_H, display: "flex", flexDirection: "column", background: dark ? NAVY : undefined }}>
+      <div style={{ minHeight: PAGE_H, display: "flex", flexDirection: "column" }}>
         <div style={{ flex: 1 }}>{children}</div>
         <div style={{
           padding: "12px 48px", display: "flex", alignItems: "center", justifyContent: "space-between",
-          borderTop: dark ? "1px solid rgba(255,255,255,0.1)" : `1px solid ${BORDER}`,
+          borderTop: `1px solid ${BORDER}`,
         }}>
-          <span style={{ fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: dark ? "rgba(255,255,255,0.2)" : `${MUTED}99` }}>
+          <span style={{ fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: `${MUTED}99` }}>
             Alpine Due Diligence · The LP Readiness Gap
           </span>
-          <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.1em", color: dark ? "rgba(255,255,255,0.3)" : MUTED }}>
+          <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.1em", color: MUTED }}>
             {String(num).padStart(2, "0")}
           </span>
         </div>
@@ -109,21 +110,9 @@ function Page({ num, children, dark = false }: { num: number; children: React.Re
 
 export default function WhitepaperPage() {
   const router = useRouter();
-  const [demoAccess, setDemoAccess] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
   const [zoom, setZoom] = useState(1);
+  const [downloadOpen, setDownloadOpen] = useState(false);
   const changeZoom = (delta: number) => setZoom(z => Math.min(2, Math.max(0.5, Math.round((z + delta) * 10) / 10)));
-
-  useEffect(() => {
-    const raw = localStorage.getItem(SESSION_KEY);
-    if (!raw) { router.replace("/login?redirect=/whitepaper"); return; }
-    try {
-      const user = JSON.parse(raw);
-      setDemoAccess(!!user.demo_access);
-    } catch {
-      router.replace("/login?redirect=/whitepaper");
-    }
-  }, [router]);
 
   useEffect(() => {
     const prevent = (e: Event) => e.preventDefault();
@@ -156,88 +145,76 @@ export default function WhitepaperPage() {
     return () => window.removeEventListener("wheel", onWheel);
   }, []);
 
-  const headerBg  = darkMode ? "#111111" : "#ffffff";
-  const headerBdr = darkMode ? "rgba(255,255,255,0.1)" : NAV_BORDER;
-
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: darkMode ? "#1a1a1a" : "#ebebeb", transition: "background 0.2s" }}>
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "#ebebeb" }}>
 
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <header>
         <div style={{ height: 2, background: `linear-gradient(90deg, ${GREEN}, ${AMBER}, ${VIOLET})` }} />
-        <div style={{ borderBottom: `1px solid ${headerBdr}`, background: headerBg, transition: "background 0.2s, border-color 0.2s" }}>
+        <div style={{ borderBottom: `1px solid ${NAV_BORDER}`, background: "#ffffff" }}>
           <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 16px", height: 64, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
               <button onClick={() => router.back()} style={{
                 display: "flex", alignItems: "center", gap: 6, textDecoration: "none",
-                color: darkMode ? "rgba(255,255,255,0.75)" : "#1a2744",
+                color: "#1a2744",
                 fontSize: 13, fontWeight: 600, letterSpacing: "0.02em",
                 padding: "6px 14px", borderRadius: 6, transition: "all 0.2s", cursor: "pointer",
-                border: darkMode ? "1px solid rgba(255,255,255,0.2)" : "1px solid rgba(0,0,0,0.15)",
-                background: darkMode ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)",
+                border: "1px solid rgba(0,0,0,0.15)",
+                background: "rgba(0,0,0,0.04)",
               }}>
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 11L5 7l4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 Back
               </button>
-              <span style={{ width: 1, height: 18, background: darkMode ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)" }} />
+              <span style={{ width: 1, height: 18, background: "rgba(0,0,0,0.1)" }} />
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={darkMode ? "/alpine-logo-white.svg" : "/alpine-logo-dark.svg?v=5"} alt="Alpine Due Diligence" style={{ height: 40, width: "auto" }} />
+              <img src="/alpine-logo-dark.svg?v=5" alt="Alpine Due Diligence" style={{ height: 40, width: "auto" }} />
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <a href="https://bookings.cloud.microsoft/book/AlpineDemo@alpinedd.com/?ismsaljsauthenabled=true" target="_blank" rel="noopener noreferrer" style={{
                 fontSize: 13, fontWeight: 600, textDecoration: "none", padding: "6px 16px", borderRadius: 6,
                 background: "transparent",
-                border: darkMode ? "1px solid rgba(255,255,255,0.2)" : "1px solid rgba(0,0,0,0.15)",
-                color: darkMode ? "rgba(255,255,255,0.7)" : "#1a2744",
+                border: "1px solid rgba(0,0,0,0.15)",
+                color: "#1a2744",
                 transition: "all 0.2s",
               }}>
                 Book a Meeting
               </a>
-              {demoAccess && (
-                <Link href="/portfolio2" style={{
-                  fontSize: 13, fontWeight: 600, textDecoration: "none", padding: "6px 16px", borderRadius: 6,
-                  background: darkMode ? "#7c3aed" : "#0f1f3d", color: "#fff", transition: "background 0.2s",
-                }}>
-                  Open Demo →
-                </Link>
-              )}
+              <button onClick={() => setDownloadOpen(true)} style={{
+                fontSize: 13, fontWeight: 600, padding: "6px 16px", borderRadius: 6,
+                background: "#0f1f3d", color: "#fff", border: "none", cursor: "pointer",
+                display: "inline-flex", alignItems: "center", gap: 6,
+              }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Download
+              </button>
               {/* Zoom controls */}
               <div style={{
                 display: "flex", alignItems: "center", gap: 0,
-                border: darkMode ? "1px solid rgba(255,255,255,0.15)" : "1px solid rgba(0,0,0,0.12)",
+                border: "1px solid rgba(0,0,0,0.12)",
                 borderRadius: 6, overflow: "hidden",
               }}>
                 <button onClick={() => changeZoom(-0.1)} style={{
-                  background: darkMode ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)",
-                  border: "none", color: darkMode ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.5)",
+                  background: "rgba(0,0,0,0.04)",
+                  border: "none", color: "rgba(0,0,0,0.5)",
                   padding: "6px 10px", fontSize: 14, fontWeight: 600, cursor: "pointer", lineHeight: 1,
                 }}>−</button>
                 <span style={{
                   fontSize: 11, fontWeight: 600, letterSpacing: "0.04em",
-                  color: darkMode ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.45)",
+                  color: "rgba(0,0,0,0.45)",
                   padding: "0 8px", minWidth: 40, textAlign: "center",
-                  borderLeft: darkMode ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(0,0,0,0.08)",
-                  borderRight: darkMode ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(0,0,0,0.08)",
+                  borderLeft: "1px solid rgba(0,0,0,0.08)",
+                  borderRight: "1px solid rgba(0,0,0,0.08)",
                 }}>{Math.round(zoom * 100)}%</span>
                 <button onClick={() => changeZoom(0.1)} style={{
-                  background: darkMode ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)",
-                  border: "none", color: darkMode ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.5)",
+                  background: "rgba(0,0,0,0.04)",
+                  border: "none", color: "rgba(0,0,0,0.5)",
                   padding: "6px 10px", fontSize: 14, fontWeight: 600, cursor: "pointer", lineHeight: 1,
                 }}>+</button>
               </div>
-              <button
-                onClick={() => setDarkMode(d => !d)}
-                style={{
-                  display: "flex", alignItems: "center", gap: 6,
-                  background: darkMode ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.07)",
-                  border: darkMode ? "1px solid rgba(255,255,255,0.15)" : "1px solid rgba(0,0,0,0.12)",
-                  color: darkMode ? "rgba(255,255,255,0.65)" : "rgba(0,0,0,0.5)",
-                  borderRadius: 6, padding: "6px 12px", fontSize: 12, fontWeight: 600,
-                  letterSpacing: "0.06em", cursor: "pointer", transition: "all 0.2s",
-                }}
-              >
-                {darkMode ? "☀ Light" : "☾ Dark"}
-              </button>
             </div>
           </div>
         </div>
@@ -245,22 +222,22 @@ export default function WhitepaperPage() {
 
       {/* ── Content ────────────────────────────────────────────────────────── */}
       <div style={{ flex: 1, userSelect: "none", padding: "0 16px 64px" }}>
-      <div style={{ maxWidth: 900, margin: "0 auto", zoom, background: CREAM, boxShadow: darkMode ? "0 8px 40px rgba(0,0,0,0.4)" : "0 4px 24px rgba(0,0,0,0.12)", borderRadius: 2 }}>
+      <div style={{ maxWidth: 900, margin: "0 auto", zoom, background: CREAM, boxShadow: "0 4px 24px rgba(0,0,0,0.12)", borderRadius: 2 }}>
 
         {/* ── PAGE 01: COVER ─────────────────────────────────────────────── */}
-        <Page num={1} dark>
-          <div style={{ display: "flex", flexDirection: "column", height: "100%", position: "relative", overflow: "hidden" }}>
+        <Page num={1}>
+          <div style={{ display: "flex", flexDirection: "column", height: "100%", position: "relative", overflow: "hidden", background: LIGHT_HERO }}>
 
             {/* Decorative background elements */}
-            <svg style={{ position: "absolute", top: 0, right: 0, width: 480, height: 480, opacity: 0.07, pointerEvents: "none" }} viewBox="0 0 480 480" fill="none">
-              <circle cx="380" cy="100" r="320" stroke="white" strokeWidth="1"/>
-              <circle cx="380" cy="100" r="240" stroke="white" strokeWidth="1"/>
-              <circle cx="380" cy="100" r="160" stroke="white" strokeWidth="1"/>
-              <circle cx="380" cy="100" r="80" stroke="white" strokeWidth="1"/>
+            <svg style={{ position: "absolute", top: 0, right: 0, width: 480, height: 480, opacity: 0.18, pointerEvents: "none" }} viewBox="0 0 480 480" fill="none">
+              <circle cx="380" cy="100" r="320" stroke={GOLD} strokeWidth="1"/>
+              <circle cx="380" cy="100" r="240" stroke={GOLD} strokeWidth="1"/>
+              <circle cx="380" cy="100" r="160" stroke={GOLD} strokeWidth="1"/>
+              <circle cx="380" cy="100" r="80"  stroke={GOLD} strokeWidth="1"/>
             </svg>
-            <svg style={{ position: "absolute", bottom: 80, right: 48, width: 260, height: 160, opacity: 0.12, pointerEvents: "none" }} viewBox="0 0 260 160" fill="none">
+            <svg style={{ position: "absolute", bottom: 80, right: 48, width: 260, height: 160, opacity: 0.35, pointerEvents: "none" }} viewBox="0 0 260 160" fill="none">
               <polyline points="0,140 52,95 104,115 156,50 208,70 260,10" stroke={GOLD} strokeWidth="2" strokeLinejoin="round"/>
-              <polyline points="0,140 52,120 104,130 156,80 208,100 260,40" stroke="white" strokeWidth="1" strokeLinejoin="round" strokeDasharray="4 4"/>
+              <polyline points="0,140 52,120 104,130 156,80 208,100 260,40" stroke={BODY} strokeWidth="1" strokeLinejoin="round" strokeDasharray="4 4"/>
               {[0,52,104,156,208,260].map((x,i) => {
                 const y1 = [140,95,115,50,70,10][i];
                 return <circle key={x} cx={x} cy={y1} r="3.5" fill={GOLD}/>;
@@ -269,13 +246,13 @@ export default function WhitepaperPage() {
             <div style={{ position: "absolute", top: 0, left: 0, width: 4, height: "100%", background: `linear-gradient(180deg, ${GOLD}80 0%, transparent 60%)` }} />
 
             {/* Top bar */}
-            <div style={{ padding: "20px 48px 20px 52px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `1px solid rgba(255,255,255,0.08)`, position: "relative", zIndex: 1 }}>
+            <div style={{ padding: "20px 48px 20px 52px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `1px solid ${LIGHT_HERO_BORDER}`, position: "relative", zIndex: 1 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-                <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", color: "rgba(255,255,255,0.8)" }}>ALPINE × ACEPHALT</span>
-                <span style={{ color: "rgba(255,255,255,0.2)" }}>|</span>
-                <span style={{ fontSize: 11, letterSpacing: "0.12em", color: "rgba(255,255,255,0.35)" }}>CONFIDENTIAL</span>
+                <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", color: BODY }}>ALPINE × ACEPHALT</span>
+                <span style={{ color: "rgba(15,31,61,0.2)" }}>|</span>
+                <span style={{ fontSize: 11, letterSpacing: "0.12em", color: MUTED }}>CONFIDENTIAL</span>
               </div>
-              <span style={{ fontSize: 10, letterSpacing: "0.16em", color: "rgba(255,255,255,0.25)", fontWeight: 600 }}>2026</span>
+              <span style={{ fontSize: 10, letterSpacing: "0.16em", color: MUTED, fontWeight: 600 }}>2026</span>
             </div>
 
             {/* Main content */}
@@ -288,10 +265,10 @@ export default function WhitepaperPage() {
                   </span>
                 </div>
 
-                <h1 style={{ fontSize: 80, fontWeight: 800, color: "#fff", lineHeight: 1.0, letterSpacing: "-0.035em", margin: "0 0 6px" }}>
+                <h1 style={{ fontSize: 80, fontWeight: 800, color: BODY, lineHeight: 1.0, letterSpacing: "-0.035em", margin: "0 0 6px" }}>
                   The LP
                 </h1>
-                <h1 style={{ fontSize: 80, fontWeight: 800, color: "#fff", lineHeight: 1.0, letterSpacing: "-0.035em", margin: "0 0 6px" }}>
+                <h1 style={{ fontSize: 80, fontWeight: 800, color: BODY, lineHeight: 1.0, letterSpacing: "-0.035em", margin: "0 0 6px" }}>
                   Readiness
                 </h1>
                 <h1 style={{ fontSize: 80, fontWeight: 800, lineHeight: 1.0, letterSpacing: "-0.035em", margin: "0 0 40px", display: "inline-block",
@@ -300,37 +277,37 @@ export default function WhitepaperPage() {
                   Gap
                 </h1>
 
-                <p style={{ fontSize: 16, color: "rgba(255,255,255,0.55)", lineHeight: 1.75, margin: "0 0 48px", maxWidth: 520 }}>
+                <p style={{ fontSize: 16, color: MUTED, lineHeight: 1.75, margin: "0 0 48px", maxWidth: 520 }}>
                   Institutional ODD scorecards are useful tools. But the variable allocation committees need to read is not current state — it is readiness trajectory. This paper explains why the distinction matters, and what to do about it.
                 </p>
 
                 <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
                   {["Eight-Chapter ODD Framework", "Structural vs Fixable Analysis", "LP Readiness Trajectory"].map(t => (
-                    <div key={t} style={{ display: "flex", alignItems: "center", gap: 7, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: "5px 14px" }}>
+                    <div key={t} style={{ display: "flex", alignItems: "center", gap: 7, background: "rgba(15,31,61,0.04)", border: `1px solid ${LIGHT_HERO_BORDER}`, borderRadius: 20, padding: "5px 14px" }}>
                       <span style={{ width: 5, height: 5, borderRadius: "50%", background: GOLD, display: "inline-block", flexShrink: 0 }} />
-                      <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.09em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", whiteSpace: "nowrap" }}>{t}</span>
+                      <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.09em", color: MUTED, textTransform: "uppercase", whiteSpace: "nowrap" }}>{t}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Bottom logos */}
-              <div style={{ borderTop: `1px solid rgba(255,255,255,0.08)`, paddingTop: 24, display: "flex", alignItems: "center", gap: 28, marginTop: 48 }}>
+              <div style={{ borderTop: `1px solid ${LIGHT_HERO_BORDER}`, paddingTop: 24, display: "flex", alignItems: "center", gap: 28, marginTop: 48 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src="/logo.png" alt="Alpine" style={{ height: 28, width: 28, objectFit: "contain", borderRadius: 5 }} />
                   <div>
-                    <p style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.85)", margin: "0 0 1px" }}>Alpine Due Diligence</p>
-                    <p style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", margin: 0, letterSpacing: "0.04em" }}>alpinedd.com</p>
+                    <p style={{ fontSize: 12, fontWeight: 700, color: BODY, margin: "0 0 1px" }}>Alpine Due Diligence</p>
+                    <p style={{ fontSize: 10, color: MUTED, margin: 0, letterSpacing: "0.04em" }}>alpinedd.com</p>
                   </div>
                 </div>
-                <div style={{ width: 1, height: 28, background: "rgba(255,255,255,0.12)" }} />
+                <div style={{ width: 1, height: 28, background: LIGHT_HERO_BORDER }} />
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src="/acephalt-logo-transparent.png" alt="Acephalt" style={{ height: 28, width: 28, objectFit: "contain" }} />
                   <div>
-                    <p style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.85)", margin: "0 0 1px" }}>Acephalt</p>
-                    <p style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", margin: 0, letterSpacing: "0.04em" }}>acephalt.com</p>
+                    <p style={{ fontSize: 12, fontWeight: 700, color: BODY, margin: "0 0 1px" }}>Acephalt</p>
+                    <p style={{ fontSize: 10, color: MUTED, margin: 0, letterSpacing: "0.04em" }}>acephalt.com</p>
                   </div>
                 </div>
               </div>
@@ -341,9 +318,9 @@ export default function WhitepaperPage() {
         {/* ── PAGE 02: EXECUTIVE SUMMARY ─────────────────────────────────── */}
         <Page num={2}>
           {/* Hero */}
-          <div style={{ background: NAVY, padding: "48px 48px 44px" }}>
+          <div style={{ background: LIGHT_HERO, padding: "48px 48px 44px", borderBottom: `1px solid ${LIGHT_HERO_BORDER}` }}>
             <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: GOLD, marginBottom: 20 }}>Executive Summary</p>
-            <p style={{ fontSize: 24, fontWeight: 600, color: "#fff", lineHeight: 1.55, margin: 0, maxWidth: 620, letterSpacing: "-0.01em" }}>
+            <p style={{ fontSize: 24, fontWeight: 600, color: BODY, lineHeight: 1.55, margin: 0, maxWidth: 620, letterSpacing: "-0.01em" }}>
               Institutional ODD scorecards are useful tools. But the variable allocation committees need to read is not current state — it is readiness trajectory.
             </p>
           </div>
@@ -464,7 +441,7 @@ export default function WhitepaperPage() {
               Then the scorecard darkens in a familiar sequence. Governance comes back yellow because the only internal operations role is thin and primarily administrative, and because a two-partner firm has no real succession depth. Investment operations come back yellow because the accounting books are maintained almost entirely by the administrator, with limited internal shadowing, and because the portfolio is still tracked in Excel. Valuation comes back yellow because there is no formal valuation committee and the front office approves its own marks.
             </p>
             <PullQuote>
-              "Two chapters then tend to come back red — Compliance and Cybersecurity. Their remedies require only attention and modest budget, not scale."
+              &quot;Two chapters then tend to come back red — Compliance and Cybersecurity. Their remedies require only attention and modest budget, not scale.&quot;
             </PullQuote>
             <p style={{ fontSize: 15, color: BODY, lineHeight: 1.75, margin: "0 0 40px" }}>
               This is not a description of one manager. It is a composite of the emerging manager profile. The specifics vary, but the shape is stable enough that a seasoned ODD analyst can often predict the broad scorecard before opening the binder — based on little more than fund size, team headcount, and vintage.
@@ -508,9 +485,9 @@ export default function WhitepaperPage() {
               Composite across the eight-chapter institutional ODD framework. The typical emerging VC profile resolves into three bands: chapters that usually pass, chapters that stall at emerging-manager scale, and chapters that fail because non-revenue infrastructure has been deferred.
             </p>
             <div style={{ border: `1px solid ${BORDER}`, borderRadius: 8, overflow: "hidden" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "48px 280px 120px 1fr", background: NAVY, padding: "10px 20px", gap: 16 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "48px 280px 120px 1fr", background: LIGHT_HERO, padding: "10px 20px", gap: 16, borderBottom: `1px solid ${LIGHT_HERO_BORDER}` }}>
                 {["Ch.", "Chapter", "Rating", "Typical Findings"].map(h => (
-                  <p key={h} style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", color: "rgba(255,255,255,0.5)", textTransform: "uppercase", margin: 0 }}>{h}</p>
+                  <p key={h} style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", color: MUTED, textTransform: "uppercase", margin: 0 }}>{h}</p>
                 ))}
               </div>
               {[
@@ -539,7 +516,7 @@ export default function WhitepaperPage() {
           <SectionHero num="02" title={"Findings That Signal Trajectory, Findings That Don't"} />
           <div style={{ padding: "48px 48px 0" }}>
             <p style={{ fontSize: 17, fontStyle: "italic", color: BODY, lineHeight: 1.65, margin: "0 0 32px" }}>
-              The archetype establishes which findings tend to appear on an emerging manager's scorecard. It does not establish which of those findings tend to move.
+              The archetype establishes which findings tend to appear on an emerging manager&apos;s scorecard. It does not establish which of those findings tend to move.
             </p>
             <p style={{ fontSize: 15, color: BODY, lineHeight: 1.75, margin: "0 0 32px" }}>
               Over a two-to-three-year window between diligence cycles, some findings resolve reliably. Others do not. The division between the two is not well correlated with the severity of the finding at the moment of review. A red in Compliance and a yellow in Governance can sit on the same scorecard — and the red will often clear before the yellow. This is counterintuitive if the scorecard is read as a ranking, but it is consistent with how emerging firms actually evolve.
@@ -629,8 +606,8 @@ export default function WhitepaperPage() {
                 { n: "05", area: "Valuation",     urgency: "Documentation",       title: "Form a Valuation Committee on Paper",      critical: false, desc: "Establish a formal charter, approval workflow, and meeting cadence. Can be done without an external agent at early fund sizes." },
               ].map(({ n, area, urgency, title, critical, desc }) => (
                 <div key={n} style={{ display: "flex", gap: 20, border: `1px solid ${BORDER}`, borderRadius: 8, overflow: "hidden" }}>
-                  <div style={{ background: NAVY, minWidth: 56, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: "#fff" }}>{n}</span>
+                  <div style={{ background: LIGHT_HERO, minWidth: 56, display: "flex", alignItems: "center", justifyContent: "center", borderRight: `1px solid ${LIGHT_HERO_BORDER}` }}>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: BODY }}>{n}</span>
                   </div>
                   <div style={{ padding: "20px 20px 20px 0" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
@@ -671,7 +648,7 @@ export default function WhitepaperPage() {
             </div>
             <h3 style={{ fontSize: 20, fontWeight: 700, color: BODY, margin: "0 0 16px" }}>Readiness Compounds Through the Portfolio</h3>
             <p style={{ fontSize: 15, color: BODY, lineHeight: 1.75, margin: "0 0 16px" }}>
-              An emerging VC manager that passes its own ODD can still face the same readiness gap at the next raise if its underlying portfolio companies cannot withstand diligence conducted by others. Follow-on leads, co-investors, lenders, strategic partners, and eventual acquirers all run their own versions of deal-side diligence. A portfolio that enters those processes with unresolved findings can produce delay, markdown, renegotiation, or walk-away — each of which flows back to the fund's track record.
+              An emerging VC manager that passes its own ODD can still face the same readiness gap at the next raise if its underlying portfolio companies cannot withstand diligence conducted by others. Follow-on leads, co-investors, lenders, strategic partners, and eventual acquirers all run their own versions of deal-side diligence. A portfolio that enters those processes with unresolved findings can produce delay, markdown, renegotiation, or walk-away — each of which flows back to the fund&apos;s track record.
             </p>
             <p style={{ fontSize: 15, color: BODY, lineHeight: 1.75, margin: "0 0 32px" }}>
               At the seed and early stages, portfolio company readiness tends to cluster around a recognizable set of findings. Cap tables may not have been cleaned up after founder departures or early angel rounds. Customer contracts may have been agreed informally. IP assignments may not have been completed when contractors left. Data rooms may exist as shared drives rather than structured diligence artifacts.
@@ -700,7 +677,7 @@ export default function WhitepaperPage() {
               { name: "Acephalt Inc.", tag: "Due Diligence Platform · acephalt.com", contact: "winnicent.zuo@acephalt.com · acephalt.com", desc: "Acephalt Inc. is a due diligence platform that helps venture capital investors build confidence in the companies they invest in. By evaluating a company in minutes instead of months, Acephalt gives venture capital firms their own AI analyst that can work continuously across company data rooms. The platform helps forecast company performance, review market dynamics, and draft investment memos for stakeholders." },
             ].map(({ name, tag, contact, desc }) => (
               <div key={name} style={{ display: "grid", gridTemplateColumns: "80px 1fr", gap: 24, paddingBottom: 32, marginBottom: 32, borderBottom: `1px solid ${BORDER}` }}>
-                <div style={{ width: 64, height: 64, background: NAVY, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <div style={{ width: 64, height: 64, background: LIGHT_HERO, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", border: `1px solid ${LIGHT_HERO_BORDER}` }}>
                   <span style={{ fontSize: 20, fontWeight: 700, color: GOLD }}>A</span>
                 </div>
                 <div>
@@ -724,9 +701,9 @@ export default function WhitepaperPage() {
               A reference view of the eight ODD chapters with representative structural and fixable findings. Intended as a diagnostic map rather than a ranking of severity or a prescriptive remediation order.
             </p>
             <div style={{ border: `1px solid ${BORDER}`, borderRadius: 8, overflow: "hidden" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "48px 220px 100px 1fr", background: NAVY, padding: "10px 20px", gap: 16 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "48px 220px 100px 1fr", background: LIGHT_HERO, padding: "10px 20px", gap: 16, borderBottom: `1px solid ${LIGHT_HERO_BORDER}` }}>
                 {["Ch.", "Chapter", "Status", "Representative Findings"].map(h => (
-                  <p key={h} style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", color: "rgba(255,255,255,0.5)", textTransform: "uppercase", margin: 0 }}>{h}</p>
+                  <p key={h} style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", color: MUTED, textTransform: "uppercase", margin: 0 }}>{h}</p>
                 ))}
               </div>
               {[
@@ -761,26 +738,26 @@ export default function WhitepaperPage() {
         </Page>
 
         {/* ── DOCUMENT FOOTER ────────────────────────────────────────────── */}
-        <div style={{ background: NAVY, padding: "32px 48px" }}>
+        <div style={{ background: LIGHT_HERO, padding: "32px 48px", borderTop: `1px solid ${LIGHT_HERO_BORDER}` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 32, flexWrap: "wrap" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/logo.png" alt="Alpine" style={{ height: 30, width: 30, objectFit: "contain", borderRadius: 6 }} />
               <div>
-                <p style={{ fontSize: 14, fontWeight: 700, color: "#fff", margin: "0 0 2px" }}>Alpine Due Diligence</p>
-                <p style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", margin: 0 }}>alpinedd.com</p>
+                <p style={{ fontSize: 14, fontWeight: 700, color: BODY, margin: "0 0 2px" }}>Alpine Due Diligence</p>
+                <p style={{ fontSize: 11, color: MUTED, margin: 0 }}>alpinedd.com</p>
               </div>
             </div>
-            <div style={{ width: 1, height: 28, background: "rgba(255,255,255,0.15)" }} />
+            <div style={{ width: 1, height: 28, background: LIGHT_HERO_BORDER }} />
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/acephalt-logo-transparent.png" alt="Acephalt" style={{ height: 30, width: 30, objectFit: "contain" }} />
               <div>
-                <p style={{ fontSize: 14, fontWeight: 700, color: "#fff", margin: "0 0 2px" }}>Acephalt</p>
-                <p style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", margin: 0 }}>acephalt.com</p>
+                <p style={{ fontSize: 14, fontWeight: 700, color: BODY, margin: "0 0 2px" }}>Acephalt</p>
+                <p style={{ fontSize: 11, color: MUTED, margin: 0 }}>acephalt.com</p>
               </div>
             </div>
-            <p style={{ marginLeft: "auto", fontSize: 11, color: "rgba(255,255,255,0.3)", letterSpacing: "0.08em" }}>
+            <p style={{ marginLeft: "auto", fontSize: 11, color: MUTED, letterSpacing: "0.08em" }}>
               ALPINE × ACEPHALT · CONFIDENTIAL
             </p>
           </div>
@@ -788,6 +765,9 @@ export default function WhitepaperPage() {
 
       </div>
       </div>
+
+      <FloatingSubscribe source="whitepaper" />
+      <DownloadWhitepaperModal open={downloadOpen} onClose={() => setDownloadOpen(false)} />
     </div>
   );
 }

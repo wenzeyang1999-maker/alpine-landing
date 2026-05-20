@@ -91,8 +91,8 @@ export default function Hero() {
           style={{ fontSize: "1.0625rem", fontWeight: 500, lineHeight: 1.65, letterSpacing: "-0.02em", color: SECONDARY }}
           {...subtitleMotion}
         >
-          Sits between raw information and human judgment — making that judgment faster, sharper,
-          more defensible, and more affordable.
+          Operational due diligence on alternative fund managers. Engine-drafted,
+          analyst-reviewed, delivered in days instead of weeks.
         </motion.p>
 
         {/* CTA */}

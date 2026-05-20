@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 import { BG_CARD, INK, SECONDARY, MUTED, VIOLET, GREEN, BORDER, LS_BODY } from "@/lib/constants";
 
@@ -15,20 +16,27 @@ export default function Subscribe({
   source?: string;
   className?: string;
 }) {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [agreed, setAgreed] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState<string>("");
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (status === "loading") return;
+    if (!agreed) {
+      setStatus("error");
+      setMessage("Please accept the terms to continue.");
+      return;
+    }
     setStatus("loading");
     setMessage("");
     try {
       const res = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, source }),
+        body: JSON.stringify({ email, source, name }),
       });
       // Read body for diagnostics, but never surface server text to the user.
       const data = await res.json().catch(() => null);
@@ -41,7 +49,12 @@ export default function Subscribe({
       setStatus("success");
       // Always show the same generic message on success — never trust server text.
       setMessage("Almost there. Check your email to confirm your subscription.");
+      try {
+        localStorage.setItem("alpine_last_contact", JSON.stringify({ name, email }));
+      } catch { /* ignore */ }
+      setName("");
       setEmail("");
+      setAgreed(false);
     } catch (err) {
       console.error("Subscribe network error:", err);
       setStatus("error");
@@ -51,15 +64,16 @@ export default function Subscribe({
 
   if (variant === "compact") {
     return (
-      <form onSubmit={onSubmit} className={`flex flex-col sm:flex-row items-stretch gap-2 w-full max-w-sm ${className}`}>
+      <form onSubmit={onSubmit} className={`flex flex-col gap-2 w-full max-w-sm ${className}`}>
         <input
-          type="email"
+          type="text"
           required
-          placeholder="name@firm.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          aria-label="Email for newsletter"
-          className="flex-1 rounded-btn px-3 py-2 font-body text-[13px] outline-none focus:ring-2 transition-all"
+          placeholder="Your name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          aria-label="Name"
+          maxLength={120}
+          className="rounded-btn px-3 py-2 font-body text-[13px] outline-none focus:ring-2 transition-all"
           style={{
             background: BG_CARD,
             border: `1px solid ${BORDER}`,
@@ -67,36 +81,70 @@ export default function Subscribe({
             letterSpacing: LS_BODY,
           }}
         />
-        <button
-          type="submit"
-          disabled={status === "loading" || status === "success"}
-          className="rounded-btn px-4 py-2 font-body text-[13px] inline-flex items-center justify-center gap-1.5 hover:opacity-90 transition-opacity disabled:opacity-50"
-          style={{ background: INK, color: "#fff", fontWeight: 600 }}
-        >
-          {status === "success" ? (
-            <>
-              <Check size={14} /> Subscribed
-            </>
-          ) : status === "loading" ? (
-            "Subscribing…"
-          ) : (
-            <>
-              Subscribe <ArrowRight size={13} />
-            </>
-          )}
-        </button>
+        <div className="flex flex-col sm:flex-row items-stretch gap-2">
+          <input
+            type="email"
+            required
+            placeholder="name@firm.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            aria-label="Email for newsletter"
+            className="flex-1 rounded-btn px-3 py-2 font-body text-[13px] outline-none focus:ring-2 transition-all"
+            style={{
+              background: BG_CARD,
+              border: `1px solid ${BORDER}`,
+              color: INK,
+              letterSpacing: LS_BODY,
+            }}
+          />
+          <button
+            type="submit"
+            disabled={status === "loading" || status === "success"}
+            className="rounded-btn px-4 py-2 font-body text-[13px] inline-flex items-center justify-center gap-1.5 hover:opacity-90 transition-opacity disabled:opacity-50"
+            style={{ background: INK, color: "#fff", fontWeight: 600 }}
+          >
+            {status === "success" ? (
+              <>
+                <Check size={14} /> Subscribed
+              </>
+            ) : status === "loading" ? (
+              "Subscribing…"
+            ) : (
+              <>
+                Subscribe <ArrowRight size={13} />
+              </>
+            )}
+          </button>
+        </div>
+        <label className="flex items-start gap-2 cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={agreed}
+            onChange={(e) => setAgreed(e.target.checked)}
+            className="mt-0.5 cursor-pointer"
+            style={{ accentColor: INK }}
+            aria-label="Accept newsletter terms"
+          />
+          <span className="font-mono text-[11px] leading-snug" style={{ color: MUTED }}>
+            I agree to Alpine&apos;s{" "}
+            <Link href="/newsletter-terms" target="_blank" className="underline" style={{ color: VIOLET }}>
+              newsletter terms
+            </Link>
+            , including use of my information by Alpine and its partners for related communications.
+          </span>
+        </label>
         {message && status === "error" && (
-          <span className="font-mono text-[11px] sm:ml-2 self-center" style={{ color: "#DC2626" }}>
+          <span className="font-mono text-[11px]" style={{ color: "#DC2626" }}>
             {message}
           </span>
         )}
         {status === "success" && (
-          <span className="font-mono text-[11px] self-center" style={{ color: GREEN }}>
+          <span className="font-mono text-[11px]" style={{ color: GREEN }}>
             {message}
           </span>
         )}
         {status === "success" && (
-          <span className="font-mono text-[11px] self-center" style={{ color: MUTED }}>
+          <span className="font-mono text-[11px]" style={{ color: MUTED }}>
             If you don&apos;t see it in 2 minutes, check your spam folder.
           </span>
         )}
@@ -127,6 +175,22 @@ export default function Subscribe({
           </p>
         </div>
         <form onSubmit={onSubmit} className="flex flex-col gap-2 w-full md:w-auto md:min-w-[360px]">
+          <input
+            type="text"
+            required
+            placeholder="Your name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            aria-label="Name"
+            maxLength={120}
+            className="rounded-btn px-4 py-3 font-body text-[14px] outline-none focus:ring-2 transition-all"
+            style={{
+              background: "#fff",
+              border: `1px solid ${BORDER}`,
+              color: INK,
+              letterSpacing: LS_BODY,
+            }}
+          />
           <div className="flex flex-col sm:flex-row gap-2">
             <input
               type="email"
@@ -162,6 +226,23 @@ export default function Subscribe({
               )}
             </button>
           </div>
+          <label className="flex items-start gap-2 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+              className="mt-0.5 cursor-pointer"
+              style={{ accentColor: INK }}
+              aria-label="Accept newsletter terms"
+            />
+            <span className="font-mono text-[11px] leading-snug" style={{ color: MUTED }}>
+              I agree to Alpine&apos;s{" "}
+              <Link href="/newsletter-terms" target="_blank" className="underline" style={{ color: VIOLET }}>
+                newsletter terms
+              </Link>
+              , including use of my information by Alpine and its partners for related communications.
+            </span>
+          </label>
           <span className="font-mono text-[11px]" style={{ color: MUTED }}>
             You&apos;ll receive a confirmation email — the link is valid for 7 days.
           </span>

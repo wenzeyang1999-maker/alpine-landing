@@ -29,13 +29,13 @@ export default function DemoLoginPage() {
 
       const data = await res.json();
 
-      if (!res.ok || !data.demo_access) {
-        setError("Access restricted. Contact Alpine to request demo access.");
+      if (!res.ok) {
+        setError("Invalid email or password.");
         return;
       }
 
-      localStorage.setItem(SESSION_KEY, JSON.stringify({ ...data.user, demo_access: true }));
-      router.push("/portfolio2");
+      localStorage.setItem(SESSION_KEY, JSON.stringify({ ...data.user, demo_access: data.demo_access }));
+      router.push("/alpine-space");
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
@@ -61,7 +61,7 @@ export default function DemoLoginPage() {
               Analyst Portal
             </h1>
             <p className="mt-3 text-sm font-body leading-relaxed" style={{ color: MUTED }}>
-              Restricted access. Sign in with your Alpine-issued credentials.
+              Sign in or create a free account to continue.
             </p>
           </div>
 
@@ -126,8 +126,16 @@ export default function DemoLoginPage() {
             </button>
           </form>
 
+          <Link
+            href="/signup"
+            className="mt-4 w-full inline-flex items-center justify-center px-6 py-3.5 rounded-btn font-body font-emphasis text-sm hover:opacity-80 transition-opacity border"
+            style={{ color: INK, borderColor: INK, background: "transparent" }}
+          >
+            Create an account
+          </Link>
+
           <p className="mt-5 text-center text-sm font-mono" style={{ color: MUTED }}>
-            Not a demo user?{" "}
+            Need a demo?{" "}
             <Link
               href="/early-access"
               className="underline hover:opacity-80 transition-opacity"

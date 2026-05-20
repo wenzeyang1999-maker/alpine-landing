@@ -28,7 +28,7 @@ const PRODUCTS: Product[] = [
     name: "Alpine Lite",
     tagline: "Engine-Authored ODD Report",
     promise: "A structured ODD report by Alpine's proprietary engine, with risk ratings, citations, and scoped human review.",
-    outcome: "RATED",
+    outcome: "DRAFTED",
     outcomeColor: GREEN,
     outcomeTextColor: GREEN_TEXT,
     price: "< $2,000",
@@ -49,7 +49,7 @@ const PRODUCTS: Product[] = [
     name: "Alpine Review",
     tagline: "Analyst-Reviewed ODD Report",
     promise: "An analyst-reviewed ODD report with manager and administrator interviews and decision-shaped conclusions.",
-    outcome: "CROSS-VERIFIED",
+    outcome: "REVIEWED",
     outcomeColor: VIOLET,
     outcomeTextColor: VIOLET,
     price: "< $5,000",
@@ -70,7 +70,7 @@ const PRODUCTS: Product[] = [
     name: "Alpine Platform",
     tagline: "ODD Workflow Platform",
     promise: "A workflow platform for internal teams running repeatable ODD reviews across managers, funds, and portfolios.",
-    outcome: "WORKFLOW",
+    outcome: "DEPLOYED",
     outcomeColor: AMBER,
     outcomeTextColor: AMBER_TEXT,
     price: "Custom",
@@ -102,7 +102,7 @@ export default function Products() {
             One framework. Three Products.
           </h2>
           <p className="font-body mb-5" style={{ fontSize: "1.0625rem", lineHeight: 1.65, color: SECONDARY, letterSpacing: LS_BODY }}>
-            Accelerated process. Enhanced standard. Better decisions.
+            Pay per report or license the platform. Same 8-chapter framework either way.
           </p>
           {/* Grouped outcome labels — not numbered, treated as one unit */}
           <div className="flex items-center gap-0">
