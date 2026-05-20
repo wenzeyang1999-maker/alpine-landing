@@ -73,9 +73,18 @@ function buildEmailHtml(recipientName: string) {
 </div>`;
 }
 
+// pdf-lib's default Helvetica only supports WinAnsi — drawing CJK / other
+// non-Latin characters throws. Strip them for the watermark; the email
+// address (always ASCII) still uniquely identifies the recipient.
+function asciiOnly(s: string): string {
+  // eslint-disable-next-line no-control-regex
+  return s.replace(/[^\x00-\x7E]/g, "").trim();
+}
+
 async function watermarkPdf(pdfBytes: Buffer, recipientName: string, recipientEmail: string): Promise<Uint8Array> {
   const pdfDoc = await PDFDocument.load(pdfBytes);
-  const wmLine1 = `CONFIDENTIAL — ${recipientName}`;
+  const safeName = asciiOnly(recipientName);
+  const wmLine1 = safeName ? `CONFIDENTIAL — ${safeName}` : "CONFIDENTIAL";
   const wmLine2 = recipientEmail;
 
   for (const page of pdfDoc.getPages()) {
