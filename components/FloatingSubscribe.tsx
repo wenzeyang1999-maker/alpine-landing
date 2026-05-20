@@ -148,11 +148,11 @@ export default function FloatingSubscribe({
               aria-label="Accept newsletter terms"
             />
             <span className="font-mono text-[10px] leading-snug" style={{ color: MUTED }}>
-              I agree to Alpine&apos;s{" "}
+              I accept the{" "}
               <Link href="/newsletter-terms" target="_blank" className="underline" style={{ color: VIOLET }}>
-                newsletter terms
+                terms and conditions
               </Link>
-              , including use by Alpine and partners.
+              .
             </span>
           </label>
           <button

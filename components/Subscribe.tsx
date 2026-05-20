@@ -126,11 +126,11 @@ export default function Subscribe({
             aria-label="Accept newsletter terms"
           />
           <span className="font-mono text-[11px] leading-snug" style={{ color: MUTED }}>
-            I agree to Alpine&apos;s{" "}
+            I accept the{" "}
             <Link href="/newsletter-terms" target="_blank" className="underline" style={{ color: VIOLET }}>
-              newsletter terms
+              terms and conditions
             </Link>
-            , including use of my information by Alpine and its partners for related communications.
+            .
           </span>
         </label>
         {message && status === "error" && (
@@ -236,11 +236,11 @@ export default function Subscribe({
               aria-label="Accept newsletter terms"
             />
             <span className="font-mono text-[11px] leading-snug" style={{ color: MUTED }}>
-              I agree to Alpine&apos;s{" "}
+              I accept the{" "}
               <Link href="/newsletter-terms" target="_blank" className="underline" style={{ color: VIOLET }}>
-                newsletter terms
+                terms and conditions
               </Link>
-              , including use of my information by Alpine and its partners for related communications.
+              .
             </span>
           </label>
           <span className="font-mono text-[11px]" style={{ color: MUTED }}>

@@ -103,7 +103,17 @@ function Page({
 }) {
   return (
     <>
-      <div style={{ minHeight: PAGE_H, display: "flex", flexDirection: "column" }}>
+      <div
+        style={{
+          minHeight: PAGE_H,
+          display: "flex",
+          flexDirection: "column",
+          background: CREAM,
+          boxShadow: "0 4px 24px rgba(0,0,0,0.10)",
+          borderRadius: 2,
+          overflow: "hidden",
+        }}
+      >
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
           {children}
           {/* Spacer absorbs remaining height so the page footer always sits at
@@ -123,9 +133,9 @@ function Page({
           </span>
         </div>
       </div>
-      {/* Hairline page break — keeps the "stacked sheets" feel without
-          screaming at the reader. Previously a 12px solid bar. */}
-      <div style={{ height: 1, background: `${BORDER}` }} />
+      {/* Transparent page break — outer #ebebeb shows through, so each Page
+          reads as a separate sheet sitting on a desk. */}
+      <div style={{ height: 28 }} />
     </>
   );
 }
@@ -244,7 +254,7 @@ export default function WhitepaperPage() {
 
       {/* ── Content ────────────────────────────────────────────────────────── */}
       <div style={{ flex: 1, userSelect: "none", padding: "0 16px 64px" }}>
-      <div style={{ maxWidth: 900, margin: "0 auto", zoom, background: CREAM, boxShadow: "0 4px 24px rgba(0,0,0,0.12)", borderRadius: 2 }}>
+      <div style={{ maxWidth: 900, margin: "0 auto", zoom }}>
 
         {/* ── PAGE 01: COVER ─────────────────────────────────────────────── */}
         <Page num={1} fillBottom={false}>
@@ -846,7 +856,12 @@ export default function WhitepaperPage() {
         </Page>
 
         {/* ── DOCUMENT FOOTER ────────────────────────────────────────────── */}
-        <div style={{ background: LIGHT_HERO, padding: "32px 48px", borderTop: `1px solid ${LIGHT_HERO_BORDER}` }}>
+        <div style={{
+          background: LIGHT_HERO,
+          padding: "32px 48px",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.10)",
+          borderRadius: 2,
+        }}>
           <div style={{ display: "flex", alignItems: "center", gap: 32, flexWrap: "wrap" }}>
             <a
               href="https://alpinedd.com"
