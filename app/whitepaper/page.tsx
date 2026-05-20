@@ -90,7 +90,7 @@ function Page({ num, children }: { num: number; children: React.ReactNode }) {
   return (
     <>
       <div style={{ minHeight: PAGE_H, display: "flex", flexDirection: "column" }}>
-        <div style={{ flex: 1 }}>{children}</div>
+        <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>{children}</div>
         <div style={{
           padding: "12px 48px", display: "flex", alignItems: "center", justifyContent: "space-between",
           borderTop: `1px solid ${BORDER}`,
@@ -226,7 +226,7 @@ export default function WhitepaperPage() {
 
         {/* ── PAGE 01: COVER ─────────────────────────────────────────────── */}
         <Page num={1}>
-          <div style={{ display: "flex", flexDirection: "column", height: "100%", position: "relative", overflow: "hidden", background: LIGHT_HERO }}>
+          <div style={{ display: "flex", flexDirection: "column", flex: 1, position: "relative", overflow: "hidden", background: LIGHT_HERO }}>
 
             {/* Decorative background elements */}
             <svg style={{ position: "absolute", top: 0, right: 0, width: 480, height: 480, opacity: 0.18, pointerEvents: "none" }} viewBox="0 0 480 480" fill="none">
