@@ -7,7 +7,7 @@ import { BG_CARD, INK, MUTED, VIOLET, GREEN, BORDER, LS_BODY } from "@/lib/const
 
 export default function FloatingSubscribe({
   source = "whitepaper",
-  heading = "New ODD case study every other Tuesday.",
+  heading = "ODD case study, every other Tuesday.",
 }: {
   source?: string;
   heading?: string;
@@ -98,7 +98,7 @@ export default function FloatingSubscribe({
         </p>
         <p
           className="font-heading"
-          style={{ fontSize: 15, fontWeight: 700, color: INK, letterSpacing: "-0.01em", lineHeight: 1.35, marginBottom: 12 }}
+          style={{ fontSize: 14, fontWeight: 700, color: INK, letterSpacing: "-0.015em", lineHeight: 1.35, marginBottom: 12, whiteSpace: "nowrap" }}
         >
           {heading}
         </p>
