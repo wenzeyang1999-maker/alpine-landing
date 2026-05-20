@@ -20,7 +20,7 @@ const LIGHT_HERO_BORDER = "#e5e7eb";
 
 function SectionHero({ num, title, id }: { num: string; title: string; id?: string }) {
   return (
-    <div id={id} className="relative overflow-hidden" style={{ background: LIGHT_HERO, padding: "48px 48px 40px", borderBottom: `1px solid ${LIGHT_HERO_BORDER}`, scrollMarginTop: 80 }}>
+    <div id={id} className="relative overflow-hidden" style={{ background: LIGHT_HERO, padding: "48px 48px 40px", scrollMarginTop: 80 }}>
       <div
         className="absolute right-8 top-1/2 -translate-y-1/2 font-bold select-none pointer-events-none"
         style={{ fontSize: 160, color: "rgba(15,31,61,0.05)", lineHeight: 1, letterSpacing: "-0.05em" }}
@@ -68,11 +68,17 @@ function Divider() {
 
 function PullQuote({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ background: LIGHT_HERO, borderRadius: 8, padding: "28px 36px", margin: "36px 0", border: `1px solid ${LIGHT_HERO_BORDER}` }}>
-      <p style={{ fontSize: 17, fontStyle: "italic", color: BODY, lineHeight: 1.7, margin: 0 }}>
+    <blockquote
+      style={{
+        margin: "44px 0",
+        paddingLeft: 28,
+        borderLeft: `3px solid ${GOLD}`,
+      }}
+    >
+      <p style={{ fontSize: 20, fontStyle: "italic", fontWeight: 500, color: BODY, lineHeight: 1.55, margin: 0, letterSpacing: "-0.005em" }}>
         {children}
       </p>
-    </div>
+    </blockquote>
   );
 }
 
@@ -86,11 +92,25 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 
 const PAGE_H = 1165;
 
-function Page({ num, children }: { num: number; children: React.ReactNode }) {
+function Page({
+  num,
+  children,
+  fillBottom = true,
+}: {
+  num: number;
+  children: React.ReactNode;
+  fillBottom?: boolean;
+}) {
   return (
     <>
       <div style={{ minHeight: PAGE_H, display: "flex", flexDirection: "column" }}>
-        <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>{children}</div>
+        <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+          {children}
+          {/* Spacer absorbs remaining height so the page footer always sits at
+              the bottom of the 1165px page. Skip on pages where a child already
+              uses flex: 1 to fill (e.g. the cover). */}
+          {fillBottom && <div style={{ flex: 1 }} aria-hidden />}
+        </div>
         <div style={{
           padding: "12px 48px", display: "flex", alignItems: "center", justifyContent: "space-between",
           borderTop: `1px solid ${BORDER}`,
@@ -103,7 +123,9 @@ function Page({ num, children }: { num: number; children: React.ReactNode }) {
           </span>
         </div>
       </div>
-      <div style={{ height: 12, background: "rgba(0,0,0,0.08)" }} />
+      {/* Hairline page break — keeps the "stacked sheets" feel without
+          screaming at the reader. Previously a 12px solid bar. */}
+      <div style={{ height: 1, background: `${BORDER}` }} />
     </>
   );
 }
@@ -225,7 +247,7 @@ export default function WhitepaperPage() {
       <div style={{ maxWidth: 900, margin: "0 auto", zoom, background: CREAM, boxShadow: "0 4px 24px rgba(0,0,0,0.12)", borderRadius: 2 }}>
 
         {/* ── PAGE 01: COVER ─────────────────────────────────────────────── */}
-        <Page num={1}>
+        <Page num={1} fillBottom={false}>
           <div style={{ display: "flex", flexDirection: "column", flex: 1, position: "relative", overflow: "hidden", background: LIGHT_HERO }}>
 
             {/* Decorative background elements */}
@@ -235,7 +257,7 @@ export default function WhitepaperPage() {
               <circle cx="380" cy="100" r="160" stroke={GOLD} strokeWidth="1"/>
               <circle cx="380" cy="100" r="80"  stroke={GOLD} strokeWidth="1"/>
             </svg>
-            <svg style={{ position: "absolute", bottom: 80, right: 48, width: 260, height: 160, opacity: 0.35, pointerEvents: "none" }} viewBox="0 0 260 160" fill="none">
+            <svg style={{ position: "absolute", bottom: 180, right: 48, width: 280, height: 180, opacity: 0.35, pointerEvents: "none" }} viewBox="0 0 260 160" fill="none">
               <polyline points="0,140 52,95 104,115 156,50 208,70 260,10" stroke={GOLD} strokeWidth="2" strokeLinejoin="round"/>
               <polyline points="0,140 52,120 104,130 156,80 208,100 260,40" stroke={BODY} strokeWidth="1" strokeLinejoin="round" strokeDasharray="4 4"/>
               {[0,52,104,156,208,260].map((x,i) => {
@@ -350,7 +372,7 @@ export default function WhitepaperPage() {
           </div>
 
           {/* Body */}
-          <div style={{ padding: "40px 48px 0" }}>
+          <div style={{ padding: "40px 48px 48px" }}>
             <p style={{ fontSize: 15, color: BODY, lineHeight: 1.8, margin: "0 0 32px" }}>
               Emerging VC managers rarely fail institutional operational due diligence randomly. Their scorecards tend to follow a predictable profile: clean fund terms and cooperative transparency at the top; governance and valuation infrastructure in the middle; compliance and cybersecurity gaps at the bottom. The pattern is consistent enough to be actionable.
             </p>
@@ -375,8 +397,7 @@ export default function WhitepaperPage() {
 
         {/* ── PAGE 03: TABLE OF CONTENTS ─────────────────────────────────── */}
         <Page num={3}>
-          <div style={{ padding: "48px 48px 0" }}>
-            <Divider />
+          <div style={{ padding: "56px 48px 48px" }}>
             <SectionLabel>Contents</SectionLabel>
             <h2 style={{ fontSize: 32, fontWeight: 700, color: BODY, margin: "0 0 32px", letterSpacing: "-0.02em" }}>Table of Contents</h2>
             <div style={{ borderTop: `1px solid ${BORDER}` }}>
@@ -450,7 +471,7 @@ export default function WhitepaperPage() {
         {/* ── PAGE 04: SECTION 01 ────────────────────────────────────────── */}
         <Page num={4}>
           <SectionHero num="01" title="The Emerging VC Readiness Pattern" id="section-01" />
-          <div style={{ padding: "48px 48px 0" }}>
+          <div style={{ padding: "48px 48px 48px" }}>
             <p style={{ fontSize: 17, fontStyle: "italic", color: BODY, lineHeight: 1.65, margin: "0 0 32px" }}>
               Emerging venture capital managers fail institutional operational due diligence in remarkably consistent ways. The failures are not random, not idiosyncratic, and not primarily a function of individual care or carelessness. They follow a pattern legible to anyone who has read enough reports.
             </p>
@@ -499,8 +520,7 @@ export default function WhitepaperPage() {
 
         {/* ── PAGE 05: FIGURE 1 ──────────────────────────────────────────── */}
         <Page num={5}>
-          <div style={{ padding: "48px 48px 0" }}>
-            <Divider />
+          <div style={{ padding: "56px 48px 48px" }}>
             <SectionLabel>Figure 1</SectionLabel>
             <h3 style={{ fontSize: 22, fontWeight: 700, color: BODY, margin: "0 0 8px" }}>A Typical Emerging VC ODD Profile</h3>
             <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.6, margin: "0 0 24px", borderLeft: `3px solid ${BORDER}`, paddingLeft: 16 }}>
@@ -536,7 +556,7 @@ export default function WhitepaperPage() {
         {/* ── PAGE 06: SECTION 02 ────────────────────────────────────────── */}
         <Page num={6}>
           <SectionHero num="02" title={"Findings That Signal Trajectory, Findings That Don't"} id="section-02" />
-          <div style={{ padding: "48px 48px 0" }}>
+          <div style={{ padding: "48px 48px 48px" }}>
             <p style={{ fontSize: 17, fontStyle: "italic", color: BODY, lineHeight: 1.65, margin: "0 0 32px" }}>
               The archetype establishes which findings tend to appear on an emerging manager&apos;s scorecard. It does not establish which of those findings tend to move.
             </p>
@@ -568,7 +588,7 @@ export default function WhitepaperPage() {
         {/* ── PAGE 07: SECTION 03 ────────────────────────────────────────── */}
         <Page num={7}>
           <SectionHero num="03" title="Structural vs Fixable" id="section-03" />
-          <div style={{ padding: "48px 48px 0" }}>
+          <div style={{ padding: "48px 48px 48px" }}>
             <p style={{ fontSize: 17, fontStyle: "italic", color: BODY, lineHeight: 1.65, margin: "0 0 32px" }}>
               The observational cut in Section 2 maps onto an operational distinction that emerging managers can use directly. Findings on an ODD scorecard are either structural or fixable — and in most cases, the distinction follows from what the finding is tied to.
             </p>
@@ -612,7 +632,7 @@ export default function WhitepaperPage() {
         {/* ── PAGE 08: SECTION 04 ────────────────────────────────────────── */}
         <Page num={8}>
           <SectionHero num="04" title="Closing the Fixable Column" id="section-04" />
-          <div style={{ padding: "48px 48px 0" }}>
+          <div style={{ padding: "48px 48px 48px" }}>
             <p style={{ fontSize: 17, fontStyle: "italic", color: BODY, lineHeight: 1.65, margin: "0 0 24px" }}>
               The practical question for an emerging manager preparing for institutional diligence is not whether to address the fixable column — but in what order.
             </p>
@@ -650,7 +670,7 @@ export default function WhitepaperPage() {
         {/* ── PAGE 09: SECTION 05 ────────────────────────────────────────── */}
         <Page num={9}>
           <SectionHero num="05" title="Where Readiness Compounds" id="section-05" />
-          <div style={{ padding: "48px 48px 0" }}>
+          <div style={{ padding: "48px 48px 48px" }}>
             <p style={{ fontSize: 17, fontStyle: "italic", color: BODY, lineHeight: 1.65, margin: "0 0 32px" }}>
               Fund-side readiness is necessary, but it is not sufficient. The same diligence logic applies one level down — at the portfolio level — and one level inward, at the operational structure that every diligence finding ultimately tests.
             </p>
@@ -692,7 +712,7 @@ export default function WhitepaperPage() {
         {/* ── PAGE 10: SECTION 06 ────────────────────────────────────────── */}
         <Page num={10}>
           <SectionHero num="06" title="About the Authors" id="section-06" />
-          <div style={{ padding: "48px 48px 0" }}>
+          <div style={{ padding: "48px 48px 48px" }}>
             <Divider />
             {[
               {
@@ -763,13 +783,26 @@ export default function WhitepaperPage() {
                 </div>
               </div>
             ))}
+
+            {/* Collaboration callout — fills the page and gives the reader
+                somewhere to go next. */}
+            <div style={{ background: LIGHT_HERO, border: `1px solid ${LIGHT_HERO_BORDER}`, borderRadius: 8, padding: "28px 32px", marginTop: 8 }}>
+              <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: GOLD, margin: "0 0 12px" }}>
+                Continue the conversation
+              </p>
+              <p style={{ fontSize: 16, fontWeight: 600, color: BODY, margin: "0 0 8px", lineHeight: 1.45 }}>
+                This paper is part of an ongoing collaboration between Alpine Due Diligence and Acephalt.
+              </p>
+              <p style={{ fontSize: 14, color: MUTED, lineHeight: 1.7, margin: 0 }}>
+                For comments, citations, or a private walkthrough of how the framework applies to a specific manager or portfolio company, write to <a href="mailto:azhang@alpinedd.com" style={{ color: GOLD, textDecoration: "none" }}>azhang@alpinedd.com</a>. To receive bi-weekly case analysis, subscribe at <a href="https://alpinedd.com" target="_blank" rel="noopener noreferrer" style={{ color: GOLD, textDecoration: "none" }}>alpinedd.com</a>.
+              </p>
+            </div>
           </div>
         </Page>
 
         {/* ── PAGE 11: APPENDIX A ────────────────────────────────────────── */}
         <Page num={11}>
-          <div id="appendix-a" style={{ padding: "48px 48px 0", scrollMarginTop: 80 }}>
-            <Divider />
+          <div id="appendix-a" style={{ padding: "56px 48px 48px", scrollMarginTop: 80 }}>
             <SectionLabel>Appendix A</SectionLabel>
             <h2 style={{ fontSize: 32, fontWeight: 700, color: BODY, margin: "0 0 8px", letterSpacing: "-0.02em" }}>Readiness Summary<br />by ODD Chapter</h2>
             <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.6, margin: "0 0 28px" }}>
