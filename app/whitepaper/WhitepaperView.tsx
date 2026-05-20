@@ -437,9 +437,9 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
                 { num: "01", title: "The Emerging VC Readiness Pattern",                    page: "04", anchor: "section-01" },
                 { num: "02", title: "Findings That Signal Trajectory, Findings That Don't", page: "07", anchor: "section-02" },
                 { num: "03", title: "Structural vs Fixable",                                page: "08", anchor: "section-03" },
-                { num: "04", title: "Closing the Fixable Column",                           page: "09", anchor: "section-04" },
-                { num: "05", title: "Where Readiness Compounds",                            page: "10", anchor: "section-05" },
-                { num: "06", title: "About the Authors",                                    page: "11", anchor: "section-06" },
+                { num: "04", title: "Closing the Fixable Column",                           page: "10", anchor: "section-04" },
+                { num: "05", title: "Where Readiness Compounds",                            page: "11", anchor: "section-05" },
+                { num: "06", title: "About the Authors",                                    page: "12", anchor: "section-06" },
               ].map(({ num, title, page, anchor }) => (
                 <a
                   key={num}
@@ -557,43 +557,33 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
 
         {/* ── PAGE 06: FIGURE 1 ──────────────────────────────────────────── */}
         <Page num={6}>
-          <div style={{ padding: "44px 48px 36px" }}>
+          <div style={{ padding: "56px 48px 48px" }}>
             <SectionLabel>Figure 1</SectionLabel>
             <h3 style={{ fontSize: 22, fontWeight: 700, color: BODY, margin: "0 0 8px" }}>A Typical Emerging VC ODD Profile</h3>
-            <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.55, margin: "0 0 14px", borderLeft: `3px solid ${BORDER}`, paddingLeft: 16 }}>
-              Composite across the eight-chapter institutional ODD framework. Findings are tagged <strong style={{ color: STALL_C }}>STRUCTURAL</strong> (tied to scale; resolves when the underlying variable changes) or <strong style={{ color: PASS_C }}>FIXABLE</strong> (resolvable within a quarter with intent and modest budget, regardless of fund size).
+            <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.6, margin: "0 0 24px", borderLeft: `3px solid ${BORDER}`, paddingLeft: 16 }}>
+              Composite across the eight-chapter institutional ODD framework. The typical emerging VC profile resolves into three bands: chapters that usually pass, chapters that stall at emerging-manager scale, and chapters that fail because non-revenue infrastructure has been deferred.
             </p>
             <div style={{ border: `1px solid ${BORDER}`, borderRadius: 8, overflow: "hidden" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "36px 220px 96px 1fr", background: LIGHT_HERO, padding: "9px 18px", gap: 14, borderBottom: `1px solid ${LIGHT_HERO_BORDER}` }}>
-                {["Ch.", "Chapter", "Rating", "Findings"].map(h => (
+              <div style={{ display: "grid", gridTemplateColumns: "48px 280px 120px 1fr", background: LIGHT_HERO, padding: "10px 20px", gap: 16, borderBottom: `1px solid ${LIGHT_HERO_BORDER}` }}>
+                {["Ch.", "Chapter", "Rating", "Typical Findings"].map(h => (
                   <p key={h} style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", color: MUTED, textTransform: "uppercase", margin: 0 }}>{h}</p>
                 ))}
               </div>
               {[
-                { n: "1", ch: "Manager, Ownership & Governance",                   r: "STALL" as const, findings: [{ t: "STRUCTURAL", f: "Single back-office role; no formal succession plan." }, { t: "FIXABLE", f: "Background checks completed internally." }] },
-                { n: "2", ch: "Legal, Regulatory & Compliance",                    r: "FAIL"  as const, findings: [{ t: "FIXABLE", f: "Investment professional acting as compliance officer; no attestation cycle; no annual training; policy set at ERA minimums only." }] },
-                { n: "3", ch: "Technology, Cybersecurity & Business Resilience",   r: "FAIL"  as const, findings: [{ t: "FIXABLE", f: "No cybersecurity policy; no incident response plan; no endpoint controls or training; no written BCP." }] },
-                { n: "4", ch: "Fund Structure, Terms & Investor Alignment",        r: "PASS"  as const, findings: [{ t: "STRUCTURAL", f: "Market-standard terms; reasonable fees; clawback and key-person provisions in place." }] },
-                { n: "5", ch: "Service Providers, Delegation & Oversight",         r: "PASS"  as const, findings: [{ t: "STRUCTURAL", f: "Institutional administrator, auditor, and banker; continuation of prior-fund arrangements." }] },
-                { n: "6", ch: "Investment Operations & Portfolio Controls",        r: "STALL" as const, findings: [{ t: "STRUCTURAL", f: "No internal accounting; reliance on admin for books and records." }, { t: "FIXABLE", f: "Excel-based portfolio management; no formal allocation policy." }] },
-                { n: "7", ch: "Valuation, Asset Existence & Investor Reporting",   r: "STALL" as const, findings: [{ t: "STRUCTURAL", f: "Front office approves its own marks; waterfall maintained in Excel." }, { t: "FIXABLE", f: "No formal valuation committee." }] },
-                { n: "8", ch: "Manager Transparency & LP Communications",          r: "PASS"  as const, findings: [{ t: "STRUCTURAL", f: "Cooperative diligence posture; proactive disclosure; responsive to follow-up." }] },
+                { n: "1", ch: "Manager, Ownership & Governance",                   r: "STALL" as const, findings: "Single back-office role; no formal succession plan; employee background checks completed internally." },
+                { n: "2", ch: "Legal, Regulatory & Compliance",                    r: "FAIL"  as const, findings: "Investment professional acting as compliance officer; no attestation or annual training program; written policy set at ERA minimums only." },
+                { n: "3", ch: "Technology, Cybersecurity & Business Resilience",   r: "FAIL"  as const, findings: "No formal cyber policy; no incident response plan; no written business continuity plan; no endpoint controls or training program." },
+                { n: "4", ch: "Fund Structure, Terms & Investor Alignment",        r: "PASS"  as const, findings: "Market-standard terms; reasonable fee structure; clawback and key person provisions in place." },
+                { n: "5", ch: "Service Providers, Delegation & Oversight",         r: "PASS"  as const, findings: "Established administrator, auditor, and banker; continuation of prior-fund arrangements." },
+                { n: "6", ch: "Investment Operations & Portfolio Controls",         r: "STALL" as const, findings: "No internal accounting or cash tracking; Excel-based portfolio management; reliance on admin for books and records." },
+                { n: "7", ch: "Valuation, Asset Existence & Investor Reporting",   r: "STALL" as const, findings: "No formal valuation committee; front office approves its own marks; waterfall maintained in Excel." },
+                { n: "8", ch: "Manager Transparency & LP Communications",          r: "PASS"  as const, findings: "Cooperative diligence posture; proactive disclosure of weaknesses; responsive to follow-up." },
               ].map(({ n, ch, r, findings }, i) => (
-                <div key={n} style={{ display: "grid", gridTemplateColumns: "36px 220px 96px 1fr", padding: "11px 18px", borderTop: `1px solid ${BORDER}`, background: i % 2 === 1 ? "#faf7f2" : "#fff", gap: 14, alignItems: "start" }}>
+                <div key={n} style={{ display: "grid", gridTemplateColumns: "48px 280px 120px 1fr", padding: "14px 20px", borderTop: `1px solid ${BORDER}`, background: i % 2 === 1 ? "#faf7f2" : "#fff", gap: 16, alignItems: "start" }}>
                   <p style={{ fontSize: 12, color: MUTED, margin: 0 }}>{n}</p>
-                  <p style={{ fontSize: 13, fontWeight: 500, color: BODY, margin: 0, lineHeight: 1.35 }}>{ch}</p>
+                  <p style={{ fontSize: 14, fontWeight: 500, color: BODY, margin: 0 }}>{ch}</p>
                   <div><RatingBadge rating={r} /></div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                    {findings.map(({ t, f }) => {
-                      const tc = t === "STRUCTURAL" ? STALL_C : PASS_C;
-                      return (
-                        <div key={t} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-                          <Tag color={tc}>{t}</Tag>
-                          <span style={{ fontSize: 12, color: MUTED, lineHeight: 1.5 }}>{f}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
+                  <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.6, margin: 0 }}>{findings}</p>
                 </div>
               ))}
             </div>
@@ -676,8 +666,53 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
           </div>
         </Page>
 
-        {/* ── PAGE 09: SECTION 04 ────────────────────────────────────────── */}
+        {/* ── PAGE 09: FIGURE 3 — Chapter-by-Chapter Diagnostic Map ───────── */}
         <Page num={9}>
+          <div style={{ padding: "44px 48px 36px" }}>
+            <SectionLabel>Figure 3</SectionLabel>
+            <h3 style={{ fontSize: 22, fontWeight: 700, color: BODY, margin: "0 0 8px" }}>Structural vs Fixable, by Chapter</h3>
+            <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.55, margin: "0 0 18px", borderLeft: `3px solid ${BORDER}`, paddingLeft: 16 }}>
+              The same eight-chapter view as Figure 1, now with findings sorted into the categories defined in Section 03. A diagnostic map, not a remediation order — Section 04 sets the order.
+            </p>
+            <div style={{ border: `1px solid ${BORDER}`, borderRadius: 8, overflow: "hidden" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "36px 220px 96px 1fr", background: LIGHT_HERO, padding: "9px 18px", gap: 14, borderBottom: `1px solid ${LIGHT_HERO_BORDER}` }}>
+                {["Ch.", "Chapter", "Rating", "Findings"].map(h => (
+                  <p key={h} style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", color: MUTED, textTransform: "uppercase", margin: 0 }}>{h}</p>
+                ))}
+              </div>
+              {[
+                { n: "1", ch: "Manager, Ownership & Governance",                   r: "STALL" as const, findings: [{ t: "STRUCTURAL", f: "Single back-office role; no formal succession plan." }, { t: "FIXABLE", f: "Background checks completed internally." }] },
+                { n: "2", ch: "Legal, Regulatory & Compliance",                    r: "FAIL"  as const, findings: [{ t: "FIXABLE", f: "Investment professional acting as compliance officer; no attestation cycle; no annual training; policy at ERA minimums only." }] },
+                { n: "3", ch: "Technology, Cybersecurity & Business Resilience",   r: "FAIL"  as const, findings: [{ t: "FIXABLE", f: "No cybersecurity policy; no incident response plan; no endpoint controls or training; no written BCP." }] },
+                { n: "4", ch: "Fund Structure, Terms & Investor Alignment",        r: "PASS"  as const, findings: [{ t: "STRUCTURAL", f: "Market-standard terms; reasonable fees; clawback and key-person provisions in place." }] },
+                { n: "5", ch: "Service Providers, Delegation & Oversight",         r: "PASS"  as const, findings: [{ t: "STRUCTURAL", f: "Institutional administrator, auditor, and banker; continuation of prior-fund arrangements." }] },
+                { n: "6", ch: "Investment Operations & Portfolio Controls",        r: "STALL" as const, findings: [{ t: "STRUCTURAL", f: "No internal accounting; reliance on admin for books and records." }, { t: "FIXABLE", f: "Excel-based portfolio management; no formal allocation policy." }] },
+                { n: "7", ch: "Valuation, Asset Existence & Investor Reporting",   r: "STALL" as const, findings: [{ t: "STRUCTURAL", f: "Front office approves its own marks; waterfall maintained in Excel." }, { t: "FIXABLE", f: "No formal valuation committee." }] },
+                { n: "8", ch: "Manager Transparency & LP Communications",          r: "PASS"  as const, findings: [{ t: "STRUCTURAL", f: "Cooperative diligence posture; proactive disclosure; responsive to follow-up." }] },
+              ].map(({ n, ch, r, findings }, i) => (
+                <div key={n} style={{ display: "grid", gridTemplateColumns: "36px 220px 96px 1fr", padding: "11px 18px", borderTop: `1px solid ${BORDER}`, background: i % 2 === 1 ? "#faf7f2" : "#fff", gap: 14, alignItems: "start" }}>
+                  <p style={{ fontSize: 12, color: MUTED, margin: 0 }}>{n}</p>
+                  <p style={{ fontSize: 13, fontWeight: 500, color: BODY, margin: 0, lineHeight: 1.35 }}>{ch}</p>
+                  <div><RatingBadge rating={r} /></div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    {findings.map(({ t, f }) => {
+                      const tc = t === "STRUCTURAL" ? STALL_C : PASS_C;
+                      return (
+                        <div key={t} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+                          <Tag color={tc}>{t}</Tag>
+                          <span style={{ fontSize: 12, color: MUTED, lineHeight: 1.5 }}>{f}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Page>
+
+        {/* ── PAGE 10: SECTION 04 ────────────────────────────────────────── */}
+        <Page num={10}>
           <SectionHero num="04" title="Closing the Fixable Column" id="section-04" />
           <div style={{ padding: "32px 48px 32px" }}>
             <p style={{ fontSize: 17, fontStyle: "italic", color: BODY, lineHeight: 1.6, margin: "0 0 20px" }}>
@@ -714,8 +749,8 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
           </div>
         </Page>
 
-        {/* ── PAGE 10: SECTION 05 ────────────────────────────────────────── */}
-        <Page num={10}>
+        {/* ── PAGE 11: SECTION 05 ────────────────────────────────────────── */}
+        <Page num={11}>
           <SectionHero num="05" title="Where Readiness Compounds" id="section-05" />
           <div style={{ padding: "32px 48px 32px" }}>
             <p style={{ fontSize: 17, fontStyle: "italic", color: BODY, lineHeight: 1.6, margin: "0 0 24px" }}>
@@ -756,8 +791,8 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
           </div>
         </Page>
 
-        {/* ── PAGE 11: SECTION 06 ────────────────────────────────────────── */}
-        <Page num={11}>
+        {/* ── PAGE 12: SECTION 06 ────────────────────────────────────────── */}
+        <Page num={12}>
           <SectionHero num="06" title="About the Authors" id="section-06" />
           <div style={{ padding: "48px 48px 48px" }}>
             <Divider />
