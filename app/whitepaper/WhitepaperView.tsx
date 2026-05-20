@@ -434,12 +434,12 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
             <div style={{ borderTop: `1px solid ${BORDER}` }}>
               {[
                 { num: "01", title: "The Emerging VC Readiness Pattern",                    page: "04", anchor: "section-01" },
-                { num: "02", title: "Findings That Signal Trajectory, Findings That Don't", page: "06", anchor: "section-02" },
-                { num: "03", title: "Structural vs Fixable",                                page: "07", anchor: "section-03" },
-                { num: "04", title: "Closing the Fixable Column",                           page: "08", anchor: "section-04" },
-                { num: "05", title: "Where Readiness Compounds",                            page: "09", anchor: "section-05" },
-                { num: "06", title: "About the Authors",                                    page: "10", anchor: "section-06" },
-                { num: "A",  title: "Readiness Summary by ODD Chapter",                     page: "11", anchor: "appendix-a", appendix: true },
+                { num: "02", title: "Findings That Signal Trajectory, Findings That Don't", page: "07", anchor: "section-02" },
+                { num: "03", title: "Structural vs Fixable",                                page: "08", anchor: "section-03" },
+                { num: "04", title: "Closing the Fixable Column",                           page: "09", anchor: "section-04" },
+                { num: "05", title: "Where Readiness Compounds",                            page: "10", anchor: "section-05" },
+                { num: "06", title: "About the Authors",                                    page: "11", anchor: "section-06" },
+                { num: "A",  title: "Readiness Summary by ODD Chapter",                     page: "12", anchor: "appendix-a", appendix: true },
               ].map(({ num, title, page, anchor, appendix }) => (
                 <a
                   key={num}
@@ -499,7 +499,7 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
           </div>
         </Page>
 
-        {/* ── PAGE 04: SECTION 01 ────────────────────────────────────────── */}
+        {/* ── PAGE 04: SECTION 01 — The Pattern ───────────────────────────── */}
         <Page num={4}>
           <SectionHero num="01" title="The Emerging VC Readiness Pattern" id="section-01" />
           <div style={{ padding: "48px 48px 48px" }}>
@@ -517,11 +517,17 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
             <PullQuote>
               &quot;Two chapters then tend to come back red — Compliance and Cybersecurity. Their remedies require only attention and modest budget, not scale.&quot;
             </PullQuote>
-            <p style={{ fontSize: 15, color: BODY, lineHeight: 1.75, margin: "0 0 40px" }}>
+            <p style={{ fontSize: 15, color: BODY, lineHeight: 1.75, margin: "0 0 0" }}>
               This is not a description of one manager. It is a composite of the emerging manager profile. The specifics vary, but the shape is stable enough that a seasoned ODD analyst can often predict the broad scorecard before opening the binder — based on little more than fund size, team headcount, and vintage.
             </p>
-            <Divider />
-            <h3 style={{ fontSize: 20, fontWeight: 700, color: BODY, margin: "0 0 12px" }}>The Three-Band Profile</h3>
+          </div>
+        </Page>
+
+        {/* ── PAGE 05: SECTION 01 (cont.) — Three-Band Profile ────────────── */}
+        <Page num={5}>
+          <div style={{ padding: "56px 48px 48px" }}>
+            <SectionLabel>Section 01 · continued</SectionLabel>
+            <h3 style={{ fontSize: 26, fontWeight: 700, color: BODY, margin: "0 0 12px", letterSpacing: "-0.02em" }}>The Three-Band Profile</h3>
             <p style={{ fontSize: 15, color: BODY, lineHeight: 1.75, margin: "0 0 28px" }}>
               Mapped against the eight-chapter ODD framework, the emerging manager profile resolves into three distinct bands — each with a different underlying cause.
             </p>
@@ -549,8 +555,8 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
           </div>
         </Page>
 
-        {/* ── PAGE 05: FIGURE 1 ──────────────────────────────────────────── */}
-        <Page num={5}>
+        {/* ── PAGE 06: FIGURE 1 ──────────────────────────────────────────── */}
+        <Page num={6}>
           <div style={{ padding: "56px 48px 48px" }}>
             <SectionLabel>Figure 1</SectionLabel>
             <h3 style={{ fontSize: 22, fontWeight: 700, color: BODY, margin: "0 0 8px" }}>A Typical Emerging VC ODD Profile</h3>
@@ -584,8 +590,8 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
           </div>
         </Page>
 
-        {/* ── PAGE 06: SECTION 02 ────────────────────────────────────────── */}
-        <Page num={6}>
+        {/* ── PAGE 07: SECTION 02 ────────────────────────────────────────── */}
+        <Page num={7}>
           <SectionHero num="02" title={"Findings That Signal Trajectory, Findings That Don't"} id="section-02" />
           <div style={{ padding: "48px 48px 48px" }}>
             <p style={{ fontSize: 17, fontStyle: "italic", color: BODY, lineHeight: 1.65, margin: "0 0 32px" }}>
@@ -616,8 +622,8 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
           </div>
         </Page>
 
-        {/* ── PAGE 07: SECTION 03 ────────────────────────────────────────── */}
-        <Page num={7}>
+        {/* ── PAGE 08: SECTION 03 ────────────────────────────────────────── */}
+        <Page num={8}>
           <SectionHero num="03" title="Structural vs Fixable" id="section-03" />
           <div style={{ padding: "48px 48px 48px" }}>
             <p style={{ fontSize: 17, fontStyle: "italic", color: BODY, lineHeight: 1.65, margin: "0 0 32px" }}>
@@ -660,14 +666,14 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
           </div>
         </Page>
 
-        {/* ── PAGE 08: SECTION 04 ────────────────────────────────────────── */}
-        <Page num={8}>
+        {/* ── PAGE 09: SECTION 04 ────────────────────────────────────────── */}
+        <Page num={9}>
           <SectionHero num="04" title="Closing the Fixable Column" id="section-04" />
-          <div style={{ padding: "48px 48px 48px" }}>
-            <p style={{ fontSize: 17, fontStyle: "italic", color: BODY, lineHeight: 1.65, margin: "0 0 24px" }}>
+          <div style={{ padding: "32px 48px 32px" }}>
+            <p style={{ fontSize: 17, fontStyle: "italic", color: BODY, lineHeight: 1.6, margin: "0 0 20px" }}>
               The practical question for an emerging manager preparing for institutional diligence is not whether to address the fixable column — but in what order.
             </p>
-            <p style={{ fontSize: 15, color: BODY, lineHeight: 1.75, margin: "0 0 32px" }}>
+            <p style={{ fontSize: 15, color: BODY, lineHeight: 1.7, margin: "0 0 24px" }}>
               A manager who starts with the slowest items and works inward will arrive at the next diligence cycle with most of the column still open. A manager who works the list in the right order will arrive with most of it closed. For most emerging managers, the fixable column closes in roughly this sequence:
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -698,32 +704,32 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
           </div>
         </Page>
 
-        {/* ── PAGE 09: SECTION 05 ────────────────────────────────────────── */}
-        <Page num={9}>
+        {/* ── PAGE 10: SECTION 05 ────────────────────────────────────────── */}
+        <Page num={10}>
           <SectionHero num="05" title="Where Readiness Compounds" id="section-05" />
-          <div style={{ padding: "48px 48px 48px" }}>
-            <p style={{ fontSize: 17, fontStyle: "italic", color: BODY, lineHeight: 1.65, margin: "0 0 32px" }}>
+          <div style={{ padding: "32px 48px 32px" }}>
+            <p style={{ fontSize: 17, fontStyle: "italic", color: BODY, lineHeight: 1.6, margin: "0 0 24px" }}>
               Fund-side readiness is necessary, but it is not sufficient. The same diligence logic applies one level down — at the portfolio level — and one level inward, at the operational structure that every diligence finding ultimately tests.
             </p>
-            <div style={{ display: "flex", border: `1px solid ${BORDER}`, borderRadius: 8, overflow: "hidden", marginBottom: 36 }}>
+            <div style={{ display: "flex", border: `1px solid ${BORDER}`, borderRadius: 8, overflow: "hidden", marginBottom: 24 }}>
               {[
                 { num: "I",   title: "Manager-Level Readiness",  desc: "Fund terms, governance structure, compliance program, cybersecurity posture, operational controls" },
                 { num: "II",  title: "Portfolio-Level Readiness", desc: "Cap table cleanliness, IP assignment, contract execution, data room discipline, security posture" },
                 { num: "III", title: "Track Record & Next Raise", desc: "Portfolio diligence outcomes flow back through the track record to the manager's next institutional cycle" },
               ].map(({ num, title, desc }, i) => (
-                <div key={num} style={{ flex: 1, padding: "28px 24px", borderRight: i < 2 ? `1px solid ${BORDER}` : "none", background: i % 2 === 1 ? "#faf7f2" : "#fff" }}>
-                  <p style={{ fontSize: 28, fontStyle: "italic", fontWeight: 700, color: `${BODY}20`, margin: "0 0 12px" }}>{num}</p>
-                  <p style={{ fontSize: 15, fontWeight: 700, color: GOLD, margin: "0 0 8px" }}>{title}</p>
-                  <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.6, margin: "0 0 12px" }}>{desc}</p>
-                  {i < 2 && <p style={{ fontSize: 18, color: MUTED, margin: 0, textAlign: "right" }}>→</p>}
+                <div key={num} style={{ flex: 1, padding: "22px 20px", borderRight: i < 2 ? `1px solid ${BORDER}` : "none", background: i % 2 === 1 ? "#faf7f2" : "#fff" }}>
+                  <p style={{ fontSize: 24, fontStyle: "italic", fontWeight: 700, color: `${BODY}20`, margin: "0 0 8px" }}>{num}</p>
+                  <p style={{ fontSize: 14, fontWeight: 700, color: GOLD, margin: "0 0 6px" }}>{title}</p>
+                  <p style={{ fontSize: 12, color: MUTED, lineHeight: 1.55, margin: "0 0 8px" }}>{desc}</p>
+                  {i < 2 && <p style={{ fontSize: 16, color: MUTED, margin: 0, textAlign: "right" }}>→</p>}
                 </div>
               ))}
             </div>
-            <h3 style={{ fontSize: 20, fontWeight: 700, color: BODY, margin: "0 0 16px" }}>Readiness Compounds Through the Portfolio</h3>
-            <p style={{ fontSize: 15, color: BODY, lineHeight: 1.75, margin: "0 0 16px" }}>
+            <h3 style={{ fontSize: 20, fontWeight: 700, color: BODY, margin: "0 0 12px" }}>Readiness Compounds Through the Portfolio</h3>
+            <p style={{ fontSize: 14, color: BODY, lineHeight: 1.65, margin: "0 0 14px" }}>
               An emerging VC manager that passes its own ODD can still face the same readiness gap at the next raise if its underlying portfolio companies cannot withstand diligence conducted by others. Follow-on leads, co-investors, lenders, strategic partners, and eventual acquirers all run their own versions of deal-side diligence. A portfolio that enters those processes with unresolved findings can produce delay, markdown, renegotiation, or walk-away — each of which flows back to the fund&apos;s track record.
             </p>
-            <p style={{ fontSize: 15, color: BODY, lineHeight: 1.75, margin: "0 0 32px" }}>
+            <p style={{ fontSize: 14, color: BODY, lineHeight: 1.65, margin: "0 0 20px" }}>
               At the seed and early stages, portfolio company readiness tends to cluster around a recognizable set of findings. Cap tables may not have been cleaned up after founder departures or early angel rounds. Customer contracts may have been agreed informally. IP assignments may not have been completed when contractors left. Data rooms may exist as shared drives rather than structured diligence artifacts.
             </p>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
@@ -740,8 +746,8 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
           </div>
         </Page>
 
-        {/* ── PAGE 10: SECTION 06 ────────────────────────────────────────── */}
-        <Page num={10}>
+        {/* ── PAGE 11: SECTION 06 ────────────────────────────────────────── */}
+        <Page num={11}>
           <SectionHero num="06" title="About the Authors" id="section-06" />
           <div style={{ padding: "48px 48px 48px" }}>
             <Divider />
@@ -831,12 +837,12 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
           </div>
         </Page>
 
-        {/* ── PAGE 11: APPENDIX A ────────────────────────────────────────── */}
-        <Page num={11}>
-          <div id="appendix-a" style={{ padding: "56px 48px 48px", scrollMarginTop: 80 }}>
+        {/* ── PAGE 12: APPENDIX A ────────────────────────────────────────── */}
+        <Page num={12}>
+          <div id="appendix-a" style={{ padding: "44px 48px 36px", scrollMarginTop: 80 }}>
             <SectionLabel>Appendix A</SectionLabel>
-            <h2 style={{ fontSize: 32, fontWeight: 700, color: BODY, margin: "0 0 8px", letterSpacing: "-0.02em" }}>Readiness Summary<br />by ODD Chapter</h2>
-            <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.6, margin: "0 0 28px" }}>
+            <h2 style={{ fontSize: 30, fontWeight: 700, color: BODY, margin: "0 0 8px", letterSpacing: "-0.02em" }}>Readiness Summary<br />by ODD Chapter</h2>
+            <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.6, margin: "0 0 20px" }}>
               A reference view of the eight ODD chapters with representative structural and fixable findings. Intended as a diagnostic map rather than a ranking of severity or a prescriptive remediation order.
             </p>
             <div style={{ border: `1px solid ${BORDER}`, borderRadius: 8, overflow: "hidden" }}>
