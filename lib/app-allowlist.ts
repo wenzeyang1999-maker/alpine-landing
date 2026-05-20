@@ -10,6 +10,10 @@ export const APP_ADMIN_ALLOWLIST: ReadonlySet<string> = new Set([
   "awen@alpinedd.com",
   "azhang@alpinedd.com",
   "zkaishen@gmail.com",
+  // Demo account — credentials handled by the demo shortcut in
+  // app/api/app-portal/auth/login (demo@alpinedd.com / demo123). Listed here so
+  // it clears the login-page gate, the cookie-minting check, and middleware.
+  "demo@alpinedd.com",
 ]);
 
 export function isAppAdmin(email: string | null | undefined): boolean {
