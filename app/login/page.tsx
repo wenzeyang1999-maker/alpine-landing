@@ -125,7 +125,7 @@ export default function InvestorLoginPage() {
           </form>
 
           <p className="mt-5 text-center text-sm font-body leading-relaxed" style={{ color: MUTED }}>
-            Access is provisioned by your Alpine analyst. If you need credentials
+            Access is granted by Alpine support. If you need credentials
             or have trouble signing in, contact{" "}
             <a
               href="mailto:support@alpinedd.com"
