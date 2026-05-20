@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-const DEMO_EMAIL = "demo.investor@alpinedd.com";
+const DEMO_EMAIL = "demo@alpinedd.com";
 const DEMO_PASSWORD = "demo123";
 
 // ── Public surface — needs only the dev server ───────────────────────────────
