@@ -811,60 +811,53 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
 
             {/* Collaboration callout — fills the page and gives the reader
                 somewhere to go next. */}
-            <div style={{ background: LIGHT_HERO, border: `1px solid ${LIGHT_HERO_BORDER}`, borderRadius: 8, padding: "28px 32px", marginTop: 8 }}>
-              <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: GOLD, margin: "0 0 12px" }}>
+            <div style={{ background: LIGHT_HERO, border: `1px solid ${LIGHT_HERO_BORDER}`, borderRadius: 8, padding: "24px 28px", marginTop: 8 }}>
+              <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: GOLD, margin: "0 0 10px" }}>
                 Continue the conversation
               </p>
-              <p style={{ fontSize: 16, fontWeight: 600, color: BODY, margin: "0 0 8px", lineHeight: 1.45 }}>
+              <p style={{ fontSize: 15, fontWeight: 600, color: BODY, margin: "0 0 6px", lineHeight: 1.45 }}>
                 This paper is part of an ongoing collaboration between Alpine Due Diligence and Acephalt.
               </p>
-              <p style={{ fontSize: 14, color: MUTED, lineHeight: 1.7, margin: 0 }}>
+              <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.65, margin: 0 }}>
                 For comments, citations, or a private walkthrough of how the framework applies to a specific manager or portfolio company, write to <a href="mailto:azhang@alpinedd.com" style={{ color: GOLD, textDecoration: "none" }}>azhang@alpinedd.com</a>. To receive bi-weekly case analysis, subscribe at <a href="https://alpinedd.com" target="_blank" rel="noopener noreferrer" style={{ color: GOLD, textDecoration: "none" }}>alpinedd.com</a>.
+              </p>
+            </div>
+
+            {/* Closing brand strip — sits at the bottom of the final page. */}
+            <div style={{ display: "flex", alignItems: "center", gap: 24, flexWrap: "wrap", marginTop: 20, paddingTop: 16, borderTop: `1px solid ${BORDER}` }}>
+              <a
+                href="https://alpinedd.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/logo.png" alt="Alpine" style={{ height: 26, width: 26, objectFit: "contain", borderRadius: 6 }} />
+                <div>
+                  <p style={{ fontSize: 13, fontWeight: 700, color: BODY, margin: "0 0 1px" }}>Alpine Due Diligence</p>
+                  <p style={{ fontSize: 10, color: MUTED, margin: 0 }}>alpinedd.com</p>
+                </div>
+              </a>
+              <div style={{ width: 1, height: 24, background: LIGHT_HERO_BORDER }} />
+              <a
+                href="https://acephalt.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/acephalt-logo-transparent.png" alt="Acephalt" style={{ height: 26, width: 26, objectFit: "contain" }} />
+                <div>
+                  <p style={{ fontSize: 13, fontWeight: 700, color: BODY, margin: "0 0 1px" }}>Acephalt</p>
+                  <p style={{ fontSize: 10, color: MUTED, margin: 0 }}>acephalt.com</p>
+                </div>
+              </a>
+              <p style={{ marginLeft: "auto", fontSize: 10, color: MUTED, letterSpacing: "0.08em" }}>
+                ALPINE × ACEPHALT · CONFIDENTIAL
               </p>
             </div>
           </div>
         </Page>
-
-        {/* ── DOCUMENT FOOTER ────────────────────────────────────────────── */}
-        <div data-pdf-page style={{
-          background: LIGHT_HERO,
-          padding: "32px 48px",
-          boxShadow: "0 4px 24px rgba(0,0,0,0.10)",
-          borderRadius: 2,
-        }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 32, flexWrap: "wrap" }}>
-            <a
-              href="https://alpinedd.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ display: "flex", alignItems: "center", gap: 12, textDecoration: "none" }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo.png" alt="Alpine" style={{ height: 30, width: 30, objectFit: "contain", borderRadius: 6 }} />
-              <div>
-                <p style={{ fontSize: 14, fontWeight: 700, color: BODY, margin: "0 0 2px" }}>Alpine Due Diligence</p>
-                <p style={{ fontSize: 11, color: MUTED, margin: 0 }}>alpinedd.com</p>
-              </div>
-            </a>
-            <div style={{ width: 1, height: 28, background: LIGHT_HERO_BORDER }} />
-            <a
-              href="https://acephalt.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ display: "flex", alignItems: "center", gap: 12, textDecoration: "none" }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/acephalt-logo-transparent.png" alt="Acephalt" style={{ height: 30, width: 30, objectFit: "contain" }} />
-              <div>
-                <p style={{ fontSize: 14, fontWeight: 700, color: BODY, margin: "0 0 2px" }}>Acephalt</p>
-                <p style={{ fontSize: 11, color: MUTED, margin: 0 }}>acephalt.com</p>
-              </div>
-            </a>
-            <p style={{ marginLeft: "auto", fontSize: 11, color: MUTED, letterSpacing: "0.08em" }}>
-              ALPINE × ACEPHALT · CONFIDENTIAL
-            </p>
-          </div>
-        </div>
 
       </div>
       </div>
