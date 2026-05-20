@@ -4,7 +4,12 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { RefDot } from "@/components/app-portal/review/RefDot";
 import DocumentsPanel from "@/components/investor/DocumentsPanel";
-import { getReportContent, getReferencedDocs, topicNumbers } from "@/lib/investor/report-content";
+import {
+  getReportContent,
+  getReferencedDocs,
+  getReportPdfUrl,
+  topicNumbers,
+} from "@/lib/investor/report-content";
 import type { TopicInfo } from "@/lib/app-portal/ridgeline-data";
 import {
   INK,
@@ -658,6 +663,7 @@ function ViewToggle({ mode, onChange }: { mode: ViewMode; onChange: (m: ViewMode
 export default function InvestorReportReader({ slug }: { slug: string }) {
   const content = useMemo(() => getReportContent(slug), [slug]);
   const referencedDocs = useMemo(() => getReferencedDocs(slug), [slug]);
+  const pdfUrl = useMemo(() => getReportPdfUrl(slug), [slug]);
   const [viewMode, setViewMode] = useState<ViewMode>("report");
   const [activeSection, setActiveSection] = useState("overview");
 
@@ -736,13 +742,36 @@ export default function InvestorReportReader({ slug }: { slug: string }) {
               {entry.fundName}
             </h1>
           </div>
-          <span
-            className="shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-card font-mono text-[11px] font-bold uppercase"
-            style={{ background: `${ratingColor}1A`, color: ratingText }}
-          >
-            <span className="inline-block w-2 h-2 rounded-full" style={{ background: ratingColor }} aria-hidden />
-            {entry.rating}
-          </span>
+          <div className="flex items-center gap-2.5 shrink-0">
+            {pdfUrl && (
+              <a
+                href={pdfUrl}
+                download={`${entry.fundName} — Alpine ODD Report.pdf`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 font-body text-[13px] font-emphasis px-3 py-1.5 rounded-btn min-h-[36px] transition-opacity hover:opacity-90"
+                style={{ background: INK, color: "#fff" }}
+              >
+                <svg
+                  width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                <span className="hidden sm:inline">Download PDF</span>
+                <span className="sm:hidden">PDF</span>
+              </a>
+            )}
+            <span
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-card font-mono text-[11px] font-bold uppercase"
+              style={{ background: `${ratingColor}1A`, color: ratingText }}
+            >
+              <span className="inline-block w-2 h-2 rounded-full" style={{ background: ratingColor }} aria-hidden />
+              {entry.rating}
+            </span>
+          </div>
         </div>
         <div className="mx-auto max-w-6xl px-6 py-2.5">
           <ViewToggle mode={viewMode} onChange={handleModeChange} />

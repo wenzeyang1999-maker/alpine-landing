@@ -90,3 +90,10 @@ export function getReferencedDocs(slug: string): ReferencedDoc[] {
   }
   return out;
 }
+
+/** Public download URL for a fund's finalized ODD report PDF, or null. */
+export function getReportPdfUrl(slug: string): string | null {
+  const entry = getReportEntry(slug);
+  if (!entry?.reportPdf) return null;
+  return getDemoFileUrl(entry.reportPdf);
+}

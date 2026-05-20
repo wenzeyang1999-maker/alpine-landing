@@ -28,6 +28,8 @@ export interface ReportRegistryEntry {
   topicCount: number;
   /** Selects the data module the reader loads (lib/app-portal/*-data.ts). */
   dataKey: "aurora" | "trellis" | "ridgeline";
+  /** Filename of the finalized ODD report PDF (a DEMO_FILES key), if one exists. */
+  reportPdf?: string;
 }
 
 export const REPORT_REGISTRY: Record<string, ReportRegistryEntry> = {
@@ -40,6 +42,7 @@ export const REPORT_REGISTRY: Record<string, ReportRegistryEntry> = {
     oddScore: 82,
     topicCount: 8,
     dataKey: "aurora",
+    reportPdf: "sample_vc_aurora_iv.pdf",
   },
   "trellis-capital-iv": {
     slug: "trellis-capital-iv",
@@ -50,6 +53,7 @@ export const REPORT_REGISTRY: Record<string, ReportRegistryEntry> = {
     oddScore: 68,
     topicCount: 8,
     dataKey: "trellis",
+    reportPdf: "sample_vc_fund_iv_alt.pdf",
   },
   "ridgeline-capital-partners": {
     slug: "ridgeline-capital-partners",
