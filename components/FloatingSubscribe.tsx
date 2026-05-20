@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Check, X } from "lucide-react";
 import { BG_CARD, INK, MUTED, VIOLET, GREEN, BORDER, LS_BODY } from "@/lib/constants";
@@ -12,7 +12,25 @@ export default function FloatingSubscribe({
   source?: string;
   heading?: string;
 }) {
+  // On mobile (<=768px), start dismissed so it doesn't cover the cover hero.
+  // Reveal after the user has scrolled past ~40% of viewport — by then they're
+  // engaged with the content and the widget can ask for their email.
   const [open, setOpen] = useState(true);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    if (!isMobile) return;
+    setOpen(false);
+    const reveal = () => {
+      if (window.scrollY > window.innerHeight * 0.4) {
+        setOpen(true);
+        window.removeEventListener("scroll", reveal);
+      }
+    };
+    window.addEventListener("scroll", reveal, { passive: true });
+    return () => window.removeEventListener("scroll", reveal);
+  }, []);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [agreed, setAgreed] = useState(false);
@@ -72,13 +90,13 @@ export default function FloatingSubscribe({
 
   return (
     <div
-      className="fixed bottom-6 right-6 z-50 rounded-card overflow-hidden"
+      className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 rounded-card overflow-hidden"
       style={{
         background: BG_CARD,
         border: `1px solid ${BORDER}`,
         boxShadow: "0 12px 36px rgba(15,15,16,0.15)",
         width: 340,
-        maxWidth: "calc(100vw - 32px)",
+        maxWidth: "calc(100vw - 24px)",
       }}
     >
       <div className="relative px-5 pt-5 pb-4">
