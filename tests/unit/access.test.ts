@@ -25,45 +25,45 @@ vi.mock("@/lib/supabase", () => ({
 }));
 vi.mock("next/headers", () => ({ cookies: () => ({ get: () => undefined }) }));
 
-import { canAccessReport, getVisibleReports } from "@/lib/allocator/access";
+import { canAccessReport, getVisibleReports } from "@/lib/investor/access";
 
 beforeEach(() => {
   fixture.byTable = {};
 });
 
 describe("canAccessReport (IDOR guard)", () => {
-  it("allows a report that is assigned AND published for an active allocator", async () => {
+  it("allows a report that is assigned AND published for an active investor", async () => {
     fixture.byTable = {
-      allocators: { data: { is_active: true }, error: null },
+      investors: { data: { is_active: true }, error: null },
       report_publications: { data: { report_slug: "aurora-capital-iv" }, error: null },
-      allocator_reports: { data: { report_slug: "aurora-capital-iv" }, error: null },
+      investor_reports: { data: { report_slug: "aurora-capital-iv" }, error: null },
     };
     expect(await canAccessReport("alloc-1", "aurora-capital-iv")).toBe(true);
   });
 
   it("denies a report that is assigned but NOT published", async () => {
     fixture.byTable = {
-      allocators: { data: { is_active: true }, error: null },
+      investors: { data: { is_active: true }, error: null },
       report_publications: { data: null, error: null },
-      allocator_reports: { data: { report_slug: "aurora-capital-iv" }, error: null },
+      investor_reports: { data: { report_slug: "aurora-capital-iv" }, error: null },
     };
     expect(await canAccessReport("alloc-1", "aurora-capital-iv")).toBe(false);
   });
 
-  it("denies a published report the allocator is NOT assigned to", async () => {
+  it("denies a published report the investor is NOT assigned to", async () => {
     fixture.byTable = {
-      allocators: { data: { is_active: true }, error: null },
+      investors: { data: { is_active: true }, error: null },
       report_publications: { data: { report_slug: "aurora-capital-iv" }, error: null },
-      allocator_reports: { data: null, error: null },
+      investor_reports: { data: null, error: null },
     };
     expect(await canAccessReport("alloc-1", "aurora-capital-iv")).toBe(false);
   });
 
-  it("denies access for a deactivated allocator", async () => {
+  it("denies access for a deactivated investor", async () => {
     fixture.byTable = {
-      allocators: { data: { is_active: false }, error: null },
+      investors: { data: { is_active: false }, error: null },
       report_publications: { data: { report_slug: "aurora-capital-iv" }, error: null },
-      allocator_reports: { data: { report_slug: "aurora-capital-iv" }, error: null },
+      investor_reports: { data: { report_slug: "aurora-capital-iv" }, error: null },
     };
     expect(await canAccessReport("alloc-1", "aurora-capital-iv")).toBe(false);
   });
@@ -76,7 +76,7 @@ describe("canAccessReport (IDOR guard)", () => {
 describe("getVisibleReports", () => {
   it("returns only reports that are both assigned and published", async () => {
     fixture.byTable = {
-      allocator_reports: {
+      investor_reports: {
         data: [{ report_slug: "aurora-capital-iv" }, { report_slug: "trellis-capital-iv" }],
         error: null,
       },
@@ -86,9 +86,9 @@ describe("getVisibleReports", () => {
     expect(reports.map((r) => r.slug)).toEqual(["aurora-capital-iv"]);
   });
 
-  it("returns nothing when the allocator has no assignments", async () => {
+  it("returns nothing when the investor has no assignments", async () => {
     fixture.byTable = {
-      allocator_reports: { data: [], error: null },
+      investor_reports: { data: [], error: null },
       report_publications: { data: [], error: null },
     };
     expect(await getVisibleReports("alloc-1")).toEqual([]);

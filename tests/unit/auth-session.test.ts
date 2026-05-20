@@ -1,8 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { createHmac } from "crypto";
-import { signSession, verifySession } from "@/lib/allocator/auth-session";
+import { signSession, verifySession } from "@/lib/investor/auth-session";
 
-const SECRET = process.env.ALLOCATOR_SESSION_SECRET as string;
+const SECRET = process.env.INVESTOR_SESSION_SECRET as string;
 
 // Mirror the module's HMAC (HMAC-SHA256, hex, first 32 chars) with Node crypto
 // so the tests can construct expired / wrong-secret tokens.
@@ -14,7 +14,7 @@ function makeToken(email: string, expiresAt: number, secret = SECRET): string {
   return `${payload}|${sign(payload, secret)}`;
 }
 
-describe("allocator auth-session", () => {
+describe("investor auth-session", () => {
   it("verifies a freshly signed token and normalizes the email", async () => {
     const token = await signSession("Demo@Alpine.com");
     expect(await verifySession(token)).toBe("demo@alpine.com");

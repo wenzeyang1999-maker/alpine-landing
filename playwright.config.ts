@@ -1,9 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 
 /**
- * E2E config for the allocator portal.
+ * E2E config for the investor portal.
  *
- * The authenticated specs require the allocator migrations (020 + 021) to have
+ * The authenticated specs require the investor migrations (020 + 021) to have
  * been run against the Supabase instance the dev server points at. The public
  * specs (login render, logged-out redirect) need only the dev server.
  */

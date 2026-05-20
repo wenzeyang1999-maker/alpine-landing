@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { hashPassword } from "@/lib/allocator/password";
+import { hashPassword } from "@/lib/investor/password";
 
-// Mutable allocator row returned by the mocked Supabase client.
-const fixture = vi.hoisted(() => ({ allocatorRow: null as unknown }));
+// Mutable investor row returned by the mocked Supabase client.
+const fixture = vi.hoisted(() => ({ investorRow: null as unknown }));
 
 function makeQuery(result: { data: unknown; error: unknown }) {
   const q: Record<string, unknown> = {};
@@ -16,23 +16,23 @@ function makeQuery(result: { data: unknown; error: unknown }) {
 
 vi.mock("@/lib/supabase", () => ({
   supabase: {
-    from: () => makeQuery({ data: fixture.allocatorRow, error: null }),
+    from: () => makeQuery({ data: fixture.investorRow, error: null }),
   },
 }));
 
-import { POST } from "@/app/api/allocator/auth/login/route";
+import { POST } from "@/app/api/investor/auth/login/route";
 
 function loginRequest(body: unknown) {
-  return new Request("http://localhost/api/allocator/auth/login", {
+  return new Request("http://localhost/api/investor/auth/login", {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(body),
   });
 }
 
-describe("allocator login route", () => {
+describe("investor login route", () => {
   beforeEach(() => {
-    fixture.allocatorRow = null;
+    fixture.investorRow = null;
   });
 
   it("returns 400 when fields are missing", async () => {
@@ -40,8 +40,8 @@ describe("allocator login route", () => {
     expect(res.status).toBe(400);
   });
 
-  it("returns 200 and sets the allocator_session cookie on valid credentials", async () => {
-    fixture.allocatorRow = {
+  it("returns 200 and sets the investor_session cookie on valid credentials", async () => {
+    fixture.investorRow = {
       id: "alloc-1",
       email: "demo@example.com",
       password_hash: hashPassword("right-password"),
@@ -49,11 +49,11 @@ describe("allocator login route", () => {
     };
     const res = await POST(loginRequest({ email: "demo@example.com", password: "right-password" }) as never);
     expect(res.status).toBe(200);
-    expect(res.headers.get("set-cookie") ?? "").toContain("allocator_session=");
+    expect(res.headers.get("set-cookie") ?? "").toContain("investor_session=");
   });
 
   it("returns 401 on a wrong password", async () => {
-    fixture.allocatorRow = {
+    fixture.investorRow = {
       id: "alloc-1",
       email: "demo@example.com",
       password_hash: hashPassword("right-password"),
@@ -65,14 +65,14 @@ describe("allocator login route", () => {
   });
 
   it("returns an identical 401 for an unknown email (no account enumeration)", async () => {
-    fixture.allocatorRow = null;
+    fixture.investorRow = null;
     const res = await POST(loginRequest({ email: "ghost@example.com", password: "anything" }) as never);
     expect(res.status).toBe(401);
     expect((await res.json()).error).toBe("Invalid email or password.");
   });
 
   it("returns 401 for a deactivated account", async () => {
-    fixture.allocatorRow = {
+    fixture.investorRow = {
       id: "alloc-1",
       email: "demo@example.com",
       password_hash: hashPassword("right-password"),

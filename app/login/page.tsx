@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import SubpageLayout from "@/components/SubpageLayout";
 import { BG_CARD, INK, MUTED, SUBTLE, BORDER, VIOLET } from "@/lib/constants";
 
-export default function AllocatorLoginPage() {
+export default function InvestorLoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,7 +18,7 @@ export default function AllocatorLoginPage() {
     setError("");
 
     try {
-      const res = await fetch("/api/allocator/auth/login", {
+      const res = await fetch("/api/investor/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: email.trim(), password }),
@@ -50,7 +50,7 @@ export default function AllocatorLoginPage() {
               className="inline-block text-[10px] font-mono font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4"
               style={{ background: VIOLET, color: "#fff", letterSpacing: "0.12em" }}
             >
-              Allocator Portal
+              Investor Portal
             </div>
             <h1
               className="font-heading font-emphasis text-2xl md:text-[1.75rem] leading-snug"

@@ -1,15 +1,15 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import SubpageLayout from "@/components/SubpageLayout";
-import AllocatorLogoutButton from "@/components/allocator/AllocatorLogoutButton";
-import { getCurrentAllocator, getVisibleReports } from "@/lib/allocator/access";
-import type { ReportRegistryEntry, ReportRating } from "@/lib/allocator/report-registry";
+import InvestorLogoutButton from "@/components/investor/InvestorLogoutButton";
+import { getCurrentInvestor, getVisibleReports } from "@/lib/investor/access";
+import type { ReportRegistryEntry, ReportRating } from "@/lib/investor/report-registry";
 import { INK, MUTED, SUBTLE, BORDER, BG_CARD, GREEN, AMBER } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Your Reports — Alpine Allocator Portal",
+  title: "Your Reports — Alpine Investor Portal",
   robots: { index: false, follow: false },
 };
 
@@ -138,19 +138,19 @@ function ErrorState() {
 }
 
 export default async function ReportsHomePage() {
-  const allocator = await getCurrentAllocator();
-  if (!allocator) redirect("/login?redirect=/reports");
+  const investor = await getCurrentInvestor();
+  if (!investor) redirect("/login?redirect=/reports");
 
   let reports: ReportRegistryEntry[] = [];
   let loadError = false;
   try {
-    reports = await getVisibleReports(allocator.id);
+    reports = await getVisibleReports(investor.id);
   } catch (err) {
     console.error("[reports] failed to load visible reports:", err);
     loadError = true;
   }
 
-  const greetingName = allocator.full_name?.trim() || allocator.organization?.trim() || null;
+  const greetingName = investor.full_name?.trim() || investor.organization?.trim() || null;
 
   return (
     <SubpageLayout>
@@ -167,13 +167,13 @@ export default async function ReportsHomePage() {
               <p className="font-body text-sm mt-2" style={{ color: MUTED }}>
                 {greetingName
                   ? `Signed in as ${greetingName}.`
-                  : `Signed in as ${allocator.email}.`}{" "}
+                  : `Signed in as ${investor.email}.`}{" "}
                 {reports.length > 0
                   ? "Select a report to read the full review."
                   : ""}
               </p>
             </div>
-            <AllocatorLogoutButton />
+            <InvestorLogoutButton />
           </div>
 
           {loadError ? (

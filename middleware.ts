@@ -2,9 +2,9 @@ import { NextResponse, type NextRequest } from "next/server";
 import { verifySession, SESSION } from "@/lib/auth-session";
 import { isAppAdmin } from "@/lib/app-allowlist";
 import {
-  verifySession as verifyAllocatorSession,
-  ALLOCATOR_SESSION,
-} from "@/lib/allocator/auth-session";
+  verifySession as verifyInvestorSession,
+  INVESTOR_SESSION,
+} from "@/lib/investor/auth-session";
 
 const MANAGER_HOSTS = new Set([
   "manager.alpinedd.com",
@@ -66,22 +66,22 @@ export async function middleware(req: NextRequest) {
     return NextResponse.rewrite(url);
   }
 
-  // Apex/main host (alpinedd.com) — gate the allocator report surface.
+  // Apex/main host (alpinedd.com) — gate the investor report surface.
   // Evaluated only here, after the manager and app branches have returned,
   // so it can never catch `app.alpinedd.com/reports` after a rewrite.
   // This verifies the cookie ONLY; it is not authorization — whether the
-  // allocator may see a given report is checked in pages + APIs via
-  // lib/allocator/access.ts (a valid cookie for a deactivated or unassigned
-  // allocator still passes here).
+  // investor may see a given report is checked in pages + APIs via
+  // lib/investor/access.ts (a valid cookie for a deactivated or unassigned
+  // investor still passes here).
   if (path === "/reports" || path.startsWith("/reports/")) {
-    let allocatorEmail: string | null = null;
+    let investorEmail: string | null = null;
     try {
-      const token = req.cookies.get(ALLOCATOR_SESSION.COOKIE_NAME)?.value ?? null;
-      allocatorEmail = await verifyAllocatorSession(token);
+      const token = req.cookies.get(INVESTOR_SESSION.COOKIE_NAME)?.value ?? null;
+      investorEmail = await verifyInvestorSession(token);
     } catch {
-      allocatorEmail = null;
+      investorEmail = null;
     }
-    if (!allocatorEmail) {
+    if (!investorEmail) {
       const redirect = req.nextUrl.clone();
       redirect.pathname = "/login";
       redirect.search = "";
