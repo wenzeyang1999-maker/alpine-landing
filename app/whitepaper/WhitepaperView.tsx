@@ -234,19 +234,29 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
           [data-pdf-gap] { display: none !important; }
           [data-wp-page-footer] { display: none !important; }
 
-          /* Cover (Page 1) */
-          [data-wp-cover] { padding: 24px 20px 32px !important; }
-          [data-wp-cover-topbar] { padding: 12px 0 14px !important; }
-          [data-wp-cover-decor-circles] { width: 280px !important; height: 280px !important; opacity: 0.12 !important; }
+          /* Cover (Page 1)
+             — Topbar: drop the "|" divider and "CONFIDENTIAL" text. Keep
+               "ALPINE × ACEPHALT" left, "2026" right, with proper edge padding.
+             — Hero block: kill justify-content:space-between so the title and
+               logos sit normally instead of leaving a void below "Gap".
+             — Eyebrow chip: shrink and let "VC DUE DILIGENCE · WHITE PAPER" fit
+               on one line. */
+          [data-wp-cover] { padding: 0 !important; justify-content: flex-start !important; }
+          [data-wp-cover-topbar] { padding: 12px 16px 12px 16px !important; }
+          [data-wp-cover-topbar] > div { gap: 8px !important; }
+          [data-wp-cover-topbar] > div > :nth-child(2),
+          [data-wp-cover-topbar] > div > :nth-child(3) { display: none !important; }
+          [data-wp-cover-decor-circles] { width: 240px !important; height: 240px !important; opacity: 0.1 !important; }
           [data-wp-cover-decor-line] { display: none !important; }
-          [data-wp-cover-content] { padding: 28px 0 0 !important; }
-          [data-wp-cover-eyebrow] { font-size: 9px !important; margin-bottom: 20px !important; }
-          [data-wp-cover-h1] { font-size: 44px !important; line-height: 1.02 !important; letter-spacing: -0.03em !important; }
-          [data-wp-cover-sub] { font-size: 15px !important; margin: 24px 0 28px !important; }
-          [data-wp-cover-chips] { gap: 6px !important; }
-          [data-wp-cover-chip] { padding: 4px 10px !important; }
-          [data-wp-cover-chip-text] { font-size: 9px !important; }
-          [data-wp-cover-logos] { margin-top: 36px !important; gap: 16px !important; padding-top: 20px !important; flex-wrap: wrap !important; }
+          [data-wp-cover-content] { padding: 24px 16px 0 !important; max-width: 100% !important; }
+          [data-wp-cover-eyebrow] { font-size: 9px !important; margin-bottom: 24px !important; padding: 4px 10px !important; }
+          [data-wp-cover-eyebrow] > span:last-child { letter-spacing: 0.14em !important; font-size: 9px !important; }
+          [data-wp-cover-h1] { font-size: 48px !important; line-height: 1.02 !important; letter-spacing: -0.03em !important; }
+          [data-wp-cover-sub] { font-size: 16px !important; line-height: 1.6 !important; margin: 20px 0 24px !important; max-width: 100% !important; }
+          [data-wp-cover-chips] { gap: 6px !important; flex-direction: column !important; align-items: flex-start !important; }
+          [data-wp-cover-chip] { padding: 5px 12px !important; }
+          [data-wp-cover-chip-text] { font-size: 9.5px !important; }
+          [data-wp-cover-logos] { margin: 28px 16px 24px !important; gap: 18px !important; padding-top: 20px !important; flex-wrap: wrap !important; }
 
           /* Section heroes */
           [data-wp-section-hero] { padding: 32px 20px 28px !important; }
