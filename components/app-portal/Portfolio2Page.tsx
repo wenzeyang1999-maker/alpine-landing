@@ -758,36 +758,24 @@ function FundUniverseTable({ funds, onNavigate }: { funds: any[]; onNavigate: (s
 
 // ── Active Reviews Mock Data ───────────────────────────────────────────────────
 
-const IN_PROGRESS_REVIEWS = [
-  {
-    slug: "aurora-capital-iv",
-    name: "Aurora Ventures IV, L.P.",
-    analyst: "James Park",
-    started: "2026-03-15",
-    rating: "WATCHLIST",
-    stageBadge: "Analysis",
-    stageBadgeColor: "#91f0c7",
-    stageBadgeBg: "rgba(24,185,126,0.12)",
-    dotColor: "#f59e0b",
-    subtext: "ODD analysis in progress — 6 of 8 chapters complete",
-    subtextColor: "#18b97e",
-    greyed: false,
-  },
-  {
-    slug: "ridgeline-capital",
-    name: "Ridgeline Capital Partners, LLC",
-    analyst: "Samantha Kim",
-    started: "2026-01-10",
-    rating: "WATCHLIST",
-    stageBadge: "IC Review",
-    stageBadgeColor: "#91f0c7",
-    stageBadgeBg: "rgba(24,185,126,0.12)",
-    dotColor: "#f59e0b",
-    subtext: "4 conditions pending for ACCEPT upgrade",
-    subtextColor: "#18b97e",
-    greyed: true,
-  },
-];
+type InProgressReview = {
+  slug: string;
+  name: string;
+  analyst: string;
+  started: string;
+  rating: string;
+  stageBadge: string;
+  stageBadgeColor: string;
+  stageBadgeBg: string;
+  dotColor: string;
+  subtext: string;
+  subtextColor: string;
+  greyed: boolean;
+};
+
+// No reviews currently in progress. Add entries here to populate the
+// "In Progress" section — it stays hidden while this is empty.
+const IN_PROGRESS_REVIEWS: InProgressReview[] = [];
 
 const FINALIZED_REVIEWS = [
   {
@@ -915,6 +903,7 @@ function ActiveReviewsList({ reviews, onNavigate, V }: { reviews: any[]; onNavig
       </div>
 
       {/* ── In Progress ── */}
+      {IN_PROGRESS_REVIEWS.length > 0 && (
       <div>
         <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: V.muted, marginBottom: 10 }}>
           In Progress
@@ -998,6 +987,7 @@ function ActiveReviewsList({ reviews, onNavigate, V }: { reviews: any[]; onNavig
           })}
         </div>
       </div>
+      )}
 
       {/* ── Finalized ── */}
       {FINALIZED_REVIEWS.length > 0 && (
