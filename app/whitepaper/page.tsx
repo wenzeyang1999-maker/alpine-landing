@@ -18,9 +18,9 @@ const BORDER = "#ddd8cf";
 const LIGHT_HERO  = "rgb(247, 248, 248)";
 const LIGHT_HERO_BORDER = "#e5e7eb";
 
-function SectionHero({ num, title }: { num: string; title: string }) {
+function SectionHero({ num, title, id }: { num: string; title: string; id?: string }) {
   return (
-    <div className="relative overflow-hidden" style={{ background: LIGHT_HERO, padding: "48px 48px 40px", borderBottom: `1px solid ${LIGHT_HERO_BORDER}` }}>
+    <div id={id} className="relative overflow-hidden" style={{ background: LIGHT_HERO, padding: "48px 48px 40px", borderBottom: `1px solid ${LIGHT_HERO_BORDER}`, scrollMarginTop: 80 }}>
       <div
         className="absolute right-8 top-1/2 -translate-y-1/2 font-bold select-none pointer-events-none"
         style={{ fontSize: 160, color: "rgba(15,31,61,0.05)", lineHeight: 1, letterSpacing: "-0.05em" }}
@@ -278,7 +278,7 @@ export default function WhitepaperPage() {
                 </h1>
 
                 <p style={{ fontSize: 16, color: MUTED, lineHeight: 1.75, margin: "0 0 48px", maxWidth: 520 }}>
-                  Institutional ODD scorecards are useful tools. But the variable allocation committees need to read is not current state — it is readiness trajectory. This paper explains why the distinction matters, and what to do about it.
+                  Eight chapters. Three bands. One cycle. A field guide to LP readiness for emerging venture capital managers.
                 </p>
 
                 <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
@@ -293,23 +293,33 @@ export default function WhitepaperPage() {
 
               {/* Bottom logos */}
               <div style={{ borderTop: `1px solid ${LIGHT_HERO_BORDER}`, paddingTop: 24, display: "flex", alignItems: "center", gap: 28, marginTop: 48 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <a
+                  href="https://alpinedd.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}
+                >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src="/logo.png" alt="Alpine" style={{ height: 28, width: 28, objectFit: "contain", borderRadius: 5 }} />
                   <div>
                     <p style={{ fontSize: 12, fontWeight: 700, color: BODY, margin: "0 0 1px" }}>Alpine Due Diligence</p>
                     <p style={{ fontSize: 10, color: MUTED, margin: 0, letterSpacing: "0.04em" }}>alpinedd.com</p>
                   </div>
-                </div>
+                </a>
                 <div style={{ width: 1, height: 28, background: LIGHT_HERO_BORDER }} />
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <a
+                  href="https://acephalt.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}
+                >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src="/acephalt-logo-transparent.png" alt="Acephalt" style={{ height: 28, width: 28, objectFit: "contain" }} />
                   <div>
                     <p style={{ fontSize: 12, fontWeight: 700, color: BODY, margin: "0 0 1px" }}>Acephalt</p>
                     <p style={{ fontSize: 10, color: MUTED, margin: 0, letterSpacing: "0.04em" }}>acephalt.com</p>
                   </div>
-                </div>
+                </a>
               </div>
             </div>
           </div>
@@ -371,21 +381,33 @@ export default function WhitepaperPage() {
             <h2 style={{ fontSize: 32, fontWeight: 700, color: BODY, margin: "0 0 32px", letterSpacing: "-0.02em" }}>Table of Contents</h2>
             <div style={{ borderTop: `1px solid ${BORDER}` }}>
               {[
-                { num: "01", title: "The Emerging VC Readiness Pattern",                    page: "04" },
-                { num: "02", title: "Findings That Signal Trajectory, Findings That Don't", page: "06" },
-                { num: "03", title: "Structural vs Fixable",                                page: "07" },
-                { num: "04", title: "Closing the Fixable Column",                           page: "08" },
-                { num: "05", title: "Where Readiness Compounds",                            page: "09" },
-                { num: "06", title: "About the Authors",                                    page: "10" },
-                { num: "A",  title: "Readiness Summary by ODD Chapter",                     page: "11", appendix: true },
-              ].map(({ num, title, page, appendix }) => (
-                <div key={num} style={{ display: "flex", alignItems: "baseline", padding: "16px 0", borderBottom: `1px solid ${BORDER}`, gap: 16 }}>
+                { num: "01", title: "The Emerging VC Readiness Pattern",                    page: "04", anchor: "section-01" },
+                { num: "02", title: "Findings That Signal Trajectory, Findings That Don't", page: "06", anchor: "section-02" },
+                { num: "03", title: "Structural vs Fixable",                                page: "07", anchor: "section-03" },
+                { num: "04", title: "Closing the Fixable Column",                           page: "08", anchor: "section-04" },
+                { num: "05", title: "Where Readiness Compounds",                            page: "09", anchor: "section-05" },
+                { num: "06", title: "About the Authors",                                    page: "10", anchor: "section-06" },
+                { num: "A",  title: "Readiness Summary by ODD Chapter",                     page: "11", anchor: "appendix-a", appendix: true },
+              ].map(({ num, title, page, anchor, appendix }) => (
+                <a
+                  key={num}
+                  href={`#${anchor}`}
+                  className="group"
+                  style={{
+                    display: "flex", alignItems: "baseline",
+                    padding: "16px 0", borderBottom: `1px solid ${BORDER}`,
+                    gap: 16, textDecoration: "none",
+                    transition: "background 150ms ease, padding 150ms ease",
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(200,146,58,0.06)"; e.currentTarget.style.paddingLeft = "8px"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.paddingLeft = "0"; }}
+                >
                   <span style={{ fontSize: 11, fontWeight: 700, color: GOLD, whiteSpace: "nowrap", minWidth: 80 }}>
                     {appendix ? `Appendix ${num}` : `Section ${num}`}
                   </span>
                   <span style={{ fontSize: 15, color: BODY, flex: 1 }}>{title}</span>
                   <span style={{ fontSize: 13, color: MUTED, minWidth: 24, textAlign: "right" }}>{page}</span>
-                </div>
+                </a>
               ))}
             </div>
             <div style={{ margin: "40px 0 32px" }}>
@@ -427,7 +449,7 @@ export default function WhitepaperPage() {
 
         {/* ── PAGE 04: SECTION 01 ────────────────────────────────────────── */}
         <Page num={4}>
-          <SectionHero num="01" title="The Emerging VC Readiness Pattern" />
+          <SectionHero num="01" title="The Emerging VC Readiness Pattern" id="section-01" />
           <div style={{ padding: "48px 48px 0" }}>
             <p style={{ fontSize: 17, fontStyle: "italic", color: BODY, lineHeight: 1.65, margin: "0 0 32px" }}>
               Emerging venture capital managers fail institutional operational due diligence in remarkably consistent ways. The failures are not random, not idiosyncratic, and not primarily a function of individual care or carelessness. They follow a pattern legible to anyone who has read enough reports.
@@ -513,7 +535,7 @@ export default function WhitepaperPage() {
 
         {/* ── PAGE 06: SECTION 02 ────────────────────────────────────────── */}
         <Page num={6}>
-          <SectionHero num="02" title={"Findings That Signal Trajectory, Findings That Don't"} />
+          <SectionHero num="02" title={"Findings That Signal Trajectory, Findings That Don't"} id="section-02" />
           <div style={{ padding: "48px 48px 0" }}>
             <p style={{ fontSize: 17, fontStyle: "italic", color: BODY, lineHeight: 1.65, margin: "0 0 32px" }}>
               The archetype establishes which findings tend to appear on an emerging manager&apos;s scorecard. It does not establish which of those findings tend to move.
@@ -545,7 +567,7 @@ export default function WhitepaperPage() {
 
         {/* ── PAGE 07: SECTION 03 ────────────────────────────────────────── */}
         <Page num={7}>
-          <SectionHero num="03" title="Structural vs Fixable" />
+          <SectionHero num="03" title="Structural vs Fixable" id="section-03" />
           <div style={{ padding: "48px 48px 0" }}>
             <p style={{ fontSize: 17, fontStyle: "italic", color: BODY, lineHeight: 1.65, margin: "0 0 32px" }}>
               The observational cut in Section 2 maps onto an operational distinction that emerging managers can use directly. Findings on an ODD scorecard are either structural or fixable — and in most cases, the distinction follows from what the finding is tied to.
@@ -589,7 +611,7 @@ export default function WhitepaperPage() {
 
         {/* ── PAGE 08: SECTION 04 ────────────────────────────────────────── */}
         <Page num={8}>
-          <SectionHero num="04" title="Closing the Fixable Column" />
+          <SectionHero num="04" title="Closing the Fixable Column" id="section-04" />
           <div style={{ padding: "48px 48px 0" }}>
             <p style={{ fontSize: 17, fontStyle: "italic", color: BODY, lineHeight: 1.65, margin: "0 0 24px" }}>
               The practical question for an emerging manager preparing for institutional diligence is not whether to address the fixable column — but in what order.
@@ -627,7 +649,7 @@ export default function WhitepaperPage() {
 
         {/* ── PAGE 09: SECTION 05 ────────────────────────────────────────── */}
         <Page num={9}>
-          <SectionHero num="05" title="Where Readiness Compounds" />
+          <SectionHero num="05" title="Where Readiness Compounds" id="section-05" />
           <div style={{ padding: "48px 48px 0" }}>
             <p style={{ fontSize: 17, fontStyle: "italic", color: BODY, lineHeight: 1.65, margin: "0 0 32px" }}>
               Fund-side readiness is necessary, but it is not sufficient. The same diligence logic applies one level down — at the portfolio level — and one level inward, at the operational structure that every diligence finding ultimately tests.
@@ -669,22 +691,75 @@ export default function WhitepaperPage() {
 
         {/* ── PAGE 10: SECTION 06 ────────────────────────────────────────── */}
         <Page num={10}>
-          <SectionHero num="06" title="About the Authors" />
+          <SectionHero num="06" title="About the Authors" id="section-06" />
           <div style={{ padding: "48px 48px 0" }}>
             <Divider />
             {[
-              { name: "Alpine Due Diligence Inc.", tag: "Operational Due Diligence · alpinedd.com", contact: "azhang@alpinedd.com · alpinedd.com", desc: "Alpine Due Diligence Inc. is an operational due diligence firm serving institutional allocators, family offices, and venture capital managers. Alpine produces institutional ODD reports through a structured eight-chapter framework, supported by verification against SEC EDGAR and other regulatory registers, media screening, and source-based citation trails. The firm is built by practitioners with direct institutional ODD experience and reflects the diligence workflows LPs actually use." },
-              { name: "Acephalt Inc.", tag: "Due Diligence Platform · acephalt.com", contact: "winnicent.zuo@acephalt.com · acephalt.com", desc: "Acephalt Inc. is a due diligence platform that helps venture capital investors build confidence in the companies they invest in. By evaluating a company in minutes instead of months, Acephalt gives venture capital firms their own AI analyst that can work continuously across company data rooms. The platform helps forecast company performance, review market dynamics, and draft investment memos for stakeholders." },
-            ].map(({ name, tag, contact, desc }) => (
+              {
+                name: "Alpine Due Diligence Inc.",
+                site: "https://alpinedd.com",
+                tag: "Operational Due Diligence · alpinedd.com",
+                contactEmail: "azhang@alpinedd.com",
+                contactSite: "alpinedd.com",
+                desc: "Alpine Due Diligence Inc. is an operational due diligence firm serving institutional allocators, family offices, and venture capital managers. Alpine produces institutional ODD reports through a structured eight-chapter framework, supported by verification against SEC EDGAR and other regulatory registers, media screening, and source-based citation trails. The firm is built by practitioners with direct institutional ODD experience and reflects the diligence workflows LPs actually use.",
+                logo: "/logo.png",
+                logoStyle: { borderRadius: 8 } as React.CSSProperties,
+              },
+              {
+                name: "Acephalt Inc.",
+                site: "https://acephalt.com",
+                tag: "Due Diligence Platform · acephalt.com",
+                contactEmail: "winnicent.zuo@acephalt.com",
+                contactSite: "acephalt.com",
+                desc: "Acephalt Inc. is a due diligence platform that helps venture capital investors build confidence in the companies they invest in. By evaluating a company in minutes instead of months, Acephalt gives venture capital firms their own AI analyst that can work continuously across company data rooms. The platform helps forecast company performance, review market dynamics, and draft investment memos for stakeholders.",
+                logo: "/acephalt-logo-transparent.png",
+                logoStyle: {} as React.CSSProperties,
+              },
+            ].map(({ name, site, tag, contactEmail, contactSite, desc, logo, logoStyle }) => (
               <div key={name} style={{ display: "grid", gridTemplateColumns: "80px 1fr", gap: 24, paddingBottom: 32, marginBottom: 32, borderBottom: `1px solid ${BORDER}` }}>
-                <div style={{ width: 64, height: 64, background: LIGHT_HERO, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", border: `1px solid ${LIGHT_HERO_BORDER}` }}>
-                  <span style={{ fontSize: 20, fontWeight: 700, color: GOLD }}>A</span>
-                </div>
+                <a
+                  href={site}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    width: 64, height: 64, background: LIGHT_HERO,
+                    borderRadius: 8, display: "flex", alignItems: "center",
+                    justifyContent: "center", border: `1px solid ${LIGHT_HERO_BORDER}`,
+                    textDecoration: "none",
+                  }}
+                  aria-label={`Visit ${name} website`}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={logo} alt={name} style={{ width: 48, height: 48, objectFit: "contain", ...logoStyle }} />
+                </a>
                 <div>
-                  <p style={{ fontSize: 18, fontWeight: 700, color: BODY, margin: "0 0 4px" }}>{name}</p>
+                  <a
+                    href={site}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ textDecoration: "none", color: BODY }}
+                  >
+                    <p style={{ fontSize: 18, fontWeight: 700, color: BODY, margin: "0 0 4px" }}>{name}</p>
+                  </a>
                   <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: MUTED, margin: "0 0 16px" }}>{tag}</p>
                   <p style={{ fontSize: 14, color: MUTED, lineHeight: 1.7, margin: "0 0 12px" }}>{desc}</p>
-                  <p style={{ fontSize: 13, color: GOLD, margin: 0 }}>{contact}</p>
+                  <p style={{ fontSize: 13, margin: 0 }}>
+                    <a
+                      href={`mailto:${contactEmail}`}
+                      style={{ color: GOLD, textDecoration: "none" }}
+                    >
+                      {contactEmail}
+                    </a>
+                    <span style={{ color: MUTED, margin: "0 6px" }}>·</span>
+                    <a
+                      href={site}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: GOLD, textDecoration: "none" }}
+                    >
+                      {contactSite}
+                    </a>
+                  </p>
                 </div>
               </div>
             ))}
@@ -693,7 +768,7 @@ export default function WhitepaperPage() {
 
         {/* ── PAGE 11: APPENDIX A ────────────────────────────────────────── */}
         <Page num={11}>
-          <div style={{ padding: "48px 48px 0" }}>
+          <div id="appendix-a" style={{ padding: "48px 48px 0", scrollMarginTop: 80 }}>
             <Divider />
             <SectionLabel>Appendix A</SectionLabel>
             <h2 style={{ fontSize: 32, fontWeight: 700, color: BODY, margin: "0 0 8px", letterSpacing: "-0.02em" }}>Readiness Summary<br />by ODD Chapter</h2>
@@ -740,23 +815,33 @@ export default function WhitepaperPage() {
         {/* ── DOCUMENT FOOTER ────────────────────────────────────────────── */}
         <div style={{ background: LIGHT_HERO, padding: "32px 48px", borderTop: `1px solid ${LIGHT_HERO_BORDER}` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 32, flexWrap: "wrap" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <a
+              href="https://alpinedd.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ display: "flex", alignItems: "center", gap: 12, textDecoration: "none" }}
+            >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/logo.png" alt="Alpine" style={{ height: 30, width: 30, objectFit: "contain", borderRadius: 6 }} />
               <div>
                 <p style={{ fontSize: 14, fontWeight: 700, color: BODY, margin: "0 0 2px" }}>Alpine Due Diligence</p>
                 <p style={{ fontSize: 11, color: MUTED, margin: 0 }}>alpinedd.com</p>
               </div>
-            </div>
+            </a>
             <div style={{ width: 1, height: 28, background: LIGHT_HERO_BORDER }} />
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <a
+              href="https://acephalt.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ display: "flex", alignItems: "center", gap: 12, textDecoration: "none" }}
+            >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/acephalt-logo-transparent.png" alt="Acephalt" style={{ height: 30, width: 30, objectFit: "contain" }} />
               <div>
                 <p style={{ fontSize: 14, fontWeight: 700, color: BODY, margin: "0 0 2px" }}>Acephalt</p>
                 <p style={{ fontSize: 11, color: MUTED, margin: 0 }}>acephalt.com</p>
               </div>
-            </div>
+            </a>
             <p style={{ marginLeft: "auto", fontSize: 11, color: MUTED, letterSpacing: "0.08em" }}>
               ALPINE × ACEPHALT · CONFIDENTIAL
             </p>

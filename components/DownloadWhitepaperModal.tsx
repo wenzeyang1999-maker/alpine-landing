@@ -4,36 +4,7 @@ import { useEffect, useState } from "react";
 import { X, Check, Download } from "lucide-react";
 import { BG_CARD, INK, MUTED, VIOLET, GREEN, BORDER, LS_BODY } from "@/lib/constants";
 
-const SESSION_KEY = "alpine_demo_user";
 const CONTACT_KEY = "alpine_last_contact";
-
-type SessionUser = { email?: string; full_name?: string };
-type LastContact = { email?: string; name?: string };
-
-function readPrefill(): { name: string; email: string } {
-  if (typeof window === "undefined") return { name: "", email: "" };
-  let name = "";
-  let email = "";
-  try {
-    const raw = localStorage.getItem(CONTACT_KEY);
-    if (raw) {
-      const c = JSON.parse(raw) as LastContact;
-      name = c.name ?? "";
-      email = c.email ?? "";
-    }
-  } catch { /* ignore */ }
-  if (!name || !email) {
-    try {
-      const raw = localStorage.getItem(SESSION_KEY);
-      if (raw) {
-        const u = JSON.parse(raw) as SessionUser;
-        if (!name) name = u.full_name ?? "";
-        if (!email) email = u.email ?? "";
-      }
-    } catch { /* ignore */ }
-  }
-  return { name, email };
-}
 
 export default function DownloadWhitepaperModal({
   open,
@@ -49,9 +20,10 @@ export default function DownloadWhitepaperModal({
 
   useEffect(() => {
     if (!open) return;
-    const pre = readPrefill();
-    setName(pre.name);
-    setEmail(pre.email);
+    // Always start with empty fields so placeholders ("Your name" / "name@firm.com")
+    // are visible. Avoids leaking demo-session identities into the form.
+    setName("");
+    setEmail("");
     setStatus("idle");
     setMessage("");
   }, [open]);
