@@ -120,10 +120,10 @@ export default function ChapterPage() {
             response={responses[q.id]}
             onUpdate={(partial) =>
               handleResponseUpdate({
-                questionId: q.id,
-                chapterNum: chapterNum,
                 ...responses[q.id],
                 ...partial,
+                questionId: q.id,
+                chapterNum: chapterNum,
                 updatedAt: new Date().toISOString(),
               })
             }
