@@ -81,6 +81,13 @@ export default function AdminHome() {
           >
             Manage admins
           </Link>
+          <Link
+            href="/admin/allocator-portal"
+            className="font-body text-sm px-3 py-1.5 rounded-md"
+            style={{ border: `1px solid ${BORDER}`, color: INK, background: BG_CARD }}
+          >
+            Allocator portal
+          </Link>
           <Link href="/" className="font-body text-sm ml-2" style={{ color: MUTED }}>
             workspace ↗
           </Link>

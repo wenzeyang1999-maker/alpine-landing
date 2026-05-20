@@ -1,0 +1,31 @@
+-- ============================================================
+-- Allocator Portal — demo seed
+-- Demo allocator demo.allocator@alpinedd.com / demo123 (weak — demo only),
+-- with the Aurora + Trellis reports published and assigned.
+-- Idempotent: safe to run multiple times.
+--
+-- The password_hash below is scrypt(demo123) computed with the params in
+-- lib/allocator/password.ts (N=16384, r=8, p=1, keylen=64, 16-byte salt).
+-- ============================================================
+
+INSERT INTO allocators (email, password_hash, full_name, organization)
+VALUES (
+  'demo.allocator@alpinedd.com',
+  '381db5c4e2f757cab0077293efc7f5e7:e1e294db070da7f6dd87642bd87aea772acf221ced73b00cc38530c906a5021e7f8e91015fff63f795686ae0b4939abffd70fa60e7e7d697e9ba5fec1dc5e091',
+  'Demo Allocator',
+  'Demo Capital Partners'
+)
+ON CONFLICT (email) DO NOTHING;
+
+INSERT INTO report_publications (report_slug, fund_name, published_by)
+VALUES
+  ('aurora-capital-iv',  'Aurora Ventures IV, L.P.',  'seed'),
+  ('trellis-capital-iv', 'Trellis Capital IV, L.P.',  'seed')
+ON CONFLICT (report_slug) DO NOTHING;
+
+INSERT INTO allocator_reports (allocator_id, report_slug, assigned_by)
+SELECT a.id, s.slug, 'seed'
+FROM allocators a
+CROSS JOIN (VALUES ('aurora-capital-iv'), ('trellis-capital-iv')) AS s(slug)
+WHERE a.email = 'demo.allocator@alpinedd.com'
+ON CONFLICT (allocator_id, report_slug) DO NOTHING;

@@ -1,14 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import SubpageLayout from "@/components/SubpageLayout";
 import { BG_CARD, INK, MUTED, SUBTLE, BORDER, VIOLET } from "@/lib/constants";
 
-const SESSION_KEY = "alpine_demo_user";
-
-export default function LoginPage() {
+export default function AllocatorLoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,24 +18,22 @@ export default function LoginPage() {
     setError("");
 
     try {
-      const res = await fetch("/api/auth/login", {
+      const res = await fetch("/api/allocator/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: email.trim(), password }),
       });
 
-      const data = await res.json();
-
       if (!res.ok) {
+        const data = await res.json().catch(() => null);
         setError(data?.error || "Invalid email or password.");
         return;
       }
 
-      localStorage.setItem(SESSION_KEY, JSON.stringify({ ...data.user, demo_access: data.demo_access }));
-      // Honor a ?redirect= target (set by DemoAccessGate / alpine-space) so
-      // gated flows return the user where they came from; default to the portal.
+      // Honor a ?redirect= target set by the middleware gate; default to /reports.
       const params = new URLSearchParams(window.location.search);
-      router.push(params.get("redirect") ?? "/alpine-space");
+      const target = params.get("redirect");
+      router.push(target && target.startsWith("/reports") ? target : "/reports");
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
@@ -55,16 +50,16 @@ export default function LoginPage() {
               className="inline-block text-[10px] font-mono font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4"
               style={{ background: VIOLET, color: "#fff", letterSpacing: "0.12em" }}
             >
-              Alpine ODD Demo
+              Allocator Portal
             </div>
             <h1
               className="font-heading font-emphasis text-2xl md:text-[1.75rem] leading-snug"
               style={{ color: INK }}
             >
-              Analyst Portal
+              Sign in to your ODD report
             </h1>
             <p className="mt-3 text-sm font-body leading-relaxed" style={{ color: MUTED }}>
-              Sign in or create a free account to continue.
+              Access the operational due diligence review Alpine prepared for you.
             </p>
           </div>
 
@@ -88,7 +83,7 @@ export default function LoginPage() {
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@alpinedd.com"
+                placeholder="you@yourfirm.com"
                 className="field-input"
               />
             </div>
@@ -129,23 +124,17 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <Link
-            href="/signup"
-            className="mt-4 w-full inline-flex items-center justify-center px-6 py-3.5 rounded-btn font-body font-emphasis text-sm hover:opacity-80 transition-opacity border"
-            style={{ color: INK, borderColor: INK, background: "transparent" }}
-          >
-            Create an account
-          </Link>
-
-          <p className="mt-5 text-center text-sm font-mono" style={{ color: MUTED }}>
-            Need a demo?{" "}
-            <Link
-              href="/early-access"
+          <p className="mt-5 text-center text-sm font-body leading-relaxed" style={{ color: MUTED }}>
+            Access is provisioned by your Alpine analyst. If you need credentials
+            or have trouble signing in, contact{" "}
+            <a
+              href="mailto:support@alpinedd.com"
               className="underline hover:opacity-80 transition-opacity"
               style={{ color: VIOLET }}
             >
-              Request early access
-            </Link>
+              support@alpinedd.com
+            </a>
+            .
           </p>
         </div>
       </div>

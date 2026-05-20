@@ -431,7 +431,7 @@ export function DocumentCollectionView({ mock, onNavigate, brandName, slug }: { 
   const meta = FUND_META[slug ?? "ridgeline-capital"] ?? FUND_META["ridgeline-capital"];
 
   useEffect(() => {
-    fetch(`/api/portal/documents?token=${encodeURIComponent(meta.token)}`)
+    fetch(`/api/app-portal/portal/documents?token=${encodeURIComponent(meta.token)}`)
       .then((r) => r.json())
       .then((rows: Array<{ id: string; filename: string; uploaded_at: string; storage_path: string | null }>) => {
         if (!Array.isArray(rows)) return;
@@ -442,7 +442,7 @@ export function DocumentCollectionView({ mock, onNavigate, brandName, slug }: { 
           date: row.uploaded_at.split("T")[0],
           source: "Manager Upload",
           url: row.storage_path
-            ? `/api/portal/file?path=${encodeURIComponent(row.storage_path)}`
+            ? `/api/app-portal/portal/file?path=${encodeURIComponent(row.storage_path)}`
             : undefined,
         })));
       })
@@ -461,7 +461,7 @@ export function DocumentCollectionView({ mock, onNavigate, brandName, slug }: { 
       form.append("file", file);
       form.append("token", meta.token);
       try {
-        const res = await fetch("/api/portal/upload", { method: "POST", body: form });
+        const res = await fetch("/api/app-portal/portal/upload", { method: "POST", body: form });
         if (!res.ok) { setUploadError("Upload failed."); continue; }
         const row = await res.json();
         setPortalDocs((prev) => [{
@@ -470,7 +470,7 @@ export function DocumentCollectionView({ mock, onNavigate, brandName, slug }: { 
           type: "Uploaded",
           date: row.uploaded_at.split("T")[0],
           source: "Manager Upload",
-          url: row.storage_path ? `/api/portal/file?path=${encodeURIComponent(row.storage_path)}` : undefined,
+          url: row.storage_path ? `/api/app-portal/portal/file?path=${encodeURIComponent(row.storage_path)}` : undefined,
         }, ...prev]);
       } catch { setUploadError("Network error."); }
     }
@@ -478,7 +478,7 @@ export function DocumentCollectionView({ mock, onNavigate, brandName, slug }: { 
   }, [meta.token]);
 
   const handleRemove = useCallback(async (id: string) => {
-    await fetch(`/api/portal/documents?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+    await fetch(`/api/app-portal/portal/documents?id=${encodeURIComponent(id)}`, { method: "DELETE" });
     setPortalDocs((prev) => prev.filter((d) => d.id !== id));
   }, []);
 
