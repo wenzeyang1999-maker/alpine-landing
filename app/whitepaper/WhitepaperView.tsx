@@ -51,17 +51,6 @@ function RatingBadge({ rating }: { rating: "PASS" | "STALL" | "FAIL" }) {
   );
 }
 
-function Tag({ children, color }: { children: React.ReactNode; color: string }) {
-  return (
-    <span style={{
-      fontSize: 9, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase",
-      padding: "2px 7px", borderRadius: 3, background: `${color}18`, color,
-    }}>
-      {children}
-    </span>
-  );
-}
-
 function Divider() {
   return <div style={{ borderTop: `1px solid ${BORDER}`, margin: "40px 0" }} />;
 }
@@ -439,8 +428,7 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
                 { num: "04", title: "Closing the Fixable Column",                           page: "09", anchor: "section-04" },
                 { num: "05", title: "Where Readiness Compounds",                            page: "10", anchor: "section-05" },
                 { num: "06", title: "About the Authors",                                    page: "11", anchor: "section-06" },
-                { num: "A",  title: "Readiness Summary by ODD Chapter",                     page: "12", anchor: "appendix-a", appendix: true },
-              ].map(({ num, title, page, anchor, appendix }) => (
+              ].map(({ num, title, page, anchor }) => (
                 <a
                   key={num}
                   href={`#${anchor}`}
@@ -455,7 +443,7 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
                   onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.paddingLeft = "0"; }}
                 >
                   <span style={{ fontSize: 11, fontWeight: 700, color: GOLD, whiteSpace: "nowrap", minWidth: 80 }}>
-                    {appendix ? `Appendix ${num}` : `Section ${num}`}
+                    Section {num}
                   </span>
                   <span style={{ fontSize: 15, color: BODY, flex: 1 }}>{title}</span>
                   <span style={{ fontSize: 13, color: MUTED, minWidth: 24, textAlign: "right" }}>{page}</span>
@@ -833,51 +821,6 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
               <p style={{ fontSize: 14, color: MUTED, lineHeight: 1.7, margin: 0 }}>
                 For comments, citations, or a private walkthrough of how the framework applies to a specific manager or portfolio company, write to <a href="mailto:azhang@alpinedd.com" style={{ color: GOLD, textDecoration: "none" }}>azhang@alpinedd.com</a>. To receive bi-weekly case analysis, subscribe at <a href="https://alpinedd.com" target="_blank" rel="noopener noreferrer" style={{ color: GOLD, textDecoration: "none" }}>alpinedd.com</a>.
               </p>
-            </div>
-          </div>
-        </Page>
-
-        {/* ── PAGE 12: APPENDIX A ────────────────────────────────────────── */}
-        <Page num={12}>
-          <div id="appendix-a" style={{ padding: "44px 48px 36px", scrollMarginTop: 80 }}>
-            <SectionLabel>Appendix A</SectionLabel>
-            <h2 style={{ fontSize: 30, fontWeight: 700, color: BODY, margin: "0 0 8px", letterSpacing: "-0.02em" }}>Readiness Summary<br />by ODD Chapter</h2>
-            <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.6, margin: "0 0 20px" }}>
-              A reference view of the eight ODD chapters with representative structural and fixable findings. Intended as a diagnostic map rather than a ranking of severity or a prescriptive remediation order.
-            </p>
-            <div style={{ border: `1px solid ${BORDER}`, borderRadius: 8, overflow: "hidden" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "48px 220px 100px 1fr", background: LIGHT_HERO, padding: "10px 20px", gap: 16, borderBottom: `1px solid ${LIGHT_HERO_BORDER}` }}>
-                {["Ch.", "Chapter", "Status", "Representative Findings"].map(h => (
-                  <p key={h} style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", color: MUTED, textTransform: "uppercase", margin: 0 }}>{h}</p>
-                ))}
-              </div>
-              {[
-                { n: "01", ch: "Manager, Ownership & Governance",                  r: "STALL" as const, findings: [{ t: "STRUCTURAL", f: "Single internal operations role; no formal succession plan." }, { t: "FIXABLE", f: "Background checks completed internally." }] },
-                { n: "02", ch: "Legal, Regulatory & Compliance",                   r: "FAIL"  as const, findings: [{ t: "FIXABLE", f: "Investment professional acting as compliance officer; no attestation cycle; no annual compliance training." }] },
-                { n: "03", ch: "Technology, Cybersecurity & Business Resilience",  r: "FAIL"  as const, findings: [{ t: "FIXABLE", f: "No cybersecurity policy; no incident response plan or endpoint controls; no written BCP." }] },
-                { n: "04", ch: "Fund Structure, Terms & Investor Alignment",       r: "PASS"  as const, findings: [{ t: "STRUCTURAL", f: "Terms consistent with market norms; LPAC deferred until fund scale warrants." }] },
-                { n: "05", ch: "Service Providers, Delegation & Oversight",        r: "PASS"  as const, findings: [{ t: "STRUCTURAL", f: "Institutional administrator, auditor, and banker." }, { t: "FIXABLE", f: "Engagement letters executed prior to first close." }] },
-                { n: "06", ch: "Investment Operations & Portfolio Controls",        r: "STALL" as const, findings: [{ t: "STRUCTURAL", f: "No internal accounting records; no back-office oversight of administrator." }, { t: "FIXABLE", f: "No formal allocation policy." }] },
-                { n: "07", ch: "Valuation, Asset Existence & Investor Reporting",  r: "STALL" as const, findings: [{ t: "FIXABLE", f: "No formal valuation committee." }, { t: "STRUCTURAL", f: "Front office approves marks; waterfall maintained in Excel." }] },
-                { n: "08", ch: "Manager Transparency & LP Communications",         r: "PASS"  as const, findings: [{ t: "STRUCTURAL", f: "Cooperative diligence posture; proactive disclosure; no restrictions on review scope." }] },
-              ].map(({ n, ch, r, findings }, i) => (
-                <div key={n} style={{ display: "grid", gridTemplateColumns: "48px 220px 100px 1fr", padding: "16px 20px", borderTop: `1px solid ${BORDER}`, background: i % 2 === 1 ? "#faf7f2" : "#fff", gap: 16, alignItems: "start" }}>
-                  <p style={{ fontSize: 12, color: MUTED, margin: 0 }}>{n}</p>
-                  <p style={{ fontSize: 14, fontWeight: 500, color: BODY, margin: 0 }}>{ch}</p>
-                  <div><RatingBadge rating={r} /></div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                    {findings.map(({ t, f }) => {
-                      const tc = t === "STRUCTURAL" ? STALL_C : PASS_C;
-                      return (
-                        <div key={t} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-                          <Tag color={tc}>{t}</Tag>
-                          <span style={{ fontSize: 13, color: MUTED, lineHeight: 1.6 }}>{f}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
             </div>
           </div>
         </Page>
