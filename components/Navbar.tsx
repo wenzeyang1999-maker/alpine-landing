@@ -227,7 +227,7 @@ export default function Navbar() {
           {/* Login (filled, persistent) + mobile hamburger */}
           <div className="flex items-center gap-3 ml-auto">
             <Link
-              href="/demo-login"
+              href="/login"
               className="hidden md:inline-flex items-center rounded-btn px-5 py-2.5 text-[14px] font-body hover:opacity-90 transition-opacity"
               style={{
                 color: INK,
@@ -346,7 +346,7 @@ export default function Navbar() {
               {/* Mobile Login button — ghost */}
               <div className="pt-4 pb-2">
                 <Link
-                  href="/demo-login"
+                  href="/login"
                   onClick={() => setOpen(false)}
                   className="w-full text-center rounded-btn px-5 py-3 font-body text-[15px] hover:opacity-90 transition-opacity block"
                   style={{

@@ -63,7 +63,7 @@ export default function AlpineSpacePage() {
       desc: "Full Alpine analyst portal with live report viewer",
       tag: demoAccess ? "Access Granted" : "Restricted",
       tagColor: demoAccess ? GREEN : "#94a3b8",
-      href: demoAccess ? "/portfolio2" : "/demo-login",
+      href: demoAccess ? "/portfolio2" : "/login",
       locked: !demoAccess,
     },
     ...(showAppCard

@@ -11,7 +11,7 @@ type Status = "checking" | "allowed" | "denied";
  * Client-side gate for demo-only pages on the marketing domain.
  *
  * Renders nothing until localStorage confirms a user with `demo_access: true`,
- * otherwise redirects to /demo-login with the original path as the redirect.
+ * otherwise redirects to /login with the original path as the redirect.
  *
  * NOTE: this is a UX gate, not a security boundary. Anyone with API access
  * can still hit /api/* endpoints directly — Supabase RLS + per-API auth gates
@@ -36,7 +36,7 @@ export default function DemoAccessGate({ children }: { children: React.ReactNode
       // fall through to denied
     }
     setStatus("denied");
-    router.replace(`/demo-login?redirect=${encodeURIComponent(path || "/")}`);
+    router.replace(`/login?redirect=${encodeURIComponent(path || "/")}`);
   }, [router, path]);
 
   if (status !== "allowed") return null;
