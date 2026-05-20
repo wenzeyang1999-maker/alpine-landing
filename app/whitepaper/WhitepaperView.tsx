@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { GREEN, AMBER, VIOLET, BORDER as NAV_BORDER } from "@/lib/constants";
 import FloatingSubscribe from "@/components/FloatingSubscribe";
@@ -694,14 +694,14 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
                   <p style={{ fontSize: 12, color: MUTED, margin: 0 }}>{n}</p>
                   <p style={{ fontSize: 13, fontWeight: 500, color: BODY, margin: 0, lineHeight: 1.35 }}>{ch}</p>
                   <div><RatingBadge rating={r} /></div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "82px 1fr", rowGap: 6, columnGap: 12, alignItems: "start" }}>
                     {findings.map(({ t, f }) => {
                       const tc = t === "STRUCTURAL" ? STALL_C : PASS_C;
                       return (
-                        <div key={t} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-                          <Tag color={tc}>{t}</Tag>
+                        <Fragment key={t}>
+                          <div style={{ paddingTop: 1 }}><Tag color={tc}>{t}</Tag></div>
                           <span style={{ fontSize: 12, color: MUTED, lineHeight: 1.5 }}>{f}</span>
-                        </div>
+                        </Fragment>
                       );
                     })}
                   </div>
