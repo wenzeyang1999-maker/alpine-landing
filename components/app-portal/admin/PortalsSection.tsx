@@ -56,7 +56,6 @@ export default async function PortalsSection() {
             <Muted key="s">{fmtBytes(p.totalBytes)}</Muted>,
             <Muted key="u">{fmtDate(p.lastUploadAt)}</Muted>,
             <span key="l" className="flex gap-3 font-mono text-[12px]">
-              <Link href={`/portal/${p.token}`} style={{ color: VIOLET }}>portal →</Link>
               <Link href={`/admin/${p.token}`} style={{ color: VIOLET }}>admin →</Link>
             </span>,
           ])}

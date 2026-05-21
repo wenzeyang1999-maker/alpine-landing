@@ -1,6 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { verifySession, SESSION } from "@/lib/auth-session";
 import { isAppAdmin } from "@/lib/app-allowlist";
+import {
+  verifySession as verifyInvestorSession,
+  INVESTOR_SESSION,
+} from "@/lib/investor/auth-session";
 
 const MANAGER_HOSTS = new Set([
   "manager.alpinedd.com",
@@ -60,6 +64,30 @@ export async function middleware(req: NextRequest) {
     if (path.startsWith("/app-portal")) return NextResponse.next();
     url.pathname = path === "/" ? "/app-portal" : `/app-portal${path}`;
     return NextResponse.rewrite(url);
+  }
+
+  // Apex/main host (alpinedd.com) — gate the investor report surface.
+  // Evaluated only here, after the manager and app branches have returned,
+  // so it can never catch `app.alpinedd.com/reports` after a rewrite.
+  // This verifies the cookie ONLY; it is not authorization — whether the
+  // investor may see a given report is checked in pages + APIs via
+  // lib/investor/access.ts (a valid cookie for a deactivated or unassigned
+  // investor still passes here).
+  if (path === "/reports" || path.startsWith("/reports/")) {
+    let investorEmail: string | null = null;
+    try {
+      const token = req.cookies.get(INVESTOR_SESSION.COOKIE_NAME)?.value ?? null;
+      investorEmail = await verifyInvestorSession(token);
+    } catch {
+      investorEmail = null;
+    }
+    if (!investorEmail) {
+      const redirect = req.nextUrl.clone();
+      redirect.pathname = "/login";
+      redirect.search = "";
+      redirect.searchParams.set("redirect", path);
+      return NextResponse.redirect(redirect);
+    }
   }
 
   return NextResponse.next();
