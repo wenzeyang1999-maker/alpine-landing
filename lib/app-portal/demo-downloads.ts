@@ -72,6 +72,56 @@ export const DEMO_FILES: Record<string, string> = {
   "aurora-admin-agreement-meridian.pdf":      "aurora/aurora-admin-agreement-meridian.pdf",
   "aurora-insightsphere-agreement.pdf":       "aurora/aurora-insightsphere-agreement.pdf",
   "aurora-vantage-tech-engagement.pdf":       "aurora/aurora-vantage-tech-engagement.pdf",
+
+  // ── Granite VII Credit Partners ──────────────────────────────────────────
+  "sample_credit_granite_vii.pdf":            "granite/sample_credit_granite_vii.pdf",
+  "granite_form_adv.pdf":                     "granite/sample_credit_granite_vii.pdf",
+  "granite_lpa.pdf":                          "granite/sample_credit_granite_vii.pdf",
+  "granite_ppm.pdf":                          "granite/sample_credit_granite_vii.pdf",
+  "granite_ddq_2026.pdf":                     "granite/sample_credit_granite_vii.pdf",
+  "granite_valuation_policy.pdf":             "granite/sample_credit_granite_vii.pdf",
+  "granite_compliance_manual.pdf":            "granite/sample_credit_granite_vii.pdf",
+  "granite_audited_fs_fy2024.pdf":            "granite/sample_credit_granite_vii.pdf",
+
+  // ── Cordova JV Real Estate ────────────────────────────────────────────────
+  "sample_re_cordova_jv.pdf":                 "cordova/sample_re_cordova_jv.pdf",
+  "cordova_form_adv.pdf":                     "cordova/sample_re_cordova_jv.pdf",
+  "cordova_jv_agreement.pdf":                 "cordova/sample_re_cordova_jv.pdf",
+  "cordova_ppm.pdf":                          "cordova/sample_re_cordova_jv.pdf",
+  "cordova_ddq_2026.pdf":                     "cordova/sample_re_cordova_jv.pdf",
+  "cordova_valuation_policy.pdf":             "cordova/sample_re_cordova_jv.pdf",
+  "cordova_compliance_manual.pdf":            "cordova/sample_re_cordova_jv.pdf",
+  "cordova_audited_fs_fy2024.pdf":            "cordova/sample_re_cordova_jv.pdf",
+
+  // ── Blackpine Asset Management ────────────────────────────────────────────
+  "sample_credit_blackpine_plus.pdf":         "blackpine/sample_credit_blackpine_plus.pdf",
+  "blackpine_form_adv.pdf":                   "blackpine/sample_credit_blackpine_plus.pdf",
+  "blackpine_lpa.pdf":                        "blackpine/sample_credit_blackpine_plus.pdf",
+  "blackpine_ppm.pdf":                        "blackpine/sample_credit_blackpine_plus.pdf",
+  "blackpine_ddq_2026.pdf":                   "blackpine/sample_credit_blackpine_plus.pdf",
+  "blackpine_valuation_policy.pdf":           "blackpine/sample_credit_blackpine_plus.pdf",
+  "blackpine_compliance_manual.pdf":          "blackpine/sample_credit_blackpine_plus.pdf",
+  "blackpine_audited_fs_fy2024.pdf":          "blackpine/sample_credit_blackpine_plus.pdf",
+
+  // ── Havencrest Industrial ─────────────────────────────────────────────────
+  "sample_re_havencrest_trust.pdf":           "havencrest/sample_re_havencrest_trust.pdf",
+  "havencrest_form_adv.pdf":                  "havencrest/sample_re_havencrest_trust.pdf",
+  "havencrest_lpa.pdf":                       "havencrest/sample_re_havencrest_trust.pdf",
+  "havencrest_ppm.pdf":                       "havencrest/sample_re_havencrest_trust.pdf",
+  "havencrest_ddq_2026.pdf":                  "havencrest/sample_re_havencrest_trust.pdf",
+  "havencrest_valuation_policy.pdf":          "havencrest/sample_re_havencrest_trust.pdf",
+  "havencrest_compliance_manual.pdf":         "havencrest/sample_re_havencrest_trust.pdf",
+  "havencrest_audited_fs_fy2024.pdf":         "havencrest/sample_re_havencrest_trust.pdf",
+
+  // ── Ridgeline Resort (hospitality) — distinct from Ridgeline L/S equity ───
+  "sample_re_ridgeline_iii.pdf":              "ridgeline-iii/sample_re_ridgeline_iii.pdf",
+  "ridgeline_resort_form_adv.pdf":            "ridgeline-iii/sample_re_ridgeline_iii.pdf",
+  "ridgeline_resort_lpa.pdf":                 "ridgeline-iii/sample_re_ridgeline_iii.pdf",
+  "ridgeline_resort_ppm.pdf":                 "ridgeline-iii/sample_re_ridgeline_iii.pdf",
+  "ridgeline_resort_ddq_2026.pdf":            "ridgeline-iii/sample_re_ridgeline_iii.pdf",
+  "ridgeline_resort_valuation_policy.pdf":    "ridgeline-iii/sample_re_ridgeline_iii.pdf",
+  "ridgeline_resort_compliance_manual.pdf":   "ridgeline-iii/sample_re_ridgeline_iii.pdf",
+  "ridgeline_resort_audited_fs_fy2024.pdf":   "ridgeline-iii/sample_re_ridgeline_iii.pdf",
 };
 
 /** Sources that are NOT downloadable files (show info text instead) */

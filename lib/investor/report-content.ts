@@ -13,6 +13,11 @@ import {
   RIDGELINE_MOCK,
   COLLECTION_DOCS as RIDGELINE_COLLECTION_DOCS,
 } from "@/lib/app-portal/ridgeline-data";
+import { GRANITE_TOPIC_DATA, GRANITE_MOCK, GRANITE_COLLECTION_DOCS } from "@/lib/app-portal/granite-data";
+import { CORDOVA_TOPIC_DATA, CORDOVA_MOCK, CORDOVA_COLLECTION_DOCS } from "@/lib/app-portal/cordova-data";
+import { BLACKPINE_TOPIC_DATA, BLACKPINE_MOCK, BLACKPINE_COLLECTION_DOCS } from "@/lib/app-portal/blackpine-data";
+import { HAVENCREST_TOPIC_DATA, HAVENCREST_MOCK, HAVENCREST_COLLECTION_DOCS } from "@/lib/app-portal/havencrest-data";
+import { RIDGELINE_RESORT_TOPIC_DATA, RIDGELINE_RESORT_MOCK, RIDGELINE_RESORT_COLLECTION_DOCS } from "@/lib/app-portal/ridgeline-resort-data";
 import type { TopicInfo } from "@/lib/app-portal/ridgeline-data";
 import { getDemoFileUrl } from "@/lib/app-portal/demo-downloads";
 import { getReportEntry, type ReportRegistryEntry } from "@/lib/investor/report-registry";
@@ -36,6 +41,16 @@ export function getReportContent(slug: string): ReportContent | null {
       return { entry, topicData: TRELLIS_TOPIC_DATA, mock: TRELLIS_MOCK };
     case "ridgeline":
       return { entry, topicData: RIDGELINE_TOPIC_DATA, mock: RIDGELINE_MOCK };
+    case "granite":
+      return { entry, topicData: GRANITE_TOPIC_DATA, mock: GRANITE_MOCK };
+    case "cordova":
+      return { entry, topicData: CORDOVA_TOPIC_DATA, mock: CORDOVA_MOCK };
+    case "blackpine":
+      return { entry, topicData: BLACKPINE_TOPIC_DATA, mock: BLACKPINE_MOCK };
+    case "havencrest":
+      return { entry, topicData: HAVENCREST_TOPIC_DATA, mock: HAVENCREST_MOCK };
+    case "ridgelineResort":
+      return { entry, topicData: RIDGELINE_RESORT_TOPIC_DATA, mock: RIDGELINE_RESORT_MOCK };
     default:
       return null;
   }
@@ -74,6 +89,21 @@ export function getReferencedDocs(slug: string): ReferencedDoc[] {
       break;
     case "ridgeline":
       docs = RIDGELINE_COLLECTION_DOCS;
+      break;
+    case "granite":
+      docs = GRANITE_COLLECTION_DOCS;
+      break;
+    case "cordova":
+      docs = CORDOVA_COLLECTION_DOCS;
+      break;
+    case "blackpine":
+      docs = BLACKPINE_COLLECTION_DOCS;
+      break;
+    case "havencrest":
+      docs = HAVENCREST_COLLECTION_DOCS;
+      break;
+    case "ridgelineResort":
+      docs = RIDGELINE_RESORT_COLLECTION_DOCS;
       break;
     default:
       return [];

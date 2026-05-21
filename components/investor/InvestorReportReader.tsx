@@ -355,7 +355,7 @@ function Overview({
   ];
 
   return (
-    <section id="overview" className="scroll-mt-[170px] lg:scroll-mt-[116px]">
+    <section id="overview" className="scroll-mt-[170px] md:scroll-mt-[116px]">
       <h2 className="font-heading font-emphasis text-lg mb-3" style={{ color: INK }}>
         Overview
       </h2>
@@ -527,7 +527,7 @@ function ReportChapter({ num, index, topic }: { num: number; index: number; topi
   return (
     <section
       id={`chapter-${num}`}
-      className="scroll-mt-[170px] lg:scroll-mt-[116px]"
+      className="scroll-mt-[170px] md:scroll-mt-[116px]"
       aria-labelledby={`chapter-${num}-heading`}
     >
       <div className="rounded-panel border overflow-hidden" style={{ background: BG_CARD, borderColor: BORDER }}>
@@ -557,7 +557,7 @@ function DataChapter({
   return (
     <section
       id={`chapter-${num}`}
-      className="scroll-mt-[170px] lg:scroll-mt-[116px]"
+      className="scroll-mt-[170px] md:scroll-mt-[116px]"
       aria-labelledby={`chapter-${num}-heading`}
     >
       <div className="rounded-panel border overflow-hidden" style={{ background: BG_CARD, borderColor: BORDER }}>
@@ -777,7 +777,7 @@ export default function InvestorReportReader({ slug }: { slug: string }) {
           <ViewToggle mode={viewMode} onChange={handleModeChange} />
         </div>
         {/* Mobile section picker */}
-        <div className="lg:hidden px-6 pb-3">
+        <div className="md:hidden px-6 pb-3">
           <label htmlFor="section-picker" className="sr-only">
             Jump to section
           </label>
@@ -798,9 +798,9 @@ export default function InvestorReportReader({ slug }: { slug: string }) {
       </div>
 
       <div className="mx-auto max-w-6xl px-6 py-8">
-        <div className="grid lg:grid-cols-[236px_1fr] gap-8">
-          {/* Floating TOC sidebar — desktop */}
-          <nav aria-label="Report sections" className="hidden lg:block">
+        <div className="grid md:grid-cols-[220px_1fr] gap-8">
+          {/* Floating TOC sidebar — desktop / tablet */}
+          <nav aria-label="Report sections" className="hidden md:block">
             <div
               className="sticky top-[124px] rounded-panel border p-3"
               style={{ background: BG_CARD, borderColor: BORDER, boxShadow: CARD_SHADOW }}
@@ -847,7 +847,7 @@ export default function InvestorReportReader({ slug }: { slug: string }) {
                 {nums.map((n, i) => (
                   <ReportChapter key={n} num={n} index={i + 1} topic={topicData[n]} />
                 ))}
-                <section id="documents" className="scroll-mt-[170px] lg:scroll-mt-[116px]">
+                <section id="documents" className="scroll-mt-[170px] md:scroll-mt-[116px]">
                   <DocumentsPanel slug={slug} referencedDocs={referencedDocs} />
                 </section>
               </>
