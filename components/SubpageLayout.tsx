@@ -14,21 +14,10 @@ export default function SubpageLayout({ children }: SubpageLayoutProps) {
         <div className="h-[2px] w-full" style={{ background: `linear-gradient(90deg, ${GREEN}, ${AMBER}, ${VIOLET})` }} />
         <div style={{ borderBottom: `1px solid ${BORDER}` }}>
           <div className="mx-auto max-w-5xl px-6 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link href="/" style={{
-                display: "flex", alignItems: "center", gap: 6, textDecoration: "none",
-                fontSize: 13, fontWeight: 600, color: INK,
-                padding: "6px 14px", borderRadius: 6,
-                border: `1px solid ${BORDER}`,
-                background: "rgba(0,0,0,0.03)",
-              }}>
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 11L5 7l4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                Home
-              </Link>
-              <span style={{ width: 1, height: 20, background: BORDER }} />
+            <Link href="/" aria-label="Back to Alpine home" className="inline-flex items-center transition-opacity hover:opacity-80">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/alpine-logo-dark.svg?v=5" alt="Alpine Due Diligence" style={{ height: 40, width: "auto" }} />
-            </div>
+            </Link>
           </div>
         </div>
       </header>

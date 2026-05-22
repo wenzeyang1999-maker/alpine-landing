@@ -1,10 +1,13 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import SubpageLayout from "@/components/SubpageLayout";
-import InvestorLogoutButton from "@/components/investor/InvestorLogoutButton";
+import InvestorPortfolioOverview, {
+  type EnrichedReport,
+} from "@/components/investor/InvestorPortfolioOverview";
+import Link from "next/link";
 import { getCurrentInvestor, getVisibleReports } from "@/lib/investor/access";
-import type { ReportRegistryEntry, ReportRating } from "@/lib/investor/report-registry";
-import { INK, MUTED, SUBTLE, BORDER, BG_CARD, GREEN, AMBER } from "@/lib/constants";
+import type { ReportRegistryEntry } from "@/lib/investor/report-registry";
+import { getReportContent } from "@/lib/investor/report-content";
+import { INK, MUTED, SUBTLE, BORDER, BG_CARD } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 
@@ -13,77 +16,36 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
-const RATING_COLOR: Record<ReportRating, string> = {
-  GREEN: GREEN,
-  YELLOW: AMBER,
-  RED: "#EF4444",
-};
+/** Parse an AUM string like "$4.21B firmwide (excl. $1.83B uncalled)" → millions. */
+function parseAumMillions(s: string | undefined): number {
+  if (!s) return 0;
+  const m = s.match(/\$\s*([\d.]+)\s*([BMK])/i);
+  if (!m) return 0;
+  const num = parseFloat(m[1]);
+  if (!Number.isFinite(num)) return 0;
+  const unit = m[2].toUpperCase();
+  if (unit === "B") return num * 1000;
+  if (unit === "M") return num;
+  if (unit === "K") return num / 1000;
+  return 0;
+}
 
-const RATING_LABEL: Record<ReportRating, string> = {
-  GREEN: "Accept",
-  YELLOW: "Watchlist",
-  RED: "Flag",
-};
+function enrichReport(entry: ReportRegistryEntry): EnrichedReport {
+  const content = getReportContent(entry.slug);
+  const aumDisplay = content?.mock?.fund?.aum as string | undefined;
+  const aumMillions = parseAumMillions(aumDisplay);
 
-function ReportCard({ report }: { report: ReportRegistryEntry }) {
-  const color = RATING_COLOR[report.rating];
-  return (
-    <Link
-      href={`/reports/${report.slug}`}
-      className="block rounded-panel border p-5 transition-shadow hover:shadow-md focus:shadow-md"
-      style={{ background: BG_CARD, borderColor: BORDER }}
-    >
-      <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0">
-          <p
-            className="font-mono text-[10px] uppercase tracking-widest mb-1.5"
-            style={{ color: SUBTLE }}
-          >
-            Operational Due Diligence
-          </p>
-          <h2
-            className="font-heading font-emphasis text-lg leading-snug truncate"
-            style={{ color: INK }}
-          >
-            {report.fundName}
-          </h2>
-          <p className="font-body text-sm mt-0.5" style={{ color: MUTED }}>
-            {report.manager}
-          </p>
-        </div>
-        <div
-          className="shrink-0 flex flex-col items-center justify-center rounded-card px-3 py-2"
-          style={{ background: `${color}1A`, border: `1px solid ${color}55` }}
-        >
-          <span
-            className="font-heading font-emphasis text-xl leading-none tabular-nums"
-            style={{ color }}
-          >
-            {report.oddScore}
-          </span>
-          <span className="font-mono text-[9px] mt-0.5" style={{ color: SUBTLE }}>
-            ODD / 100
-          </span>
-        </div>
-      </div>
-      <div className="flex items-center justify-between mt-4">
-        <span
-          className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wide"
-          style={{ color }}
-        >
-          <span
-            className="inline-block w-2 h-2 rounded-full"
-            style={{ background: color }}
-            aria-hidden
-          />
-          {RATING_LABEL[report.rating]}
-        </span>
-        <span className="font-body text-[13px] font-emphasis" style={{ color: INK }}>
-          Open report →
-        </span>
-      </div>
-    </Link>
-  );
+  const topicRatings: Record<number, "GREEN" | "YELLOW" | "RED"> = {};
+  const td = content?.topicData ?? {};
+  for (const k of Object.keys(td)) {
+    const n = Number(k);
+    if (!Number.isInteger(n)) continue;
+    const r = (td[n]?.rating || "").toUpperCase();
+    if (r === "GREEN" || r === "YELLOW" || r === "RED") {
+      topicRatings[n] = r;
+    }
+  }
+  return { entry, aumMillions, aumDisplay, topicRatings };
 }
 
 function EmptyState() {
@@ -150,45 +112,41 @@ export default async function ReportsHomePage() {
     loadError = true;
   }
 
-  const greetingName = investor.full_name?.trim() || investor.organization?.trim() || null;
+  if (loadError) {
+    return (
+      <SubpageLayout>
+        <main className="flex-1 w-full">
+          <div className="mx-auto max-w-3xl px-6 py-12">
+            <ErrorState />
+          </div>
+        </main>
+      </SubpageLayout>
+    );
+  }
+
+  if (reports.length === 0) {
+    return (
+      <SubpageLayout>
+        <main className="flex-1 w-full">
+          <div className="mx-auto max-w-3xl px-6 py-12">
+            <EmptyState />
+          </div>
+        </main>
+      </SubpageLayout>
+    );
+  }
+
+  const enriched = reports.map(enrichReport);
+  const greetingName =
+    investor.full_name?.trim() || investor.organization?.trim() || null;
 
   return (
     <SubpageLayout>
-      <main id="main-content" className="flex-1 w-full">
-        <div className="mx-auto max-w-3xl px-6 py-12">
-          <div className="flex items-start justify-between gap-4 mb-8">
-            <div>
-              <h1
-                className="font-heading font-emphasis text-2xl md:text-[1.75rem] leading-tight"
-                style={{ color: INK }}
-              >
-                Your reports
-              </h1>
-              <p className="font-body text-sm mt-2" style={{ color: MUTED }}>
-                {greetingName
-                  ? `Signed in as ${greetingName}.`
-                  : `Signed in as ${investor.email}.`}{" "}
-                {reports.length > 0
-                  ? "Select a report to read the full review."
-                  : ""}
-              </p>
-            </div>
-            <InvestorLogoutButton />
-          </div>
-
-          {loadError ? (
-            <ErrorState />
-          ) : reports.length === 0 ? (
-            <EmptyState />
-          ) : (
-            <div className="grid grid-cols-1 gap-4">
-              {reports.map((report) => (
-                <ReportCard key={report.slug} report={report} />
-              ))}
-            </div>
-          )}
-        </div>
-      </main>
+      <InvestorPortfolioOverview
+        reports={enriched}
+        greetingName={greetingName}
+        greetingEmail={investor.email}
+      />
     </SubpageLayout>
   );
 }
