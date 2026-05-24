@@ -648,7 +648,7 @@ function Sidebar({
       >
         <div
           className="rounded-card flex items-center justify-center shrink-0"
-          style={{ width: 32, height: 32, background: `linear-gradient(135deg, ${GREEN} 0%, ${AMBER} 50%, ${VIOLET} 100%)`, color: "#fff" }}
+          style={{ width: 32, height: 32, background: VIOLET, color: "#fff" }}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <path d="M3 20 L12 4 L21 20" />
