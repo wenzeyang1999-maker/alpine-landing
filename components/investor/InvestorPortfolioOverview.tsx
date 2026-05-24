@@ -92,11 +92,6 @@ function colorFromRating(r: string): string {
   return RATING_COLOR[r] ?? "#94A3B8";
 }
 
-function topicRatingColor(r: string | undefined): string {
-  if (!r) return BORDER;
-  return colorFromRating(r);
-}
-
 // ── Score Donut ────────────────────────────────────────────────────────────
 
 function ScoreDonut({ score, accept, watchlist, flag, size = 72 }: {
@@ -222,13 +217,18 @@ function FundTableRow({ r }: { r: EnrichedReport }) {
         <div className="flex gap-1">
           {TOPIC_NUMS.map((n) => {
             const tr = r.topicRatings[n];
+            const code = TOPIC_SHORT_CODES[n];
+            const bg = tr ? `${colorFromRating(tr)}22` : BG_ALT;
+            const txt = tr ? (RATING_TEXT_COLOR[tr] ?? MUTED) : SUBTLE;
             return (
               <span
                 key={n}
-                title={`${TOPIC_SHORT_CODES[n].label}: ${tr ?? "—"}`}
-                className="inline-block rounded-[3px]"
-                style={{ background: topicRatingColor(tr), width: 14, height: 14 }}
-              />
+                title={`${code.key} (${code.short}): ${tr ?? "Not rated"}`}
+                className="inline-flex items-center justify-center font-mono tabular-nums"
+                style={{ background: bg, color: txt, width: 18, height: 18, borderRadius: 3, fontSize: 10, fontWeight: 700, letterSpacing: "0.02em" }}
+              >
+                {tr ? tr.charAt(0) : "—"}
+              </span>
             );
           })}
         </div>
@@ -278,10 +278,18 @@ function FundMobileCard({ r }: { r: EnrichedReport }) {
         <div className="flex gap-1">
           {TOPIC_NUMS.map((n) => {
             const tr = r.topicRatings[n];
+            const code = TOPIC_SHORT_CODES[n];
+            const bg = tr ? `${colorFromRating(tr)}22` : BG_ALT;
+            const txt = tr ? (RATING_TEXT_COLOR[tr] ?? MUTED) : SUBTLE;
             return (
-              <span key={n} title={`${TOPIC_SHORT_CODES[n].label}: ${tr ?? "—"}`}
-                className="inline-block rounded-[3px]"
-                style={{ background: topicRatingColor(tr), width: 12, height: 12 }} />
+              <span
+                key={n}
+                title={`${code.key} (${code.short}): ${tr ?? "Not rated"}`}
+                className="inline-flex items-center justify-center font-mono tabular-nums"
+                style={{ background: bg, color: txt, width: 16, height: 16, borderRadius: 3, fontSize: 9, fontWeight: 700, letterSpacing: "0.02em" }}
+              >
+                {tr ? tr.charAt(0) : "—"}
+              </span>
             );
           })}
         </div>
@@ -316,6 +324,40 @@ function FundsTable({ reports }: { reports: EnrichedReport[] }) {
       {/* Mobile cards */}
       <div className="md:hidden">
         {reports.map((r) => <FundMobileCard key={r.entry.slug} r={r} />)}
+      </div>
+      {/* Legend for the topic coverage chips */}
+      <div
+        className="flex items-center gap-x-4 gap-y-2 flex-wrap font-body text-[11px]"
+        style={{ padding: "10px 20px", background: BG_ALT, color: SUBTLE, borderTop: `1px solid ${BORDER}` }}
+      >
+        <span className="font-mono uppercase shrink-0" style={{ fontSize: 10, color: MUTED, fontWeight: 700, letterSpacing: "0.1em" }}>
+          Coverage
+        </span>
+        {[
+          { letter: "G", label: "Accept", color: GREEN, text: GREEN_TEXT },
+          { letter: "Y", label: "Watchlist", color: AMBER, text: AMBER_TEXT },
+          { letter: "R", label: "Flag", color: RED, text: RED_TEXT },
+          { letter: "—", label: "Not rated", color: BG_ALT, text: SUBTLE },
+        ].map(({ letter, label, color, text }) => (
+          <span key={label} className="inline-flex items-center gap-1.5 shrink-0">
+            <span
+              className="inline-flex items-center justify-center font-mono tabular-nums"
+              style={{ background: letter === "—" ? BG_CARD : `${color}22`, color: text, width: 18, height: 18, borderRadius: 3, fontSize: 10, fontWeight: 700 }}
+            >
+              {letter}
+            </span>
+            {label}
+          </span>
+        ))}
+        <span className="hidden md:inline-block shrink-0" style={{ width: 1, height: 14, background: BORDER, margin: "0 4px" }} aria-hidden />
+        <span className="hidden md:inline-flex flex-wrap gap-x-3 gap-y-1" style={{ color: SUBTLE }}>
+          {TOPIC_NUMS.map((n) => (
+            <span key={n}>
+              <span className="font-mono" style={{ color: MUTED, fontWeight: 700 }}>{TOPIC_SHORT_CODES[n].key}</span>
+              {" "}{TOPIC_SHORT_CODES[n].short}
+            </span>
+          ))}
+        </span>
       </div>
     </div>
   );
