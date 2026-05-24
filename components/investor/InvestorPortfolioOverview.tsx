@@ -20,15 +20,15 @@ const RATING_LABEL: Record<ReportRating, string> = {
   RED: "Flag",
 };
 
-const TOPIC_SHORT_CODES: Record<number, { key: string; label: string }> = {
-  1: { key: "GOV",   label: "Manager, Ownership & Governance" },
-  2: { key: "REG",   label: "Legal, Regulatory & Compliance" },
-  3: { key: "TECH",  label: "Technology, Cybersecurity & Business Resilience" },
-  4: { key: "TERMS", label: "Fund Structure, Terms & Investor Alignment" },
-  5: { key: "SVCP",  label: "Service Providers, Delegation & Oversight" },
-  6: { key: "OPS",   label: "Investment Operations & Portfolio Controls" },
-  7: { key: "VAL",   label: "Valuation, Asset Existence & Investor Reporting" },
-  8: { key: "RPT",   label: "Manager Transparency & LP Communications" },
+const TOPIC_SHORT_CODES: Record<number, { key: string; label: string; short: string }> = {
+  1: { key: "GOV",   label: "Manager, Ownership & Governance",                short: "Governance" },
+  2: { key: "REG",   label: "Legal, Regulatory & Compliance",                 short: "Compliance" },
+  3: { key: "TECH",  label: "Technology, Cybersecurity & Business Resilience", short: "Tech" },
+  4: { key: "TERMS", label: "Fund Structure, Terms & Investor Alignment",     short: "Terms" },
+  5: { key: "SVCP",  label: "Service Providers, Delegation & Oversight",      short: "Service Providers" },
+  6: { key: "OPS",   label: "Investment Operations & Portfolio Controls",     short: "Operations" },
+  7: { key: "VAL",   label: "Valuation, Asset Existence & Investor Reporting", short: "Valuation" },
+  8: { key: "RPT",   label: "Manager Transparency & LP Communications",       short: "Reporting" },
 };
 
 const TOPIC_NUMS = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -363,11 +363,13 @@ function PortfolioOverviewView({ reports }: { reports: EnrichedReport[] }) {
             {stats.topicHealth.map(({ key, label, pct }) => {
               const color = pct >= 80 ? GREEN : pct >= 55 ? AMBER : RED;
               const textColor = pct >= 80 ? GREEN_TEXT : pct >= 55 ? AMBER_TEXT : RED_TEXT;
+              const short = TOPIC_SHORT_CODES[TOPIC_NUMS.find((n) => TOPIC_SHORT_CODES[n].key === key) ?? 1]?.short ?? "";
               return (
                 <div key={key} title={`${label}: ${pct}% pass`} className="rounded-card"
-                  style={{ background: `${color}14`, border: `1px solid ${color}33`, padding: "6px 10px", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, minWidth: 52 }}>
+                  style={{ background: `${color}0E`, padding: "6px 10px 5px", display: "flex", flexDirection: "column", alignItems: "center", gap: 1, minWidth: 64, borderBottom: `2px solid ${color}` }}>
                   <span className="font-mono" style={{ fontSize: 9, color: textColor, fontWeight: 700, letterSpacing: "0.04em" }}>{key}</span>
-                  <span className="font-mono tabular-nums" style={{ fontSize: 10, color: textColor }}>{pct}%</span>
+                  <span className="font-body" style={{ fontSize: 9, color: MUTED, lineHeight: 1.1 }}>{short}</span>
+                  <span className="font-mono tabular-nums" style={{ fontSize: 11, color: textColor, fontWeight: 600, marginTop: 2 }}>{pct}%</span>
                 </div>
               );
             })}
