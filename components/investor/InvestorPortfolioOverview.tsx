@@ -352,19 +352,6 @@ function PortfolioOverviewView({ reports }: { reports: EnrichedReport[] }) {
                 </span>
               </div>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {[
-                { label: "Funds", value: String(stats.fundCount), color: INK },
-                { label: "Strategies", value: String(stats.strategyCount), color: INK },
-                { label: "Flagged", value: String(stats.flag), color: stats.flag > 0 ? RED_TEXT : GREEN_TEXT },
-                { label: "Portfolio Score", value: String(stats.avgScore), color: INK },
-              ].map(({ label, value, color }) => (
-                <div key={label}>
-                  <div className="font-mono text-[9px] uppercase mb-1" style={{ color: MUTED, letterSpacing: "0.12em", fontWeight: 600 }}>{label}</div>
-                  <div className="font-heading font-emphasis tabular-nums" style={{ fontSize: 22, fontWeight: 700, color, letterSpacing: "-0.02em" }}>{value}</div>
-                </div>
-              ))}
-            </div>
             <div>
               <p className="font-mono text-[9px] uppercase mb-2" style={{ color: MUTED, letterSpacing: "0.12em", fontWeight: 600 }}>Portfolio Topic Health</p>
               <div className="flex gap-2 flex-wrap">
@@ -392,22 +379,6 @@ function PortfolioOverviewView({ reports }: { reports: EnrichedReport[] }) {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* KPI cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {[
-          { label: "Portfolio ODD Score", value: String(stats.avgScore), sub: `Average across ${stats.fundCount} report${stats.fundCount === 1 ? "" : "s"}`, color: stats.avgScore >= 75 ? GREEN_TEXT : stats.avgScore >= 60 ? AMBER_TEXT : RED_TEXT },
-          { label: "Flagged Funds", value: String(stats.flag), sub: stats.flag > 0 ? "Requires immediate review" : "All clear", color: stats.flag > 0 ? RED_TEXT : GREEN_TEXT },
-          { label: "Watchlist", value: String(stats.watchlist), sub: "Heightened monitoring", color: stats.watchlist > 0 ? AMBER_TEXT : INK },
-          { label: "Total AUM", value: formatAum(stats.totalAumMillions), sub: `${stats.fundCount} fund${stats.fundCount === 1 ? "" : "s"} · ${stats.strategyCount} ${stats.strategyCount === 1 ? "strategy" : "strategies"}`, color: INK },
-        ].map(({ label, value, sub, color }) => (
-          <div key={label} className="rounded-card" style={{ background: BG_CARD, border: `1px solid ${BORDER}`, padding: "14px 16px" }}>
-            <div className="font-mono text-[10px] uppercase mb-1.5" style={{ color: MUTED, letterSpacing: "0.12em", fontWeight: 600 }}>{label}</div>
-            <div className="font-heading font-emphasis tabular-nums" style={{ fontSize: 24, fontWeight: 700, color, letterSpacing: "-0.025em", lineHeight: 1.1, marginBottom: 4 }}>{value}</div>
-            <div className="font-body text-[11px]" style={{ color: SUBTLE, lineHeight: 1.35 }}>{sub}</div>
-          </div>
-        ))}
       </div>
 
       <FundsTable reports={reports} />
