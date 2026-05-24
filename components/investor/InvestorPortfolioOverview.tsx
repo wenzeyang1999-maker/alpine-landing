@@ -328,14 +328,14 @@ function PortfolioOverviewView({ reports }: { reports: EnrichedReport[] }) {
 
   return (
     <div className="space-y-6">
-      {/* Portfolio Monitor hero */}
-      <div className="rounded-panel" style={{ background: BG_CARD, border: `1px solid ${BORDER}`, padding: "24px" }}>
+      {/* Portfolio Monitor hero — rendered on page background, no card chrome */}
+      <div style={{ padding: "4px 2px" }}>
         <div className="flex items-start justify-between gap-5 flex-wrap-reverse mb-5">
           <div className="min-w-0 flex-1">
             <p className="font-mono text-[10px] uppercase mb-2" style={{ color: MUTED, letterSpacing: "0.12em", fontWeight: 600 }}>
               Alpine ODD Platform · Portfolio Monitor
             </p>
-            <h1 className="font-heading font-emphasis text-xl sm:text-2xl" style={{ color: INK, lineHeight: 1.1, letterSpacing: "-0.025em", marginBottom: 10 }}>
+            <h1 className="font-heading font-emphasis text-2xl sm:text-[28px]" style={{ color: INK, lineHeight: 1.1, letterSpacing: "-0.025em", marginBottom: 10 }}>
               {stats.fundCount} fund{stats.fundCount === 1 ? "" : "s"} · {stats.strategyCount} {stats.strategyCount === 1 ? "strategy" : "strategies"} · {formatAum(stats.totalAumMillions)} AUM
             </h1>
             <div className="flex items-center gap-4 flex-wrap">
