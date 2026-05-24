@@ -800,108 +800,6 @@ function Sidebar({
   );
 }
 
-// ── Top header bar ─────────────────────────────────────────────────────────
-
-function TopHeaderBar({
-  view, onSignOut, signingOut,
-}: {
-  view: ViewId;
-  onSignOut: () => void;
-  signingOut: boolean;
-}) {
-  const [notifOpen, setNotifOpen] = useState(false);
-  const notifRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!notifOpen) return;
-    function onClick(e: MouseEvent) {
-      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
-        setNotifOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", onClick);
-    return () => document.removeEventListener("mousedown", onClick);
-  }, [notifOpen]);
-
-  return (
-    <header
-      className="flex items-center justify-between gap-4 rounded-card mb-4"
-      style={{
-        background: BG_CARD,
-        border: `1px solid ${BORDER}`,
-        padding: "12px 18px",
-      }}
-    >
-      {/* Left: breadcrumb only (logo already in subpage layout + sidebar) */}
-      <div className="min-w-0">
-        <p className="font-body text-[13px] truncate" style={{ color: INK }}>
-          <span style={{ color: MUTED }}>Portfolio</span> <span style={{ color: SUBTLE }}>/</span> <span style={{ fontWeight: 600 }}>{VIEW_LABEL[view]}</span>
-        </p>
-      </div>
-
-      {/* Right: notification bell + sign out */}
-      <div className="flex items-center gap-2 shrink-0">
-        <div ref={notifRef} className="relative">
-          <button
-            type="button"
-            onClick={() => setNotifOpen((o) => !o)}
-            className="rounded-card flex items-center justify-center transition-colors hover:bg-gray-50 relative"
-            style={{
-              width: 36, height: 36,
-              border: `1px solid ${BORDER}`,
-              background: notifOpen ? BG_ALT : "transparent",
-              color: MUTED,
-            }}
-            aria-label="Notifications"
-            aria-expanded={notifOpen}
-          >
-            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M8 2a5 5 0 00-5 5v2l-1 2h12l-1-2V7a5 5 0 00-5-5z" />
-              <path d="M6.5 13a1.5 1.5 0 003 0" />
-            </svg>
-            <span
-              className="absolute rounded-full"
-              style={{ top: 6, right: 6, width: 7, height: 7, background: RED, border: `1.5px solid ${BG_CARD}` }}
-              aria-hidden
-            />
-          </button>
-          {notifOpen && (
-            <div
-              className="absolute right-0 mt-2 rounded-card overflow-hidden z-20"
-              style={{
-                background: BG_CARD,
-                border: `1px solid ${BORDER}`,
-                boxShadow: "0 8px 24px rgba(15,15,16,0.12)",
-                width: 280,
-              }}
-            >
-              <div className="px-4 py-3 font-heading font-emphasis text-[13px]" style={{ borderBottom: `1px solid ${BORDER}`, color: INK }}>
-                Notifications
-              </div>
-              <div className="px-4 py-6 text-center">
-                <p className="font-body text-[13px]" style={{ color: MUTED }}>No new notifications.</p>
-                <p className="font-body text-[11px] mt-1" style={{ color: SUBTLE }}>
-                  Your Alpine analyst will notify you here when a new report is published.
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <button
-          type="button"
-          onClick={onSignOut}
-          disabled={signingOut}
-          className="font-body text-[13px] rounded-card px-4 py-2 transition-opacity hover:opacity-80 disabled:opacity-50"
-          style={{ border: `1px solid ${BORDER}`, background: "transparent", color: INK, fontWeight: 500 }}
-        >
-          {signingOut ? "Signing out…" : "Sign Out"}
-        </button>
-      </div>
-    </header>
-  );
-}
-
 // ── Mobile view picker (replaces sidebar < md) ────────────────────────────
 
 function MobileViewPicker({
@@ -999,9 +897,6 @@ export default function InvestorPortfolioOverview({
   return (
     <main id="main-content" className="flex-1 w-full" style={{ background: BG_ALT }}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-8">
-
-        {/* Top header bar */}
-        <TopHeaderBar view={view} onSignOut={handleSignOut} signingOut={signingOut} />
 
         {/* Mobile picker */}
         <MobileViewPicker
