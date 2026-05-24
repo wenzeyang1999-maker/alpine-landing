@@ -99,13 +99,15 @@ function topicRatingColor(r: string | undefined): string {
 
 // ── Score Donut ────────────────────────────────────────────────────────────
 
-function ScoreDonut({ score, accept, watchlist, flag, size = 144 }: {
+function ScoreDonut({ score, accept, watchlist, flag, size = 72 }: {
   score: number; accept: number; watchlist: number; flag: number; size?: number;
 }) {
   const total = accept + watchlist + flag;
-  const stroke = 12;
+  const stroke = Math.max(4, Math.round(size * 0.10));
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
+  const scoreFontSize = Math.round(size * 0.42);
+  const labelFontSize = Math.max(7, Math.round(size * 0.10));
   const segs = total > 0
     ? [
         { color: GREEN, frac: accept / total },
@@ -134,10 +136,10 @@ function ScoreDonut({ score, accept, watchlist, flag, size = 144 }: {
         display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center",
       }}>
-        <span className="font-heading font-emphasis tabular-nums" style={{ fontSize: 36, fontWeight: 800, color: INK, lineHeight: 1, letterSpacing: "-0.04em" }}>
+        <span className="font-heading font-emphasis tabular-nums" style={{ fontSize: scoreFontSize, fontWeight: 800, color: INK, lineHeight: 1, letterSpacing: "-0.04em" }}>
           {score}
         </span>
-        <span className="font-mono" style={{ fontSize: 10, color: MUTED, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", marginTop: 4 }}>
+        <span className="font-mono" style={{ fontSize: labelFontSize, color: MUTED, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", marginTop: Math.max(2, Math.round(size * 0.03)) }}>
           ODD
         </span>
       </div>
@@ -328,55 +330,47 @@ function PortfolioOverviewView({ reports }: { reports: EnrichedReport[] }) {
     <div className="space-y-6">
       {/* Portfolio Monitor hero */}
       <div className="rounded-panel" style={{ background: BG_CARD, border: `1px solid ${BORDER}`, padding: "24px" }}>
-        <div className="grid lg:grid-cols-[1fr_180px] gap-6 lg:gap-8 items-start">
-          <div className="min-w-0 space-y-5">
-            <div>
-              <p className="font-mono text-[10px] uppercase mb-2" style={{ color: MUTED, letterSpacing: "0.12em", fontWeight: 600 }}>
-                Alpine ODD Platform · Portfolio Monitor
-              </p>
-              <h1 className="font-heading font-emphasis text-xl sm:text-2xl" style={{ color: INK, lineHeight: 1.1, letterSpacing: "-0.025em", marginBottom: 10 }}>
-                {stats.fundCount} fund{stats.fundCount === 1 ? "" : "s"} · {stats.strategyCount} {stats.strategyCount === 1 ? "strategy" : "strategies"} · {formatAum(stats.totalAumMillions)} AUM
-              </h1>
-              <div className="flex items-center gap-4 flex-wrap">
-                <span className="inline-flex items-center gap-2 font-mono text-[12px]" style={{ color: MUTED }}>
-                  <span className="inline-block w-2 h-2 rounded-full" style={{ background: GREEN }} />
-                  {stats.accept} Accept
-                </span>
-                <span className="inline-flex items-center gap-2 font-mono text-[12px]" style={{ color: MUTED }}>
-                  <span className="inline-block w-2 h-2 rounded-full" style={{ background: AMBER }} />
-                  {stats.watchlist} Watchlist
-                </span>
-                <span className="inline-flex items-center gap-2 font-mono text-[12px]" style={{ color: MUTED }}>
-                  <span className="inline-block w-2 h-2 rounded-full" style={{ background: RED }} />
-                  {stats.flag} Flag
-                </span>
-              </div>
-            </div>
-            <div>
-              <p className="font-mono text-[9px] uppercase mb-2" style={{ color: MUTED, letterSpacing: "0.12em", fontWeight: 600 }}>Portfolio Topic Health</p>
-              <div className="flex gap-2 flex-wrap">
-                {stats.topicHealth.map(({ key, label, pct }) => {
-                  const color = pct >= 80 ? GREEN : pct >= 55 ? AMBER : RED;
-                  const textColor = pct >= 80 ? GREEN_TEXT : pct >= 55 ? AMBER_TEXT : RED_TEXT;
-                  return (
-                    <div key={key} title={`${label}: ${pct}% pass`} className="rounded-card"
-                      style={{ background: `${color}14`, border: `1px solid ${color}33`, padding: "6px 10px", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, minWidth: 52 }}>
-                      <span className="font-mono" style={{ fontSize: 9, color: textColor, fontWeight: 700, letterSpacing: "0.04em" }}>{key}</span>
-                      <span className="font-mono tabular-nums" style={{ fontSize: 10, color: textColor }}>{pct}%</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center justify-center lg:justify-end">
-            <div className="flex flex-col items-center gap-2 text-center">
-              <ScoreDonut score={stats.avgScore} accept={stats.accept} watchlist={stats.watchlist} flag={stats.flag} size={144} />
-              <span className="font-mono text-[10px] uppercase" style={{ color: MUTED, letterSpacing: "0.12em", fontWeight: 600 }}>Portfolio Score</span>
-              <span className="font-body text-[10px] max-w-[180px]" style={{ color: SUBTLE, lineHeight: 1.4 }}>
-                Average across {stats.fundCount} report{stats.fundCount === 1 ? "" : "s"} in your portfolio
+        <div className="flex items-start justify-between gap-5 flex-wrap-reverse mb-5">
+          <div className="min-w-0 flex-1">
+            <p className="font-mono text-[10px] uppercase mb-2" style={{ color: MUTED, letterSpacing: "0.12em", fontWeight: 600 }}>
+              Alpine ODD Platform · Portfolio Monitor
+            </p>
+            <h1 className="font-heading font-emphasis text-xl sm:text-2xl" style={{ color: INK, lineHeight: 1.1, letterSpacing: "-0.025em", marginBottom: 10 }}>
+              {stats.fundCount} fund{stats.fundCount === 1 ? "" : "s"} · {stats.strategyCount} {stats.strategyCount === 1 ? "strategy" : "strategies"} · {formatAum(stats.totalAumMillions)} AUM
+            </h1>
+            <div className="flex items-center gap-4 flex-wrap">
+              <span className="inline-flex items-center gap-2 font-mono text-[12px]" style={{ color: MUTED }}>
+                <span className="inline-block w-2 h-2 rounded-full" style={{ background: GREEN }} />
+                {stats.accept} Accept
+              </span>
+              <span className="inline-flex items-center gap-2 font-mono text-[12px]" style={{ color: MUTED }}>
+                <span className="inline-block w-2 h-2 rounded-full" style={{ background: AMBER }} />
+                {stats.watchlist} Watchlist
+              </span>
+              <span className="inline-flex items-center gap-2 font-mono text-[12px]" style={{ color: MUTED }}>
+                <span className="inline-block w-2 h-2 rounded-full" style={{ background: RED }} />
+                {stats.flag} Flag
               </span>
             </div>
+          </div>
+          <div className="shrink-0" title={`Portfolio score: ${stats.avgScore} · Average across ${stats.fundCount} report${stats.fundCount === 1 ? "" : "s"}`}>
+            <ScoreDonut score={stats.avgScore} accept={stats.accept} watchlist={stats.watchlist} flag={stats.flag} size={72} />
+          </div>
+        </div>
+        <div>
+          <p className="font-mono text-[9px] uppercase mb-2" style={{ color: MUTED, letterSpacing: "0.12em", fontWeight: 600 }}>Portfolio Topic Health</p>
+          <div className="flex gap-2 flex-wrap">
+            {stats.topicHealth.map(({ key, label, pct }) => {
+              const color = pct >= 80 ? GREEN : pct >= 55 ? AMBER : RED;
+              const textColor = pct >= 80 ? GREEN_TEXT : pct >= 55 ? AMBER_TEXT : RED_TEXT;
+              return (
+                <div key={key} title={`${label}: ${pct}% pass`} className="rounded-card"
+                  style={{ background: `${color}14`, border: `1px solid ${color}33`, padding: "6px 10px", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, minWidth: 52 }}>
+                  <span className="font-mono" style={{ fontSize: 9, color: textColor, fontWeight: 700, letterSpacing: "0.04em" }}>{key}</span>
+                  <span className="font-mono tabular-nums" style={{ fontSize: 10, color: textColor }}>{pct}%</span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
