@@ -5,6 +5,10 @@ import {
   verifySession as verifyInvestorSession,
   INVESTOR_SESSION,
 } from "@/lib/investor/auth-session";
+import {
+  verifySession as verifyManagerSession,
+  MANAGER_SESSION,
+} from "@/lib/manager/auth-session";
 
 const MANAGER_HOSTS = new Set([
   "manager.alpinedd.com",
@@ -40,10 +44,31 @@ export async function middleware(req: NextRequest) {
   const url = req.nextUrl.clone();
   const path = url.pathname;
 
-  // Manager subdomain → rewrite to /manager/*
+  // Manager subdomain → auth-gated rewrite to /manager/*
   if (isManagerHost(host)) {
+    // Paths already prefixed (shouldn't normally reach here but guard anyway)
     if (path.startsWith("/manager/") || path === "/manager") return NextResponse.next();
-    url.pathname = `/manager${path === "/" ? "/landing" : path}`;
+
+    const rewritePath = path === "/" ? "/landing" : path;
+    url.pathname = `/manager${rewritePath}`;
+
+    // Gate workspace routes behind a valid session cookie.
+    // Verification status (is_verified) is checked at the page level via
+    // getCurrentManager() because Edge runtime can't hit Supabase.
+    const isWorkspace =
+      rewritePath === "/workspace" || rewritePath.startsWith("/workspace/");
+
+    if (isWorkspace) {
+      const token = req.cookies.get(MANAGER_SESSION.COOKIE_NAME)?.value ?? undefined;
+      const email = await verifyManagerSession(token);
+      if (!email) {
+        const loginUrl = req.nextUrl.clone();
+        loginUrl.pathname = "/manager/login";
+        loginUrl.search = "";
+        return NextResponse.redirect(loginUrl);
+      }
+    }
+
     return NextResponse.rewrite(url);
   }
 

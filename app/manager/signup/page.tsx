@@ -8,36 +8,41 @@ import {
   BG, BG_CARD, INK, SECONDARY, MUTED, VIOLET, BORDER, LS_BODY, LS_H1,
 } from "@/lib/constants";
 
-export default function ManagerLogin() {
+export default function ManagerSignup() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState({ email: "", password: "", full_name: "", firm_name: "" });
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  function set(field: string, value: string) {
+    setForm((f) => ({ ...f, [field]: value }));
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
     setSubmitting(true);
     try {
-      const res = await fetch("/api/manager/auth/login", {
+      const res = await fetch("/api/manager/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(form),
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "Sign-in failed. Please try again.");
+        setError(data.error ?? "Sign-up failed. Please try again.");
         return;
       }
-      router.push(data.redirect ?? "/manager/workspace");
+      router.push(data.redirect ?? "/manager/pending");
     } catch {
       setError("Network error. Please try again.");
     } finally {
       setSubmitting(false);
     }
   }
+
+  const canSubmit = form.email && form.password && form.full_name && form.firm_name;
 
   return (
     <main style={{ background: BG, color: INK }} className="min-h-screen">
@@ -52,12 +57,8 @@ export default function ManagerLogin() {
             For Managers
           </span>
         </Link>
-        <Link
-          href="/manager/signup"
-          className="font-body text-[13px] hover:underline"
-          style={{ color: SECONDARY }}
-        >
-          Create account →
+        <Link href="/manager/login" className="font-body text-[13px] hover:underline" style={{ color: SECONDARY }}>
+          Sign in →
         </Link>
       </nav>
 
@@ -66,19 +67,20 @@ export default function ManagerLogin() {
           className="font-mono text-[11px] uppercase mb-4"
           style={{ color: VIOLET, fontWeight: 700, letterSpacing: "0.1em" }}
         >
-          Sign in
+          Create account
         </p>
         <h1
           className="font-heading mb-3"
           style={{ fontSize: "1.875rem", fontWeight: 700, lineHeight: 1.15, letterSpacing: LS_H1, color: INK }}
         >
-          Welcome back.
+          Set up your workspace.
         </h1>
         <p
           className="font-body mb-8"
           style={{ fontSize: "1rem", lineHeight: 1.6, color: SECONDARY, letterSpacing: LS_BODY }}
         >
-          Sign in to your manager workspace.
+          Create your firm&rsquo;s Alpine account. Your workspace will be ready
+          once our team verifies your firm — usually within 1 business day.
         </p>
 
         <form
@@ -88,12 +90,44 @@ export default function ManagerLogin() {
         >
           <label className="flex flex-col gap-1.5">
             <span className="font-mono text-[11px] uppercase" style={{ color: SECONDARY, fontWeight: 700, letterSpacing: "0.08em" }}>
+              Firm name
+            </span>
+            <input
+              type="text"
+              value={form.firm_name}
+              onChange={(e) => set("firm_name", e.target.value)}
+              required
+              autoComplete="organization"
+              placeholder="Acme Capital Management"
+              className="w-full rounded-btn px-4 py-3 font-body text-[14px]"
+              style={{ background: BG, border: `1px solid ${BORDER}`, color: INK }}
+            />
+          </label>
+
+          <label className="flex flex-col gap-1.5">
+            <span className="font-mono text-[11px] uppercase" style={{ color: SECONDARY, fontWeight: 700, letterSpacing: "0.08em" }}>
+              Your full name
+            </span>
+            <input
+              type="text"
+              value={form.full_name}
+              onChange={(e) => set("full_name", e.target.value)}
+              required
+              autoComplete="name"
+              placeholder="Jane Smith"
+              className="w-full rounded-btn px-4 py-3 font-body text-[14px]"
+              style={{ background: BG, border: `1px solid ${BORDER}`, color: INK }}
+            />
+          </label>
+
+          <label className="flex flex-col gap-1.5">
+            <span className="font-mono text-[11px] uppercase" style={{ color: SECONDARY, fontWeight: 700, letterSpacing: "0.08em" }}>
               Work email
             </span>
             <input
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={form.email}
+              onChange={(e) => set("email", e.target.value)}
               required
               autoComplete="email"
               placeholder="you@firm.com"
@@ -109,11 +143,11 @@ export default function ManagerLogin() {
             <div className="relative">
               <input
                 type={showPw ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={form.password}
+                onChange={(e) => set("password", e.target.value)}
                 required
-                autoComplete="current-password"
-                placeholder="••••••••"
+                autoComplete="new-password"
+                placeholder="Min. 8 characters"
                 className="w-full rounded-btn px-4 py-3 pr-11 font-body text-[14px]"
                 style={{ background: BG, border: `1px solid ${BORDER}`, color: INK }}
               />
@@ -137,20 +171,30 @@ export default function ManagerLogin() {
 
           <button
             type="submit"
-            disabled={submitting || !email || !password}
+            disabled={submitting || !canSubmit}
             className="rounded-btn px-4 py-3 font-body text-[14px] inline-flex items-center justify-center gap-1.5 disabled:opacity-50 hover:opacity-90 transition-opacity"
             style={{ background: INK, color: "#fff", fontWeight: 600 }}
           >
-            {submitting ? "Signing in…" : (<>Sign in <ArrowRight size={14} /></>)}
+            {submitting ? "Creating account…" : (<>Create account <ArrowRight size={14} /></>)}
           </button>
 
           <p className="font-body text-[12px] text-center" style={{ color: MUTED }}>
-            No account?{" "}
-            <Link href="/manager/signup" className="hover:underline" style={{ color: SECONDARY }}>
-              Create one →
+            Already have an account?{" "}
+            <Link href="/manager/login" className="hover:underline" style={{ color: SECONDARY }}>
+              Sign in →
             </Link>
           </p>
         </form>
+
+        <p
+          className="font-body text-[12px] mt-6 text-center"
+          style={{ color: MUTED, lineHeight: 1.6, letterSpacing: LS_BODY }}
+        >
+          By creating an account you agree to Alpine&rsquo;s{" "}
+          <Link href="/terms" className="hover:underline">Terms of Service</Link>
+          {" "}and{" "}
+          <Link href="/privacy" className="hover:underline">Privacy Policy</Link>.
+        </p>
       </section>
     </main>
   );

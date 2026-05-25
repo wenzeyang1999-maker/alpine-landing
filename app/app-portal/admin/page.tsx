@@ -13,6 +13,7 @@ import PortalsSection from "@/components/app-portal/admin/PortalsSection";
 import UsersSection from "@/components/app-portal/admin/UsersSection";
 import SubscribersSection from "@/components/app-portal/admin/SubscribersSection";
 import AuditLogSection from "@/components/app-portal/admin/AuditLogSection";
+import ManagerPortalSection from "@/components/app-portal/admin/ManagerPortalSection";
 
 export const metadata = {
   title: "Alpine Admin",
@@ -32,9 +33,10 @@ const TABS = [
   { href: "#requests",      label: "Requests" },
   { href: "#customers",     label: "Customers" },
   { href: "#portals",       label: "Portals" },
-  { href: "#users",         label: "Users" },
-  { href: "#subscribers",   label: "Subscribers" },
-  { href: "#audit",         label: "Audit" },
+  { href: "#users",            label: "Users" },
+  { href: "#subscribers",      label: "Subscribers" },
+  { href: "#manager-portals",  label: "Mgr Portals" },
+  { href: "#audit",            label: "Audit" },
 ];
 
 export default function AdminHome() {
@@ -132,6 +134,9 @@ export default function AdminHome() {
           <PortalsSection />
           <UsersSection />
           <SubscribersSection />
+
+          {/* Manager portal accounts */}
+          <ManagerPortalSection />
 
           {/* Compliance / audit trail */}
           <AuditLogSection />

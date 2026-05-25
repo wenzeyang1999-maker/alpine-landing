@@ -224,8 +224,19 @@ export default function Navbar() {
             })}
           </div>
 
-          {/* Login (filled, persistent) + mobile hamburger */}
+          {/* Login + For Managers + mobile hamburger */}
           <div className="flex items-center gap-3 ml-auto">
+            <Link
+              href="/manager/landing"
+              className="hidden md:inline-flex items-center rounded-btn px-4 py-2.5 text-[13px] font-body hover:opacity-90 transition-opacity"
+              style={{
+                color: MUTED,
+                fontWeight: 500,
+                letterSpacing: "-0.01em",
+              }}
+            >
+              For Managers
+            </Link>
             <Link
               href="/login"
               className="hidden md:inline-flex items-center rounded-btn px-5 py-2.5 text-[14px] font-body hover:opacity-90 transition-opacity"
@@ -343,8 +354,16 @@ export default function Navbar() {
                 );
               })}
 
-              {/* Mobile Login button — ghost */}
-              <div className="pt-4 pb-2">
+              {/* Mobile bottom buttons */}
+              <div className="pt-4 pb-2 flex flex-col gap-2">
+                <Link
+                  href="/manager/landing"
+                  onClick={() => setOpen(false)}
+                  className="w-full text-center rounded-btn px-5 py-3 font-body text-[15px] hover:opacity-90 transition-opacity block"
+                  style={{ color: MUTED, fontWeight: 500, letterSpacing: "-0.01em" }}
+                >
+                  For Managers
+                </Link>
                 <Link
                   href="/login"
                   onClick={() => setOpen(false)}

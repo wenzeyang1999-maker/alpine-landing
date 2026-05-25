@@ -8,27 +8,36 @@ import {
   BG, BG_CARD, INK, SECONDARY, MUTED, VIOLET, BORDER, LS_BODY, LS_H1,
 } from "@/lib/constants";
 
-export default function ManagerLogin() {
+export default function InviteAcceptForm({
+  token,
+  firmName,
+}: {
+  token: string;
+  firmName: string | null;
+}) {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState({ email: "", full_name: "", job_title: "", password: "" });
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  function set(field: string, value: string) {
+    setForm((f) => ({ ...f, [field]: value }));
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
     setSubmitting(true);
     try {
-      const res = await fetch("/api/manager/auth/login", {
+      const res = await fetch("/api/manager/invite/accept", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ ...form, token }),
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "Sign-in failed. Please try again.");
+        setError(data.error ?? "Something went wrong.");
         return;
       }
       router.push(data.redirect ?? "/manager/workspace");
@@ -38,6 +47,8 @@ export default function ManagerLogin() {
       setSubmitting(false);
     }
   }
+
+  const canSubmit = form.email && form.full_name && form.password;
 
   return (
     <main style={{ background: BG, color: INK }} className="min-h-screen">
@@ -52,33 +63,27 @@ export default function ManagerLogin() {
             For Managers
           </span>
         </Link>
-        <Link
-          href="/manager/signup"
-          className="font-body text-[13px] hover:underline"
-          style={{ color: SECONDARY }}
-        >
-          Create account →
-        </Link>
       </nav>
 
-      <section className="max-w-md mx-auto px-6 pt-12 pb-24">
+      <section className="max-w-md mx-auto px-6 pt-10 pb-24">
         <p
           className="font-mono text-[11px] uppercase mb-4"
           style={{ color: VIOLET, fontWeight: 700, letterSpacing: "0.1em" }}
         >
-          Sign in
+          You&rsquo;ve been invited
         </p>
         <h1
           className="font-heading mb-3"
           style={{ fontSize: "1.875rem", fontWeight: 700, lineHeight: 1.15, letterSpacing: LS_H1, color: INK }}
         >
-          Welcome back.
+          Join {firmName ? <em>{firmName}</em> : "your firm"}&rsquo;s workspace.
         </h1>
         <p
           className="font-body mb-8"
           style={{ fontSize: "1rem", lineHeight: 1.6, color: SECONDARY, letterSpacing: LS_BODY }}
         >
-          Sign in to your manager workspace.
+          Create your account to access the Alpine DDQ workspace. You can bookmark
+          this page to sign in again any time.
         </p>
 
         <form
@@ -88,15 +93,49 @@ export default function ManagerLogin() {
         >
           <label className="flex flex-col gap-1.5">
             <span className="font-mono text-[11px] uppercase" style={{ color: SECONDARY, fontWeight: 700, letterSpacing: "0.08em" }}>
+              Full name
+            </span>
+            <input
+              type="text"
+              value={form.full_name}
+              onChange={(e) => set("full_name", e.target.value)}
+              required
+              autoComplete="name"
+              placeholder="Jane Smith"
+              className="w-full rounded-btn px-4 py-3 font-body text-[14px]"
+              style={{ background: BG, border: `1px solid ${BORDER}`, color: INK }}
+            />
+          </label>
+
+          <label className="flex flex-col gap-1.5">
+            <span className="font-mono text-[11px] uppercase" style={{ color: SECONDARY, fontWeight: 700, letterSpacing: "0.08em" }}>
               Work email
             </span>
             <input
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={form.email}
+              onChange={(e) => set("email", e.target.value)}
               required
               autoComplete="email"
               placeholder="you@firm.com"
+              className="w-full rounded-btn px-4 py-3 font-body text-[14px]"
+              style={{ background: BG, border: `1px solid ${BORDER}`, color: INK }}
+            />
+          </label>
+
+          <label className="flex flex-col gap-1.5">
+            <span className="flex items-baseline justify-between">
+              <span className="font-mono text-[11px] uppercase" style={{ color: SECONDARY, fontWeight: 700, letterSpacing: "0.08em" }}>
+                Job title
+              </span>
+              <span className="font-body text-[11px]" style={{ color: MUTED }}>Optional</span>
+            </span>
+            <input
+              type="text"
+              value={form.job_title}
+              onChange={(e) => set("job_title", e.target.value)}
+              autoComplete="organization-title"
+              placeholder="Investor Relations"
               className="w-full rounded-btn px-4 py-3 font-body text-[14px]"
               style={{ background: BG, border: `1px solid ${BORDER}`, color: INK }}
             />
@@ -109,11 +148,11 @@ export default function ManagerLogin() {
             <div className="relative">
               <input
                 type={showPw ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={form.password}
+                onChange={(e) => set("password", e.target.value)}
                 required
-                autoComplete="current-password"
-                placeholder="••••••••"
+                autoComplete="new-password"
+                placeholder="Min. 8 characters"
                 className="w-full rounded-btn px-4 py-3 pr-11 font-body text-[14px]"
                 style={{ background: BG, border: `1px solid ${BORDER}`, color: INK }}
               />
@@ -137,17 +176,17 @@ export default function ManagerLogin() {
 
           <button
             type="submit"
-            disabled={submitting || !email || !password}
+            disabled={submitting || !canSubmit}
             className="rounded-btn px-4 py-3 font-body text-[14px] inline-flex items-center justify-center gap-1.5 disabled:opacity-50 hover:opacity-90 transition-opacity"
             style={{ background: INK, color: "#fff", fontWeight: 600 }}
           >
-            {submitting ? "Signing in…" : (<>Sign in <ArrowRight size={14} /></>)}
+            {submitting ? "Joining workspace…" : (<>Join workspace <ArrowRight size={14} /></>)}
           </button>
 
-          <p className="font-body text-[12px] text-center" style={{ color: MUTED }}>
-            No account?{" "}
-            <Link href="/manager/signup" className="hover:underline" style={{ color: SECONDARY }}>
-              Create one →
+          <p className="font-body text-[11px] text-center" style={{ color: MUTED, lineHeight: 1.55 }}>
+            Already have an account?{" "}
+            <Link href="/manager/login" className="hover:underline" style={{ color: SECONDARY }}>
+              Sign in →
             </Link>
           </p>
         </form>

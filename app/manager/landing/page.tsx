@@ -82,13 +82,22 @@ export default function ManagerLanding() {
             For Managers
           </span>
         </Link>
-        <Link
-          href="#cta"
-          className="rounded-btn px-4 py-2 font-body text-[13px] inline-flex items-center gap-1.5 hover:opacity-90 transition-opacity"
-          style={{ background: INK, color: "#fff", fontWeight: 600 }}
-        >
-          Request invite <ArrowRight size={13} />
-        </Link>
+        <div className="flex items-center gap-2.5">
+          <Link
+            href="/manager/login"
+            className="rounded-btn px-4 py-2 font-body text-[13px] inline-flex items-center gap-1.5 hover:opacity-90 transition-opacity"
+            style={{ background: "transparent", color: INK, border: `1px solid ${BORDER}`, fontWeight: 500 }}
+          >
+            Manager Portal
+          </Link>
+          <Link
+            href="#cta"
+            className="rounded-btn px-4 py-2 font-body text-[13px] inline-flex items-center gap-1.5 hover:opacity-90 transition-opacity"
+            style={{ background: INK, color: "#fff", fontWeight: 600 }}
+          >
+            Request invite <ArrowRight size={13} />
+          </Link>
+        </div>
       </nav>
 
       {/* Hero */}

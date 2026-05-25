@@ -1,17 +1,32 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { ArrowLeft, Home } from "lucide-react";
 import {
   BG, BG_CARD, INK, SECONDARY, MUTED, VIOLET, BORDER, LS_BODY,
 } from "@/lib/constants";
 import { CHAPTERS, ACT_COLOR } from "@/lib/manager/framework";
 
-type FirmPreview = {
-  name: string;
-  contactEmail?: string;
-};
+type FirmPreview = { name: string };
+
+function SignOutButton() {
+  const router = useRouter();
+  async function signOut() {
+    await fetch("/api/manager/auth/logout", { method: "POST" });
+    router.push("/manager/login");
+  }
+  return (
+    <button
+      type="button"
+      onClick={signOut}
+      className="font-body text-[12px] hover:underline"
+      style={{ color: MUTED, background: "none", border: "none", cursor: "pointer" }}
+    >
+      Sign out
+    </button>
+  );
+}
 
 export function WorkspaceShell({
   firm,
@@ -55,20 +70,10 @@ export function WorkspaceShell({
             </span>
           </Link>
           <div className="flex items-center gap-4">
-            <span
-              className="font-body text-[13px]"
-              style={{ color: SECONDARY, fontWeight: 500 }}
-            >
+            <span className="font-body text-[13px]" style={{ color: SECONDARY, fontWeight: 500 }}>
               {firm.name}
             </span>
-            {firm.contactEmail && (
-              <span
-                className="hidden sm:inline font-mono text-[11px]"
-                style={{ color: MUTED, letterSpacing: "0.04em" }}
-              >
-                {firm.contactEmail}
-              </span>
-            )}
+            <SignOutButton />
           </div>
         </div>
         {/* Sub-banner — confirms manager-side, links to alpinedd.com */}

@@ -9,8 +9,8 @@ import {
 } from "@/lib/constants";
 import { chapterByNum, CHAPTERS, ACT_COLOR, type Question } from "@/lib/manager/framework";
 import {
-  getFirm, getResponses, saveResponse, hasAnswer, lastSavedRelative,
-  type Firm, type Response,
+  getResponses, saveResponse, hasAnswer, lastSavedRelative,
+  type Response,
 } from "@/lib/manager/local-state";
 import { WorkspaceShell } from "../../../_components/WorkspaceShell";
 
@@ -20,20 +20,21 @@ export default function ChapterPage() {
   const chapterNum = Number(params.n);
   const chapter = chapterByNum(chapterNum);
 
-  const [firm, setFirm] = useState<Firm | null>(null);
+  const [firmName, setFirmName] = useState<string | null>(null);
   const [responses, setResponses] = useState<Record<string, Response>>({});
   const [hydrated, setHydrated] = useState(false);
-  const [lastSavedTick, setLastSavedTick] = useState(0); // forces re-render after save
+  const [lastSavedTick, setLastSavedTick] = useState(0);
 
   useEffect(() => {
-    const f = getFirm();
-    if (!f) {
-      router.push("/manager/login");
-      return;
-    }
-    setFirm(f);
-    setResponses(getResponses());
-    setHydrated(true);
+    fetch("/api/manager/me")
+      .then((r) => { if (!r.ok) { router.replace("/manager/login"); return null; } return r.json(); })
+      .then((data) => {
+        if (!data) return;
+        setFirmName(data.firm_name ?? data.email);
+        setResponses(getResponses());
+        setHydrated(true);
+      })
+      .catch(() => router.replace("/manager/login"));
   }, [router]);
 
   const handleResponseUpdate = (next: Response) => {
@@ -50,7 +51,8 @@ export default function ChapterPage() {
       </div>
     );
   }
-  if (!hydrated || !firm) return null;
+  if (!hydrated || !firmName) return null;
+  const firm = { name: firmName };
 
   const chapterResponses = Object.values(responses).filter((r) => r.chapterNum === chapterNum);
   const answeredCount = chapterResponses.filter(hasAnswer).length;
