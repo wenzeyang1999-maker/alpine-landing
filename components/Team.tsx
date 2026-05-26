@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { BG_CARD, BG_AMBER, INK, SECONDARY, MUTED, VIOLET, GREEN, AMBER, AMBER_TEXT, BORDER, BORDER_SUBTLE, LS_BODY, LS_H3 } from "@/lib/constants";
+import { BG_CARD, BG_AMBER, INK, SECONDARY, MUTED, VIOLET, BORDER, BORDER_SUBTLE, LS_BODY, LS_H3 } from "@/lib/constants";
 
 type Founder = {
   name: string;
@@ -53,89 +53,136 @@ const ADVISORY_BOARD = [
 ];
 
 
-function FounderCard({ f }: { f: Founder }) {
+const LinkedInIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+    <rect width="4" height="12" x="2" y="9" /><circle cx="4" cy="4" r="2" />
+  </svg>
+);
+
+const COMBINED_EXPERIENCE = [
+  "Operational Due Diligence — hands-on fund manager reviews across hedge funds and private markets",
+  "Alternative Investments — LP-side fund evaluation and portfolio management",
+  "Cross-border Investment & Research — deal origination, manager selection, and market analysis",
+];
+
+function FounderPhoto({ f }: { f: Founder }) {
   const [imgErr, setImgErr] = useState(false);
   const showPhoto = f.photo && !imgErr;
+  return (
+    <div className="flex items-center gap-3">
+      {showPhoto ? (
+        <Image
+          src={f.photo!}
+          alt={f.name}
+          width={72}
+          height={72}
+          className="rounded-full object-cover shrink-0"
+          style={{ width: 72, height: 72 }}
+          onError={() => setImgErr(true)}
+        />
+      ) : (
+        <div
+          className="rounded-full flex items-center justify-center shrink-0"
+          style={{
+            width: 72, height: 72,
+            background: BG_CARD,
+            border: `1px solid ${BORDER}`,
+            color: VIOLET, fontWeight: 700, fontSize: "1.5rem", letterSpacing: "-0.04em",
+          }}
+          aria-label={f.name}
+        >
+          {f.initials}
+        </div>
+      )}
+      <div className="min-w-0">
+        <p className="font-mono text-[10px] uppercase mb-0.5" style={{ color: MUTED, fontWeight: 700, letterSpacing: "0.1em" }}>
+          {f.role}
+        </p>
+        <h3 className="font-heading" style={{ fontSize: "1.125rem", fontWeight: 700, letterSpacing: "-0.03em", color: INK, lineHeight: 1.2 }}>
+          {f.name}
+        </h3>
+      </div>
+    </div>
+  );
+}
 
+function FoundersCard() {
   return (
     <div
-      className="rounded-panel p-6 flex flex-col gap-5"
+      className="rounded-panel overflow-hidden"
       style={{ background: BG_AMBER, border: `1px solid ${BORDER}` }}
     >
-      <div className="flex items-center gap-4">
-        {showPhoto ? (
-          <Image
-            src={f.photo!}
-            alt={f.name}
-            width={88}
-            height={88}
-            className="rounded-full object-cover shrink-0"
-            style={{ width: 88, height: 88 }}
-            onError={() => setImgErr(true)}
-          />
-        ) : (
-          <div
-            className="rounded-full flex items-center justify-center shrink-0"
-            style={{
-              width: 88,
-              height: 88,
-              background: BG_CARD,
-              border: `1px solid ${BORDER}`,
-              color: VIOLET,
-              fontWeight: 700,
-              fontSize: "1.75rem",
-              letterSpacing: "-0.04em",
-            }}
-            aria-label={f.name}
-          >
-            {f.initials}
-          </div>
-        )}
-        <div className="min-w-0">
-          <p className="font-mono text-[10px] uppercase mb-1" style={{ color: MUTED, fontWeight: 700, letterSpacing: "0.1em" }}>
-            {f.role}
-          </p>
-          <h3 className="font-heading" style={{ fontSize: "1.25rem", fontWeight: 700, letterSpacing: "-0.03em", color: INK }}>
-            {f.name}
-          </h3>
-        </div>
+      {/* Top header */}
+      <div
+        className="px-6 py-3"
+        style={{ borderBottom: `1px solid ${BORDER_SUBTLE}` }}
+      >
+        <p className="font-mono text-[10px] uppercase" style={{ color: MUTED, fontWeight: 700, letterSpacing: "0.1em" }}>
+          Founding Team
+        </p>
       </div>
 
-      <div className="flex flex-col gap-1.5">
-        {f.experience.map((e) => (
-          <div key={e} className="flex items-center gap-2 font-body text-[13px]" style={{ color: SECONDARY, letterSpacing: LS_BODY }}>
-            <span className="w-1 h-1 rounded-full shrink-0" style={{ background: VIOLET }} />
+      {/* Two founders side by side */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 px-6 pt-5 pb-4 gap-4 sm:gap-8">
+        <FounderPhoto f={FOUNDERS[0]} />
+        <FounderPhoto f={FOUNDERS[1]} />
+      </div>
+
+      {/* Combined experience bullets */}
+      <div
+        className="px-6 py-4 flex flex-col gap-2"
+        style={{ borderTop: `1px solid ${BORDER_SUBTLE}` }}
+      >
+        {COMBINED_EXPERIENCE.map((e) => (
+          <div key={e} className="flex items-start gap-2.5 font-body text-[13px]" style={{ color: SECONDARY, letterSpacing: LS_BODY, lineHeight: 1.5 }}>
+            <span className="w-1.5 h-1.5 rounded-full shrink-0 mt-[5px]" style={{ background: VIOLET }} />
             {e}
           </div>
         ))}
       </div>
 
-      <div className="flex items-center gap-4 mt-auto pt-2" style={{ borderTop: `1px solid ${BORDER_SUBTLE}` }}>
-        {f.email && (
-          <a
-            href={`mailto:${f.email}`}
-            className="font-mono text-[11px] hover:opacity-70 transition-opacity"
-            style={{ color: VIOLET, letterSpacing: "0.04em" }}
-          >
-            {f.email}
-          </a>
-        )}
-        {f.linkedin && (
-          <a
-            href={f.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ml-auto flex items-center gap-1.5 text-[12px] font-sans hover:opacity-70 transition-opacity"
-            style={{ color: VIOLET, fontWeight: 500 }}
-            aria-label={`${f.name} on LinkedIn`}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-              <rect width="4" height="12" x="2" y="9" /><circle cx="4" cy="4" r="2" />
-            </svg>
-            LinkedIn
-          </a>
-        )}
+      {/* ~7 years stat */}
+      <div
+        className="px-6 py-3 flex items-center gap-3"
+        style={{ borderTop: `1px solid ${BORDER_SUBTLE}` }}
+      >
+        <span className="font-body text-[13.5px]" style={{ color: SECONDARY, letterSpacing: LS_BODY }}>
+          <span style={{ color: INK, fontWeight: 700 }}>~7 years</span> in alternative investments
+        </span>
+      </div>
+
+      {/* Links — one row, each founder's email + linkedin */}
+      <div
+        className="grid grid-cols-1 sm:grid-cols-2 px-6 py-3 gap-3"
+        style={{ borderTop: `1px solid ${BORDER_SUBTLE}` }}
+      >
+        {FOUNDERS.map((f) => (
+          <div key={f.name} className="flex items-center gap-4">
+            {f.email && (
+              <a
+                href={`mailto:${f.email}`}
+                className="font-mono text-[11px] hover:opacity-70 transition-opacity truncate"
+                style={{ color: VIOLET, letterSpacing: "0.04em" }}
+              >
+                {f.email}
+              </a>
+            )}
+            {f.linkedin && (
+              <a
+                href={f.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ml-auto flex items-center gap-1.5 text-[12px] font-sans hover:opacity-70 transition-opacity shrink-0"
+                style={{ color: VIOLET, fontWeight: 500 }}
+                aria-label={`${f.name} on LinkedIn`}
+              >
+                <LinkedInIcon />
+                LinkedIn
+              </a>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -161,15 +208,15 @@ export default function Team() {
         </div>
 
         {/* Founders + sidebar grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
-          <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {FOUNDERS.map((f) => <FounderCard key={f.name} f={f} />)}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8 items-stretch">
+          <div className="lg:col-span-2 flex flex-col">
+            <FoundersCard />
           </div>
 
           {/* Sidebar — Other team + Advisory board */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 h-full">
             {/* Other team */}
-            <div className="rounded-panel p-5" style={{ background: BG_CARD, border: `1px solid ${BORDER}` }}>
+            <div className="rounded-panel p-5 flex-1 flex flex-col" style={{ background: BG_CARD, border: `1px solid ${BORDER}` }}>
               <div className="flex items-baseline justify-between mb-3">
                 <h3 className="font-heading" style={{ fontSize: "0.9375rem", fontWeight: 700, color: INK, letterSpacing: LS_H3 }}>
                   Other Team Members
@@ -189,7 +236,7 @@ export default function Team() {
             </div>
 
             {/* Advisory board */}
-            <div className="rounded-panel p-5" style={{ background: `${VIOLET}08`, border: `1px solid ${BORDER}` }}>
+            <div className="rounded-panel p-5 flex-1 flex flex-col" style={{ background: `${VIOLET}08`, border: `1px solid ${BORDER}` }}>
               <div className="flex items-baseline justify-between mb-3 gap-2 flex-wrap">
                 <h3 className="font-heading" style={{ fontSize: "0.9375rem", fontWeight: 700, color: INK, letterSpacing: LS_H3 }}>
                   Advisory Board
