@@ -43,7 +43,6 @@ const FOUNDERS: Founder[] = [
 
 const OTHER_TEAM = [
   { role: "Founding Engineer",    detail: "5+ yrs" },
-  { role: "ODD Analyst",          detail: "5+ yrs" },
 ];
 
 const ADVISORY_BOARD = [
@@ -222,7 +221,7 @@ export default function Team() {
                   Other Team Members
                 </h3>
                 <span className="font-mono text-[10px] uppercase" style={{ color: MUTED, fontWeight: 700, letterSpacing: "0.08em" }}>
-                  2 hires
+                  1 hire
                 </span>
               </div>
               <ul className="space-y-2">
