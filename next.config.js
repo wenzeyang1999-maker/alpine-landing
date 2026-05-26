@@ -1,8 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   skipTrailingSlashRedirect: true,
-  outputFileTracingIncludes: {
-    "/api/whitepaper/download": ["./docs/whitepaper.pdf"],
+  experimental: {
+    outputFileTracingIncludes: {
+      "/api/whitepaper/download": ["./docs/whitepaper.pdf"],
+    },
   },
 };
 

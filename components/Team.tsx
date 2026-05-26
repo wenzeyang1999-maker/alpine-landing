@@ -17,7 +17,7 @@ type Founder = {
 const FOUNDERS: Founder[] = [
   {
     name: "Allen Zhang",
-    role: "Founder · CEO",
+    role: "Co-Founder · CEO",
     experience: [
       "~3 yrs Operational Due Diligence",
       "2 yrs Cross-border Investment & Research",
@@ -26,6 +26,18 @@ const FOUNDERS: Founder[] = [
     initials: "AZ",
     linkedin: "https://www.linkedin.com/in/kaishen-allen-zhang/",
     email: "azhang@alpinedd.com",
+  },
+  {
+    name: "Eva Yang",
+    role: "Co-Founder · Managing Partner",
+    experience: [
+      "1+ yrs Operational Due Diligence",
+      "~4 yrs Alternative Investments",
+    ],
+    photo: "/eva-yang-headshot.jpeg",
+    initials: "EY",
+    linkedin: "https://www.linkedin.com/in/evaayang/",
+    email: "eva.yang@alpinedd.com",
   },
 ];
 
@@ -143,14 +155,14 @@ export default function Team() {
             Built by practitioners.
           </h2>
           <p className="font-body" style={{ fontSize: "1.0625rem", lineHeight: 1.65, letterSpacing: LS_BODY, color: SECONDARY }}>
-            Founder with hands-on operational due diligence experience, building Alpine alongside an
+            Two founders with hands-on operational due diligence experience, building Alpine alongside an
             advisory board of ODD veterans, alternative investments professionals, and compliance experts.
           </p>
         </div>
 
-        {/* Founder + sidebar grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
-          <div className="grid grid-cols-1 gap-4">
+        {/* Founders + sidebar grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
+          <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
             {FOUNDERS.map((f) => <FounderCard key={f.name} f={f} />)}
           </div>
 
