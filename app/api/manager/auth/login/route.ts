@@ -3,20 +3,23 @@ import { createClient } from "@supabase/supabase-js";
 import { verifyPassword } from "@/lib/manager/password";
 import { signSession, managerCookieOptions, MANAGER_SESSION } from "@/lib/manager/auth-session";
 
-type UserRow = {
+function publicDb() {
+  return createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false } }
+  );
+}
+
+type SessionRow = {
   id: string;
   email: string;
   password_hash: string | null;
   is_verified: boolean;
+  firm_id: string;
+  full_name: string | null;
+  role: string;
 };
-
-function db() {
-  return createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false }, db: { schema: "manager" } }
-  );
-}
 
 export async function POST(req: NextRequest) {
   try {
@@ -28,25 +31,20 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Email and password are required." }, { status: 400 });
     }
 
-    const { data: userRaw, error: dbErr } = await db()
-      .from("users")
-      .select("id, email, password_hash, is_verified")
-      .eq("email", email)
-      .maybeSingle() as { data: UserRow | null; error: unknown };
+    const { data, error: rpcErr } = await publicDb().rpc("get_manager_session", { p_email: email });
 
-    if (dbErr) {
-      console.error("Login DB error:", dbErr);
+    if (rpcErr) {
+      console.error("Login RPC error:", rpcErr);
       return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
     }
 
+    const userRaw: SessionRow | null = Array.isArray(data) && data.length > 0 ? data[0] : null;
     const storedHash: string | null = userRaw?.password_hash ?? null;
     const match = verifyPassword(password, storedHash);
 
     if (!userRaw || !match) {
       return NextResponse.json({ error: "Incorrect email or password." }, { status: 401 });
     }
-
-    db().from("users").update({ last_login_at: new Date().toISOString() }).eq("id", userRaw.id);
 
     const token = await signSession(email);
     const isProd = process.env.NODE_ENV === "production";

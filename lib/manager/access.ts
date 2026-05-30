@@ -1,12 +1,6 @@
-/**
- * Server-side helper: resolve the currently authenticated manager from the
- * `manager_session` cookie.  Node runtime ONLY (uses Supabase service role).
- * Safe to call from API routes and Server Components — never from middleware.
- */
-
 import { cookies } from "next/headers";
+import { createClient } from "@supabase/supabase-js";
 import { verifySession, MANAGER_SESSION } from "./auth-session";
-import { managerDb } from "./db";
 
 export interface ManagerUser {
   id: string;
@@ -19,63 +13,51 @@ export interface ManagerUser {
   firm_name: string | null;
 }
 
-type UserRow = {
+type SessionRow = {
   id: string;
   email: string;
+  password_hash: string | null;
+  is_verified: boolean;
+  firm_id: string;
   full_name: string | null;
   role: string;
-  is_verified: boolean;
   job_title: string | null;
-  firm_id: string;
+  firm_name: string | null;
 };
 
-type FirmRow = { name: string };
+function publicDb() {
+  return createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false } }
+  );
+}
 
-/**
- * Returns the authenticated manager user, or null if not signed in / session
- * expired / user no longer exists in the database.
- */
 export async function getCurrentManager(): Promise<ManagerUser | null> {
   const jar = await cookies();
   const token = jar.get(MANAGER_SESSION.COOKIE_NAME)?.value;
   const email = await verifySession(token);
   if (!email) return null;
 
-  const db = managerDb();
-  const { data: userRaw } = await db
-    .from("users")
-    .select("id, email, full_name, role, is_verified, job_title, firm_id")
-    .eq("email", email)
-    .maybeSingle();
+  const { data, error } = await publicDb().rpc("get_manager_session", { p_email: email });
 
-  const user = userRaw as UserRow | null;
-  if (!user) return null;
+  if (error || !data || !Array.isArray(data) || data.length === 0) return null;
 
-  const { data: firmRaw } = await db
-    .from("firms")
-    .select("name")
-    .eq("id", user.firm_id)
-    .maybeSingle();
-
-  const firm = firmRaw as FirmRow | null;
+  const row = data[0] as SessionRow;
+  if (!row) return null;
 
   return {
-    id: user.id,
-    email: user.email,
-    full_name: user.full_name ?? null,
-    role: user.role ?? "member",
-    is_verified: user.is_verified ?? false,
-    job_title: user.job_title ?? null,
-    firm_id: user.firm_id,
-    firm_name: firm?.name ?? null,
+    id: row.id,
+    email: row.email,
+    full_name: row.full_name ?? null,
+    role: row.role ?? "member",
+    is_verified: row.is_verified ?? false,
+    job_title: row.job_title ?? null,
+    firm_id: row.firm_id,
+    firm_name: row.firm_name ?? null,
   };
 }
 
-/**
- * Asserts the current request is authenticated.
- * Throws a `Response` with 401 status if not — use inside API routes:
- *   const user = await requireManager();
- */
 export async function requireManager(): Promise<ManagerUser> {
   const user = await getCurrentManager();
   if (!user) throw new Response("Unauthorized", { status: 401 });
