@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Home } from "lucide-react";
 import {
   BG, BG_CARD, INK, SECONDARY, MUTED, VIOLET, BORDER, LS_BODY,
@@ -38,11 +38,18 @@ export function WorkspaceShell({
   rightPanel?: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const activeChapter = (() => {
     const m = pathname.match(/\/workspace\/chapter\/(\d+)/);
     return m ? Number(m[1]) : null;
   })();
   const isOverview = pathname === "/workspace" || pathname === "/manager/workspace";
+  const sectionIdx = Number(searchParams.get("s") ?? "0");
+
+  const activeChapterData = activeChapter ? CHAPTERS.find((c) => c.num === activeChapter) : null;
+  const subtopics = activeChapterData
+    ? (Array.from(new Set(activeChapterData.questions.map((q) => q.subtopic).filter(Boolean))) as string[])
+    : [];
 
   return (
     <div style={{ background: BG, color: INK }} className="min-h-screen">
@@ -118,29 +125,52 @@ export function WorkspaceShell({
           <nav className="flex flex-col gap-0.5">
             {CHAPTERS.map((ch) => {
               const isActive = activeChapter === ch.num;
+              const chSubtopics = isActive ? subtopics : [];
               return (
-                <Link
-                  key={ch.num}
-                  href={`/manager/workspace/chapter/${ch.num}`}
-                  className="flex items-start gap-3 px-3 py-2 rounded-btn font-body text-[13px] hover:bg-black/[0.03] transition-colors"
-                  style={{
-                    background: isActive ? `${VIOLET}10` : "transparent",
-                    color: isActive ? VIOLET : SECONDARY,
-                    fontWeight: isActive ? 600 : 500,
-                  }}
-                >
-                  <span
-                    className="font-mono text-[11px] pt-0.5 shrink-0"
+                <div key={ch.num}>
+                  <Link
+                    href={`/manager/workspace/chapter/${ch.num}`}
+                    className="flex items-start gap-3 px-3 py-2 rounded-btn font-body text-[13px] hover:bg-black/[0.03] transition-colors"
                     style={{
-                      color: isActive ? VIOLET : ACT_COLOR[ch.act],
-                      letterSpacing: "0.04em",
-                      fontWeight: 700,
+                      background: isActive && chSubtopics.length === 0 ? `${VIOLET}10` : "transparent",
+                      color: isActive ? VIOLET : SECONDARY,
+                      fontWeight: isActive ? 600 : 500,
                     }}
                   >
-                    {ch.numLabel}
-                  </span>
-                  <span className="leading-tight">{ch.title}</span>
-                </Link>
+                    <span
+                      className="font-mono text-[11px] pt-0.5 shrink-0"
+                      style={{
+                        color: isActive ? VIOLET : ACT_COLOR[ch.act],
+                        letterSpacing: "0.04em",
+                        fontWeight: 700,
+                      }}
+                    >
+                      {ch.numLabel}
+                    </span>
+                    <span className="leading-tight">{ch.title}</span>
+                  </Link>
+                  {chSubtopics.length > 0 && (
+                    <div className="ml-3 mt-0.5 mb-1 flex flex-col gap-0.5 pl-3" style={{ borderLeft: `2px solid ${VIOLET}20` }}>
+                      {chSubtopics.map((sub, idx) => {
+                        const isSubActive = sectionIdx === idx;
+                        return (
+                          <Link
+                            key={sub}
+                            href={`/manager/workspace/chapter/${ch.num}?s=${idx}`}
+                            className="px-2 py-1.5 rounded font-body text-[12px] leading-tight"
+                            style={{
+                              background: isSubActive ? `${VIOLET}12` : "transparent",
+                              color: isSubActive ? VIOLET : MUTED,
+                              fontWeight: isSubActive ? 600 : 400,
+                            }}
+                          >
+                            {sub}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
               );
             })}
           </nav>

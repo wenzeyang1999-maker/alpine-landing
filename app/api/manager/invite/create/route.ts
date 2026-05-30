@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createHash, randomBytes } from "crypto";
+import { createClient } from "@supabase/supabase-js";
 import { getCurrentManager } from "@/lib/manager/access";
-import { managerDb } from "@/lib/manager/db";
+
+function db() {
+  return createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false } }
+  );
+}
 
 function hashToken(raw: string): string {
   return createHash("sha256").update(raw).digest("hex");
@@ -18,9 +26,6 @@ export async function POST(req: NextRequest) {
     if (!manager.is_verified) {
       return NextResponse.json({ error: "Account not yet verified" }, { status: 403 });
     }
-    if (manager.role !== "owner") {
-      return NextResponse.json({ error: "Only workspace owners can generate invite links" }, { status: 403 });
-    }
 
     const body = await req.json().catch(() => ({}));
     const label: string = (body.label ?? "").trim() || null;
@@ -28,13 +33,12 @@ export async function POST(req: NextRequest) {
     const rawToken = randomBytes(32).toString("hex");
     const token_hash = hashToken(rawToken);
 
-    const db = managerDb();
-    const { error } = await db.from("team_invites").insert({
+    const { error } = await db().from("manager_team_invites").insert({
       firm_id: manager.firm_id,
       token_hash,
       created_by: manager.email,
       label,
-    }) as { error: unknown };
+    });
 
     if (error) {
       console.error("Invite create error:", error);
@@ -56,9 +60,8 @@ export async function GET(req: NextRequest) {
     const manager = await getCurrentManager();
     if (!manager) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const db = managerDb();
-    const { data } = await db
-      .from("team_invites")
+    const { data } = await db()
+      .from("manager_team_invites")
       .select("id, token_hash, label, created_at, revoked_at")
       .eq("firm_id", manager.firm_id)
       .order("created_at", { ascending: false }) as { data: (InviteRow & { label: string | null })[] | null };

@@ -29,6 +29,7 @@ export type Response = {
   answerChoice?: string;
   answerMulti?: string[];
   uploadedFilename?: string;
+  reviewStatus?: "flagged" | "reviewed";
   updatedAt: string; // ISO
 };
 

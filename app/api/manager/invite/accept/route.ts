@@ -1,8 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createHash } from "crypto";
+import { createClient } from "@supabase/supabase-js";
 import { hashPassword, isAcceptablePassword } from "@/lib/manager/password";
 import { signSession, managerCookieOptions, MANAGER_SESSION } from "@/lib/manager/auth-session";
 import { managerDb } from "@/lib/manager/db";
+
+function publicDb() {
+  return createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false } }
+  );
+}
 
 function hashToken(raw: string): string {
   return createHash("sha256").update(raw).digest("hex");
@@ -34,11 +43,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: pwCheck.reason }, { status: 400 });
     }
 
-    const db = managerDb();
     const token_hash = hashToken(rawToken);
 
-    const { data: inviteRaw } = await db
-      .from("team_invites")
+    const { data: inviteRaw } = await publicDb()
+      .from("manager_team_invites")
       .select("id, firm_id, created_by, revoked_at")
       .eq("token_hash", token_hash)
       .maybeSingle() as { data: InviteRow | null };
@@ -51,6 +59,7 @@ export async function POST(req: NextRequest) {
     }
 
     // If email already has an account (same or different firm), reject
+    const db = managerDb();
     const { data: existingUser } = await db
       .from("users")
       .select("id")

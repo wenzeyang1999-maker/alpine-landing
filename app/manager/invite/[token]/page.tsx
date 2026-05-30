@@ -1,4 +1,5 @@
 import { createHash } from "crypto";
+import { createClient } from "@supabase/supabase-js";
 import { managerDb } from "@/lib/manager/db";
 import InviteAcceptForm from "./InviteAcceptForm";
 import Link from "next/link";
@@ -6,6 +7,14 @@ import { BG, INK, MUTED, BORDER } from "@/lib/constants";
 
 type InviteRow = { id: string; firm_id: string; revoked_at: string | null };
 type FirmRow = { name: string };
+
+function publicDb() {
+  return createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false } }
+  );
+}
 
 export default async function InviteAcceptPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
@@ -16,9 +25,8 @@ export default async function InviteAcceptPage({ params }: { params: Promise<{ t
   let revoked = false;
 
   try {
-    const db = managerDb();
-    const { data: invite } = await db
-      .from("team_invites")
+    const { data: invite } = await publicDb()
+      .from("manager_team_invites")
       .select("id, firm_id, revoked_at")
       .eq("token_hash", tokenHash)
       .maybeSingle() as { data: InviteRow | null };
@@ -28,7 +36,7 @@ export default async function InviteAcceptPage({ params }: { params: Promise<{ t
     } else if (invite.revoked_at) {
       revoked = true;
     } else {
-      const { data: firm } = await db
+      const { data: firm } = await managerDb()
         .from("firms")
         .select("name")
         .eq("id", invite.firm_id)
