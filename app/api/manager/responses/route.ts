@@ -23,7 +23,7 @@ export async function GET() {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   // Fetch document names for any referenced docs
-  const docIds = [...new Set((data ?? []).map((r) => r.source_document_id).filter(Boolean))];
+  const docIds = Array.from(new Set((data ?? []).map((r) => r.source_document_id).filter(Boolean)));
   const docMap: Record<string, string> = {};
   if (docIds.length > 0) {
     const { data: docs } = await db()

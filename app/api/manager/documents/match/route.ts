@@ -104,7 +104,9 @@ async function extractPdfText(storagePath: string): Promise<string | null> {
     const buffer = Buffer.from(arrayBuffer);
 
     // Dynamically import pdf-parse (Node runtime only)
-    const pdfParse = (await import("pdf-parse")).default;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mod: any = await import("pdf-parse");
+    const pdfParse = mod.default ?? mod;
     const result = await pdfParse(buffer);
     return result.text ?? null;
   } catch {
