@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 
+const DEMO_EMAIL = "demo@alpinedd.com";
+
 // Key is scoped per email so different users on the same browser are tracked separately
 function tourSeenKey(email: string) {
   return `alpine_tour_seen_v3_${email}`;
@@ -173,7 +175,7 @@ function StepCard({ step, index, total, rect, onNext, onSkip }: {
   return (
     <div key={key} style={style}>
       <div style={{ background: "#fff", borderRadius: 16, boxShadow: "0 24px 64px rgba(0,0,0,0.22), 0 4px 16px rgba(124,58,237,0.08)", overflow: "hidden", border: "1px solid rgba(124,58,237,0.12)" }}>
-        <div style={{ height: 3, background: "linear-gradient(90deg, #7c3aed, #a78bfa)", borderRadius: "16px 16px 0 0" }} />
+        <div style={{ height: 5, background: "linear-gradient(90deg, #7c3aed, #a78bfa)", borderRadius: "16px 16px 0 0" }} />
         <div style={{ padding: "20px 22px 22px" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
             <span style={{ fontFamily: "monospace", fontSize: 10, fontWeight: 700, color: "#7c3aed", background: "#f5f3ff", borderRadius: 99, padding: "3px 10px", letterSpacing: "0.06em", textTransform: "uppercase" }}>
@@ -279,7 +281,7 @@ function TourFab({ onClick }: { onClick: () => void }) {
       style={{
         position: "fixed",
         bottom: 20,
-        left: 20,
+        right: 20,
         zIndex: 500,
         display: "flex",
         alignItems: "center",
@@ -323,11 +325,17 @@ export default function Tour({ email }: { email: string }) {
   const [stepIndex, setStepIndex] = useState(0);
   const [rect, setRect] = useState<Rect | null>(null);
 
+  const isDemo = email === DEMO_EMAIL;
+
   useEffect(() => {
-    const seen = localStorage.getItem(tourSeenKey(email));
-    // First visit: show welcome modal. Any subsequent visit: go straight to FAB.
-    setPhase(seen ? "fab" : "welcome");
-  }, [email]);
+    if (isDemo) {
+      // Demo account: always start with welcome modal so allocators see the full pitch
+      setPhase("welcome");
+    } else {
+      const seen = localStorage.getItem(tourSeenKey(email));
+      setPhase(seen ? "fab" : "welcome");
+    }
+  }, [email, isDemo]);
 
   useEffect(() => {
     if (phase !== "touring") { setRect(null); return; }
@@ -344,7 +352,7 @@ export default function Tour({ email }: { email: string }) {
   }, [phase, stepIndex]);
 
   function finish() {
-    localStorage.setItem(tourSeenKey(email), "1");
+    if (!isDemo) localStorage.setItem(tourSeenKey(email), "1");
     setPhase("fab");
   }
 
