@@ -50,18 +50,18 @@ const STEPS: Step[] = [
     position: "right",
   },
   {
-    selector: "report-chapters",
-    title: "Chapter-by-chapter findings",
-    body: "Each chapter card shows the rating for that topic. Click a chapter in the sidebar to read the full analyst narrative — findings, flags, and evidence citations.",
-    tip: "Yellow and Red chapters are the ones that need your attention.",
-    position: "top",
+    selector: "report-fund-snapshot",
+    title: "Fund Snapshot",
+    body: "Key fund metrics at a glance — ODD Score (0–100), percentile rank, AUM, strategy, domicile, latest NAV, and the manager name.",
+    tip: "The percentile rank compares this fund against Alpine's full review universe.",
+    position: "left",
   },
   {
-    selector: "report-documents",
-    title: "Source documents",
-    body: "Every finding is backed by a document. Click any citation to see the exact passage Alpine's analyst reviewed — fund documents, regulatory filings, and verification records.",
-    tip: "Alpine Data view links each data point directly to its source.",
-    position: "top",
+    selector: "report-act-cards",
+    title: "Chapter ratings",
+    body: "Each card is one of Alpine's 8 due diligence chapters, colour-coded by rating. Yellow and Red chapters are the ones that need your attention — click any card to jump to the full findings.",
+    tip: "Act I = Manager, Act II = Fund, Act III = Controls.",
+    position: "bottom",
   },
 ];
 

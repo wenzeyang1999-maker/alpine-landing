@@ -413,7 +413,7 @@ function Overview({
             </div>
           </div>
 
-          <div className="rounded-panel border p-5" style={{ background: BG_CARD, borderColor: BORDER }}>
+          <div data-tour="report-fund-snapshot" className="rounded-panel border p-5" style={{ background: BG_CARD, borderColor: BORDER }}>
             <p className="font-mono text-[10px] uppercase tracking-widest" style={{ color: SUBTLE }}>
               Fund Snapshot
             </p>
@@ -448,8 +448,8 @@ function Overview({
         </div>
 
         {/* Three acts */}
-        {acts.map((act) => (
-          <div key={act.label}>
+        {acts.map((act, actIdx) => (
+          <div data-tour={actIdx === 0 ? "report-act-cards" : undefined} key={act.label}>
             <div className="flex items-center gap-3 mb-2.5">
               <span
                 className="font-mono text-[10px] font-bold uppercase tracking-widest shrink-0"
@@ -848,12 +848,10 @@ export default function InvestorReportReader({ slug, email = "" }: { slug: strin
                     onNavigate={scrollToSection}
                   />
                 </div>
-                <div data-tour="report-chapters">
-                  {nums.map((n, i) => (
-                    <ReportChapter key={n} num={n} index={i + 1} topic={topicData[n]} />
-                  ))}
-                </div>
-                <section data-tour="report-documents" id="documents" className="scroll-mt-[170px] md:scroll-mt-[116px]">
+                {nums.map((n, i) => (
+                  <ReportChapter key={n} num={n} index={i + 1} topic={topicData[n]} />
+                ))}
+                <section id="documents" className="scroll-mt-[170px] md:scroll-mt-[116px]">
                   <DocumentsPanel slug={slug} referencedDocs={referencedDocs} />
                 </section>
               </>
