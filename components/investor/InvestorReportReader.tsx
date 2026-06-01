@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { RefDot } from "@/components/app-portal/review/RefDot";
 import DocumentsPanel from "@/components/investor/DocumentsPanel";
+import ReportTour from "@/components/investor/ReportTour";
 import {
   getReportContent,
   getReferencedDocs,
@@ -660,7 +661,7 @@ function ViewToggle({ mode, onChange }: { mode: ViewMode; onChange: (m: ViewMode
 
 // ── Main reader ──────────────────────────────────────────────────────────────
 
-export default function InvestorReportReader({ slug }: { slug: string }) {
+export default function InvestorReportReader({ slug, email = "" }: { slug: string; email?: string }) {
   const content = useMemo(() => getReportContent(slug), [slug]);
   const referencedDocs = useMemo(() => getReferencedDocs(slug), [slug]);
   const pdfUrl = useMemo(() => getReportPdfUrl(slug), [slug]);
@@ -727,8 +728,9 @@ export default function InvestorReportReader({ slug }: { slug: string }) {
 
   return (
     <main id="main-content" className="flex-1 w-full">
+      <ReportTour email={email} />
       {/* Report header */}
-      <div className="sticky top-0 z-20" style={{ background: BG_CARD, borderBottom: `1px solid ${BORDER}` }}>
+      <div data-tour="report-header" className="sticky top-0 z-20" style={{ background: BG_CARD, borderBottom: `1px solid ${BORDER}` }}>
         <div className="mx-auto max-w-6xl px-6 pt-3 flex items-center justify-between gap-4">
           <div className="min-w-0">
             <Link
@@ -773,7 +775,7 @@ export default function InvestorReportReader({ slug }: { slug: string }) {
             </span>
           </div>
         </div>
-        <div className="mx-auto max-w-6xl px-6 py-2.5">
+        <div data-tour="report-view-toggle" className="mx-auto max-w-6xl px-6 py-2.5">
           <ViewToggle mode={viewMode} onChange={handleModeChange} />
         </div>
         {/* Mobile section picker */}
@@ -800,7 +802,7 @@ export default function InvestorReportReader({ slug }: { slug: string }) {
       <div className="mx-auto max-w-6xl px-6 py-8">
         <div className="grid md:grid-cols-[220px_1fr] gap-8">
           {/* Floating TOC sidebar — desktop / tablet */}
-          <nav aria-label="Report sections" className="hidden md:block">
+          <nav data-tour="report-toc" aria-label="Report sections" className="hidden md:block">
             <div
               className="sticky top-[124px] rounded-panel border p-3"
               style={{ background: BG_CARD, borderColor: BORDER, boxShadow: CARD_SHADOW }}
@@ -837,17 +839,21 @@ export default function InvestorReportReader({ slug }: { slug: string }) {
           <div className="min-w-0 space-y-8">
             {viewMode === "report" ? (
               <>
-                <Overview
-                  entry={entry}
-                  topicData={topicData}
-                  mock={mock}
-                  nums={nums}
-                  onNavigate={scrollToSection}
-                />
-                {nums.map((n, i) => (
-                  <ReportChapter key={n} num={n} index={i + 1} topic={topicData[n]} />
-                ))}
-                <section id="documents" className="scroll-mt-[170px] md:scroll-mt-[116px]">
+                <div data-tour="report-overview">
+                  <Overview
+                    entry={entry}
+                    topicData={topicData}
+                    mock={mock}
+                    nums={nums}
+                    onNavigate={scrollToSection}
+                  />
+                </div>
+                <div data-tour="report-chapters">
+                  {nums.map((n, i) => (
+                    <ReportChapter key={n} num={n} index={i + 1} topic={topicData[n]} />
+                  ))}
+                </div>
+                <section data-tour="report-documents" id="documents" className="scroll-mt-[170px] md:scroll-mt-[116px]">
                   <DocumentsPanel slug={slug} referencedDocs={referencedDocs} />
                 </section>
               </>

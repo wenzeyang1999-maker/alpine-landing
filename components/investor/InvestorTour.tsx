@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { REPORT_TOUR_PENDING_KEY } from "@/components/investor/ReportTour";
 
 function tourKey(email: string) {
   return `alpine_investor_tour_v1_${email}`;
@@ -312,8 +313,13 @@ export default function InvestorTour({ email }: { email: string }) {
   }
 
   function next() {
-    if (stepIndex < STEPS.length - 1) setStepIndex((i) => i + 1);
-    else finish();
+    if (stepIndex < STEPS.length - 1) {
+      setStepIndex((i) => i + 1);
+    } else {
+      // Last step done — signal the report page to auto-start its tour
+      sessionStorage.setItem(REPORT_TOUR_PENDING_KEY, "1");
+      finish();
+    }
   }
 
   function reopenTour() {

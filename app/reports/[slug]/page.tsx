@@ -26,7 +26,7 @@ export default async function ReportReaderPage({ params }: { params: { slug: str
 
   return (
     <SubpageLayout>
-      <InvestorReportReader slug={slug} />
+      <InvestorReportReader slug={slug} email={investor.email} />
     </SubpageLayout>
   );
 }
