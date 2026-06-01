@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { ReportRegistryEntry, ReportRating } from "@/lib/investor/report-registry";
+import InvestorTour from "@/components/investor/InvestorTour";
 import { INK, MUTED, SUBTLE, BORDER, BG_CARD, BG_ALT, GREEN, AMBER, VIOLET, GREEN_TEXT, AMBER_TEXT } from "@/lib/constants";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -232,7 +233,7 @@ function FundTableRow({ r }: { r: EnrichedReport }) {
             );
           })}
         </div>
-        <span className="font-body text-[12px] font-emphasis shrink-0" style={{ color: VIOLET }}>
+        <span data-tour="investor-open-report" className="font-body text-[12px] font-emphasis shrink-0" style={{ color: VIOLET }}>
           Open →
         </span>
       </div>
@@ -304,7 +305,7 @@ function FundMobileCard({ r }: { r: EnrichedReport }) {
 
 function FundsTable({ reports }: { reports: EnrichedReport[] }) {
   return (
-    <div className="rounded-panel overflow-hidden" style={{ background: BG_CARD, border: `1px solid ${BORDER}` }}>
+    <div data-tour="investor-fund-table" className="rounded-panel overflow-hidden" style={{ background: BG_CARD, border: `1px solid ${BORDER}` }}>
       {/* Desktop / tablet table */}
       <div className="hidden md:block">
         <div className="grid items-center text-left" style={{
@@ -373,7 +374,7 @@ function PortfolioOverviewView({ reports }: { reports: EnrichedReport[] }) {
       {/* Portfolio Monitor hero — rendered on page background, no card chrome */}
       <div style={{ padding: "4px 2px" }}>
         <div className="flex items-start justify-between gap-5 flex-wrap-reverse mb-5">
-          <div className="min-w-0 flex-1">
+          <div data-tour="investor-portfolio-stats" className="min-w-0 flex-1">
             <p className="font-mono text-[10px] uppercase mb-2" style={{ color: MUTED, letterSpacing: "0.12em", fontWeight: 600 }}>
               Alpine ODD Platform · Portfolio Monitor
             </p>
@@ -395,11 +396,11 @@ function PortfolioOverviewView({ reports }: { reports: EnrichedReport[] }) {
               </span>
             </div>
           </div>
-          <div className="shrink-0" title={`Portfolio score: ${stats.avgScore} · Average across ${stats.fundCount} report${stats.fundCount === 1 ? "" : "s"}`}>
+          <div data-tour="investor-odd-score" className="shrink-0" title={`Portfolio score: ${stats.avgScore} · Average across ${stats.fundCount} report${stats.fundCount === 1 ? "" : "s"}`}>
             <ScoreDonut score={stats.avgScore} accept={stats.accept} watchlist={stats.watchlist} flag={stats.flag} size={72} />
           </div>
         </div>
-        <div>
+        <div data-tour="investor-topic-health">
           <p className="font-mono text-[9px] uppercase mb-2" style={{ color: MUTED, letterSpacing: "0.12em", fontWeight: 600 }}>Portfolio Topic Health</p>
           <div className="flex gap-2 flex-wrap">
             {stats.topicHealth.map(({ key, label, pct }) => {
@@ -676,6 +677,7 @@ function Sidebar({
 
   return (
     <aside
+      data-tour="investor-sidebar"
       className="flex flex-col rounded-panel sticky top-6 self-start transition-[width] duration-200"
       style={{
         background: BG_CARD,
@@ -940,6 +942,7 @@ export default function InvestorPortfolioOverview({
 
   return (
     <main id="main-content" className="flex-1 w-full" style={{ background: BG_ALT }}>
+      <InvestorTour email={greetingEmail} />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-8">
 
         {/* Mobile picker */}
