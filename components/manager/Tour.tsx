@@ -367,13 +367,18 @@ export default function Tour({ email }: { email: string }) {
   }
 
   if (phase === "idle") return null;
+
+  // Demo: FAB is always rendered in the corner regardless of current phase
+  const showFab = phase === "fab" || isDemo;
+
   if (phase === "fab") return <TourFab onClick={reopenTour} />;
-  if (phase === "welcome") return <WelcomeModal onStart={() => setPhase("touring")} onSkip={finish} />;
 
   return (
     <>
-      <SvgSpotlight rect={rect} />
-      <StepCard step={STEPS[stepIndex]} index={stepIndex} total={STEPS.length} rect={rect} onNext={next} onSkip={finish} />
+      {showFab && <TourFab onClick={reopenTour} />}
+      {phase === "welcome" && <WelcomeModal onStart={() => setPhase("touring")} onSkip={finish} />}
+      <SvgSpotlight rect={phase === "touring" ? rect : null} />
+      {phase === "touring" && <StepCard step={STEPS[stepIndex]} index={stepIndex} total={STEPS.length} rect={rect} onNext={next} onSkip={finish} />}
     </>
   );
 }
