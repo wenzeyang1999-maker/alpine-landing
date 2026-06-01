@@ -231,7 +231,7 @@ export default function ReportTour({ email }: { email: string }) {
   const isDemo = email === DEMO_EMAIL;
 
   useEffect(() => {
-    // Coming from portfolio tour — auto-start immediately
+    // Explicit handoff from portfolio tour — highest priority
     const pending = sessionStorage.getItem(REPORT_TOUR_PENDING_KEY);
     if (pending) {
       sessionStorage.removeItem(REPORT_TOUR_PENDING_KEY);
@@ -239,9 +239,16 @@ export default function ReportTour({ email }: { email: string }) {
       return;
     }
 
-    // Demo: always show FAB; first-time non-demo users also get FAB
+    if (isDemo) {
+      // Demo: auto-start once per browser session, FAB on subsequent visits
+      const sessionSeen = sessionStorage.getItem("alpine_report_tour_session");
+      setPhase(sessionSeen ? "fab" : "touring");
+      return;
+    }
+
+    // Non-demo: auto-start on first ever visit, FAB after that
     const seen = localStorage.getItem(tourKey(email));
-    setPhase(seen || isDemo ? "fab" : "touring");
+    setPhase(seen ? "fab" : "touring");
   }, [email, isDemo]);
 
   useEffect(() => {
@@ -259,7 +266,8 @@ export default function ReportTour({ email }: { email: string }) {
   }, [phase, stepIndex]);
 
   function finish() {
-    if (!isDemo) localStorage.setItem(tourKey(email), "1");
+    if (isDemo) sessionStorage.setItem("alpine_report_tour_session", "1");
+    else localStorage.setItem(tourKey(email), "1");
     setPhase("fab");
   }
 
