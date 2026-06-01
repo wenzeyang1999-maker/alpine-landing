@@ -281,7 +281,7 @@ function TourFab({ onClick }: { onClick: () => void }) {
       style={{
         position: "fixed",
         bottom: 20,
-        right: 20,
+        left: 20,
         zIndex: 500,
         display: "flex",
         alignItems: "center",
