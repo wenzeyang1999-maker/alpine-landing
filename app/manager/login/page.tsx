@@ -2,14 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { ArrowRight, Eye, EyeOff } from "lucide-react";
 import {
   BG, BG_CARD, INK, SECONDARY, MUTED, VIOLET, BORDER, LS_BODY, LS_H1,
 } from "@/lib/constants";
 
 export default function ManagerLogin() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
@@ -31,7 +29,7 @@ export default function ManagerLogin() {
         setError(data.error ?? "Sign-in failed. Please try again.");
         return;
       }
-      router.push(data.redirect ?? "/manager/workspace");
+      window.location.href = data.redirect ?? "/manager/workspace";
     } catch {
       setError("Network error. Please try again.");
     } finally {
