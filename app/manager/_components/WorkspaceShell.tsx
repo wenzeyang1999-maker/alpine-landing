@@ -101,7 +101,7 @@ export function WorkspaceShell({
 
       <div className="max-w-7xl mx-auto px-5 py-6 grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)_280px] gap-6">
         {/* Sidebar */}
-        <aside className="hidden lg:block">
+        <aside data-tour="chapters-nav" className="hidden lg:block">
           <Link
             href="/manager/workspace"
             className={`flex items-center gap-2 px-3 py-2 rounded-btn font-body text-[13px] mb-3 ${
@@ -192,7 +192,7 @@ export function WorkspaceShell({
         </main>
 
         {/* Right panel */}
-        <aside className="hidden lg:block">{rightPanel}</aside>
+        <aside data-tour="right-panel" className="hidden lg:block">{rightPanel}</aside>
       </div>
     </div>
   );

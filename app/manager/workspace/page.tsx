@@ -10,6 +10,7 @@ import {
 import { CHAPTERS, ACT_COLOR, totalQuestions } from "@/lib/manager/framework";
 import { type Response } from "@/lib/manager/local-state";
 import { WorkspaceShell } from "../_components/WorkspaceShell";
+import Tour from "@/components/manager/Tour";
 import InvitePanel from "@/components/manager/InvitePanel";
 import DocumentsPanel from "@/components/manager/DocumentsPanel";
 
@@ -30,17 +31,20 @@ export default function WorkspaceOverviewPage() {
   const [responses, setResponses] = useState<Record<string, Response>>({});
   const [hydrated, setHydrated] = useState(false);
   const [seeding, setSeeding] = useState(false);
-  const [seeded, setSeeded] = useState(false);
+  const [quota, setQuota] = useState<{ runsUsed: number; maxRuns: number; remaining: number } | null>(null);
+  const [quotaError, setQuotaError] = useState<string | null>(null);
 
   useEffect(() => {
     Promise.all([
       fetch("/api/manager/me").then((r) => (r.ok ? r.json() : null)),
       fetch("/api/manager/responses").then((r) => (r.ok ? r.json() : null)),
+      fetch("/api/manager/ai-quota").then((r) => (r.ok ? r.json() : null)),
     ])
-      .then(([me, resp]) => {
+      .then(([me, resp, q]) => {
         if (!me) { router.replace("/manager/login"); return; }
         setMe(me);
         setResponses((resp?.responses ?? {}) as Record<string, Response>);
+        if (q) setQuota(q);
         setHydrated(true);
       })
       .catch(() => router.replace("/manager/login"));
@@ -59,6 +63,8 @@ export default function WorkspaceOverviewPage() {
   const unreviewed = answered - flagged - reviewed;
 
   return (
+    <>
+    <Tour email={me.email} />
     <WorkspaceShell
       firm={{ name: firmName }}
       rightPanel={
@@ -70,6 +76,7 @@ export default function WorkspaceOverviewPage() {
     >
       {/* Hero card */}
       <section
+        data-tour="hero-card"
         className="rounded-panel p-7 sm:p-8 mb-6"
         style={{ background: BG_CARD, border: `1px solid ${BORDER}` }}
       >
@@ -103,43 +110,96 @@ export default function WorkspaceOverviewPage() {
         </p>
         <div className="flex flex-wrap items-center gap-3">
           <Link
+            data-tour="continue-btn"
             href={`/manager/workspace/chapter/${answered === 0 ? 1 : nextIncomplete(responses)}`}
             className="rounded-btn px-5 py-3 font-body text-[14px] inline-flex items-center gap-1.5 hover:opacity-90 transition-opacity"
             style={{ background: INK, color: "#fff", fontWeight: 600 }}
           >
             {answered === 0 ? "Start Chapter 01" : "Continue"} <ArrowRight size={14} />
           </Link>
-          {!seeded && (
-            <button
-              type="button"
-              disabled={seeding}
-              onClick={async () => {
-                setSeeding(true);
-                try {
-                  const res = await fetch("/api/manager/seed-chapter1", { method: "POST" });
-                  const data = await res.json();
-                  if (res.ok) {
-                    setSeeded(true);
-                    window.location.reload();
-                  } else {
-                    alert(data.error ?? "Seed failed");
+          {/* AI Draft button with quota */}
+          {quota && quota.remaining <= 0 ? (
+            <div className="flex flex-col gap-1">
+              <p className="font-body text-[12px]" style={{ color: "#dc2626" }}>
+                AI draft quota used ({quota.runsUsed}/{quota.maxRuns}). Contact us to reset.
+              </p>
+              <a
+                href="mailto:team@alpinedd.com?subject=AI Draft Quota Reset Request"
+                className="font-body text-[12px] hover:underline"
+                style={{ color: VIOLET }}
+              >
+                team@alpinedd.com →
+              </a>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-1">
+              <button
+                data-tour="ai-draft-btn"
+                type="button"
+                disabled={seeding}
+                onClick={async () => {
+                  setSeeding(true);
+                  setQuotaError(null);
+                  try {
+                    // Quota check — non-blocking: if API unavailable, still run seed
+                    try {
+                      const qRes = await fetch("/api/manager/ai-quota", { method: "POST" });
+                      const qData = await qRes.json();
+                      if (!qRes.ok) {
+                        if (qRes.status === 429 && qData.error === "quota_exceeded") {
+                          setQuota((prev) => prev ? { ...prev, remaining: 0 } : { runsUsed: 20, maxRuns: 20, remaining: 0 });
+                          setQuotaError(qData.message ?? "Quota exhausted.");
+                          return; // Only block on true quota exhaustion
+                        }
+                        // Other errors: log but don't block
+                      } else {
+                        setQuota({ runsUsed: qData.runsUsed, maxRuns: qData.maxRuns, remaining: qData.remaining });
+                      }
+                    } catch {
+                      // Quota API unreachable — proceed anyway
+                    }
+                    const res = await fetch("/api/manager/seed-chapter1", { method: "POST" });
+                    const data = await res.json();
+                    if (res.ok) {
+                      window.location.reload();
+                    } else {
+                      alert(data.error ?? "Seed failed");
+                    }
+                  } finally {
+                    setSeeding(false);
                   }
-                } finally {
-                  setSeeding(false);
-                }
-              }}
-              className="rounded-btn px-4 py-3 font-body text-[13px] inline-flex items-center gap-1.5 hover:opacity-80 transition-opacity disabled:opacity-50"
-              style={{ border: `1px solid ${BORDER}`, color: MUTED, fontWeight: 500 }}
-            >
-              {seeding ? <Loader2 size={13} className="animate-spin" /> : null}
-              {seeding ? "Loading answers…" : "Load all demo answers"}
-            </button>
+                }}
+                className="rounded-btn px-4 py-3 font-body text-[13px] inline-flex items-center gap-2 hover:opacity-80 transition-opacity disabled:opacity-50"
+                style={{ border: `1px solid ${BORDER}`, color: MUTED, fontWeight: 500 }}
+              >
+                {seeding ? <Loader2 size={13} className="animate-spin" /> : null}
+                {seeding ? "Generating AI answers…" : "Load All AI Draft Answers"}
+                {!seeding && quota && (
+                  <span
+                    className="font-mono text-[10px]"
+                    style={{
+                      background: BORDER,
+                      color: MUTED,
+                      borderRadius: 99,
+                      padding: "1px 7px",
+                      fontWeight: 600,
+                      letterSpacing: "0.04em",
+                    }}
+                  >
+                    {quota.runsUsed}/{quota.maxRuns} used
+                  </span>
+                )}
+              </button>
+              {quotaError && (
+                <p className="font-body text-[11px] mt-1" style={{ color: "#dc2626" }}>{quotaError}</p>
+              )}
+            </div>
           )}
         </div>
       </section>
 
       {/* Chapters grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div data-tour="chapters-grid" className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {CHAPTERS.map((ch) => {
           const chResponses = Object.values(responses).filter((r) => r.chapterNum === ch.num);
           const answeredInChapter = chResponses.filter(hasAnswer).length;
@@ -186,6 +246,7 @@ export default function WorkspaceOverviewPage() {
         })}
       </div>
     </WorkspaceShell>
+    </>
   );
 }
 
@@ -210,10 +271,18 @@ function RightPanel({ overallPct, answered, total, flagged, reviewed, unreviewed
 }) {
   return (
     <div className="flex flex-col gap-4 sticky top-24">
-      <Stat label="Overall progress" value={`${overallPct}%`} sub={`${answered}/${total} questions`} />
-      <ReviewStat flagged={flagged} reviewed={reviewed} unreviewed={unreviewed} unanswered={total - answered} total={total} />
-      <DocumentsPanel />
-      <InvitePanel />
+      <div data-tour="progress-panel">
+        <Stat label="Overall progress" value={`${overallPct}%`} sub={`${answered}/${total} questions`} />
+      </div>
+      <div data-tour="review-panel">
+        <ReviewStat flagged={flagged} reviewed={reviewed} unreviewed={unreviewed} unanswered={total - answered} total={total} />
+      </div>
+      <div data-tour="documents-panel">
+        <DocumentsPanel />
+      </div>
+      <div data-tour="invite-panel">
+        <InvitePanel />
+      </div>
     </div>
   );
 }

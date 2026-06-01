@@ -30,6 +30,9 @@ export type Response = {
   answerMulti?: string[];
   uploadedFilename?: string;
   reviewStatus?: "flagged" | "reviewed";
+  sourceDocumentId?: string;
+  sourceDocumentName?: string;
+  sourceQuote?: string;
   updatedAt: string; // ISO
 };
 

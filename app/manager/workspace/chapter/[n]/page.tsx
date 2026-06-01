@@ -10,6 +10,8 @@ import {
 import { chapterByNum, CHAPTERS, ACT_COLOR, type Question } from "@/lib/manager/framework";
 import { hasAnswer, type Response } from "@/lib/manager/local-state";
 import { WorkspaceShell } from "../../../_components/WorkspaceShell";
+import { SourceDot, type SourceMatch } from "@/components/manager/SourceDot";
+import { type Doc } from "@/components/manager/AnswerRef";
 
 export default function ChapterPage() {
   const router = useRouter();
@@ -20,19 +22,43 @@ export default function ChapterPage() {
 
   const [firmName, setFirmName] = useState<string | null>(null);
   const [responses, setResponses] = useState<Record<string, Response>>({});
+  const [docs, setDocs] = useState<Doc[]>([]);
   const [hydrated, setHydrated] = useState(false);
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const saveQueue = useRef<Promise<void>>(Promise.resolve());
+
+  // Pinned source references per question { [questionId]: SourceMatch }
+  const [pinnedRefs, setPinnedRefs] = useState<Record<string, SourceMatch>>({});
 
   useEffect(() => {
     Promise.all([
       fetch("/api/manager/me").then((r) => (r.ok ? r.json() : null)),
       fetch("/api/manager/responses").then((r) => (r.ok ? r.json() : null)),
+      fetch("/api/manager/documents").then((r) => (r.ok ? r.json() : null)),
     ])
-      .then(([me, resp]) => {
+      .then(([me, resp, docsData]) => {
         if (!me) { router.replace("/manager/login"); return; }
         setFirmName(me.firm_name ?? me.email);
-        setResponses((resp?.responses ?? {}) as Record<string, Response>);
+        const loadedResponses = (resp?.responses ?? {}) as Record<string, Response>;
+        setResponses(loadedResponses);
+        setDocs(docsData?.docs ?? []);
+
+        // Hydrate pinned source refs from DB so the dot is filled on load
+        const initial: Record<string, SourceMatch> = {};
+        for (const [qId, r] of Object.entries(loadedResponses)) {
+          if (r.sourceDocumentId && r.sourceQuote) {
+            initial[qId] = {
+              documentId: r.sourceDocumentId,
+              filename: r.sourceDocumentName ?? "",
+              passage: r.sourceQuote,
+              before: "",
+              after: "",
+              score: 1,
+            };
+          }
+        }
+        setPinnedRefs(initial);
+
         setHydrated(true);
       })
       .catch(() => router.replace("/manager/login"));
@@ -74,6 +100,25 @@ export default function ChapterPage() {
       setLastSavedAt(new Date());
     });
   };
+
+  function handlePin(questionId: string, match: SourceMatch) {
+    setPinnedRefs((prev) => ({ ...prev, [questionId]: match }));
+    // Persist source to DB
+    fetch("/api/manager/responses", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        questionId,
+        chapterNum,
+        answerText: responses[questionId]?.answerText,
+        answerChoice: responses[questionId]?.answerChoice,
+        answerMulti: responses[questionId]?.answerMulti,
+        uploadedFilename: responses[questionId]?.uploadedFilename,
+        sourceDocumentId: match.documentId,
+        sourceQuote: match.passage,
+      }),
+    }).then(() => setLastSavedAt(new Date()));
+  }
 
   if (!chapter) {
     return (
@@ -184,6 +229,8 @@ export default function ChapterPage() {
             q={q}
             index={idx + 1}
             response={responses[q.id]}
+            docs={docs}
+            pinned={pinnedRefs[q.id] ?? null}
             onUpdate={(partial) =>
               handleResponseUpdate({
                 ...responses[q.id],
@@ -194,6 +241,7 @@ export default function ChapterPage() {
               })
             }
             onReview={(status) => handleReviewUpdate(q.id, chapterNum, status)}
+            onPin={(match) => handlePin(q.id, match)}
           />
         ))}
       </div>
@@ -225,13 +273,16 @@ const REVIEW_FLAG_COLOR = "#ef4444";
 const REVIEW_OK_COLOR = "#22c55e";
 
 function QuestionCard({
-  q, index, response, onUpdate, onReview,
+  q, index, response, docs, pinned, onUpdate, onReview, onPin,
 }: {
   q: Question;
   index: number;
   response?: Response;
+  docs: Doc[];
+  pinned: SourceMatch | null;
   onUpdate: (partial: Partial<Response>) => void;
   onReview: (status: "flagged" | "reviewed" | null) => void;
+  onPin: (match: SourceMatch) => void;
 }) {
   const filled = response ? hasAnswer(response) : false;
   const reviewStatus = response?.reviewStatus;
@@ -273,6 +324,16 @@ function QuestionCard({
           >
             {q.prompt}
             {q.required && <span style={{ color: AMBER }}> *</span>}
+            {filled && (
+              <SourceDot
+                questionId={q.id}
+                questionText={q.prompt}
+                answerText={response?.answerText ?? response?.answerChoice ?? response?.answerMulti?.join(", ") ?? ""}
+                pinned={pinned}
+                onPin={onPin}
+                docUrls={Object.fromEntries(docs.filter(d => d.url).map(d => [d.filename, d.url!]))}
+              />
+            )}
           </h3>
           {q.helper && (
             <p className="font-body text-[12.5px] mt-1" style={{ color: MUTED, lineHeight: 1.5, letterSpacing: LS_BODY }}>
@@ -284,6 +345,7 @@ function QuestionCard({
 
       <div className="ml-[38px]">
         <QuestionInput q={q} response={response} onUpdate={onUpdate} />
+
 
         {/* Review + history row */}
         <div className="flex items-center justify-between mt-3 pt-2.5" style={{ borderTop: `1px solid ${BORDER}` }}>

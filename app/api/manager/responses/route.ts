@@ -17,10 +17,21 @@ export async function GET() {
 
   const { data, error } = await db()
     .from("manager_responses")
-    .select("question_id, chapter_num, answer_text, answer_choice, answer_multi, uploaded_filename, review_status, updated_at")
+    .select("question_id, chapter_num, answer_text, answer_choice, answer_multi, uploaded_filename, review_status, source_document_id, source_quote, updated_at")
     .eq("firm_id", user.firm_id);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  // Fetch document names for any referenced docs
+  const docIds = [...new Set((data ?? []).map((r) => r.source_document_id).filter(Boolean))];
+  const docMap: Record<string, string> = {};
+  if (docIds.length > 0) {
+    const { data: docs } = await db()
+      .from("manager_uploads")
+      .select("id, filename")
+      .in("id", docIds);
+    for (const d of (docs ?? [])) docMap[d.id] = d.filename;
+  }
 
   const responses: Record<string, unknown> = {};
   for (const row of (data ?? [])) {
@@ -32,6 +43,9 @@ export async function GET() {
       answerMulti: row.answer_multi ?? undefined,
       uploadedFilename: row.uploaded_filename ?? undefined,
       reviewStatus: row.review_status ?? undefined,
+      sourceDocumentId: row.source_document_id ?? undefined,
+      sourceDocumentName: row.source_document_id ? (docMap[row.source_document_id] ?? undefined) : undefined,
+      sourceQuote: row.source_quote ?? undefined,
       updatedAt: row.updated_at,
     };
   }
@@ -44,7 +58,7 @@ export async function POST(req: Request) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!user.firm_id) return NextResponse.json({ error: "No firm" }, { status: 400 });
 
-  const { questionId, chapterNum, answerText, answerChoice, answerMulti, uploadedFilename } = await req.json();
+  const { questionId, chapterNum, answerText, answerChoice, answerMulti, uploadedFilename, sourceDocumentId, sourceQuote } = await req.json();
   if (!questionId || !chapterNum) return NextResponse.json({ error: "Missing fields" }, { status: 400 });
 
   const client = db();
@@ -86,6 +100,8 @@ export async function POST(req: Request) {
         answer_choice: newChoice,
         answer_multi: newMulti,
         uploaded_filename: newFile,
+        source_document_id: sourceDocumentId ?? null,
+        source_quote: sourceQuote ?? null,
         updated_at: new Date().toISOString(),
       },
       { onConflict: "firm_id,question_id" }
