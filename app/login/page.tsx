@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import SubpageLayout from "@/components/SubpageLayout";
 import { BG_CARD, INK, MUTED, SUBTLE, BORDER, VIOLET } from "@/lib/constants";
 
 export default function InvestorLoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -33,7 +31,7 @@ export default function InvestorLoginPage() {
       // Honor a ?redirect= target set by the middleware gate; default to /reports.
       const params = new URLSearchParams(window.location.search);
       const target = params.get("redirect");
-      router.push(target && target.startsWith("/reports") ? target : "/reports");
+      window.location.href = target && target.startsWith("/reports") ? target : "/reports";
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
