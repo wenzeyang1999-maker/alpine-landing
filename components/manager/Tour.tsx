@@ -224,10 +224,6 @@ function WelcomeModal({ onStart, onSkip }: { onStart: () => void; onSkip: () => 
         <div style={{ background: "linear-gradient(135deg, #5b21b6 0%, #7c3aed 50%, #a78bfa 100%)", padding: "32px 32px 28px", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: -30, right: -30, width: 120, height: 120, borderRadius: "50%", background: "rgba(255,255,255,0.06)" }} />
           <div style={{ position: "absolute", bottom: -20, left: -20, width: 80, height: 80, borderRadius: "50%", background: "rgba(255,255,255,0.04)" }} />
-          <div style={{ width: 48, height: 48, borderRadius: 14, background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 20, backdropFilter: "blur(4px)", border: "1px solid rgba(255,255,255,0.2)" }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/alpine-logo-dark.svg?v=5" alt="Alpine" style={{ height: 26, width: "auto", filter: "brightness(0) invert(1)" }} />
-          </div>
           <h2 style={{ fontSize: 22, fontWeight: 700, color: "#fff", lineHeight: 1.25, marginBottom: 8 }}>Welcome to your Living DDQ</h2>
           <p style={{ fontSize: 13.5, color: "rgba(255,255,255,0.8)", lineHeight: 1.6, margin: 0 }}>
             The same 8-chapter institutional framework allocators use to evaluate managers — your answers are live, version-controlled, and shareable.
