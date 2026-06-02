@@ -145,11 +145,11 @@ function StepCard({ step, index, total, rect, onNext, onSkip }: {
 
   return (
     <div key={key} style={style}>
-      <div style={{ background: "#fff", borderRadius: 16, boxShadow: "0 24px 64px rgba(0,0,0,0.22), 0 4px 16px rgba(124,58,237,0.08)", overflow: "hidden", border: "1px solid rgba(124,58,237,0.12)" }}>
-        <div style={{ height: 5, background: "linear-gradient(90deg, #7c3aed, #a78bfa)", borderRadius: "16px 16px 0 0" }} />
+      <div style={{ background: "#fff", borderRadius: 16, boxShadow: "0 24px 64px rgba(0,0,0,0.22), 0 4px 16px rgba(34,197,94,0.08)", overflow: "hidden", border: "1px solid rgba(34,197,94,0.15)" }}>
+        <div style={{ height: 5, background: "linear-gradient(90deg, #16a34a, #22c55e, #86efac)", borderRadius: "16px 16px 0 0" }} />
         <div style={{ padding: "20px 22px 22px" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-            <span style={{ fontFamily: "monospace", fontSize: 10, fontWeight: 700, color: "#7c3aed", background: "#f5f3ff", borderRadius: 99, padding: "3px 10px", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+            <span style={{ fontFamily: "monospace", fontSize: 10, fontWeight: 700, color: "#16a34a", background: "#f0fdf4", borderRadius: 99, padding: "3px 10px", letterSpacing: "0.06em", textTransform: "uppercase" }}>
               {index + 1} / {total}
             </span>
             <button onClick={onSkip} style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", padding: 2, lineHeight: 1, fontSize: 18 }}>×</button>
@@ -157,18 +157,18 @@ function StepCard({ step, index, total, rect, onNext, onSkip }: {
           <h3 style={{ fontSize: 16, fontWeight: 700, color: "#111827", lineHeight: 1.3, marginBottom: 8 }}>{step.title}</h3>
           <p style={{ fontSize: 13, color: "#4b5563", lineHeight: 1.65, marginBottom: step.tip ? 10 : 18 }}>{step.body}</p>
           {step.tip && (
-            <div style={{ display: "flex", alignItems: "flex-start", gap: 7, marginBottom: 18, background: "#faf5ff", borderRadius: 8, padding: "8px 10px", border: "1px solid #ede9fe" }}>
+            <div style={{ display: "flex", alignItems: "flex-start", gap: 7, marginBottom: 18, background: "#f0fdf4", borderRadius: 8, padding: "8px 10px", border: "1px solid #bbf7d0" }}>
               <span style={{ fontSize: 12, flexShrink: 0 }}>💡</span>
-              <p style={{ fontSize: 11.5, color: "#6d28d9", lineHeight: 1.5, margin: 0 }}>{step.tip}</p>
+              <p style={{ fontSize: 11.5, color: "#15803d", lineHeight: 1.5, margin: 0 }}>{step.tip}</p>
             </div>
           )}
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{ display: "flex", gap: 5, flex: 1 }}>
               {Array.from({ length: total }).map((_, i) => (
-                <div key={i} style={{ width: i === index ? 18 : 6, height: 6, borderRadius: 99, background: i === index ? "#7c3aed" : i < index ? "#c4b5fd" : "#e5e7eb", transition: "width 0.3s ease, background 0.3s ease" }} />
+                <div key={i} style={{ width: i === index ? 18 : 6, height: 6, borderRadius: 99, background: i === index ? "#22c55e" : i < index ? "#86efac" : "#e5e7eb", transition: "width 0.3s ease, background 0.3s ease" }} />
               ))}
             </div>
-            <button onClick={onNext} style={{ display: "flex", alignItems: "center", gap: 6, padding: "9px 18px", fontSize: 13, fontWeight: 600, color: "#fff", background: "#7c3aed", border: "none", borderRadius: 9, cursor: "pointer", boxShadow: "0 2px 8px rgba(124,58,237,0.35)" }}>
+            <button onClick={onNext} style={{ display: "flex", alignItems: "center", gap: 6, padding: "9px 18px", fontSize: 13, fontWeight: 600, color: "#fff", background: "#16a34a", border: "none", borderRadius: 9, cursor: "pointer", boxShadow: "0 2px 8px rgba(22,163,74,0.35)" }}>
               {isLast ? "Done" : "Next"}
               {!isLast && (
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
