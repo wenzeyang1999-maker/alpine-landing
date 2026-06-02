@@ -6,10 +6,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { BG, BG_CARD, INK, MUTED, VIOLET, GREEN, AMBER, BORDER } from "@/lib/constants";
 
-type NavChild = { label: string; href: string };
+type NavChild = { label: string; href: string; description?: string };
 type NavItem =
   | { kind: "link";    label: string; href: string }
-  | { kind: "menu";    label: string; href: string; children: NavChild[] }
+  | { kind: "menu";    label: string; href: string; children: NavChild[]; badge?: "NEW" }
   | { kind: "page";    label: string; href: string; badge?: "NEW" };
 
 const NAV_ITEMS: NavItem[] = [
@@ -34,7 +34,17 @@ const NAV_ITEMS: NavItem[] = [
     ],
   },
   { kind: "link", label: "Blog",            href: "#blog" },
-  { kind: "page", label: "Alpine Space",    href: "/whitepaper", badge: "NEW" },
+  {
+    kind: "menu",
+    label: "Alpine Space",
+    href: "/publications",
+    badge: "NEW",
+    children: [
+      { label: "Blog",            href: "/alpine-space",    description: "Insights from the Alpine team" },
+      { label: "Publications",    href: "/publications",    description: "Whitepapers, case studies & research" },
+      { label: "Learning Center", href: "/learning-center", description: "Glossary & industry definitions" },
+    ],
+  },
 ];
 
 export default function Navbar() {
@@ -149,6 +159,7 @@ export default function Navbar() {
 
               if (item.kind === "menu") {
                 const showDropdown = openMenu === item.label;
+                const hasDesc = item.children.some((c) => c.description);
                 return (
                   <div
                     key={item.label}
@@ -156,19 +167,32 @@ export default function Navbar() {
                     onMouseEnter={() => handleMenuEnter(item.label)}
                     onMouseLeave={handleMenuLeave}
                   >
-                    <a
-                      href={item.href}
+                    <button
+                      type="button"
+                      onClick={() => setOpenMenu(showDropdown ? null : item.label)}
                       className="font-body text-[15.5px] transition-colors flex items-center gap-1"
                       style={{
                         color: isActive ? INK : MUTED,
                         fontWeight: isActive ? 600 : 500,
                         letterSpacing: "0",
                         minHeight: "44px",
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        padding: 0,
                       }}
                     >
                       {item.label}
-                      <ChevronDown size={13} style={{ opacity: 0.7 }} />
-                    </a>
+                      {item.badge && (
+                        <span
+                          className="text-[9px] font-mono font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full ml-1"
+                          style={{ background: VIOLET, color: "#fff", letterSpacing: "0.08em" }}
+                        >
+                          {item.badge}
+                        </span>
+                      )}
+                      <ChevronDown size={13} style={{ opacity: 0.7, marginLeft: 2 }} />
+                    </button>
                     <AnimatePresence>
                       {showDropdown && (
                         <motion.div
@@ -176,7 +200,8 @@ export default function Navbar() {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -4 }}
                           transition={{ duration: 0.14 }}
-                          className="absolute left-0 top-full pt-2 min-w-[200px]"
+                          className="absolute left-0 top-full pt-2"
+                          style={{ minWidth: hasDesc ? 260 : 200 }}
                         >
                           <div
                             className="rounded-card overflow-hidden"
@@ -187,15 +212,22 @@ export default function Navbar() {
                             }}
                           >
                             {item.children.map((c) => (
-                              <a
+                              <Link
                                 key={c.label}
                                 href={c.href}
                                 onClick={() => setOpenMenu(null)}
-                                className="block px-4 py-2.5 font-body text-[14px] transition-colors hover:bg-gray-50"
-                                style={{ color: INK, fontWeight: 500, letterSpacing: "-0.01em" }}
+                                className="flex flex-col px-4 py-3 font-body transition-colors hover:bg-gray-50"
+                                style={{ borderBottom: `1px solid ${BORDER}` }}
                               >
-                                {c.label}
-                              </a>
+                                <span className="text-[14px]" style={{ color: INK, fontWeight: 600, letterSpacing: "-0.01em" }}>
+                                  {c.label}
+                                </span>
+                                {c.description && (
+                                  <span className="text-[12px] mt-0.5" style={{ color: MUTED, fontWeight: 400 }}>
+                                    {c.description}
+                                  </span>
+                                )}
+                              </Link>
                             ))}
                           </div>
                         </motion.div>
@@ -306,20 +338,27 @@ export default function Navbar() {
                 if (item.kind === "menu") {
                   return (
                     <div key={item.label} style={{ borderBottom: `1px solid ${BORDER}` }}>
-                      <div className="py-3 font-body text-[16px]" style={{ color: INK, fontWeight: 600, letterSpacing: "-0.01em" }}>
+                      <div className="py-3 font-body text-[16px] flex items-center gap-2" style={{ color: INK, fontWeight: 600, letterSpacing: "-0.01em" }}>
                         {item.label}
+                        {item.badge && (
+                          <span className="text-[9px] font-mono font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full" style={{ background: VIOLET, color: "#fff" }}>
+                            {item.badge}
+                          </span>
+                        )}
                       </div>
-                      <div className="pb-3 pl-3 flex flex-col gap-2">
+                      <div className="pb-3 pl-3 flex flex-col gap-1">
                         {item.children.map((c) => (
-                          <a
+                          <Link
                             key={c.label}
                             href={c.href}
                             onClick={() => setOpen(false)}
-                            className="font-body text-[14px]"
-                            style={{ color: MUTED, fontWeight: 500, letterSpacing: "-0.01em" }}
+                            className="flex flex-col py-1.5"
                           >
-                            {c.label}
-                          </a>
+                            <span className="font-body text-[14px]" style={{ color: INK, fontWeight: 500, letterSpacing: "-0.01em" }}>{c.label}</span>
+                            {c.description && (
+                              <span className="font-body text-[12px]" style={{ color: MUTED }}>{c.description}</span>
+                            )}
+                          </Link>
                         ))}
                       </div>
                     </div>
