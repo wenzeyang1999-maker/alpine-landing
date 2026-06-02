@@ -779,7 +779,7 @@ export default function InvestorReportReader({ slug, email = "" }: { slug: strin
           <ViewToggle mode={viewMode} onChange={handleModeChange} />
         </div>
         {/* Mobile section picker */}
-        <div className="md:hidden px-6 pb-3">
+        <div data-tour="report-toc" className="md:hidden px-6 pb-3">
           <label htmlFor="section-picker" className="sr-only">
             Jump to section
           </label>
