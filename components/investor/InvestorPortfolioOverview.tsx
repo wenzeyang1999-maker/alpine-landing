@@ -241,12 +241,13 @@ function FundTableRow({ r }: { r: EnrichedReport }) {
   );
 }
 
-function FundMobileCard({ r }: { r: EnrichedReport }) {
+function FundMobileCard({ r, isFirst }: { r: EnrichedReport; isFirst?: boolean }) {
   const ratingColor = colorFromRating(r.entry.rating);
   const ratingText = RATING_TEXT_COLOR[r.entry.rating] ?? MUTED;
   return (
     <Link
       href={`/reports/${r.entry.slug}`}
+      data-tour={isFirst ? "investor-open-report" : undefined}
       className="block px-4 py-4"
       style={{ borderBottom: `1px solid ${BORDER}` }}
     >
@@ -324,7 +325,7 @@ function FundsTable({ reports }: { reports: EnrichedReport[] }) {
       </div>
       {/* Mobile cards */}
       <div className="md:hidden">
-        {reports.map((r) => <FundMobileCard key={r.entry.slug} r={r} />)}
+        {reports.map((r, i) => <FundMobileCard key={r.entry.slug} r={r} isFirst={i === 0} />)}
       </div>
       {/* Legend for the topic coverage chips */}
       <div

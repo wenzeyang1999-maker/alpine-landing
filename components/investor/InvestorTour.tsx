@@ -137,7 +137,11 @@ function StepCard({ step, index, total, rect, onNext, onSkip }: {
     style.left = Math.max(12, Math.min(Number(style.left), window.innerWidth - CARD_W - 12));
     style.top  = Math.max(12, Math.min(Number(style.top),  window.innerHeight - 260 - 12));
   } else {
-    style.bottom = 32; style.right = 32;
+    // Centered fallback when anchor element not found (e.g. hidden on mobile)
+    style.top = "50%";
+    style.left = "50%";
+    style.transform = "translate(-50%, -50%)";
+    style.width = Math.min(CARD_W, (typeof window !== "undefined" ? window.innerWidth : 360) - 32);
   }
 
   const isLast = index === total - 1;
