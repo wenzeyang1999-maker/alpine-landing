@@ -300,7 +300,13 @@ export default function InvestorTour({ email }: { email: string }) {
   useEffect(() => {
     if (phase !== "touring") { setRect(null); return; }
     function measure() {
-      const el = document.querySelector(`[data-tour="${STEPS[stepIndex].selector}"]`);
+      // Pick the first element that is actually rendered and visible
+      const candidates = document.querySelectorAll(`[data-tour="${STEPS[stepIndex].selector}"]`);
+      let el: Element | null = null;
+      for (const c of Array.from(candidates)) {
+        const r = c.getBoundingClientRect();
+        if (r.width > 0 && r.height > 0) { el = c; break; }
+      }
       if (!el) { setRect(null); return; }
       const r = el.getBoundingClientRect();
       setRect({ top: r.top, left: r.left, width: r.width, height: r.height });
