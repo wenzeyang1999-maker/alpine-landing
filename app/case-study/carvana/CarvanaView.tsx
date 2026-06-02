@@ -266,9 +266,26 @@ export default function CarvanaView() {
           {/* ── Page 2 — Overview ── */}
           <Page>
             <div style={{ padding: "48px 48px 80px" }}>
-              <Para mt={0}>
-                Carvana is widely known as a company that tried to change how Americans buy used cars. Its public image is simple and attractive: buying a used car should not feel like walking into a dealership from another era. Customers could search online, choose a vehicle, arrange financing, and have the car delivered to their home. The company&apos;s car vending machines became a powerful symbol of that promise — making Carvana look less like a traditional dealer and more like a technology company solving an old consumer problem.
-              </Para>
+              {/* Intro with floated image — mirrors the PDF layout */}
+              <div style={{ overflow: "hidden" }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/carvana-vending.jpg"
+                  alt="Carvana car vending machine"
+                  style={{
+                    float: "right",
+                    width: "48%",
+                    maxWidth: 360,
+                    marginLeft: 24,
+                    marginBottom: 12,
+                    borderRadius: 6,
+                    display: "block",
+                  }}
+                />
+                <Para mt={0}>
+                  Carvana is widely known as a company that tried to change how Americans buy used cars. Its public image is simple and attractive: buying a used car should not feel like walking into a dealership from another era. Customers could search online, choose a vehicle, arrange financing, and have the car delivered to their home. The company&apos;s car vending machines became a powerful symbol of that promise — making Carvana look less like a traditional dealer and more like a technology company solving an old consumer problem.
+                </Para>
+              </div>
               <Para>
                 In a market as large and fragmented as used vehicle retail, the idea of a cleaner, faster, digital model was easy to understand. Consumers liked the convenience. Investors liked the scale story. Management presented the company as a modern platform in an industry that had long been inefficient. For a time, the market accepted that story.
               </Para>
