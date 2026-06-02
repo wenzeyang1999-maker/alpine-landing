@@ -23,10 +23,10 @@ const PUBLICATIONS = [
     title: "The Carvana Case: Why Operational Due Diligence Matters Before the Fraud Becomes Obvious",
     description:
       "A structured analysis of how governance conflicts, related-party opacity, and reporting quality concerns at Carvana would have been surfaced by a proper ODD review — before Hindenburg's report made them headlines.",
-    href: "/the-carvana-case.pdf",
+    href: "/case-study/carvana",
     cta: "Read case study →",
     available: true,
-    external: true,
+    external: false,
   },
 ];
 
