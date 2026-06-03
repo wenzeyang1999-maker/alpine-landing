@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import SubpageLayout from "@/components/SubpageLayout";
-import { INK, MUTED, BORDER, VIOLET, BG_CARD, GREEN } from "@/lib/constants";
+import { INK, MUTED, BORDER, VIOLET, BG_CARD, GREEN, AMBER } from "@/lib/constants";
 import { isAppAdmin } from "@/lib/app-allowlist";
 
 const SESSION_KEY = "alpine_demo_user";
@@ -56,6 +56,14 @@ export default function AlpineSpacePage() {
       tag: "Research",
       tagColor: VIOLET,
       href: "/whitepaper",
+      locked: false,
+    },
+    {
+      label: "Case Study",
+      desc: "The Carvana Case — Why Operational Due Diligence Matters",
+      tag: "Research",
+      tagColor: AMBER,
+      href: "/case-study/carvana",
       locked: false,
     },
     {

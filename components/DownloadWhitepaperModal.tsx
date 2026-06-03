@@ -9,9 +9,13 @@ const CONTACT_KEY = "alpine_last_contact";
 export default function DownloadWhitepaperModal({
   open,
   onClose,
+  apiEndpoint = "/api/whitepaper/download",
+  docLabel = "White Paper",
 }: {
   open: boolean;
   onClose: () => void;
+  apiEndpoint?: string;
+  docLabel?: string;
 }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -44,7 +48,7 @@ export default function DownloadWhitepaperModal({
     setStatus("loading");
     setMessage("");
     try {
-      const res = await fetch("/api/whitepaper/download", {
+      const res = await fetch(apiEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email }),
@@ -95,7 +99,7 @@ export default function DownloadWhitepaperModal({
             className="font-mono text-[10px] uppercase mb-2"
             style={{ color: VIOLET, fontWeight: 700, letterSpacing: "0.12em" }}
           >
-            White Paper · Download
+            {docLabel} · Download
           </p>
           <p
             className="font-heading"

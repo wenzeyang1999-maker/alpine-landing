@@ -194,7 +194,7 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
           Mobile CSS — at <=768px the page metaphor (shadows, gaps, fixed
           minHeight) is dropped in favor of continuous article flow. Tables
           reflow to stacked cards. Typography scales down. */}
-      <style>{`
+      <style suppressHydrationWarning>{`
         @media print {
           @page { size: 9.375in 12.135in; margin: 0; }
           header, .floating-subscribe-root, .download-modal-root { display: none !important; }
@@ -435,7 +435,7 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
       </header>}
 
       {/* ── Content ────────────────────────────────────────────────────────── */}
-      <div data-wp-scroll style={{ flex: 1, userSelect: "none", padding: isPrint ? "0" : "0 16px 64px" }}>
+      <div data-wp-scroll style={{ flex: 1, userSelect: "none", padding: isPrint ? "0" : "32px 16px 64px" }}>
       <div data-wp-root style={{ maxWidth: 900, margin: "0 auto", zoom }}>
 
         {/* ── PAGE 01: COVER ─────────────────────────────────────────────── */}

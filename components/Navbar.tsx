@@ -40,7 +40,7 @@ const NAV_ITEMS: NavItem[] = [
     href: "/publications",
     badge: "NEW",
     children: [
-      { label: "Blog",            href: "/alpine-space",    description: "Insights from the Alpine team" },
+      { label: "Blog",            href: "/blog",            description: "Insights from the Alpine team" },
       { label: "Publications",    href: "/publications",    description: "Whitepapers, case studies & research" },
       { label: "Learning Center", href: "/learning-center", description: "Glossary & industry definitions" },
     ],
