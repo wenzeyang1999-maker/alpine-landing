@@ -6,6 +6,7 @@
  */
 
 import React from "react";
+import { renderCitations } from "@/lib/app-portal/cited-text";
 
 function EngineStubCard({ title, description }: { title: string; description?: string }) {
   return (
@@ -66,10 +67,19 @@ function renderInline(text: string): React.ReactNode {
   });
 }
 
-function MarkdownRenderer({ content }: { content: string }) {
+function MarkdownRenderer({ content, slug }: { content: string; slug?: string }) {
   const lines = content.split("\n");
   const nodes: React.ReactNode[] = [];
   let i = 0;
+
+  // Citation-aware inline renderer: parse [[REF]] tokens into dots, and run the
+  // surrounding text through the existing bold/italic formatter.
+  const inline = (text: string): React.ReactNode =>
+    renderCitations(text, {
+      slug,
+      variant: "prose",
+      renderText: (t, k) => <React.Fragment key={k}>{renderInline(t)}</React.Fragment>,
+    });
 
   while (i < lines.length) {
     const line = lines[i];
@@ -134,7 +144,7 @@ function MarkdownRenderer({ content }: { content: string }) {
                 <tr key={ri} style={{ background: ri % 2 === 0 ? "#fff" : "#f8fafc" }}>
                   {parseRow(row).map((cell, ci) => (
                     <td key={ci} style={{ padding: "6px 10px", borderBottom: "1px solid #e2e8f0", color: "#475569", verticalAlign: "top" }}>
-                      {renderInline(cell)}
+                      {inline(cell)}
                     </td>
                   ))}
                 </tr>
@@ -155,7 +165,7 @@ function MarkdownRenderer({ content }: { content: string }) {
       }
       nodes.push(
         <ul key={`ul-${i}`} style={{ margin: "8px 0 12px 16px", padding: 0, listStyle: "disc", color: "#334155", fontSize: 12.5, lineHeight: 1.75 }}>
-          {items.map((item, ii) => <li key={ii}>{renderInline(item)}</li>)}
+          {items.map((item, ii) => <li key={ii}>{inline(item)}</li>)}
         </ul>
       );
       continue;
@@ -180,7 +190,7 @@ function MarkdownRenderer({ content }: { content: string }) {
     if (paraLines.length > 0) {
       nodes.push(
         <p key={`p-${i}`} style={{ margin: "0 0 12px", fontSize: 12.5, lineHeight: 1.75, color: "#334155" }}>
-          {renderInline(paraLines.join(" "))}
+          {inline(paraLines.join(" "))}
         </p>
       );
     }
@@ -190,10 +200,10 @@ function MarkdownRenderer({ content }: { content: string }) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function ReportViewer({ content, ...rest }: { content?: string; [key: string]: any }) {
+export function ReportViewer({ content, slug, ...rest }: { content?: string; slug?: string; [key: string]: any }) {
   void rest;
   if (!content) return <EngineStubCard title="ODD Report" description="Full ODD report with ACCEPT/WATCHLIST/FLAG ratings and numbered risk observations." />;
-  return <MarkdownRenderer content={content} />;
+  return <MarkdownRenderer content={content} slug={slug} />;
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function CallPrepViewer(_props?: any) {

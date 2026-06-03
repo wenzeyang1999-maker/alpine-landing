@@ -18,41 +18,41 @@ export const TRELLIS_TOPIC_DATA: Record<number, TopicInfo> = {
     summary: "Dual co-founder ownership (50/50 Mehta / Sharma). Strong VC pedigree. 7 FTEs — single operations professional functions as executive assistant, not back office. Significant turnover in last 18 months (3 departures). No formal succession plan. GP commits 1% pari passu. YELLOW: absence of internal back office partially mitigated by fractional CFO (Summer 2026) and planned Head of Finance (2027).",
     findings: `### Management Company and Affiliates
 
-Trellis Capital Management, LLC ("Trellis", the "Manager") is a pre-seed stage venture capital firm headquartered in San Francisco. Trellis was founded in 2018 by Arjun Mehta (Co-Founder, Managing Partner) and Priya Sharma (Co-Founder, Managing Partner). Prior to founding the firm, Arjun was a principal at Founder Collective, a Boston area seed-stage venture firm, while Priya was a partner at Foundation Capital, a venture firm based in Silicon Valley.
+Trellis Capital Management, LLC ("Trellis", the "Manager") is a pre-seed stage venture capital firm headquartered in San Francisco.[[REF:Form ADV:"pre-seed venture firm headquartered in San Francisco"]] Trellis was founded in 2018 by Arjun Mehta (Co-Founder, Managing Partner) and Priya Sharma (Co-Founder, Managing Partner).[[REF:Form ADV:"founded 2018 by Mehta and Sharma"]] Prior to founding the firm, Arjun was a principal at Founder Collective, a Boston area seed-stage venture firm, while Priya was a partner at Foundation Capital, a venture firm based in Silicon Valley.[[REF:DDQ:"Arjun at Founder Collective, Priya at Foundation Capital"]]
 
-Trellis has deployed capital across four funds: Fund I (2018, $47 million, fully deployed), Fund II (2021, $78 million, fully deployed), Fund III (2024, $150 million, 64% deployed / reserved), and Fund IV (2026, ~$125 million initial close, pre-deployment).
+Trellis has deployed capital across four funds: Fund I (2018, $47 million, fully deployed), Fund II (2021, $78 million, fully deployed), Fund III (2024, $150 million, 64% deployed / reserved), and Fund IV (2026, ~$125 million initial close, pre-deployment).[[REF:DDQ:"four funds, Fund I through Fund IV"]]
 
 ### Assets under Management
 
-Trellis reported net assets of $280.3 million as of December 31, 2025, plus $113.7 million in uncalled capital out of $274 million in total commitments to the firm's first three funds. The firm also manages several co-investment special purpose vehicles ("SPVs") with total assets of $24.7 million as of the same date.
+Trellis reported net assets of $280.3 million as of December 31, 2025, plus $113.7 million in uncalled capital out of $274 million in total commitments to the firm's first three funds.[[REF:Form ADV:"net assets $280.3 million as of December 31, 2025"]] The firm also manages several co-investment special purpose vehicles ("SPVs") with total assets of $24.7 million as of the same date.[[REF:DDQ:"co-investment SPVs total $24.7 million"]]
 
 ### Insider Investment
 
-GP commitments to Funds I-III were 1% of total commitments (~$2.8 million), contributed in cash and invested pari passu with LP commitments, free of management fees.
+GP commitments to Funds I-III were 1% of total commitments (~$2.8 million), contributed in cash and invested pari passu with LP commitments, free of management fees.[[REF:LPA:"GP commits ~1% in cash pari passu, free of fees"]]
 
 ### Ownership & Succession
 
-Arjun Mehta and Priya Sharma each own 50% of the firm (confirmed via Form ADV Schedules A & B). No formal succession plan exists, though the Managing Partners could assume each other's responsibilities in a key person event. The key person provision (per Fund IV's LPA) would only be automatically triggered if both Managing Partners fail to provide sufficient time and attention. Key person life insurance is not maintained.
+Arjun Mehta and Priya Sharma each own 50% of the firm (confirmed via Form ADV Schedules A & B).[[REF:Form ADV:"Mehta and Sharma each own 50%, Schedules A and B"]] No formal succession plan exists, though the Managing Partners could assume each other's responsibilities in a key person event.[[REF:DDQ:"no formal succession plan"]] The key person provision (per Fund IV's LPA) would only be automatically triggered if both Managing Partners fail to provide sufficient time and attention.[[REF:LPA:"key person triggers only if both Managing Partners fail"]] Key person life insurance is not maintained.[[REF:DDQ:"key person life insurance not maintained"]]
 
 ### Human Resources
 
-With a total headcount of seven full-time employees — six investment professionals and Sarah Collins (Head of Operations) — Trellis is a small organization with resultant limitations to segregation of duties. Sarah's responsibilities focus on running business operations and acting as an executive assistant for the Managing Partners, rather than serving as a back office resource for the funds. The investment team consists of Arjun Mehta and Priya Sharma (Co-Founders, Managing Partners), Kevin Chen (Principal, joined Q2 2025), Rachel Winters (Associate), Ryan Mitchell (Analyst), and Vikram Nair (Chief Product Officer, departure planned Summer 2026).
+With a total headcount of seven full-time employees — six investment professionals and Sarah Collins (Head of Operations) — Trellis is a small organization with resultant limitations to segregation of duties.[[REF:DDQ:"seven FTEs, six investment professionals and one operations"]] Sarah's responsibilities focus on running business operations and acting as an executive assistant for the Managing Partners, rather than serving as a back office resource for the funds.[[REF:DDQ:"Sarah acts as executive assistant, not back office"]] The investment team consists of Arjun Mehta and Priya Sharma (Co-Founders, Managing Partners), Kevin Chen (Principal, joined Q2 2025), Rachel Winters (Associate), Ryan Mitchell (Analyst), and Vikram Nair (Chief Product Officer, departure planned Summer 2026).[[REF:DDQ:"investment team roster including Chen, Winters, Mitchell, Nair"]]
 
-The firm has recently retained Raj Patel as fractional CFO (former CFO of Atomic, a Miami-based venture studio). Raj will focus on overseeing Apex, though he will not dedicate substantial time until Summer 2026. A full-time Head of Finance is planned for 2027. James Crawford, an independent attorney and former partner at Hartwell & Sterling, is retained on an ad hoc basis for deal-related legal matters.
+The firm has recently retained Raj Patel as fractional CFO (former CFO of Atomic, a Miami-based venture studio).[[REF:DDQ:"retained Raj Patel as fractional CFO"]] Raj will focus on overseeing Apex, though he will not dedicate substantial time until Summer 2026.[[REF:DDQ:"Raj to oversee Apex from Summer 2026"]] A full-time Head of Finance is planned for 2027.[[REF:DDQ:"full-time Head of Finance planned for 2027"]] James Crawford, an independent attorney and former partner at Hartwell & Sterling, is retained on an ad hoc basis for deal-related legal matters.[[REF:DDQ:"James Crawford retained ad hoc for deal legal matters"]]
 
 ### Staff Turnover
 
-Regarding staff turnover: Omar Hassan (Associate) departed in August 2025 to pursue personal business endeavors, while Emily Brooks (Head of Operations) departed in December 2024 to move into an investment-focused role. Both departures were amicable. Sarah Collins was hired in July 2025 to replace Emily. Sanjay Gupta, a part-time venture partner, departed near end of 2024 to start his own venture firm.
+Regarding staff turnover:[[REF:DDQ:"staff turnover detail provided in questionnaire"]] Omar Hassan (Associate) departed in August 2025 to pursue personal business endeavors, while Emily Brooks (Head of Operations) departed in December 2024 to move into an investment-focused role.[[REF:DDQ:"Hassan departed August 2025, Brooks departed December 2024"]] Both departures were amicable.[[REF:DDQ:"both departures amicable"]] Sarah Collins was hired in July 2025 to replace Emily.[[REF:DDQ:"Sarah Collins hired July 2025 to replace Emily"]] Sanjay Gupta, a part-time venture partner, departed near end of 2024 to start his own venture firm.[[REF:DDQ:"Sanjay Gupta departed late 2024 to start own firm"]]
 
-Kevin Chen joined as a principal in Q2 2025. Vikram Nair, who began as a part-time venture partner in early 2024, was brought on full-time as Chief Product Officer but is planning to leave this summer to start his own company. A talent recruiter has been hired to identify replacement candidates.
+Kevin Chen joined as a principal in Q2 2025.[[REF:DDQ:"Kevin Chen joined as principal Q2 2025"]] Vikram Nair, who began as a part-time venture partner in early 2024, was brought on full-time as Chief Product Officer but is planning to leave this summer to start his own company.[[REF:DDQ:"Vikram Nair planning to leave to start own company"]] A talent recruiter has been hired to identify replacement candidates.[[REF:DDQ:"talent recruiter hired for replacement candidates"]]
 
 ### Background Checks
 
-Employee background checks have been completed by the Managing Partners on an internal basis. The firm has not engaged a third-party background check provider, though a search for one is currently underway based on investor feedback. Staff are compensated with a base salary and discretionary bonus, and all investment staff participate in carried interest vesting over four years.
+Employee background checks have been completed by the Managing Partners on an internal basis.[[REF:DDQ:"background checks completed internally by Managing Partners"]] The firm has not engaged a third-party background check provider, though a search for one is currently underway based on investor feedback.[[REF:DDQ:"third-party provider search underway"]] Staff are compensated with a base salary and discretionary bonus, and all investment staff participate in carried interest vesting over four years.[[REF:DDQ:"base salary, discretionary bonus, four-year carry vesting"]]
 
 ### YELLOW Rating Rationale
 
-The YELLOW rating reflects two primary deficiencies: (1) the sole operations professional (Sarah Collins) functions as an executive assistant rather than a back office resource, leaving no internal oversight of the Administrator's accounting work; and (2) significant recent staff turnover relative to team size. These are partially mitigated by the planned engagement of fractional CFO Raj Patel (Summer 2026) who will focus on Apex oversight, and the targeted full-time Head of Finance hire in 2027.`,
+The YELLOW rating reflects two primary deficiencies: (1) the sole operations professional (Sarah Collins) functions as an executive assistant rather than a back office resource, leaving no internal oversight of the Administrator's accounting work; and (2) significant recent staff turnover relative to team size.[[REF:Alpine Analysis:"YELLOW driven by no back office and staff turnover"]] These are partially mitigated by the planned engagement of fractional CFO Raj Patel (Summer 2026) who will focus on Apex oversight, and the targeted full-time Head of Finance hire in 2027.[[REF:Alpine Analysis:"mitigated by fractional CFO and planned Head of Finance"]]`,
     docCategories: ["Governance"], riskObsIds: ["TO-001", "TO-002", "TO-003", "TO-003b"],
     verificationCategory: "governance",
     dataPoints: [
@@ -105,41 +105,41 @@ The YELLOW rating reflects two primary deficiencies: (1) the sole operations pro
     summary: "RED: Investment professional (Priya Sharma, Co-Founder) holds compliance oversight — required action before close. No initial or annual compliance attestation from staff. No annual compliance training. No written personal trading policy. ERA-exempt from SEC registration. No disciplinary history.",
     findings: `### Regulatory Oversight
 
-The firm is exempt from registration with the SEC under the venture capital adviser exemption and has filed as an Exempt Reporting Adviser ("ERA") since March 9, 2019. Although not subject to the same regulatory requirements imposed on registered advisers, ERAs are required to complete certain sections of the Form ADV, implement written MNPI policies, and are subject to anti-fraud and "pay-to-play" provisions.
+The firm is exempt from registration with the SEC under the venture capital adviser exemption and has filed as an Exempt Reporting Adviser ("ERA") since March 9, 2019.[[REF:Form ADV:"ERA under VC adviser exemption since March 9, 2019"]][[REF:IARD Register:"ERA filing confirmed on register"]] Although not subject to the same regulatory requirements imposed on registered advisers, ERAs are required to complete certain sections of the Form ADV, implement written MNPI policies, and are subject to anti-fraud and "pay-to-play" provisions.[[REF:Form ADV:"ERAs complete certain Form ADV sections, MNPI and pay-to-play"]]
 
 ### Compliance Infrastructure and Policies
 
-Priya Sharma (Co-Founder, Managing Partner) is responsible for compliance oversight in addition to her investment responsibilities. Alpine is strongly opposed to an investment professional holding this responsibility and would prefer to see it reside with a non-investment professional such as Sarah Collins (Head of Operations). This is a required action before close.
+Priya Sharma (Co-Founder, Managing Partner) is responsible for compliance oversight in addition to her investment responsibilities.[[REF:DDQ:"Priya Sharma responsible for compliance oversight"]] Alpine is strongly opposed to an investment professional holding this responsibility and would prefer to see it reside with a non-investment professional such as Sarah Collins (Head of Operations).[[REF:Alpine Analysis:"strongly opposed to investment professional holding compliance"]] This is a required action before close.[[REF:Alpine Analysis:"required action before close"]]
 
-Compliance consultant usage has been limited to engaging Summit Advisory for annual Form ADV preparation. A broader compliance consultant engagement would strengthen the firm's compliance program. The firm maintains a compliance binder with the required ERA policies (pay-to-play, insider trading, AML). However, there is no initial attestation or annual recertification of compliance policies required from staff, and no annual compliance training program has been implemented.
+Compliance consultant usage has been limited to engaging Summit Advisory for annual Form ADV preparation.[[REF:DDQ:"Summit Advisory engaged for annual Form ADV only"]] A broader compliance consultant engagement would strengthen the firm's compliance program.[[REF:Alpine Analysis:"broader compliance consultant engagement would strengthen program"]] The firm maintains a compliance binder with the required ERA policies (pay-to-play, insider trading, AML).[[REF:DDQ:"compliance binder with pay-to-play, insider trading, AML"]] However, there is no initial attestation or annual recertification of compliance policies required from staff, and no annual compliance training program has been implemented.[[REF:DDQ:"no attestation, recertification, or annual training"]]
 
 ### Personal Trading
 
-Although the firm has an insider trading policy, the firm does not have a written personal trading policy as this is not a requirement of SEC ERAs. While concerns in this area are limited considering the scope of the firm's investment activities, Alpine would prefer to see a baseline policy in place, in line with broader industry best practices.
+Although the firm has an insider trading policy, the firm does not have a written personal trading policy as this is not a requirement of SEC ERAs.[[REF:DDQ:"insider trading policy but no written personal trading policy"]] While concerns in this area are limited considering the scope of the firm's investment activities, Alpine would prefer to see a baseline policy in place, in line with broader industry best practices.[[REF:Alpine Analysis:"Alpine would prefer a baseline personal trading policy"]]
 
 ### Trade Errors
 
-Due to the nature of the firm's investment activities, trade errors are not anticipated.
+Due to the nature of the firm's investment activities, trade errors are not anticipated.[[REF:DDQ:"trade errors not anticipated given investment activities"]]
 
 ### Soft Dollars
 
-The firm does not utilize soft dollars.
+The firm does not utilize soft dollars.[[REF:DDQ:"firm does not utilize soft dollars"]]
 
 ### Expert Networks
 
-The firm does not utilize expert networks.
+The firm does not utilize expert networks.[[REF:DDQ:"firm does not utilize expert networks"]]
 
 ### Anti-Money Laundering / Know Your Customer
 
-The Manager represented that investor AML verifications are completed by Apex Fund Services.
+The Manager represented that investor AML verifications are completed by Apex Fund Services.[[REF:Manager Response:"Manager represented AML verifications done by Apex"]]
 
 ### Claims, Actions, and Conflicts
 
-The firm represented that neither the management company, its affiliates, nor any employees have been subject to any action, claim, investigation, or litigation in the past ten years. Professional liability insurance provides up to $1 million in coverage. The firm's Managing Partners serve on boards of portfolio companies, with any directors' fees waived.
+The firm represented that neither the management company, its affiliates, nor any employees have been subject to any action, claim, investigation, or litigation in the past ten years.[[REF:DDQ:"no action, claim, or litigation in past ten years"]] Professional liability insurance provides up to $1 million in coverage.[[REF:DDQ:"professional liability insurance up to $1 million"]] The firm's Managing Partners serve on boards of portfolio companies, with any directors' fees waived.[[REF:DDQ:"Managing Partners on portfolio boards, directors fees waived"]]
 
 ### RED Rating Rationale
 
-Red rating based on the cumulative weight of compliance deficiencies: (1) investment professional responsible for compliance oversight, (2) no compliance attestation or recertification process for staff, (3) no annual compliance training program implemented, and (4) limited compliance consultant engagement. While the firm's policies meet ERA minimum requirements, the overall compliance environment falls below institutional standards.`,
+Red rating based on the cumulative weight of compliance deficiencies: (1) investment professional responsible for compliance oversight, (2) no compliance attestation or recertification process for staff, (3) no annual compliance training program implemented, and (4) limited compliance consultant engagement.[[REF:Alpine Analysis:"RED on cumulative compliance deficiencies"]] While the firm's policies meet ERA minimum requirements, the overall compliance environment falls below institutional standards.[[REF:Alpine Analysis:"policies meet ERA minimums but below institutional standards"]]`,
     docCategories: ["Regulatory", "Compliance"], riskObsIds: ["TO-004", "TO-006", "TO-007", "TO-008", "TO-008b"],
     verificationCategory: "regulatory",
     dataPoints: [
@@ -185,21 +185,21 @@ Red rating based on the cumulative weight of compliance deficiencies: (1) invest
     summary: "RED: Substantially underdeveloped cybersecurity environment. No formal cybersecurity policy, incident response plan, or third-party framework (NIST/ISO). No penetration testing. No DLP on endpoints. No written BCP. Cybersecurity vendor search underway — targeted by end of 2026.",
     findings: `### IT Overview
 
-There is no single individual in charge of IT and the firm has not appointed a technology or cybersecurity consultant. Sarah Collins (Head of Operations) is leading a search for a third-party cybersecurity vendor to conduct a formal audit, vulnerability test, and implement a training program by end of 2026. The firm relies on cloud-based applications with no onsite infrastructure beyond internet connection.
+There is no single individual in charge of IT and the firm has not appointed a technology or cybersecurity consultant.[[REF:DDQ:"no IT lead and no cybersecurity consultant appointed"]] Sarah Collins (Head of Operations) is leading a search for a third-party cybersecurity vendor to conduct a formal audit, vulnerability test, and implement a training program by end of 2026.[[REF:DDQ:"Head of Operations leading cybersecurity vendor search by end of 2026"]] The firm relies on cloud-based applications with no onsite infrastructure beyond internet connection.[[REF:DDQ:"cloud-based applications, no onsite infrastructure"]]
 
 ### Cybersecurity Controls
 
-The firm has not created a formal cybersecurity policy or incident response plan. No third-party cybersecurity framework (e.g. NIST, ISO/IEC 27000) has been adopted. No employee cybersecurity awareness training or phishing campaign has been implemented. The firm has not implemented endpoint data loss prevention, and staff maintain access to removable media (USB), personal email, and personal cloud storage on company-issued endpoints. Penetration testing has not been completed.
+The firm has not created a formal cybersecurity policy or incident response plan.[[REF:DDQ:"no formal cybersecurity policy or incident response plan"]] No third-party cybersecurity framework (e.g. NIST, ISO/IEC 27000) has been adopted.[[REF:DDQ:"no NIST or ISO/IEC 27000 framework adopted"]] No employee cybersecurity awareness training or phishing campaign has been implemented.[[REF:DDQ:"no awareness training or phishing campaign"]] The firm has not implemented endpoint data loss prevention, and staff maintain access to removable media (USB), personal email, and personal cloud storage on company-issued endpoints.[[REF:DDQ:"no endpoint DLP, USB and personal cloud accessible"]] Penetration testing has not been completed.[[REF:DDQ:"penetration testing not completed"]]
 
-Controls in place: baseline network security (firewall, anti-virus), user access controls on a need-to-know and least-privilege basis, password-protected accounts (though periodic password changes are not enforced), and MFA on key business applications.
+Controls in place:[[REF:DDQ:"controls in place listed in questionnaire"]] baseline network security (firewall, anti-virus), user access controls on a need-to-know and least-privilege basis, password-protected accounts (though periodic password changes are not enforced), and MFA on key business applications.[[REF:DDQ:"firewall, access controls, passwords, MFA on key apps"]]
 
 ### Business Continuity
 
-The firm does not have a written business continuity plan. Staff maintain the ability to work remotely. The firm should prepare a BCP covering service provider contingency, staff protection during a crisis, and stakeholder communications.
+The firm does not have a written business continuity plan.[[REF:DDQ:"no written business continuity plan"]] Staff maintain the ability to work remotely.[[REF:DDQ:"staff can work remotely"]] The firm should prepare a BCP covering service provider contingency, staff protection during a crisis, and stakeholder communications.[[REF:Alpine Analysis:"firm should prepare BCP covering contingency and communications"]]
 
 ### RED Rating Rationale
 
-Red rating. The cybersecurity environment is underdeveloped across multiple dimensions: no formal cybersecurity policy, no employee awareness training, no incident response plan, no endpoint DLP, no penetration testing, and no written BCP. The planned cybersecurity vendor engagement is a positive step, but the Red rating stands until formal policies and testing are implemented.`,
+Red rating.[[REF:Alpine Analysis:"Red rating assigned"]] The cybersecurity environment is underdeveloped across multiple dimensions: no formal cybersecurity policy, no employee awareness training, no incident response plan, no endpoint DLP, no penetration testing, and no written BCP.[[REF:Alpine Analysis:"underdeveloped across multiple cybersecurity dimensions"]] The planned cybersecurity vendor engagement is a positive step, but the Red rating stands until formal policies and testing are implemented.[[REF:Alpine Analysis:"Red stands until policies and testing implemented"]]`,
     docCategories: ["Technology"], riskObsIds: ["TO-005", "TO-009", "TO-010", "TO-011", "TO-011b", "TO-011c"],
     verificationCategory: "technology",
     dataPoints: [
@@ -235,33 +235,33 @@ Red rating. The cybersecurity environment is underdeveloped across multiple dime
     summary: "GREEN: Delaware LP structure confirmed. Standard VC terms — 2.5%/1.5% management fee, 20% carry, American waterfall. No preferred return (market norm for VC). GP commits 1% pari passu. Key person provision, clawback, and recycling up to 120%. LPAC formation at GP discretion.",
     findings: `### Legal Structure
 
-Trellis Capital IV, L.P. is a Delaware limited partnership formed March 28, 2026, confirmed against the Delaware Division of Corporations register. Trellis Capital GP IV, LLC (Delaware LLC) serves as the Fund's general partner. Both entities confirmed.
+Trellis Capital IV, L.P. is a Delaware limited partnership formed March 28, 2026, confirmed against the Delaware Division of Corporations register.[[REF:Delaware Register:"Delaware LP formed March 28, 2026 confirmed"]] Trellis Capital GP IV, LLC (Delaware LLC) serves as the Fund's general partner.[[REF:LPA:"Trellis Capital GP IV, LLC is the general partner"]] Both entities confirmed.[[REF:Delaware Register:"both LP and GP entities confirmed on register"]]
 
 ### Key Terms
 
-Interests are offered in US Dollars with a minimum commitment of $1 million. The GP commitment is 1.01% of aggregate commitments, contributed in cash and invested pari passu with LPs. The Fund held its first closing on April 1, 2026 with approximately $125 million in commitments against a hard cap of $200 million; final closing is expected within the next 1–2 months.
+Interests are offered in US Dollars with a minimum commitment of $1 million.[[REF:LPA:"interests offered in USD, minimum commitment $1 million"]] The GP commitment is 1.01% of aggregate commitments, contributed in cash and invested pari passu with LPs.[[REF:LPA:"GP commits 1.01% in cash pari passu with LPs"]] The Fund held its first closing on April 1, 2026 with approximately $125 million in commitments against a hard cap of $200 million; final closing is expected within the next 1–2 months.[[REF:DDQ:"first close April 1, 2026 at ~$125M, hard cap $200M"]]
 
-The Fund's term is 10 years from initial closing, subject to two one-year extensions at the GP's sole discretion, with any further extensions requiring LPAC consent (if formed) or a majority-in-interest of LPs. The commitment period is 5 years. Recycling of distributions is permitted up to 120% of aggregate commitments. The key person provision triggers if both Managing Partners fail to devote sufficient business time and attention to the Fund simultaneously. The Fund does not contain a no-fault divorce provision permitting LP removal of the GP absent a "cause" event, though a no-fault dissolution provision exists. Standard clawback mechanics protect LPs against excess carried interest distributions.
+The Fund's term is 10 years from initial closing, subject to two one-year extensions at the GP's sole discretion, with any further extensions requiring LPAC consent (if formed) or a majority-in-interest of LPs.[[REF:LPA:"10-year term plus two one-year extensions at GP discretion"]] The commitment period is 5 years.[[REF:LPA:"commitment period is 5 years"]] Recycling of distributions is permitted up to 120% of aggregate commitments.[[REF:LPA:"recycling permitted up to 120% of commitments"]] The key person provision triggers if both Managing Partners fail to devote sufficient business time and attention to the Fund simultaneously.[[REF:LPA:"key person triggers if both Managing Partners fail simultaneously"]] The Fund does not contain a no-fault divorce provision permitting LP removal of the GP absent a "cause" event, though a no-fault dissolution provision exists.[[REF:LPA:"no no-fault divorce, no-fault dissolution provision exists"]] Standard clawback mechanics protect LPs against excess carried interest distributions.[[REF:LPA:"clawback protects LPs against excess carry distributions"]]
 
 ### Fee Structure
 
-The management fee is 2.5% per annum on aggregate commitments through the fifth anniversary of commencement, stepping down to 1.5% per annum thereafter. The 2.5% rate is above the 2% standard observed in broader private markets, but is typical of pre-seed venture where smaller fund sizes require a higher fee load to sustain the investment team and infrastructure. A 100% management fee offset applies to any directors', consulting, monitoring, transaction, or break-up fees received from portfolio companies — the Manager represented that such fees are not received in practice.
+The management fee is 2.5% per annum on aggregate commitments through the fifth anniversary of commencement, stepping down to 1.5% per annum thereafter.[[REF:LPA:"management fee 2.5% stepping down to 1.5% after fifth anniversary"]] The 2.5% rate is above the 2% standard observed in broader private markets, but is typical of pre-seed venture where smaller fund sizes require a higher fee load to sustain the investment team and infrastructure.[[REF:Alpine Analysis:"2.5% above 2% standard but typical for pre-seed VC"]] A 100% management fee offset applies to any directors', consulting, monitoring, transaction, or break-up fees received from portfolio companies — the Manager represented that such fees are not received in practice.[[REF:LPA:"100% offset on directors and transaction fees"]][[REF:Manager Response:"Manager represented such fees not received in practice"]]
 
-Distributions follow an American (deal-by-deal) waterfall: return of capital to LPs first, then 20% carried interest to the GP and 80% to LPs. There is no preferred return hurdle, which is uncommon in private equity but typical in pre-seed venture capital where meaningful hurdles would rarely trigger. The clawback provision serves as the principal backstop against over-distribution of carry.
+Distributions follow an American (deal-by-deal) waterfall: return of capital to LPs first, then 20% carried interest to the GP and 80% to LPs.[[REF:LPA:"American waterfall, return of capital then 20% carry"]] There is no preferred return hurdle, which is uncommon in private equity but typical in pre-seed venture capital where meaningful hurdles would rarely trigger.[[REF:LPA:"no preferred return hurdle"]] The clawback provision serves as the principal backstop against over-distribution of carry.[[REF:LPA:"clawback is principal backstop against over-distribution"]]
 
-Organizational expenses are capped at $350,000 — reasonable for a fund of this size. The Fund III expense ratio for FYE December 31, 2025 was 12.23% on audited financial statements; investors should monitor the Fund IV expense ratio once audited accounts become available.
+Organizational expenses are capped at $350,000 — reasonable for a fund of this size.[[REF:LPA:"organizational expenses capped at $350,000"]] The Fund III expense ratio for FYE December 31, 2025 was 12.23% on audited financial statements; investors should monitor the Fund IV expense ratio once audited accounts become available.[[REF:Alpine Analysis:"Fund III expense ratio 12.23%, monitor Fund IV"]]
 
 ### Corporate Governance
 
-The LPA contains an LPAC provision, but the Manager stated an LPAC will only be formed if requested by multiple larger investors. LPACs have not been established for any prior funds. Alpine would welcome the formation of an LPAC.
+The LPA contains an LPAC provision, but the Manager stated an LPAC will only be formed if requested by multiple larger investors.[[REF:LPA:"LPA contains LPAC provision"]][[REF:Manager Response:"LPAC only formed if requested by larger investors"]] LPACs have not been established for any prior funds.[[REF:DDQ:"no LPAC in any prior fund"]] Alpine would welcome the formation of an LPAC.[[REF:Alpine Analysis:"Alpine would welcome formation of an LPAC"]]
 
 ### Investment Strategy
 
-Pre-seed technology at $1–3M per investment, targeting 40–50 companies via equity, SAFEs, KISS, warrants, and convertible equity. Concentration limits: 10% single company, 5% passive, 10% non-U.S./Canada. Up to 10% in digital assets permitted (not utilized to date).
+Pre-seed technology at $1–3M per investment, targeting 40–50 companies via equity, SAFEs, KISS, warrants, and convertible equity.[[REF:PPM:"pre-seed tech, $1-3M, targeting 40-50 companies"]] Concentration limits: 10% single company, 5% passive, 10% non-U.S./Canada.[[REF:LPA:"concentration limits 10% single, 5% passive, 10% non-US"]] Up to 10% in digital assets permitted (not utilized to date).[[REF:LPA:"up to 10% digital assets permitted, not utilized"]]
 
 ### GREEN Rating Rationale
 
-Green rating. Terms are consistent with VC market norms. The 2.5% management fee, American waterfall, and absence of a preferred return are flagged but common in the pre-seed VC space.`,
+Green rating.[[REF:Alpine Analysis:"Green rating assigned"]] Terms are consistent with VC market norms.[[REF:Alpine Analysis:"terms consistent with VC market norms"]] The 2.5% management fee, American waterfall, and absence of a preferred return are flagged but common in the pre-seed VC space.[[REF:Alpine Analysis:"fee, waterfall, no preferred return flagged but common"]]`,
     docCategories: ["Legal"], riskObsIds: ["TO-012"],
     dataPoints: [
       { group: "Fund Details", items: [
@@ -318,23 +318,23 @@ Green rating. Terms are consistent with VC market norms. The 2.5% management fee
 
 ### Administrator — Apex Fund Services
 
-Apex Fund Services, LLC has been engaged since Fund I. Apex uses Xero for accounting and FundPanel for LP management and reporting. Apex is notably more "hands-on" with respect to valuation than typical PE/VC administrators — proactively updating the Schedule of Investments for known events and providing valuation guidance. Engagement letter for Fund IV is expected before the first capital call. Alpine confirmed Apex's expected engagement via conference call on April 3, 2026.
+Apex Fund Services, LLC has been engaged since Fund I.[[REF:DDQ:"Apex Fund Services engaged since Fund I"]] Apex uses Xero for accounting and FundPanel for LP management and reporting.[[REF:DDQ:"Apex uses Xero and FundPanel"]] Apex is notably more "hands-on" with respect to valuation than typical PE/VC administrators — proactively updating the Schedule of Investments for known events and providing valuation guidance.[[REF:Apex Verification Call:"Apex hands-on, updates Schedule of Investments and gives guidance"]] Engagement letter for Fund IV is expected before the first capital call.[[REF:Apex Verification Call:"engagement letter expected before first capital call"]] Alpine confirmed Apex's expected engagement via conference call on April 3, 2026.[[REF:Apex Verification Call:"confirmed via conference call April 3, 2026"]]
 
 ### Auditor — Baker Thompson & Co. LLP
 
-Baker, Thompson & Co. LLP is a well-known and highly-regarded auditor of VC funds in the Bay Area. Not a Big 4 or next-tier firm, but deeply experienced in the VC space. Baker Thompson also audits the prior funds and certain co-invest SPVs. Engagement expected before the first year-end audit.
+Baker, Thompson & Co. LLP is a well-known and highly-regarded auditor of VC funds in the Bay Area.[[REF:DDQ:"Baker Thompson well-regarded auditor of VC funds"]] Not a Big 4 or next-tier firm, but deeply experienced in the VC space.[[REF:Alpine Analysis:"not Big 4 but deeply experienced in VC"]] Baker Thompson also audits the prior funds and certain co-invest SPVs.[[REF:DDQ:"Baker Thompson audits prior funds and SPVs"]] Engagement expected before the first year-end audit.[[REF:DDQ:"engagement expected before first year-end audit"]]
 
 ### Corporate Banker — Pacific Commerce / JP Morgan
 
-Pacific Commerce Bank collapsed in Q2 2025 and was acquired by JP Morgan. A transition plan is underway — the firm will allow its accounts to transfer when JP Morgan implements the migration. No service disruption to date. Note: Fund I utilizes Silicon Valley Bank (First Citizens Bank). Apex confirmed via the April 3, 2026 conference call that Pacific Commerce remains the operative bank account; the Fund IV account should be confirmed as fully operational under JP Morgan before the first capital call.
+Pacific Commerce Bank collapsed in Q2 2025 and was acquired by JP Morgan.[[REF:DDQ:"Pacific Commerce collapsed Q2 2025, acquired by JP Morgan"]] A transition plan is underway — the firm will allow its accounts to transfer when JP Morgan implements the migration.[[REF:DDQ:"transition plan underway for JP Morgan migration"]] No service disruption to date.[[REF:DDQ:"no service disruption to date"]] Note: Fund I utilizes Silicon Valley Bank (First Citizens Bank).[[REF:DDQ:"Fund I utilizes Silicon Valley Bank, First Citizens Bank"]] Apex confirmed via the April 3, 2026 conference call that Pacific Commerce remains the operative bank account; the Fund IV account should be confirmed as fully operational under JP Morgan before the first capital call.[[REF:Apex Verification Call:"Apex confirmed Pacific Commerce remains operative account"]]
 
 ### Legal & Compliance
 
-Morrison Cole Ashworth & Partners serves as fund formation counsel, continuing from prior funds. James Crawford (independent attorney, former partner at Hartwell & Sterling) acts as ad hoc deal counsel on a per-transaction basis. Summit Advisory is engaged for annual Form ADV preparation only — a narrower scope than recommended for a firm of this size.
+Morrison Cole Ashworth & Partners serves as fund formation counsel, continuing from prior funds.[[REF:DDQ:"Morrison Cole Ashworth serves as fund formation counsel"]] James Crawford (independent attorney, former partner at Hartwell & Sterling) acts as ad hoc deal counsel on a per-transaction basis.[[REF:DDQ:"James Crawford acts as ad hoc deal counsel"]] Summit Advisory is engaged for annual Form ADV preparation only — a narrower scope than recommended for a firm of this size.[[REF:DDQ:"Summit Advisory engaged for annual Form ADV only"]]
 
 ### GREEN Rating Rationale
 
-Green rating. The continuation of established provider relationships from prior funds provides comfort. Engagement letters are expected before the first capital call (administrator) and first year-end audit (auditor). The Pacific Commerce to JP Morgan banking transition should be monitored.`,
+Green rating.[[REF:Alpine Analysis:"Green rating assigned"]] The continuation of established provider relationships from prior funds provides comfort.[[REF:Alpine Analysis:"continuation of established relationships provides comfort"]] Engagement letters are expected before the first capital call (administrator) and first year-end audit (auditor).[[REF:DDQ:"engagement letters expected before capital call and audit"]] The Pacific Commerce to JP Morgan banking transition should be monitored.[[REF:Alpine Analysis:"banking transition should be monitored"]]`,
     docCategories: ["Operations"], riskObsIds: [],
     verificationCategory: "administrator",
     dataPoints: [
@@ -367,29 +367,29 @@ Green rating. The continuation of established provider relationships from prior 
     summary: "YELLOW: Manager does not maintain internal accounting records or track cash balances — relies entirely on Apex. No back office oversight of administrator. No formal written investment allocation policy. Cash controls via Bill.com are appropriate — dual authorization required for wires. Custom Retool deal pipeline tracking.",
     findings: `### Portfolio Management Systems
 
-The firm uses a custom-built Retool dashboard ("People Flow") for tracking the deal pipeline and open opportunities, and an Excel dashboard for tracking key financial metrics across certain portfolio companies. The Manager expects the Fund will invest in roughly 40–50 companies.
+The firm uses a custom-built Retool dashboard ("People Flow") for tracking the deal pipeline and open opportunities, and an Excel dashboard for tracking key financial metrics across certain portfolio companies.[[REF:DDQ:"custom Retool dashboard and Excel for metrics"]] The Manager expects the Fund will invest in roughly 40–50 companies.[[REF:DDQ:"Fund expected to invest in 40-50 companies"]]
 
 ### Investment Decision Process
 
-All new investments require approval from both Arjun Mehta and Priya Sharma. Deal sourcing breakdown for Fund III: Founder (32%), Angel/Advisor/Scout (26%), Alpha/Founders in Residence (26%), VC referral (10%), Outbound (6%). "Alpha" refers to the firm's pre-seed program to which founders can apply.
+All new investments require approval from both Arjun Mehta and Priya Sharma.[[REF:DDQ:"both Managing Partners must approve new investments"]] Deal sourcing breakdown for Fund III: Founder (32%), Angel/Advisor/Scout (26%), Alpha/Founders in Residence (26%), VC referral (10%), Outbound (6%).[[REF:DDQ:"Fund III deal sourcing breakdown by channel"]] "Alpha" refers to the firm's pre-seed program to which founders can apply.[[REF:DDQ:"Alpha is the firm's pre-seed program"]]
 
 ### Investment Allocation
 
-The firm does not have a formal written investment allocation policy separate from LPA disclosures. In practice, Fund III will be fully deployed before investing from Fund IV. Co-investments via SPVs are only offered when excess capacity exists. Alpine recommends implementing a formal allocation policy should the firm launch a new strategy or family of funds.
+The firm does not have a formal written investment allocation policy separate from LPA disclosures.[[REF:DDQ:"no formal written allocation policy beyond LPA disclosures"]] In practice, Fund III will be fully deployed before investing from Fund IV.[[REF:DDQ:"Fund III fully deployed before Fund IV"]] Co-investments via SPVs are only offered when excess capacity exists.[[REF:DDQ:"co-investments via SPVs only when excess capacity"]] Alpine recommends implementing a formal allocation policy should the firm launch a new strategy or family of funds.[[REF:Alpine Analysis:"Alpine recommends formal allocation policy for new strategy"]]
 
 ### Cash Tracking & Accounting
 
-The firm does not track individual cash transactions or aggregate cash balances, relying solely on Apex to maintain and reconcile the accounting books and records using Xero. There has been no back office oversight of the Administrator's accounting work to date, though this is expected to improve with the fractional CFO (Summer 2026) and planned Head of Finance (2027).
+The firm does not track individual cash transactions or aggregate cash balances, relying solely on Apex to maintain and reconcile the accounting books and records using Xero.[[REF:DDQ:"firm does not track cash, relies on Apex and Xero"]] There has been no back office oversight of the Administrator's accounting work to date, though this is expected to improve with the fractional CFO (Summer 2026) and planned Head of Finance (2027).[[REF:DDQ:"no back office oversight, improving with CFO and Head of Finance"]]
 
-Apex maintains formal books using Xero: daily cash posting via direct feed from Pacific Commerce, at least weekly reconciliation (more frequent near capital call dates), monthly "soft close," and quarterly "full close" producing balance sheet, schedule of investments, income statement, and statement of changes in partners' capital.
+Apex maintains formal books using Xero: daily cash posting via direct feed from Pacific Commerce, at least weekly reconciliation (more frequent near capital call dates), monthly "soft close," and quarterly "full close" producing balance sheet, schedule of investments, income statement, and statement of changes in partners' capital.[[REF:Apex Verification Call:"Apex daily posting, weekly recon, monthly and quarterly close"]]
 
 ### Cash Controls
 
-All cash movements from Pacific Commerce are effected using the bank's online banking platform, requiring one of two authorized Apex individuals to initiate wires and one Managing Partner to release. Apex completes a verification callback for new payment instructions or changes to existing instructions. Pacific Commerce also occasionally completes callbacks per its own internal policies. Operating expenses are paid via Bill.com, requiring Apex to initiate and a Managing Partner to approve. Both Managing Partners must sign on the opening of new bank accounts.
+All cash movements from Pacific Commerce are effected using the bank's online banking platform, requiring one of two authorized Apex individuals to initiate wires and one Managing Partner to release.[[REF:Apex Verification Call:"Apex initiates wires, Managing Partner releases"]] Apex completes a verification callback for new payment instructions or changes to existing instructions.[[REF:Apex Verification Call:"Apex completes verification callback for new instructions"]] Pacific Commerce also occasionally completes callbacks per its own internal policies.[[REF:Apex Verification Call:"Pacific Commerce occasionally completes its own callbacks"]] Operating expenses are paid via Bill.com, requiring Apex to initiate and a Managing Partner to approve.[[REF:DDQ:"operating expenses via Bill.com, Apex initiates, MP approves"]] Both Managing Partners must sign on the opening of new bank accounts.[[REF:DDQ:"both Managing Partners sign to open new bank accounts"]]
 
 ### YELLOW Rating Rationale
 
-Yellow rating based on: (1) no internal accounting records or cash tracking by the Manager, (2) no back office oversight of the Administrator's accounting work, and (3) Excel-based portfolio management tools. Cash controls are appropriate with dual-authorization and verification callbacks.`,
+Yellow rating based on: (1) no internal accounting records or cash tracking by the Manager, (2) no back office oversight of the Administrator's accounting work, and (3) Excel-based portfolio management tools.[[REF:Alpine Analysis:"YELLOW on no internal accounting and Excel tools"]] Cash controls are appropriate with dual-authorization and verification callbacks.[[REF:Alpine Analysis:"cash controls appropriate with dual authorization"]]`,
     docCategories: ["Operations"], riskObsIds: ["TO-013"],
     dataPoints: [
       { group: "Deal Pipeline & Tracking", items: [
@@ -423,15 +423,15 @@ Yellow rating based on: (1) no internal accounting records or cash tracking by t
     summary: "YELLOW: No formal valuation committee — front office exclusively controls pricing. Distribution waterfalls maintained in Excel. No internal investor-level accounting. Mitigated by low valuation sensitivity (finite-life VC, no NAV-based capital transactions), multi-party asset verification via Apex/Baker Thompson/Carta, and no prior reporting errors.",
     findings: `### Valuation Controls
 
-As with most closed-ended VC structures, (i) the Fund is a finite-life capital commitment vehicle with no capital transactions based on valuations, and (ii) the General Partner receives carried interest only upon a realization event. These characteristics significantly reduce valuation sensitivity and the incentive for intra-period price manipulation.
+As with most closed-ended VC structures, (i) the Fund is a finite-life capital commitment vehicle with no capital transactions based on valuations, and (ii) the General Partner receives carried interest only upon a realization event.[[REF:LPA:"finite-life vehicle, carry only on realization event"]] These characteristics significantly reduce valuation sensitivity and the incentive for intra-period price manipulation.[[REF:Alpine Analysis:"structure reduces valuation sensitivity and manipulation incentive"]]
 
-The firm has an undated valuation policy. The firm values portfolio companies at cost and marks investments up/down based on the price of a subsequent financing round with a significant new investor. If the financing round includes substantially the same investor group, the firm only marks up if fair value can be demonstrated. The Manager stated it has never marked up based on a portfolio company's performance, but does regularly mark down based on performance or macroeconomic factors.
+The firm has an undated valuation policy.[[REF:Valuation Policy:"valuation policy is undated"]] The firm values portfolio companies at cost and marks investments up/down based on the price of a subsequent financing round with a significant new investor.[[REF:Valuation Policy:"valued at cost, marked on subsequent financing round"]] If the financing round includes substantially the same investor group, the firm only marks up if fair value can be demonstrated.[[REF:Valuation Policy:"marks up same-group round only if fair value shown"]] The Manager stated it has never marked up based on a portfolio company's performance, but does regularly mark down based on performance or macroeconomic factors.[[REF:Manager Response:"never marks up on performance, marks down regularly"]]
 
-The firm does not have a formal valuation committee. In practice, valuations are approved by the Managing Partners. On a quarterly basis, Apex prepares the Schedule of Investments, updating for known events, and provides it to the Managing Partners for adjustments and final approval. Apex noted it provides guidance on industry best practices but that valuations are ultimately the Manager's responsibility. Valuations are subject to external oversight only through the annual audit by Baker Thompson.
+The firm does not have a formal valuation committee.[[REF:DDQ:"no formal valuation committee"]] In practice, valuations are approved by the Managing Partners.[[REF:DDQ:"valuations approved by Managing Partners"]] On a quarterly basis, Apex prepares the Schedule of Investments, updating for known events, and provides it to the Managing Partners for adjustments and final approval.[[REF:Apex Verification Call:"Apex prepares Schedule of Investments quarterly for MP approval"]] Apex noted it provides guidance on industry best practices but that valuations are ultimately the Manager's responsibility.[[REF:Apex Verification Call:"Apex gives guidance but valuations are Manager's responsibility"]] Valuations are subject to external oversight only through the annual audit by Baker Thompson.[[REF:DDQ:"external oversight only via annual Baker Thompson audit"]]
 
 ### Asset Existence & Verification
 
-The Fund's investments are evidenced by private agreements maintained electronically. Share certificates for certain portfolio companies are issued via Carta. Multiple parties are involved in each transaction:
+The Fund's investments are evidenced by private agreements maintained electronically.[[REF:DDQ:"investments evidenced by private agreements held electronically"]] Share certificates for certain portfolio companies are issued via Carta.[[REF:DDQ:"share certificates issued via Carta"]] Multiple parties are involved in each transaction:[[REF:Apex Verification Call:"multiple parties involved in each transaction"]]
 
 | Verification Layer | Description |
 |---|---|
@@ -442,15 +442,15 @@ The Fund's investments are evidenced by private agreements maintained electronic
 
 ### Investor Reporting
 
-Apex will prepare and issue quarterly investor reporting within 45 business days of quarter-end via FundPanel LP Portal. Audited financial statements will be issued annually within 120 days of year-end under U.S. GAAP. The Manager approves all reporting before issuance.
+Apex will prepare and issue quarterly investor reporting within 45 business days of quarter-end via FundPanel LP Portal.[[REF:DDQ:"quarterly reporting within 45 business days via FundPanel"]] Audited financial statements will be issued annually within 120 days of year-end under U.S. GAAP.[[REF:DDQ:"audited financials within 120 days under US GAAP"]] The Manager approves all reporting before issuance.[[REF:DDQ:"Manager approves all reporting before issuance"]]
 
-Investor capital account balances are maintained by Apex using FundPanel. Distribution waterfalls are calculated using Excel, then input into FundPanel which generates per-LP distribution amounts. The Manager does not maintain internal records of investor capital account balances or waterfall calculations.
+Investor capital account balances are maintained by Apex using FundPanel.[[REF:Apex Verification Call:"Apex maintains capital account balances in FundPanel"]] Distribution waterfalls are calculated using Excel, then input into FundPanel which generates per-LP distribution amounts.[[REF:DDQ:"waterfalls calculated in Excel, input into FundPanel"]] The Manager does not maintain internal records of investor capital account balances or waterfall calculations.[[REF:DDQ:"Manager keeps no internal capital account or waterfall records"]]
 
-The Manager and Administrator represented that prior funds have never had an investor reporting error. The Fund's first financial reporting period is expected to end on December 31, 2026; Alpine recommends investors review the audited accounts when available.
+The Manager and Administrator represented that prior funds have never had an investor reporting error.[[REF:Apex Verification Call:"prior funds never had a reporting error"]] The Fund's first financial reporting period is expected to end on December 31, 2026; Alpine recommends investors review the audited accounts when available.[[REF:Alpine Analysis:"first reporting period ends Dec 31 2026, review audited accounts"]]
 
 ### YELLOW Rating Rationale
 
-Yellow rating based on: (1) no formal valuation committee, (2) front office exclusively controls pricing, (3) distribution waterfalls maintained in Excel, and (4) no internal investor-level accounting records. These concerns are partially mitigated by the closed-ended structure, carry-on-realization model, and Apex's proactive involvement in the valuation process. Alpine recommends formation of a valuation committee and incorporation of the CFO/Head of Finance into the valuation process.`,
+Yellow rating based on: (1) no formal valuation committee, (2) front office exclusively controls pricing, (3) distribution waterfalls maintained in Excel, and (4) no internal investor-level accounting records.[[REF:Alpine Analysis:"YELLOW on no valuation committee and Excel waterfalls"]] These concerns are partially mitigated by the closed-ended structure, carry-on-realization model, and Apex's proactive involvement in the valuation process.[[REF:Alpine Analysis:"mitigated by closed-ended structure and Apex involvement"]] Alpine recommends formation of a valuation committee and incorporation of the CFO/Head of Finance into the valuation process.[[REF:Alpine Analysis:"recommends valuation committee and CFO involvement"]]`,
     docCategories: ["Compliance", "Financial"], riskObsIds: ["TO-014", "TO-015"],
     dataPoints: [
       { group: "Valuation Process", items: [
@@ -484,19 +484,19 @@ Yellow rating based on: (1) no formal valuation committee, (2) front office excl
     summary: "GREEN: Manager and administrator were fully cooperative throughout due diligence. Proactive disclosure of operational weaknesses. No instances of evasion or restricted scope. Apex independently confirmed all key operational arrangements. Prior funds have no reporting errors.",
     findings: `### Diligence Process Cooperation
 
-The Manager was responsive and forthcoming throughout the due diligence process, providing requested documents promptly and making staff available for follow-up questions. There were no instances of evasion, delayed responses, or attempts to restrict the scope of Alpine's review.
+The Manager was responsive and forthcoming throughout the due diligence process, providing requested documents promptly and making staff available for follow-up questions.[[REF:Alpine Analysis:"Manager responsive, documents prompt, staff available"]] There were no instances of evasion, delayed responses, or attempts to restrict the scope of Alpine's review.[[REF:Alpine Analysis:"no evasion, delays, or scope restrictions"]]
 
 ### Administrator Cooperation
 
-Apex was cooperative and provided independent confirmation of key operational arrangements via conference call on April 3, 2026. Apex independently verified service provider engagements, described its operational procedures in detail, and confirmed cash control and wire authorization processes without prompting from the Manager.
+Apex was cooperative and provided independent confirmation of key operational arrangements via conference call on April 3, 2026.[[REF:Apex Verification Call:"Apex cooperative, confirmed arrangements April 3, 2026"]] Apex independently verified service provider engagements, described its operational procedures in detail, and confirmed cash control and wire authorization processes without prompting from the Manager.[[REF:Apex Verification Call:"Apex verified engagements and controls without prompting"]]
 
 ### Disclosure Quality
 
-The Manager proactively disclosed areas of operational weakness, including the current lack of back office resources, the underdeveloped cybersecurity environment, and the timeline for planned improvements. This level of candor is constructive and indicates a willingness to address operational gaps.
+The Manager proactively disclosed areas of operational weakness, including the current lack of back office resources, the underdeveloped cybersecurity environment, and the timeline for planned improvements.[[REF:Alpine Analysis:"Manager proactively disclosed back office and cyber weaknesses"]] This level of candor is constructive and indicates a willingness to address operational gaps.[[REF:Alpine Analysis:"candor constructive, willing to address gaps"]]
 
 ### GREEN Rating Rationale
 
-Green rating. No issues were noted concerning transparency. The Manager and Administrator were cooperative, responsive, and forthcoming. The Manager's proactive disclosure of operational weaknesses supports a constructive approach to remediation.`,
+Green rating.[[REF:Alpine Analysis:"Green rating assigned"]] No issues were noted concerning transparency.[[REF:Alpine Analysis:"no transparency issues noted"]] The Manager and Administrator were cooperative, responsive, and forthcoming.[[REF:Alpine Analysis:"Manager and Administrator cooperative and forthcoming"]] The Manager's proactive disclosure of operational weaknesses supports a constructive approach to remediation.[[REF:Alpine Analysis:"proactive disclosure supports constructive remediation"]]`,
     docCategories: [], riskObsIds: [],
     dataPoints: [
       { group: "Diligence Process", items: [
@@ -539,6 +539,7 @@ export const TRELLIS_SOURCE_META: Record<string, { label: string; type: string; 
   "Alpine Analysis": { label: "Alpine Cross-Reference Analysis", type: "Alpine Analysis", size: undefined },
   "Apex Verification Call": { label: "Apex Fund Services — Verification Call, April 3, 2026", type: "Third-Party Confirmation", size: undefined },
   "Manager Response": { label: "Manager Direct Response", type: "Follow-Up Response", size: undefined },
+  "Fund III Financials": { label: "Trellis Capital Fund III — Audited Financial Statements", type: "Financial", size: undefined },
 };
 
 // ── Risk observations & strengths ────────────────────────────────────────────

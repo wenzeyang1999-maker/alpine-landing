@@ -608,6 +608,7 @@ export function TopicPage({ topicNumber, onNavigate, alpineReviewId, topicDataOv
               <ReportViewer
                 content={effectiveReportContent}
                 reviewId={alpineReviewId || ""}
+                slug={slug}
                 demoMode
               />
             ) : (

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { RefDot } from "@/components/app-portal/review/RefDot";
+import { renderCitations, stripRefs } from "@/lib/app-portal/cited-text";
 
 export interface ExecutiveBriefData {
   overall_rating: "ACCEPT" | "WATCHLIST" | "FLAG";
@@ -43,25 +43,13 @@ function sourceColor(source: string): "blue" | "emerald" | "amber" | "purple" {
   return "blue";
 }
 
+// Delegates to the shared citation renderer (single source of truth for the
+// [[REF]] token format). This brief is Ridgeline-only and hard-coded, so no slug
+// is passed — RefDot falls back to the Ridgeline preview, which is correct here.
 function renderWithRefs(text: string): React.ReactNode {
-  const parts: React.ReactNode[] = [];
-  let lastIndex = 0;
-  const regex = /\[\[REF:([^\]:"]+):"([^"]+)"\]\]/g;
-  let match;
-  let key = 0;
-  while ((match = regex.exec(text)) !== null) {
-    if (match.index > lastIndex) parts.push(text.slice(lastIndex, match.index));
-    const [, source, quote] = match;
-    parts.push(<RefDot key={key++} source={source} quote={quote} color={sourceColor(source)} />);
-    lastIndex = match.index + match[0].length;
-  }
-  if (lastIndex < text.length) parts.push(text.slice(lastIndex));
-  return parts.length === 0 ? text : <>{parts}</>;
+  return renderCitations(text, { color: sourceColor });
 }
-
-function stripRefs(text: string): string {
-  return text.replace(/\[\[REF:[^\]]*\]\]/g, "").replace(/\s{2,}/g, " ").trim();
-}
+// stripRefs is imported from the shared helper.
 
 function CheckCircle({ className = "" }: { className?: string }) {
   return (

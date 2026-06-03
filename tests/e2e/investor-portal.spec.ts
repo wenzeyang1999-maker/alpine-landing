@@ -57,4 +57,32 @@ test.describe("Investor portal — authenticated flow (requires seeded DB)", () 
     await page.goto("/reports/ridgeline-capital-partners");
     await expect(page.getByText(/report not available/i)).toBeVisible();
   });
+
+  test("Trellis narrative sentences carry citation dots that open the right fund's source", async ({ page }) => {
+    await login(page);
+    await page.getByText(/Trellis Capital IV/i).first().click();
+    await expect(page).toHaveURL(/\/reports\/trellis-capital-iv/);
+
+    // Every narrative sentence renders an inline (muted "prose") citation dot.
+    const proseDots = page.locator(".citation-dot--prose");
+    await expect(proseDots.first()).toBeVisible();
+    expect(await proseDots.count()).toBeGreaterThan(20);
+
+    // Clicking a narrative dot opens the source preview for THIS fund — the
+    // RefDot dispatch must resolve Trellis, never the Ridgeline default.
+    await proseDots.first().click();
+    await expect(page.getByText(/Trellis Capital Management/i).first()).toBeVisible();
+    await expect(page.getByText(/Ridgeline Capital Partners/i)).toHaveCount(0);
+  });
+
+  test("a narrative citation dot is keyboard-operable", async ({ page }) => {
+    await login(page);
+    await page.getByText(/Trellis Capital IV/i).first().click();
+    await expect(page).toHaveURL(/\/reports\/trellis-capital-iv/);
+    const dot = page.locator(".citation-dot--prose").first();
+    await dot.focus();
+    await page.keyboard.press("Enter");
+    // The source panel opens on Enter (not just mouse click).
+    await expect(page.getByText(/Trellis Capital Management/i).first()).toBeVisible();
+  });
 });

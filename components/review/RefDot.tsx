@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { SOURCE_META } from "@/lib/ridgeline-data";
 import { AURORA_SOURCE_META } from "@/lib/aurora-data";
+import { TRELLIS_SOURCE_META } from "@/lib/trellis-data";
 import { downloadDemoFile, getDemoFileUrl } from "@/lib/demo-downloads";
 
 export interface RefDotProps {
@@ -544,6 +545,193 @@ function buildAuroraPassage(quote: string, filename: string, sourceLabel: string
   };
 }
 
+// ── Trellis doc metadata ──────────────────────────────────────────────────────
+function buildTrellisDocMeta(filename: string, label: string) {
+  const f = filename.toLowerCase();
+  const l = label.toLowerCase();
+  if (l.includes("form adv") || f.includes("form-adv") || f.includes("form_adv")) return { title: "Form ADV (ERA) — Part 2A", subtitle: "Trellis Capital Management, LLC", date: "Filed March 22, 2026", badge: "Regulatory Filing" };
+  if (l.includes("due diligence") || l.includes("ddq"))                          return { title: "Due Diligence Questionnaire (2026)", subtitle: "Trellis Capital Management, LLC", date: "March 2026", badge: "Fund Document" };
+  if (l.includes("limited partnership") || f.includes("lpa"))                     return { title: "Limited Partnership Agreement — Fund IV", subtitle: "Trellis Capital IV, L.P.", date: "Effective March 28, 2026", badge: "Legal" };
+  if (l.includes("private placement") || f.includes("ppm"))                       return { title: "Private Placement Memorandum — Fund IV", subtitle: "Trellis Capital IV, L.P.", date: "February 2026", badge: "Legal" };
+  if (l.includes("valuation") || f.includes("valuation"))                         return { title: "Valuation Policy", subtitle: "Trellis Capital Management, LLC", date: "Effective 2026", badge: "Operations" };
+  if (l.includes("subscription") || f.includes("subscription"))                   return { title: "Subscription Agreement Template — Fund IV", subtitle: "Trellis Capital IV, L.P.", date: "February 2026", badge: "Legal" };
+  if (l.includes("delaware"))                                                     return { title: "Delaware Division of Corporations — Entity Verification", subtitle: "Trellis Capital IV, L.P. · Trellis Capital GP IV, LLC", date: "Verified April 2026", badge: "Public Record" };
+  if (l.includes("iard") || l.includes("iapd") || l.includes("edgar") || l.includes("sec verification")) return { title: "SEC IAPD / IARD — Exempt Reporting Adviser", subtitle: "Trellis Capital Management, LLC", date: "ERA since March 9, 2019", badge: "SEC Verification" };
+  if (l.includes("alpine"))                                                       return { title: "Alpine ODD — Internal Cross-Reference Analysis", subtitle: "Trellis Capital Management, LLC · ODD Review 2026", date: "Prepared April 2026", badge: "Alpine Analysis" };
+  if (l.includes("apex"))                                                         return { title: "Apex Fund Services — Administrator Verification Call", subtitle: "Trellis Capital IV, L.P.", date: "Call Date: April 3, 2026", badge: "Third-Party Confirmation" };
+  if (l.includes("manager"))                                                      return { title: "Manager Due Diligence — Response", subtitle: "Trellis Capital Management, LLC", date: "2026", badge: "Manager Interview" };
+  return { title: label, subtitle: "Trellis Capital Management, LLC", date: "2026", badge: "Document" };
+}
+
+// ── Trellis passage builder ───────────────────────────────────────────────────
+function buildTrellisPassage(quote: string, filename: string, sourceLabel: string): { before: string; after: string; section: string; pageLabel: string } {
+  const f = filename.toLowerCase();
+  const q = quote.toLowerCase();
+  const l = sourceLabel.toLowerCase();
+
+  // Form ADV (ERA)
+  if (l.includes("form adv") || f.includes("form-adv") || f.includes("form_adv")) {
+    if (q.includes("san francisco") || q.includes("primary location")) return {
+      section: "Item 1 — Identifying Information",
+      before: "Trellis Capital Management, LLC is a Delaware limited liability company with its principal place of business located in ",
+      after: ". The firm is a pre-seed stage venture capital adviser founded in 2018 by Arjun Mehta and Priya Sharma, who each own 50% of the management company. The firm files as an Exempt Reporting Adviser in reliance on the venture capital adviser exemption under Section 203(l) of the Investment Advisers Act of 1940 and has filed in that capacity since March 9, 2019. The firm does not solicit retail investors; all investors are accredited investors and qualified purchasers investing through the firm's private fund vehicles.",
+      pageLabel: "Page 1 of 14",
+    };
+    if (q.includes("trellis capital management")) return {
+      section: "Item 1 — Identifying Information",
+      before: "This Form ADV is filed by ",
+      after: ", a Delaware limited liability company with its principal place of business in San Francisco, California. The firm is a pre-seed stage venture capital adviser founded in 2018 by Arjun Mehta and Priya Sharma, who each own 50% of the management company and file as an Exempt Reporting Adviser under the venture capital adviser exemption (Section 203(l) of the Investment Advisers Act of 1940) since March 9, 2019.",
+      pageLabel: "Page 1 of 14",
+    };
+    if (q.includes("280") || q.includes("aum") || q.includes("net assets") || q.includes("113.7") || q.includes("24.7")) return {
+      section: "Item 5 — Information About Your Advisory Business",
+      before: "As of December 31, 2025, the Adviser reports net assets of ",
+      after: " under management across its advised private fund vehicles, together with $113.7 million of uncalled capital commitments and co-investment special purpose vehicles holding an aggregate $24.7 million. All advisory activity is conducted on a discretionary basis. The Adviser does not manage separately managed accounts or wrap-fee programs.",
+      pageLabel: "Page 4 of 14",
+    };
+    if (q.includes("priya") || q.includes("mehta") || q.includes("50%") || q.includes("ownership") || q.includes("compliance")) return {
+      section: "Schedules A & B — Direct and Indirect Owners",
+      before: "The Adviser is owned in equal parts by its two founding Managing Partners: ",
+      after: ". Arjun Mehta (Co-Founder, Managing Partner) previously served as a principal at Founder Collective and was earlier associated with Foundation Capital. Priya Sharma (Co-Founder, Managing Partner) holds responsibility for the firm's compliance oversight in addition to her investment responsibilities. There are no outside institutional owners or third-party controlling interests in the management company.",
+      pageLabel: "Page 7 of 14",
+    };
+    return {
+      section: "Item 6 — Performance-Based Fees and Side-by-Side Management",
+      before: "The Adviser receives a management fee and a performance-based carried interest allocation from the funds it advises. The management fee is 2.0% per annum and carried interest is 20% of net profits, distributed under an American-style (deal-by-deal) waterfall without a preferred return. With respect to the matters described in this Item: ",
+      after: ". A management fee offset applies to any directors', monitoring, transaction, or break-up fees received from portfolio companies; the Adviser represents that such fees are not received in practice. The absence of a preferred return is uncommon in private equity but typical in pre-seed venture capital.",
+      pageLabel: "Page 5 of 14",
+    };
+  }
+
+  // DDQ
+  if (l.includes("due diligence") || l.includes("ddq")) {
+    if (q.includes("apex") || q.includes("administrator")) return {
+      section: "Section 5 — Service Providers",
+      before: "Fund Administrator: ",
+      after: ". Apex Fund Services, LLC has been engaged since Fund I and uses Xero for fund accounting and FundPanel for LP management and reporting. Apex performs capital account recordkeeping, capital call and distribution processing, and periodic NAV statements. Independent auditor: Baker Thompson & Co, a recognized auditor of venture capital funds in the Bay Area, audits the prior funds and certain co-investment SPVs. Banking is transitioning from Pacific Commerce to JP Morgan for Fund IV. Legal counsel: Morrison Cole Ashworth.",
+      pageLabel: "Page 18 of 44",
+    };
+    if (q.includes("sarah collins") || q.includes("operations") || q.includes("back office") || q.includes("headcount") || q.includes("fte") || q.includes("seven")) return {
+      section: "Section 2 — Firm Background and Team",
+      before: "The firm has a total headcount of seven full-time employees — six investment professionals and one operations professional. ",
+      after: ". Sarah Collins (Head of Operations, joined July 2025) focuses on running business operations and supporting the Managing Partners as an executive assistant, rather than serving as a dedicated back office resource for the funds. The investment team consists of Arjun Mehta and Priya Sharma (Co-Founders, Managing Partners), Kevin Chen (Principal), Rachel Winters (Associate), Ryan Mitchell (Analyst), and Vikram Nair (Chief Portfolio Officer, departure planned Summer 2026). Raj Patel has been retained as fractional CFO and is expected to focus on Apex oversight beginning Summer 2026.",
+      pageLabel: "Page 5 of 44",
+    };
+    if (q.includes("priya") || q.includes("compliance") || q.includes("summit") || q.includes("personal trading")) return {
+      section: "Section 4 — Compliance and Regulatory",
+      before: "The firm files as an Exempt Reporting Adviser and maintains a compliance binder containing the required ERA policies, including pay-to-play, insider trading, and anti-money laundering policies. With respect to compliance oversight and program administration: ",
+      after: ". Priya Sharma (Co-Founder, Managing Partner) is responsible for compliance oversight in addition to her investment responsibilities. Compliance consultant usage has been limited to engaging Summit Advisory for annual Form ADV preparation. There is no initial attestation or annual recertification of compliance policies required from staff, no annual compliance training program, and no written personal trading policy.",
+      pageLabel: "Page 12 of 44",
+    };
+    return {
+      section: "Section 3 — Fund Terms and Structure",
+      before: "Fund IV is being raised with an approximately $125 million initial close, a $175 million target, and a $200 million hard cap. The management fee is 2.0% and carried interest is 20% under an American-style waterfall with no preferred return. With respect to the specific terms applicable to this Fund: ",
+      after: ". The General Partner commits approximately 1% of total commitments (approximately $2.77 million), contributed in cash and invested pari passu with Limited Partners, free of management fees. Carried interest vests over four years for all investment staff.",
+      pageLabel: "Page 9 of 44",
+    };
+  }
+
+  // LPA / PPM
+  if (l.includes("limited partnership") || l.includes("private placement") || f.includes("lpa") || f.includes("ppm")) {
+    if (q.includes("delaware") || q.includes("march 28") || q.includes("gp iv") || q.includes("general partner")) return {
+      section: "Section 1 — Organization and Formation",
+      before: "Trellis Capital IV, L.P. (the \"Fund\") is organized as a ",
+      after: " and was formed on March 28, 2026 pursuant to a Certificate of Limited Partnership filed with the Delaware Secretary of State. Trellis Capital GP IV, LLC, a Delaware limited liability company, serves as the sole General Partner. Trellis Capital Management, LLC serves as the investment manager. Both entities have been confirmed against the Delaware Division of Corporations register.",
+      pageLabel: "Page 4 of 62",
+    };
+    if (q.includes("key person") || q.includes("succession") || q.includes("managing partner")) return {
+      section: "Section 12 — Key Person Provision",
+      before: "The Fund's key person provision is intended to ensure the continued involvement of the firm's Managing Partners in the investment process. ",
+      after: ". The key person event would be triggered only if both Arjun Mehta and Priya Sharma fail to devote sufficient time and attention to the Fund; the Managing Partners could assume each other's responsibilities in a single-principal event. No formal succession plan is documented and key person life insurance is not maintained.",
+      pageLabel: "Page 31 of 62",
+    };
+    return {
+      section: "Section 7 — Management Fee and Carried Interest",
+      before: "The General Partner is entitled to a management fee of 2.0% per annum and a carried interest allocation of 20% of net profits. Distributions follow an American-style (deal-by-deal) waterfall without a preferred return or hurdle. With respect to the Fund's economic terms: ",
+      after: ". A management fee offset applies to any directors', consulting, monitoring, transaction, or break-up fees received from portfolio companies, though the Manager represents that such fees are not received in practice. The American waterfall and absence of a preferred return are uncommon in private equity but typical in pre-seed venture capital, where meaningful hurdles would rarely trigger.",
+      pageLabel: "Page 18 of 62",
+    };
+  }
+
+  // Valuation Policy
+  if (l.includes("valuation") || f.includes("valuation")) {
+    return {
+      section: "Section 2 — Valuation Process and Governance",
+      before: "Trellis Capital Management prepares fair-value estimates for all portfolio investments in accordance with ASC 820 and applicable venture capital valuation guidelines. Early-stage positions are generally held at cost or the most recent priced financing round until a subsequent observable event. With respect to the firm's valuation process: ",
+      after: ". The Manager does not engage a dedicated third-party valuation agent; the Administrator, Apex Fund Services, prepares the books and records, and the annual audit by Baker Thompson & Co provides the primary external pricing check. Alpine has noted the absence of independent valuation verification as an area for enhancement.",
+      pageLabel: "Page 4 of 12",
+    };
+  }
+
+  // Subscription Agreement
+  if (l.includes("subscription") || f.includes("subscription")) {
+    return {
+      section: "Subscription Agreement — Investor Terms",
+      before: "This Subscription Agreement sets forth the terms pursuant to which an investor commits capital to Trellis Capital IV, L.P. The investor represents that it is an accredited investor and qualified purchaser. With respect to the specific terms applicable to this investor: ",
+      after: ". The General Partner may, in its discretion, enter into side letter arrangements with Limited Partners, including with respect to fees, co-investment priority, and reporting. Capital is drawn down over the Fund's investment period pursuant to capital call notices issued by the Administrator on behalf of the Manager.",
+      pageLabel: "Page 2 of 22",
+    };
+  }
+
+  // Delaware register
+  if (l.includes("delaware")) {
+    return {
+      section: "Delaware Division of Corporations — Entity Verification",
+      before: "Alpine performed a direct check against the Delaware Division of Corporations register to confirm the existence and good standing of the Fund and its General Partner entity. The register reflects the following: ",
+      after: ". Trellis Capital IV, L.P. (Delaware limited partnership, formed March 28, 2026) and Trellis Capital GP IV, LLC (Delaware limited liability company) were both confirmed on the register. No discrepancies were identified between the entity names disclosed by the Manager and the registered entities.",
+      pageLabel: "Delaware Register · Page 1",
+    };
+  }
+
+  // IARD / IAPD / SEC
+  if (l.includes("iard") || l.includes("iapd") || l.includes("edgar") || l.includes("sec")) {
+    return {
+      section: "SEC IAPD / IARD — Exempt Reporting Adviser Record",
+      before: "Investment Adviser Public Disclosure record for Trellis Capital Management, LLC. The firm is reported as an Exempt Reporting Adviser relying on the venture capital adviser exemption under Section 203(l) of the Investment Advisers Act of 1940, and has filed in that capacity since March 9, 2019. The record reflects: ",
+      after: ". The firm's record shows no reportable disciplinary events, regulatory actions, or criminal matters for the firm or its principals. Alpine confirmed ERA status via direct IAPD query during the ODD review. As an ERA, the firm is not subject to routine SEC examination but remains subject to the anti-fraud and pay-to-play provisions of the Advisers Act.",
+      pageLabel: "IAPD Record · Page 1",
+    };
+  }
+
+  // Apex verification call
+  if (l.includes("apex")) {
+    return {
+      section: "Apex Fund Services — Administrator Verification Call",
+      before: "Alpine conducted a verification call with Apex Fund Services, LLC on April 3, 2026, independent of the Manager, to corroborate the Fund's operational arrangements. Apex confirmed the following: ",
+      after: ". Apex confirmed its engagement as administrator since Fund I, its use of Xero and FundPanel, and the key service provider relationships including Baker Thompson & Co (auditor) and the banking transition from Pacific Commerce to JP Morgan. Apex reported no investor reporting errors across the prior funds and described wire authorization and cash control procedures without prompting from the Manager.",
+      pageLabel: "Apex Verification · Page 1",
+    };
+  }
+
+  // Alpine internal analysis
+  if (l.includes("alpine")) {
+    return {
+      section: "Alpine ODD — Internal Cross-Reference Analysis",
+      before: "Alpine Due Diligence — Internal Cross-Reference Analysis. ODD Engagement: Trellis Capital Management, LLC. This note summarizes Alpine's analysis of the documents submitted, the management responses, and the third-party verifications obtained during the review. The following finding was identified: ",
+      after: ". Two areas were elevated to higher-severity observations: (1) an investment professional (Priya Sharma, Co-Founder) holding compliance oversight, which Alpine has flagged as a required action before close; and (2) the absence of an internal back office resource, with the sole operations professional functioning as an executive assistant. These are partially mitigated by the planned fractional CFO engagement and Head of Finance hire.",
+      pageLabel: "Alpine Analysis · Page 1",
+    };
+  }
+
+  // Manager response / interview
+  if (l.includes("manager")) {
+    return {
+      section: "Manager Due Diligence — Response",
+      before: "The following response was provided by Trellis Capital Management in connection with Alpine's operational due diligence review: ",
+      after: ". Alpine reviewed the response against the DDQ, Form ADV, and third-party verifications, and incorporated it into the relevant section of the ODD report. The Manager was responsive, granted full access during the review, and voluntarily disclosed back office and cybersecurity limitations.",
+      pageLabel: "Manager Response · Page 1",
+    };
+  }
+
+  // Generic Trellis fallback
+  return {
+    section: "Document Reference — Alpine Due Diligence File",
+    before: `The following passage has been extracted from the referenced source (${sourceLabel}) maintained in Alpine's operational due diligence file for Trellis Capital IV, L.P. This material reflects information provided by Trellis Capital Management, LLC or obtained from independent registries and third-party verifications as of the date stated. Alpine has reviewed this material in connection with its ODD program but has not independently verified all factual representations except as specifically noted in the accompanying ODD report. The specific passage cited in the ODD analysis states: `,
+    after: ". Investors and Alpine personnel are reminded that any manager-provided document is proprietary and confidential and may not be reproduced or disclosed to third parties without the prior written consent of Trellis Capital Management, LLC. Please refer to the complete source document for full context, all defined terms, and applicable disclaimers.",
+    pageLabel: "Page 1",
+  };
+}
+
 // ── RefDot ────────────────────────────────────────────────────────────────────
 
 export function RefDot({ source, quote, context: _context, color, slug }: RefDotProps) {
@@ -551,7 +739,8 @@ export function RefDot({ source, quote, context: _context, color, slug }: RefDot
   const dotRef = useRef<HTMLSpanElement>(null);
 
   const isAurora = slug === "aurora-capital-iv";
-  const meta = (isAurora ? AURORA_SOURCE_META[source] : SOURCE_META[source]) || { label: source, type: "Source" };
+  const isTrellis = slug === "trellis-capital-iv";
+  const meta = (isAurora ? AURORA_SOURCE_META[source] : isTrellis ? TRELLIS_SOURCE_META[source] : SOURCE_META[source]) || { label: source, type: "Source" };
 
   const handleClick = () => {
     if (panel !== null) {
@@ -576,9 +765,15 @@ export function RefDot({ source, quote, context: _context, color, slug }: RefDot
 
   const filename = meta.filename ?? "";
   const label = meta.label ?? source;
-  const docMeta = isAurora ? buildAuroraDocMeta(filename, label) : buildDocMeta(filename, label);
+  const docMeta = isAurora
+    ? buildAuroraDocMeta(filename, label)
+    : isTrellis
+    ? buildTrellisDocMeta(filename, label)
+    : buildDocMeta(filename, label);
   const { before, after, section, pageLabel } = isAurora
     ? buildAuroraPassage(quote, filename, label)
+    : isTrellis
+    ? buildTrellisPassage(quote, filename, label)
     : buildPassage(quote, filename);
 
   const panelWidth = "min(540px, 44vw)";
@@ -679,7 +874,7 @@ export function RefDot({ source, quote, context: _context, color, slug }: RefDot
                   </div>
                 ) : (
                   <div style={{ background: "#1e3a5f", padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <span style={{ fontSize: 9, fontWeight: 700, color: "#93c5fd", letterSpacing: "0.12em" }}>{isAurora ? "ALPINE x AURORA CAPITAL MANAGEMENT" : "ALPINE x RIDGELINE CAPITAL PARTNERS"}</span>
+                    <span style={{ fontSize: 9, fontWeight: 700, color: "#93c5fd", letterSpacing: "0.12em" }}>{isAurora ? "ALPINE x AURORA CAPITAL MANAGEMENT" : isTrellis ? "ALPINE x TRELLIS CAPITAL MANAGEMENT" : "ALPINE x RIDGELINE CAPITAL PARTNERS"}</span>
                     <span style={{ fontSize: 9, color: "#ef4444", fontWeight: 700, letterSpacing: "0.08em", border: "1px solid #ef4444", padding: "1px 6px", borderRadius: 2 }}>CONFIDENTIAL</span>
                   </div>
                 )}
@@ -769,6 +964,13 @@ export function RefDot({ source, quote, context: _context, color, slug }: RefDot
                       <path d="M22 11.08V12a10 10 0 11-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
                     </svg>
                     Kroll Cyber — No Critical Findings · Jan 28, 2026
+                  </div>
+                ) : !filename ? (
+                  <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 16px", fontSize: 11, fontWeight: 500, color: "#9ca3af", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 8, fontFamily: "sans-serif" }}>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" />
+                    </svg>
+                    {docMeta.badge} — verification record (not a downloadable document)
                   </div>
                 ) : (
                   <>

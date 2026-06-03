@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { RefDot } from "@/components/app-portal/review/RefDot";
+import { renderCitations } from "@/lib/app-portal/cited-text";
 import DocumentsPanel from "@/components/investor/DocumentsPanel";
 import ReportTour from "@/components/investor/ReportTour";
 import {
@@ -89,18 +90,22 @@ function flagColor(flag?: string): string | null {
   return null;
 }
 
-/** Render the `###`-delimited findings prose into headings / paragraphs / bullets. */
-function renderFindings(text: string): React.ReactNode[] {
+/** Render the `###`-delimited findings prose into headings / paragraphs / bullets.
+ *  Inline [[REF:KEY:"quote"]] tokens become muted citation dots (slug-aware). */
+function renderFindings(text: string, slug?: string): React.ReactNode[] {
   const out: React.ReactNode[] = [];
   let para: string[] = [];
   let bullets: string[] = [];
   let key = 0;
 
+  const cite = (s: string) =>
+    renderCitations(s, { slug, variant: "prose", color: sourceColor });
+
   const flushPara = () => {
     if (para.length) {
       out.push(
         <p key={`p${key++}`} className="font-body text-sm leading-relaxed" style={{ color: SECONDARY }}>
-          {para.join(" ")}
+          {cite(para.join(" "))}
         </p>,
       );
       para = [];
@@ -115,7 +120,7 @@ function renderFindings(text: string): React.ReactNode[] {
               <span style={{ color: VIOLET }} aria-hidden>
                 •
               </span>
-              <span>{b}</span>
+              <span>{cite(b)}</span>
             </li>
           ))}
         </ul>,
@@ -523,7 +528,7 @@ function Overview({
 
 // ── Report chapter (narrative findings) ──────────────────────────────────────
 
-function ReportChapter({ num, index, topic }: { num: number; index: number; topic: TopicInfo }) {
+function ReportChapter({ num, index, topic, slug }: { num: number; index: number; topic: TopicInfo; slug?: string }) {
   const summary = (topic.summary || "").replace(/^(GREEN|YELLOW|RED):\s*/i, "");
   return (
     <section
@@ -534,7 +539,7 @@ function ReportChapter({ num, index, topic }: { num: number; index: number; topi
       <div className="rounded-panel border overflow-hidden" style={{ background: BG_CARD, borderColor: BORDER }}>
         <ChapterHeader num={num} index={index} topic={topic} kicker={`Chapter ${index}`} summary={summary} />
         {topic.findings && (
-          <div className="px-5 py-4 space-y-2.5">{renderFindings(topic.findings)}</div>
+          <div className="px-5 py-4 space-y-2.5">{renderFindings(topic.findings, slug)}</div>
         )}
       </div>
     </section>
@@ -849,7 +854,7 @@ export default function InvestorReportReader({ slug, email = "" }: { slug: strin
                   />
                 </div>
                 {nums.map((n, i) => (
-                  <ReportChapter key={n} num={n} index={i + 1} topic={topicData[n]} />
+                  <ReportChapter key={n} num={n} index={i + 1} topic={topicData[n]} slug={slug} />
                 ))}
                 <section id="documents" className="scroll-mt-[170px] md:scroll-mt-[116px]">
                   <DocumentsPanel slug={slug} referencedDocs={referencedDocs} />

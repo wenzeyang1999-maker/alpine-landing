@@ -140,3 +140,54 @@
   .border-br-subtle { border-color: var(--br-border-subtle); }
   .hover\:bg-br-card-hover:hover { background-color: var(--br-bg-card-hover); }
 }
+
+/* ── Inline citation dots (RefDot) ──────────────────────────────────────────
+   The visible pip is 7px, but the button itself is a 16px box and expands to a
+   44px hit area on touch devices so it is thumb- and keyboard-reachable. The
+   "prose" variant is muted by default and lights up on hover/focus; the
+   "table" variant keeps its source color. */
+.citation-dot {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-left: 1px;
+  padding: 0;
+  vertical-align: baseline;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.citation-dot__pip {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  transition: box-shadow 0.15s ease, background-color 0.15s ease, opacity 0.15s ease;
+}
+.citation-dot--prose .citation-dot__pip {
+  background-color: rgba(148, 163, 184, 0.55); /* muted slate */
+}
+.citation-dot--prose:hover .citation-dot__pip,
+.citation-dot--prose:focus-visible .citation-dot__pip {
+  background-color: rgba(148, 163, 184, 0.95);
+}
+.citation-dot:hover .citation-dot__pip {
+  box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.25);
+}
+.citation-dot:focus-visible {
+  outline: none;
+}
+.citation-dot:focus-visible .citation-dot__pip {
+  box-shadow: 0 0 0 2px var(--br-bg, #0f1117), 0 0 0 4px rgba(99, 102, 241, 0.9);
+}
+/* Expand the tap target to 44px on coarse pointers without affecting layout. */
+@media (pointer: coarse) {
+  .citation-dot::after {
+    content: "";
+    position: absolute;
+    inset: -14px;
+  }
+}
