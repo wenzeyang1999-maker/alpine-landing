@@ -191,3 +191,51 @@
     inset: -14px;
   }
 }
+
+/* ── Org-chart tree connectors (FundCharts OrgChart) ─────────────────────────
+   A center spine drops from the leadership tier into a horizontal rail that
+   fans out to each functional group, so the chart reads as a reporting
+   hierarchy rather than two stacked lists. Pure CSS, responsive, no JS. */
+.org-branch {
+  position: relative;
+  margin-top: 18px;
+}
+/* spine: leadership → groups */
+.org-branch::before {
+  content: "";
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  width: 1px;
+  height: 18px;
+  background: #cbd5e1;
+}
+/* multi-group: rail + per-group stems */
+.org-branch--tree .org-group {
+  position: relative;
+  padding-top: 18px;
+}
+.org-branch--tree .org-group::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 1px;
+  height: 18px;
+  background: #cbd5e1;
+}
+.org-branch--tree .org-group::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -8px; /* half the inter-column gap, bridges to neighbours */
+  right: -8px;
+  height: 1px;
+  background: #cbd5e1;
+}
+.org-branch--tree .org-group:first-child::after {
+  left: 50%;
+}
+.org-branch--tree .org-group:last-child::after {
+  right: 50%;
+}

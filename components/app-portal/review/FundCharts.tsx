@@ -48,7 +48,7 @@ function FlagPip({ flag }: { flag?: Flag }) {
 }
 
 function Connector({ height = 16 }: { height?: number }) {
-  return <div aria-hidden style={{ width: 1, height, background: BORDER, margin: "0 auto" }} />;
+  return <div aria-hidden style={{ width: 1, height, background: "#cbd5e1", margin: "0 auto" }} />;
 }
 
 function ChartFrame({ title, children }: { title: string; children: React.ReactNode }) {
@@ -241,21 +241,23 @@ export function OrgChart({ data, slug }: { data: OrgChartData; slug?: string }) 
         ))}
       </Row>
 
-      {data.groups.length > 0 && <Connector />}
-
-      {/* Functional groups */}
-      <div style={{ display: "flex", gap: 16, justifyContent: "center", alignItems: "flex-start", flexWrap: "wrap" }}>
-        {data.groups.map((g, gi) => (
-          <div key={gi} style={{ display: "flex", flexDirection: "column", gap: 8, minWidth: 160 }}>
-            <div style={{ fontSize: 9.5, fontWeight: 700, color: MUTED, letterSpacing: "0.06em", textTransform: "uppercase", textAlign: "center" }}>
-              {g.label}
-            </div>
-            {g.people.map((p, pi) => (
-              <PersonBox key={pi} person={p} slug={slug} />
+      {/* Functional groups, joined to leadership by a tree connector (spine + rail) */}
+      {data.groups.length > 0 && (
+        <div className={`org-branch${data.groups.length > 1 ? " org-branch--tree" : ""}`}>
+          <div style={{ display: "flex", gap: 16, justifyContent: "center", alignItems: "flex-start", flexWrap: "wrap" }}>
+            {data.groups.map((g, gi) => (
+              <div key={gi} className="org-group" style={{ display: "flex", flexDirection: "column", gap: 8, minWidth: 160 }}>
+                <div style={{ fontSize: 9.5, fontWeight: 700, color: MUTED, letterSpacing: "0.06em", textTransform: "uppercase", textAlign: "center" }}>
+                  {g.label}
+                </div>
+                {g.people.map((p, pi) => (
+                  <PersonBox key={pi} person={p} slug={slug} />
+                ))}
+              </div>
             ))}
           </div>
-        ))}
-      </div>
+        </div>
+      )}
 
       {data.advisors && data.advisors.length > 0 && (
         <div style={{ marginTop: 16, borderTop: `1px dashed ${BORDER}`, paddingTop: 12 }}>
