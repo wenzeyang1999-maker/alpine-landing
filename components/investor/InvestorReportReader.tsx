@@ -797,9 +797,8 @@ export default function InvestorReportReader({ slug, email = "" }: { slug: strin
           <div className="flex items-center gap-2.5 shrink-0">
             {pdfUrl && (
               <a
-                href={pdfUrl}
+                href={`/api/investor/report-pdf?slug=${encodeURIComponent(slug)}`}
                 download={`${entry.fundName} — Alpine ODD Report.pdf`}
-                target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 font-body text-[13px] font-emphasis px-3 py-1.5 rounded-btn min-h-[36px] transition-opacity hover:opacity-90"
                 style={{ background: INK, color: "#fff" }}

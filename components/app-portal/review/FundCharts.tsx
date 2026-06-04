@@ -1,4 +1,6 @@
-"use client";
+// No "use client": this is a shared component. In the web reader (a client
+// component) it renders client-side with interactive RefDots; in the print
+// route it renders server-side (print mode, which never instantiates RefDot).
 
 /**
  * Source-backed entity + org charts for the ODD report.
@@ -28,8 +30,11 @@ const INK = "#0f172a";
 const MUTED = "#64748b";
 const BORDER = "#e2e8f0";
 
-function NodeDot({ refObj, slug }: { refObj?: ChartRef; slug?: string }) {
-  if (!refObj) return null;
+// Print mode (a threaded prop, not context, so the charts stay server-renderable
+// for the PDF route): when true, nodes drop their interactive RefDot — the PDF
+// carries citations as narrative footnotes + the evidence table instead.
+function NodeDot({ refObj, slug, print }: { refObj?: ChartRef; slug?: string; print?: boolean }) {
+  if (!refObj || print) return null;
   return (
     <span style={{ position: "absolute", top: 4, right: 4 }}>
       <RefDot source={refObj.source} quote={refObj.quote} color="blue" variant="prose" slug={slug} />
@@ -84,7 +89,7 @@ const ENTITY_ACCENT: Record<string, string> = {
   investors: "#94a3b8",
 };
 
-function EntityBox({ node, slug, emphasis }: { node: EntityNode; slug?: string; emphasis?: boolean }) {
+function EntityBox({ node, slug, emphasis, print }: { node: EntityNode; slug?: string; emphasis?: boolean; print?: boolean }) {
   const accent = ENTITY_ACCENT[node.kind] ?? "#94a3b8";
   return (
     <div
@@ -100,7 +105,7 @@ function EntityBox({ node, slug, emphasis }: { node: EntityNode; slug?: string; 
         boxShadow: emphasis ? "0 2px 10px rgba(15,23,42,0.08)" : "0 1px 3px rgba(15,23,42,0.05)",
       }}
     >
-      <NodeDot refObj={node.ref} slug={slug} />
+      <NodeDot refObj={node.ref} slug={slug} print={print} />
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
         <FlagPip flag={node.flag} />
         <span style={{ fontSize: emphasis ? 12.5 : 11.5, fontWeight: 700, color: INK, lineHeight: 1.25, paddingRight: 12 }}>{node.label}</span>
@@ -119,13 +124,13 @@ function Row({ children, gap = 12 }: { children: React.ReactNode; gap?: number }
   return <div style={{ display: "flex", gap, justifyContent: "center", flexWrap: "wrap" }}>{children}</div>;
 }
 
-export function EntityChart({ data, slug }: { data: EntityChartData; slug?: string }) {
+export function EntityChart({ data, slug, print }: { data: EntityChartData; slug?: string; print?: boolean }) {
   return (
     <ChartFrame title={data.caption || "Fund structure"}>
       {data.investors && (
         <>
           <Row>
-            <EntityBox node={data.investors} slug={slug} />
+            <EntityBox node={data.investors} slug={slug} print={print} />
           </Row>
           <Connector />
         </>
@@ -134,13 +139,13 @@ export function EntityChart({ data, slug }: { data: EntityChartData; slug?: stri
       {/* Manager — Fund — GP */}
       <div style={{ display: "flex", gap: 10, justifyContent: "center", alignItems: "stretch", flexWrap: "wrap" }}>
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <EntityBox node={data.manager} slug={slug} />
+          <EntityBox node={data.manager} slug={slug} print={print} />
           <div style={{ fontSize: 9, color: MUTED, textAlign: "center", marginTop: 3 }}>advises ▸</div>
         </div>
-        <EntityBox node={data.fund} slug={slug} emphasis />
+        <EntityBox node={data.fund} slug={slug} emphasis print={print} />
         {data.gp && (
           <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
-            <EntityBox node={data.gp} slug={slug} />
+            <EntityBox node={data.gp} slug={slug} print={print} />
             <div style={{ fontSize: 9, color: MUTED, textAlign: "center", marginTop: 3 }}>◂ general partner</div>
           </div>
         )}
@@ -152,7 +157,7 @@ export function EntityChart({ data, slug }: { data: EntityChartData; slug?: stri
           <div style={{ fontSize: 9.5, color: MUTED, textAlign: "center", marginBottom: 6 }}>Feeder vehicles</div>
           <Row>
             {data.feeders.map((f, i) => (
-              <EntityBox key={i} node={f} slug={slug} />
+              <EntityBox key={i} node={f} slug={slug} print={print} />
             ))}
           </Row>
         </>
@@ -162,7 +167,7 @@ export function EntityChart({ data, slug }: { data: EntityChartData; slug?: stri
         <>
           <Connector />
           <Row>
-            <EntityBox node={data.master} slug={slug} emphasis />
+            <EntityBox node={data.master} slug={slug} emphasis print={print} />
           </Row>
         </>
       )}
@@ -173,7 +178,7 @@ export function EntityChart({ data, slug }: { data: EntityChartData; slug?: stri
           <div style={{ fontSize: 9.5, color: MUTED, textAlign: "center", marginBottom: 6 }}>Related vehicles</div>
           <Row>
             {data.vehicles.map((v, i) => (
-              <EntityBox key={i} node={v} slug={slug} />
+              <EntityBox key={i} node={v} slug={slug} print={print} />
             ))}
           </Row>
         </>
@@ -186,7 +191,7 @@ export function EntityChart({ data, slug }: { data: EntityChartData; slug?: stri
           </div>
           <Row gap={8}>
             {data.providers.map((p, i) => (
-              <EntityBox key={i} node={p} slug={slug} />
+              <EntityBox key={i} node={p} slug={slug} print={print} />
             ))}
           </Row>
         </div>
@@ -201,7 +206,7 @@ export function EntityChart({ data, slug }: { data: EntityChartData; slug?: stri
 
 // ── Org chart ─────────────────────────────────────────────────────────────────
 
-function PersonBox({ person, slug, dotted, block }: { person: OrgPerson; slug?: string; dotted?: boolean; block?: boolean }) {
+function PersonBox({ person, slug, dotted, block, print }: { person: OrgPerson; slug?: string; dotted?: boolean; block?: boolean; print?: boolean }) {
   return (
     <div
       style={{
@@ -217,7 +222,7 @@ function PersonBox({ person, slug, dotted, block }: { person: OrgPerson; slug?: 
         boxShadow: "0 1px 3px rgba(15,23,42,0.05)",
       }}
     >
-      <NodeDot refObj={person.ref} slug={slug} />
+      <NodeDot refObj={person.ref} slug={slug} print={print} />
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
         <FlagPip flag={person.flag} />
         <span style={{ fontSize: 11.5, fontWeight: 700, color: INK, paddingRight: 12 }}>{person.name}</span>
@@ -232,13 +237,13 @@ function PersonBox({ person, slug, dotted, block }: { person: OrgPerson; slug?: 
   );
 }
 
-export function OrgChart({ data, slug }: { data: OrgChartData; slug?: string }) {
+export function OrgChart({ data, slug, print }: { data: OrgChartData; slug?: string; print?: boolean }) {
   return (
     <ChartFrame title={data.caption || "Management organization"}>
       {/* Leadership tier */}
       <Row>
         {data.leadership.map((p, i) => (
-          <PersonBox key={i} person={p} slug={slug} />
+          <PersonBox key={i} person={p} slug={slug} print={print} />
         ))}
       </Row>
 
@@ -252,7 +257,7 @@ export function OrgChart({ data, slug }: { data: OrgChartData; slug?: string }) 
                   {g.label}
                 </div>
                 {g.people.map((p, pi) => (
-                  <PersonBox key={pi} person={p} slug={slug} block />
+                  <PersonBox key={pi} person={p} slug={slug} block print={print} />
                 ))}
               </div>
             ))}
@@ -267,7 +272,7 @@ export function OrgChart({ data, slug }: { data: OrgChartData; slug?: string }) 
           </div>
           <Row gap={8}>
             {data.advisors.map((p, i) => (
-              <PersonBox key={i} person={p} slug={slug} dotted />
+              <PersonBox key={i} person={p} slug={slug} dotted print={print} />
             ))}
           </Row>
         </div>
