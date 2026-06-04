@@ -201,13 +201,14 @@ export function EntityChart({ data, slug }: { data: EntityChartData; slug?: stri
 
 // ── Org chart ─────────────────────────────────────────────────────────────────
 
-function PersonBox({ person, slug, dotted }: { person: OrgPerson; slug?: string; dotted?: boolean }) {
+function PersonBox({ person, slug, dotted, block }: { person: OrgPerson; slug?: string; dotted?: boolean; block?: boolean }) {
   return (
     <div
       style={{
         position: "relative",
-        minWidth: 150,
-        maxWidth: 230,
+        minWidth: block ? 0 : 150,
+        maxWidth: block ? "none" : 230,
+        width: block ? "100%" : undefined,
         background: "#fff",
         border: `${dotted ? "1px dashed" : "1px solid"} ${person.flag ? FLAG_COLOR[person.flag] + "66" : BORDER}`,
         borderLeft: `3px solid ${person.flag ? FLAG_COLOR[person.flag] : dotted ? "#cbd5e1" : "#0ea5e9"}`,
@@ -244,14 +245,14 @@ export function OrgChart({ data, slug }: { data: OrgChartData; slug?: string }) 
       {/* Functional groups, joined to leadership by a tree connector (spine + rail) */}
       {data.groups.length > 0 && (
         <div className={`org-branch${data.groups.length > 1 ? " org-branch--tree" : ""}`}>
-          <div style={{ display: "flex", gap: 16, justifyContent: "center", alignItems: "flex-start", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: 12, justifyContent: "center", alignItems: "flex-start", flexWrap: "nowrap" }}>
             {data.groups.map((g, gi) => (
-              <div key={gi} className="org-group" style={{ display: "flex", flexDirection: "column", gap: 8, minWidth: 160 }}>
+              <div key={gi} className="org-group" style={{ display: "flex", flexDirection: "column", gap: 8, flex: "1 1 0", minWidth: 0, maxWidth: 240 }}>
                 <div style={{ fontSize: 9.5, fontWeight: 700, color: MUTED, letterSpacing: "0.06em", textTransform: "uppercase", textAlign: "center" }}>
                   {g.label}
                 </div>
                 {g.people.map((p, pi) => (
-                  <PersonBox key={pi} person={p} slug={slug} />
+                  <PersonBox key={pi} person={p} slug={slug} block />
                 ))}
               </div>
             ))}
