@@ -443,7 +443,7 @@ export default function CarvanaView() {
         </div>
       </div>
 
-      <FloatingSubscribe source="carvana-case" heading="ODD case study, every other Tuesday." />
+      <FloatingSubscribe source="carvana-case" heading="ODD case study, every other Thursday." />
       <DownloadWhitepaperModal
         open={dlOpen}
         onClose={() => setDlOpen(false)}
