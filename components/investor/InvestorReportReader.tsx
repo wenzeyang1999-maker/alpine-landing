@@ -4,6 +4,8 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { RefDot } from "@/components/app-portal/review/RefDot";
 import { renderCitations } from "@/lib/app-portal/cited-text";
+import { EntityChart, OrgChart } from "@/components/app-portal/review/FundCharts";
+import { getFundCharts } from "@/lib/app-portal/fund-charts";
 import DocumentsPanel from "@/components/investor/DocumentsPanel";
 import ReportTour from "@/components/investor/ReportTour";
 import {
@@ -528,8 +530,9 @@ function Overview({
 
 // ── Report chapter (narrative findings) ──────────────────────────────────────
 
-function ReportChapter({ num, index, topic, slug }: { num: number; index: number; topic: TopicInfo; slug?: string }) {
+function ReportChapter({ num, index, topic, slug, dataKey }: { num: number; index: number; topic: TopicInfo; slug?: string; dataKey?: string }) {
   const summary = (topic.summary || "").replace(/^(GREEN|YELLOW|RED):\s*/i, "");
+  const charts = getFundCharts(dataKey);
   return (
     <section
       id={`chapter-${num}`}
@@ -538,6 +541,12 @@ function ReportChapter({ num, index, topic, slug }: { num: number; index: number
     >
       <div className="rounded-panel border overflow-hidden" style={{ background: BG_CARD, borderColor: BORDER }}>
         <ChapterHeader num={num} index={index} topic={topic} kicker={`Chapter ${index}`} summary={summary} />
+        {charts && (charts.orgTopic === num || charts.entityTopic === num) && (
+          <div className="px-5 pt-4">
+            {charts.orgTopic === num && <OrgChart data={charts.org} slug={slug} />}
+            {charts.entityTopic === num && <EntityChart data={charts.entity} slug={slug} />}
+          </div>
+        )}
         {topic.findings && (
           <div className="px-5 py-4 space-y-2.5">{renderFindings(topic.findings, slug)}</div>
         )}
@@ -854,7 +863,7 @@ export default function InvestorReportReader({ slug, email = "" }: { slug: strin
                   />
                 </div>
                 {nums.map((n, i) => (
-                  <ReportChapter key={n} num={n} index={i + 1} topic={topicData[n]} slug={slug} />
+                  <ReportChapter key={n} num={n} index={i + 1} topic={topicData[n]} slug={slug} dataKey={entry?.dataKey} />
                 ))}
                 <section id="documents" className="scroll-mt-[170px] md:scroll-mt-[116px]">
                   <DocumentsPanel slug={slug} referencedDocs={referencedDocs} />
