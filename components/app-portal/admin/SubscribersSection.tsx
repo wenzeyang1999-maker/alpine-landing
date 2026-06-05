@@ -6,6 +6,7 @@ import ExportCsvLink from "@/components/app-portal/admin/ExportCsvLink";
 
 interface SubRow {
   email: string;
+  full_name: string | null;
   source: string | null;
   confirmed_at: string | null;
   created_at: string;
@@ -23,7 +24,7 @@ function deriveStatus(s: SubRow): SubStatus {
 export default async function SubscribersSection() {
   const { data, error } = await supabase
     .from("newsletter_subscribers")
-    .select("email, source, confirmed_at, created_at, unsubscribed_at")
+    .select("email, full_name, source, confirmed_at, created_at, unsubscribed_at")
     .order("created_at", { ascending: false });
 
   const subs: SubRow[] = (data ?? []) as SubRow[];
@@ -35,11 +36,12 @@ export default async function SubscribersSection() {
         <Empty>No subscribers yet.</Empty>
       ) : (
         <Table
-          headers={["Email", "Source", "Status", "Subscribed", "Action"]}
+          headers={["Email", "Name", "Source", "Status", "Subscribed", "Action"]}
           rows={subs.map((s) => {
             const status = deriveStatus(s);
             return [
               <span key="e" className="font-mono text-[13px]">{s.email}</span>,
+              s.full_name ?? <Muted>—</Muted>,
               s.source ?? <Muted>—</Muted>,
               status === "unsubscribed" ? (
                 <Badge color="#94a3b8" bg="#F1F5F9">Unsubscribed</Badge>

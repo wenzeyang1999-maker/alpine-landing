@@ -11,7 +11,7 @@ const EXPORTS = {
   },
   subscribers: {
     table: "newsletter_subscribers",
-    columns: ["email", "source", "confirmed_at", "unsubscribed_at", "created_at"],
+    columns: ["email", "full_name", "source", "confirmed_at", "unsubscribed_at", "created_at"],
     orderBy: "created_at",
   },
   customers: {
