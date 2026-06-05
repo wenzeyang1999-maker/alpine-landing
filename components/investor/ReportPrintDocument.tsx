@@ -26,10 +26,12 @@ function PageTitle({ children }: { children: React.ReactNode }) {
 }
 
 function OverviewBlock({ title, lines }: { title: string; lines: string[] }) {
+  const filled = lines.filter(Boolean);
+  if (filled.length === 0) return null;
   return (
     <div style={{ marginBottom: 12 }}>
       <div style={{ fontSize: 11, fontWeight: 700, color: "#0f172a", marginBottom: 3 }}>{title}</div>
-      {lines.filter(Boolean).map((l, i) => (
+      {filled.map((l, i) => (
         <p key={i} style={{ fontSize: 10, lineHeight: 1.55, color: "#334155", margin: "0 0 5px" }}>{l}</p>
       ))}
     </div>
