@@ -1,4 +1,5 @@
-import { supabase } from "@/lib/app-portal/supabase";
+import { sql } from "drizzle-orm";
+import { db } from "@/lib/db";
 import { VIOLET } from "@/lib/app-portal/constants";
 import { Section, Table, Empty, Muted, Badge, fmtDateTime } from "@/components/app-portal/admin/shared";
 
@@ -14,22 +15,21 @@ interface AuditRow {
 const LIMIT = 50;
 
 export default async function AuditLogSection() {
-  const { data, error } = await supabase
-    .from("audit_log")
-    .select("id, actor_email, action, target, meta, created_at")
-    .order("created_at", { ascending: false })
-    .limit(LIMIT);
-
-  // Supabase REST returns PGRST205 with "schema cache" message for missing tables;
-  // direct Postgres errors use 42P01. Cover both.
-  const tableMissing =
-    !!error &&
-    (error.code === "42P01" ||
-      error.code === "PGRST205" ||
-      error.message?.includes("does not exist") ||
-      error.message?.includes("schema cache"));
-
-  const rows: AuditRow[] = (data ?? []) as AuditRow[];
+  // audit_log is not part of the migrated schema (raw SQL keeps it out of Drizzle);
+  // if the table is absent the catch flags tableMissing, preserving the prior UI.
+  let rows: AuditRow[] = [];
+  let errorMessage: string | null = null;
+  let tableMissing = false;
+  try {
+    rows = (await db.execute(
+      sql`SELECT id, actor_email, action, target, meta, created_at FROM audit_log ORDER BY created_at DESC LIMIT ${LIMIT}`
+    )) as unknown as AuditRow[];
+  } catch (e) {
+    const err = e as { code?: string; message?: string };
+    tableMissing =
+      err.code === "42P01" || !!err.message?.includes("does not exist");
+    if (!tableMissing) errorMessage = err.message ?? "error";
+  }
 
   function actionBadge(a: string) {
     if (a.startsWith("auth."))      return <Badge color={VIOLET} bg="#F5F1FC">{a}</Badge>;
@@ -61,7 +61,7 @@ export default async function AuditLogSection() {
       id="audit"
       title="Audit Log"
       count={rows.length}
-      error={error && !tableMissing ? error.message : null}
+      error={errorMessage}
       hint={`last ${LIMIT} admin actions`}
     >
       {tableMissing ? (

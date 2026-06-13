@@ -4,7 +4,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { BG, BG_CARD, INK, SECONDARY, MUTED, SUBTLE, VIOLET, GREEN, BORDER, LS_BODY } from "@/lib/constants";
-import { supabase } from "@/lib/supabase";
+import { eq, desc } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { blogPosts } from "@/lib/db/schema";
 
 type Post = {
   id: string;
@@ -19,16 +21,32 @@ type Post = {
 
 async function getPosts(): Promise<Post[]> {
   try {
-    const { data, error } = await supabase
-      .from("blog_posts")
-      .select("id, url, title, excerpt, source, og_image, is_featured, published_at")
-      .eq("is_visible", true)
-      .order("is_featured", { ascending: false })
-      .order("published_at", { ascending: false })
+    const rows = await db
+      .select({
+        id: blogPosts.id,
+        url: blogPosts.url,
+        title: blogPosts.title,
+        excerpt: blogPosts.excerpt,
+        source: blogPosts.source,
+        ogImage: blogPosts.ogImage,
+        isFeatured: blogPosts.isFeatured,
+        publishedAt: blogPosts.publishedAt,
+      })
+      .from(blogPosts)
+      .where(eq(blogPosts.isVisible, true))
+      .orderBy(desc(blogPosts.isFeatured), desc(blogPosts.publishedAt))
       .limit(6);
 
-    if (error || !data?.length) return [];
-    return data;
+    return rows.map((r) => ({
+      id: r.id,
+      url: r.url,
+      title: r.title,
+      excerpt: r.excerpt,
+      source: r.source,
+      og_image: r.ogImage,
+      is_featured: r.isFeatured,
+      published_at: r.publishedAt,
+    }));
   } catch {
     return [];
   }

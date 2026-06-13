@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { supabase } from "@/lib/app-portal/supabase";
+import { sql } from "drizzle-orm";
+import { db } from "@/lib/db";
 import { VIOLET, GREEN } from "@/lib/app-portal/constants";
 import { Section, Table, Empty, Muted, Badge, fmtRelative } from "@/components/app-portal/admin/shared";
 
@@ -37,12 +38,19 @@ function pickTimestamp(row: Record<string, unknown>): string | null {
 export default async function FundsPipelineSection() {
   const results = await Promise.all(
     DRAFT_TABLES.map(async (t) => {
-      const { data, error } = await supabase.from(t.table).select("*").limit(2000);
-      return { table: t.table, stage: t.stage, data: (data ?? []) as Record<string, unknown>[], error };
+      // t.table is from a hardcoded const list (not user input) — safe to inline.
+      try {
+        const data = (await db.execute(
+          sql.raw(`SELECT * FROM ${t.table} LIMIT 2000`)
+        )) as unknown as Record<string, unknown>[];
+        return { table: t.table, stage: t.stage, data, error: null as string | null };
+      } catch (e) {
+        return { table: t.table, stage: t.stage, data: [] as Record<string, unknown>[], error: (e as Error).message };
+      }
     }),
   );
 
-  const tableErrors = results.filter((r) => r.error).map((r) => `${r.table}: ${r.error!.message}`);
+  const tableErrors = results.filter((r) => r.error).map((r) => `${r.table}: ${r.error}`);
 
   const fundMap = new Map<string, FundActivity>();
   // Track the highest stage encountered per fund (DRAFT_TABLES is ordered most-advanced → least)

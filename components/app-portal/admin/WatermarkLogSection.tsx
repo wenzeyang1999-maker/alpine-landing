@@ -1,4 +1,5 @@
-import { supabase } from "@/lib/app-portal/supabase";
+import { db } from "@/lib/db";
+import { watermarkDistributions } from "@/lib/db/schema";
 import { SUBTLE, GREEN } from "@/lib/app-portal/constants";
 import { Section, Table, Empty, Muted, Badge, fmtRelative } from "@/components/app-portal/admin/shared";
 
@@ -25,13 +26,26 @@ function pickNumber(row: RawDist, keys: string[]): number | null {
 }
 
 export default async function WatermarkLogSection() {
-  // Schema-tolerant: select * and pull whichever common fields exist.
-  const { data, error } = await supabase
-    .from("watermark_distributions")
-    .select("*")
-    .limit(LOG_LIMIT * 4); // overfetch then sort/limit client-side
-
-  const rows: RawDist[] = (data ?? []) as RawDist[];
+  // Pull the known columns (aliased to snake_case so the schema-tolerant
+  // pickString logic below keeps working), overfetch then sort/limit in JS.
+  let rows: RawDist[] = [];
+  let errorMessage: string | null = null;
+  try {
+    rows = (await db
+      .select({
+        id: watermarkDistributions.id,
+        recipient_name: watermarkDistributions.recipientName,
+        recipient_email: watermarkDistributions.recipientEmail,
+        filename: watermarkDistributions.filename,
+        distributed_by: watermarkDistributions.distributedBy,
+        email_sent: watermarkDistributions.emailSent,
+        watermarked_at: watermarkDistributions.watermarkedAt,
+      })
+      .from(watermarkDistributions)
+      .limit(LOG_LIMIT * 4)) as RawDist[];
+  } catch (e) {
+    errorMessage = (e as Error).message;
+  }
 
   // Normalize across possible column names
   const normalized = rows.map((r) => ({
@@ -46,9 +60,9 @@ export default async function WatermarkLogSection() {
   }));
 
   normalized.sort((a, b) => {
-    const da = a.distributedAt ? new Date(a.distributedAt).getTime() : 0;
-    const db = b.distributedAt ? new Date(b.distributedAt).getTime() : 0;
-    return db - da;
+    const ta = a.distributedAt ? new Date(a.distributedAt).getTime() : 0;
+    const tb = b.distributedAt ? new Date(b.distributedAt).getTime() : 0;
+    return tb - ta;
   });
 
   const top = normalized.slice(0, LOG_LIMIT);
@@ -70,7 +84,7 @@ export default async function WatermarkLogSection() {
       id="watermark"
       title="Watermark Log"
       count={top.length}
-      error={error?.message ?? null}
+      error={errorMessage}
       hint={`latest ${LOG_LIMIT} watermarked distributions`}
     >
       {top.length === 0 ? (

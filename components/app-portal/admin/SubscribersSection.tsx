@@ -1,4 +1,6 @@
-import { supabase } from "@/lib/app-portal/supabase";
+import { desc } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { newsletterSubscribers } from "@/lib/db/schema";
 import { GREEN } from "@/lib/app-portal/constants";
 import { Section, Table, Empty, Muted, Badge, fmtDate } from "@/components/app-portal/admin/shared";
 import SubscriberRowActions from "@/components/app-portal/admin/SubscriberRowActions";
@@ -21,16 +23,27 @@ function deriveStatus(s: SubRow): SubStatus {
 }
 
 export default async function SubscribersSection() {
-  const { data, error } = await supabase
-    .from("newsletter_subscribers")
-    .select("email, source, confirmed_at, created_at, unsubscribed_at")
-    .order("created_at", { ascending: false });
-
-  const subs: SubRow[] = (data ?? []) as SubRow[];
+  let subs: SubRow[] = [];
+  let errorMessage: string | null = null;
+  try {
+    const data = await db
+      .select({
+        email: newsletterSubscribers.email,
+        source: newsletterSubscribers.source,
+        confirmed_at: newsletterSubscribers.confirmedAt,
+        created_at: newsletterSubscribers.createdAt,
+        unsubscribed_at: newsletterSubscribers.unsubscribedAt,
+      })
+      .from(newsletterSubscribers)
+      .orderBy(desc(newsletterSubscribers.createdAt));
+    subs = data as SubRow[];
+  } catch (e) {
+    errorMessage = (e as Error).message;
+  }
   const active = subs.filter((s) => !s.unsubscribed_at);
 
   return (
-    <Section id="subscribers" title="Subscribers" count={active.length} error={error?.message ?? null} hint={<ExportCsvLink table="subscribers" />}>
+    <Section id="subscribers" title="Subscribers" count={active.length} error={errorMessage} hint={<ExportCsvLink table="subscribers" />}>
       {subs.length === 0 ? (
         <Empty>No subscribers yet.</Empty>
       ) : (

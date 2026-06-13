@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { supabase } from "@/lib/app-portal/supabase";
+import { desc } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { portalDocuments } from "@/lib/db/schema";
 import { VIOLET } from "@/lib/app-portal/constants";
 import { Section, Table, Empty, Muted, fmtRelative, fmtBytes } from "@/components/app-portal/admin/shared";
 
@@ -14,20 +16,31 @@ interface PortalDoc {
 const INBOX_LIMIT = 20;
 
 export default async function DocumentInboxSection() {
-  const { data, error } = await supabase
-    .from("portal_documents")
-    .select("id, token, filename, file_size, uploaded_at")
-    .order("uploaded_at", { ascending: false })
-    .limit(INBOX_LIMIT);
-
-  const docs: PortalDoc[] = (data ?? []) as PortalDoc[];
+  let docs: PortalDoc[] = [];
+  let errorMessage: string | null = null;
+  try {
+    const data = await db
+      .select({
+        id: portalDocuments.id,
+        token: portalDocuments.token,
+        filename: portalDocuments.filename,
+        file_size: portalDocuments.fileSize,
+        uploaded_at: portalDocuments.uploadedAt,
+      })
+      .from(portalDocuments)
+      .orderBy(desc(portalDocuments.uploadedAt))
+      .limit(INBOX_LIMIT);
+    docs = data as PortalDoc[];
+  } catch (e) {
+    errorMessage = (e as Error).message;
+  }
 
   return (
     <Section
       id="inbox"
       title="Document Inbox"
       count={docs.length}
-      error={error?.message ?? null}
+      error={errorMessage}
       hint={`most recent ${INBOX_LIMIT} uploads across all portals`}
     >
       {docs.length === 0 ? (

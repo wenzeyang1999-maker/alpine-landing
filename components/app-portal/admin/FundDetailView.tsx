@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { supabase } from "@/lib/app-portal/supabase";
+import { eq, sql } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { portalDocuments } from "@/lib/db/schema";
 import { BG_CARD, INK, MUTED, SUBTLE, BORDER, VIOLET, GREEN } from "@/lib/app-portal/constants";
 import { Section, Table, Empty, Muted, Badge, fmtRelative, fmtDateTime } from "@/components/app-portal/admin/shared";
 
@@ -33,15 +35,26 @@ function pickTimestamp(row: Record<string, unknown>): string | null {
 }
 
 export default async function FundDetailView({ slug }: { slug: string }) {
-  const [tableResults, portalDocsRes] = await Promise.all([
+  const [tableResults, portalDocsData] = await Promise.all([
     Promise.all(
       FUND_TABLES.map(async (t) => {
         // Most draft tables key on review_slug; call_prep_notes happens to use the same.
-        const { data, error } = await supabase.from(t.table).select("*").eq("review_slug", slug).limit(1000);
-        return { table: t.table, label: t.label, data: (data ?? []) as Record<string, unknown>[], error };
+        // t.table is from a hardcoded const list (not user input); slug is parameterized.
+        try {
+          const data = (await db.execute(
+            sql`SELECT * FROM ${sql.raw(t.table)} WHERE review_slug = ${slug} LIMIT 1000`
+          )) as unknown as Record<string, unknown>[];
+          return { table: t.table, label: t.label, data, error: null as string | null };
+        } catch (e) {
+          return { table: t.table, label: t.label, data: [] as Record<string, unknown>[], error: (e as Error).message };
+        }
       }),
     ),
-    supabase.from("portal_documents").select("filename, file_size, uploaded_at, token").eq("token", slug),
+    db
+      .select({ filename: portalDocuments.filename, file_size: portalDocuments.fileSize, uploaded_at: portalDocuments.uploadedAt, token: portalDocuments.token })
+      .from(portalDocuments)
+      .where(eq(portalDocuments.token, slug))
+      .catch(() => [] as { filename: string; file_size: number | null; uploaded_at: string; token: string }[]),
   ]);
 
   const activity: ActivityRow[] = tableResults.map((r) => {
@@ -62,7 +75,7 @@ export default async function FundDetailView({ slug }: { slug: string }) {
     return new Date(a.lastEdit) > new Date(acc) ? a.lastEdit : acc;
   }, null);
 
-  const tableErrors = tableResults.filter((r) => r.error).map((r) => `${r.table}: ${r.error!.message}`);
+  const tableErrors = tableResults.filter((r) => r.error).map((r) => `${r.table}: ${r.error}`);
 
   // Build recent activity (latest 10 edits across all tables)
   const recent: Array<{ table: string; label: string; ts: string; preview: string }> = [];
@@ -88,7 +101,7 @@ export default async function FundDetailView({ slug }: { slug: string }) {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6">
         <Stat label="Total edits" value={totalEdits} hint={`${tablesTouched} of ${FUND_TABLES.length} areas touched`} />
         <Stat label="Last activity" value={latestEdit ? fmtRelative(latestEdit) : "—"} hint={latestEdit ? fmtDateTime(latestEdit) : "no edits yet"} />
-        <Stat label="Documents" value={(portalDocsRes.data ?? []).length} hint="files in matching portal token" />
+        <Stat label="Documents" value={portalDocsData.length} hint="files in matching portal token" />
       </div>
 
       <Section

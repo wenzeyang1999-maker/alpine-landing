@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { supabase } from "@/lib/app-portal/supabase";
+import { desc } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { customers } from "@/lib/db/schema";
 import { VIOLET, GREEN } from "@/lib/app-portal/constants";
 import { Section, Table, Empty, Muted, Badge, fmtDate } from "@/components/app-portal/admin/shared";
 import ExportCsvLink from "@/components/app-portal/admin/ExportCsvLink";
@@ -31,20 +33,33 @@ function statusBadge(status: string) {
 }
 
 export default async function CustomersSection() {
-  const { data, error } = await supabase
-    .from("customers")
-    .select("id, name, email, organization, portal_token, fund_name, plan, status, onboarded_by, created_at")
-    .order("created_at", { ascending: false })
-    .limit(100);
+  let rows: CustomerRow[] = [];
+  let errorMessage: string | null = null;
+  let tableMissing = false;
+  try {
+    const data = await db
+      .select({
+        id: customers.id,
+        name: customers.name,
+        email: customers.email,
+        organization: customers.organization,
+        portal_token: customers.portalToken,
+        fund_name: customers.fundName,
+        plan: customers.plan,
+        status: customers.status,
+        onboarded_by: customers.onboardedBy,
+        created_at: customers.createdAt,
+      })
+      .from(customers)
+      .orderBy(desc(customers.createdAt))
+      .limit(100);
+    rows = data as CustomerRow[];
+  } catch (e) {
+    const err = e as { code?: string; message?: string };
+    tableMissing = err.code === "42P01" || !!err.message?.includes("does not exist");
+    if (!tableMissing) errorMessage = err.message ?? "error";
+  }
 
-  const tableMissing =
-    !!error &&
-    (error.code === "42P01" ||
-      error.code === "PGRST205" ||
-      error.message?.includes("does not exist") ||
-      error.message?.includes("schema cache"));
-
-  const rows: CustomerRow[] = (data ?? []) as CustomerRow[];
   const active = rows.filter((r) => r.status === "active").length;
 
   return (
@@ -52,7 +67,7 @@ export default async function CustomersSection() {
       id="customers"
       title="Customers"
       count={`${active} active · ${rows.length} total`}
-      error={error && !tableMissing ? error.message : null}
+      error={errorMessage}
       hint={<ExportCsvLink table="customers" />}
     >
       {tableMissing ? (

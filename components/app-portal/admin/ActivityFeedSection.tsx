@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { supabase } from "@/lib/app-portal/supabase";
+import { sql, gte, desc } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { portalDocuments, watermarkDistributions, customers as customersTable } from "@/lib/db/schema";
 import { VIOLET } from "@/lib/app-portal/constants";
 import { Section, Table, Empty, Muted, Badge, fmtDateTime } from "@/components/app-portal/admin/shared";
 
@@ -46,31 +48,59 @@ const DRAFT_TABLES = [
 export default async function ActivityFeedSection() {
   const since = new Date(Date.now() - FEED_HOURS * 60 * 60 * 1000).toISOString();
 
-  const [draftResults, docs, watermarks, customers] = await Promise.all([
+  const safe = async <T,>(p: Promise<T>, fallback: T): Promise<T> => {
+    try { return await p; } catch { return fallback; }
+  };
+
+  const [draftResults, docsData, watermarksData, customersData] = await Promise.all([
     Promise.all(
       DRAFT_TABLES.map(async ([table, label]) => {
-        const { data } = await supabase.from(table).select("*").limit(200);
-        return { table, label, data: (data ?? []) as Record<string, unknown>[] };
+        // table is from a hardcoded const list (not user input) — safe to inline.
+        const data = await safe(
+          db.execute(sql.raw(`SELECT * FROM ${table} LIMIT 200`)) as unknown as Promise<Record<string, unknown>[]>,
+          [] as Record<string, unknown>[],
+        );
+        return { table, label, data };
       }),
     ),
-    supabase
-      .from("portal_documents")
-      .select("token, filename, uploaded_at")
-      .gte("uploaded_at", since)
-      .order("uploaded_at", { ascending: false })
-      .limit(50),
-    supabase
-      .from("watermark_distributions")
-      .select("recipient_name, recipient_email, filename, watermarked_at")
-      .gte("watermarked_at", since)
-      .order("watermarked_at", { ascending: false })
-      .limit(50),
-    supabase
-      .from("customers")
-      .select("name, fund_name, portal_token, onboarded_by, created_at")
-      .gte("created_at", since)
-      .order("created_at", { ascending: false })
-      .limit(50),
+    safe(
+      db
+        .select({ token: portalDocuments.token, filename: portalDocuments.filename, uploaded_at: portalDocuments.uploadedAt })
+        .from(portalDocuments)
+        .where(gte(portalDocuments.uploadedAt, since))
+        .orderBy(desc(portalDocuments.uploadedAt))
+        .limit(50),
+      [] as { token: string; filename: string; uploaded_at: string }[],
+    ),
+    safe(
+      db
+        .select({
+          recipient_name: watermarkDistributions.recipientName,
+          recipient_email: watermarkDistributions.recipientEmail,
+          filename: watermarkDistributions.filename,
+          watermarked_at: watermarkDistributions.watermarkedAt,
+        })
+        .from(watermarkDistributions)
+        .where(gte(watermarkDistributions.watermarkedAt, since))
+        .orderBy(desc(watermarkDistributions.watermarkedAt))
+        .limit(50),
+      [] as { recipient_name: string | null; recipient_email: string | null; filename: string; watermarked_at: string | null }[],
+    ),
+    safe(
+      db
+        .select({
+          name: customersTable.name,
+          fund_name: customersTable.fundName,
+          portal_token: customersTable.portalToken,
+          onboarded_by: customersTable.onboardedBy,
+          created_at: customersTable.createdAt,
+        })
+        .from(customersTable)
+        .where(gte(customersTable.createdAt, since))
+        .orderBy(desc(customersTable.createdAt))
+        .limit(50),
+      [] as { name: string; fund_name: string | null; portal_token: string | null; onboarded_by: string | null; created_at: string }[],
+    ),
   ]);
 
   const events: FeedEvent[] = [];
@@ -93,7 +123,7 @@ export default async function ActivityFeedSection() {
     }
   }
 
-  for (const d of docs.data ?? []) {
+  for (const d of docsData) {
     events.push({
       kind: "Upload",
       ts: d.uploaded_at as string,
@@ -103,7 +133,7 @@ export default async function ActivityFeedSection() {
     });
   }
 
-  for (const w of watermarks.data ?? []) {
+  for (const w of watermarksData) {
     const ts = w.watermarked_at as string | undefined;
     if (!ts) continue;
     events.push({
@@ -114,7 +144,7 @@ export default async function ActivityFeedSection() {
     });
   }
 
-  for (const c of customers.data ?? []) {
+  for (const c of customersData) {
     events.push({
       kind: "Onboard",
       ts: c.created_at as string,

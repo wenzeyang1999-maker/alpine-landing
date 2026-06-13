@@ -1,4 +1,6 @@
-import { managerDb } from "@/lib/manager/db";
+import { inArray, desc } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { usersInManager, firmsInManager } from "@/lib/db/schema";
 import { GREEN, VIOLET } from "@/lib/app-portal/constants";
 import { Section, Table, Empty, Muted, Badge, fmtRelative, fmtDate } from "@/components/app-portal/admin/shared";
 import ManagerVerifyButton from "@/components/app-portal/admin/ManagerVerifyButton";
@@ -23,28 +25,31 @@ export default async function ManagerPortalSection() {
   let errorMsg: string | null = null;
 
   try {
-    const db = managerDb();
+    const usersRaw = await db
+      .select({
+        id: usersInManager.id,
+        email: usersInManager.email,
+        full_name: usersInManager.fullName,
+        role: usersInManager.role,
+        is_verified: usersInManager.isVerified,
+        verified_at: usersInManager.verifiedAt,
+        job_title: usersInManager.jobTitle,
+        firm_id: usersInManager.firmId,
+        created_at: usersInManager.createdAt,
+      })
+      .from(usersInManager)
+      .orderBy(desc(usersInManager.createdAt))
+      .limit(200);
+    rows = usersRaw as ManagerRow[];
 
-    const { data: usersRaw, error: usersErr } = await db
-      .from("users")
-      .select("id, email, full_name, role, is_verified, verified_at, job_title, firm_id, created_at")
-      .order("created_at", { ascending: false })
-      .limit(200) as { data: ManagerRow[] | null; error: { message?: string } | null };
+    if (rows.length > 0) {
+      const firmIds = Array.from(new Set(rows.map((r) => r.firm_id)));
+      const firmsRaw = (await db
+        .select({ id: firmsInManager.id, name: firmsInManager.name })
+        .from(firmsInManager)
+        .where(inArray(firmsInManager.id, firmIds))) as FirmRow[];
 
-    if (usersErr) {
-      errorMsg = usersErr.message ?? "Database error";
-    } else {
-      rows = usersRaw ?? [];
-
-      if (rows.length > 0) {
-        const firmIds = Array.from(new Set(rows.map((r) => r.firm_id)));
-        const { data: firmsRaw } = await db
-          .from("firms")
-          .select("id, name")
-          .in("id", firmIds) as { data: FirmRow[] | null };
-
-        firms = Object.fromEntries((firmsRaw ?? []).map((f) => [f.id, f.name]));
-      }
+      firms = Object.fromEntries(firmsRaw.map((f) => [f.id, f.name]));
     }
   } catch (err) {
     errorMsg = String(err);

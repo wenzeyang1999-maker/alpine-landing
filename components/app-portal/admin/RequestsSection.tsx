@@ -1,4 +1,6 @@
-import { supabase } from "@/lib/app-portal/supabase";
+import { desc } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { earlyAccessRequests } from "@/lib/db/schema";
 import { GREEN, VIOLET } from "@/lib/app-portal/constants";
 import { Section, Table, Empty, Muted, Badge, fmtRelative } from "@/components/app-portal/admin/shared";
 import RequestRowActions from "@/components/app-portal/admin/RequestRowActions";
@@ -29,20 +31,33 @@ function statusBadge(s: Status) {
 }
 
 export default async function RequestsSection() {
-  const { data, error } = await supabase
-    .from("early_access_requests")
-    .select("id, full_name, email, organization, phone, message, source, status, created_at, contacted_at")
-    .order("created_at", { ascending: false })
-    .limit(100);
+  let rows: RequestRow[] = [];
+  let errorMessage: string | null = null;
+  let tableMissing = false;
+  try {
+    const data = await db
+      .select({
+        id: earlyAccessRequests.id,
+        full_name: earlyAccessRequests.fullName,
+        email: earlyAccessRequests.email,
+        organization: earlyAccessRequests.organization,
+        phone: earlyAccessRequests.phone,
+        message: earlyAccessRequests.message,
+        source: earlyAccessRequests.source,
+        status: earlyAccessRequests.status,
+        created_at: earlyAccessRequests.createdAt,
+        contacted_at: earlyAccessRequests.contactedAt,
+      })
+      .from(earlyAccessRequests)
+      .orderBy(desc(earlyAccessRequests.createdAt))
+      .limit(100);
+    rows = data as RequestRow[];
+  } catch (e) {
+    const err = e as { code?: string; message?: string };
+    tableMissing = err.code === "42P01" || !!err.message?.includes("does not exist");
+    if (!tableMissing) errorMessage = err.message ?? "error";
+  }
 
-  const tableMissing =
-    !!error &&
-    (error.code === "42P01" ||
-      error.code === "PGRST205" ||
-      error.message?.includes("does not exist") ||
-      error.message?.includes("schema cache"));
-
-  const rows: RequestRow[] = (data ?? []) as RequestRow[];
   const newCount = rows.filter((r) => r.status === "new").length;
 
   return (
@@ -50,7 +65,7 @@ export default async function RequestsSection() {
       id="requests"
       title="Requests"
       count={`${newCount} new · ${rows.length} total`}
-      error={error && !tableMissing ? error.message : null}
+      error={errorMessage}
       hint={<ExportCsvLink table="requests" />}
     >
       {tableMissing ? (

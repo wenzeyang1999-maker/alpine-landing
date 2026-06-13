@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { supabase } from "@/lib/app-portal/supabase";
+import { desc } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { portalDocuments } from "@/lib/db/schema";
 import { VIOLET } from "@/lib/app-portal/constants";
 import { Section, Table, Empty, Muted, fmtDate, fmtBytes } from "@/components/app-portal/admin/shared";
 
@@ -18,12 +20,22 @@ interface PortalGroup {
 }
 
 export default async function PortalsSection() {
-  const { data, error } = await supabase
-    .from("portal_documents")
-    .select("token, filename, file_size, uploaded_at")
-    .order("uploaded_at", { ascending: false });
-
-  const docs: PortalDoc[] = (data ?? []) as PortalDoc[];
+  let docs: PortalDoc[] = [];
+  let errorMessage: string | null = null;
+  try {
+    const data = await db
+      .select({
+        token: portalDocuments.token,
+        filename: portalDocuments.filename,
+        file_size: portalDocuments.fileSize,
+        uploaded_at: portalDocuments.uploadedAt,
+      })
+      .from(portalDocuments)
+      .orderBy(desc(portalDocuments.uploadedAt));
+    docs = data as PortalDoc[];
+  } catch (e) {
+    errorMessage = (e as Error).message;
+  }
 
   const portalMap = new Map<string, PortalGroup>();
   for (const d of docs) {
@@ -44,7 +56,7 @@ export default async function PortalsSection() {
   );
 
   return (
-    <Section id="portals" title="Portals" count={portals.length} error={error?.message ?? null}>
+    <Section id="portals" title="Portals" count={portals.length} error={errorMessage}>
       {portals.length === 0 ? (
         <Empty>No portal uploads yet. Create a token-based portal to onboard a customer.</Empty>
       ) : (

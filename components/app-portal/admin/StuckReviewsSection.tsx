@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { supabase } from "@/lib/app-portal/supabase";
+import { sql } from "drizzle-orm";
+import { db } from "@/lib/db";
 import { VIOLET } from "@/lib/app-portal/constants";
 import { Section, Table, Empty, Muted, Badge, fmtRelative } from "@/components/app-portal/admin/shared";
 
@@ -36,8 +37,15 @@ function ageBadge(days: number) {
 export default async function StuckReviewsSection() {
   const results = await Promise.all(
     DRAFT_TABLES.map(async (t) => {
-      const { data } = await supabase.from(t).select("*").limit(2000);
-      return { table: t, data: (data ?? []) as Record<string, unknown>[] };
+      // t is from a hardcoded const list (not user input) — safe to inline.
+      try {
+        const data = (await db.execute(
+          sql.raw(`SELECT * FROM ${t} LIMIT 2000`)
+        )) as unknown as Record<string, unknown>[];
+        return { table: t, data };
+      } catch {
+        return { table: t, data: [] as Record<string, unknown>[] };
+      }
     }),
   );
 

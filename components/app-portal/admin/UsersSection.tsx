@@ -1,4 +1,6 @@
-import { supabase } from "@/lib/app-portal/supabase";
+import { desc } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { users as usersTable } from "@/lib/db/schema";
 import { SUBTLE } from "@/lib/app-portal/constants";
 import { Section, Table, Empty, Muted, fmtDate } from "@/components/app-portal/admin/shared";
 import ExportCsvLink from "@/components/app-portal/admin/ExportCsvLink";
@@ -12,15 +14,32 @@ interface UserRow {
 }
 
 export default async function UsersSection() {
-  const { data, error } = await supabase
-    .from("users")
-    .select("id, email, full_name, organization, created_at")
-    .order("created_at", { ascending: false });
-
-  const users: UserRow[] = (data ?? []) as UserRow[];
+  let users: UserRow[] = [];
+  let errorMessage: string | null = null;
+  try {
+    const rows = await db
+      .select({
+        id: usersTable.id,
+        email: usersTable.email,
+        fullName: usersTable.fullName,
+        organization: usersTable.organization,
+        createdAt: usersTable.createdAt,
+      })
+      .from(usersTable)
+      .orderBy(desc(usersTable.createdAt));
+    users = rows.map((u) => ({
+      id: u.id,
+      email: u.email,
+      full_name: u.fullName,
+      organization: u.organization,
+      created_at: u.createdAt,
+    }));
+  } catch (e) {
+    errorMessage = (e as Error).message;
+  }
 
   return (
-    <Section id="users" title="Users" count={users.length} error={error?.message ?? null} hint={<ExportCsvLink table="users" />}>
+    <Section id="users" title="Users" count={users.length} error={errorMessage} hint={<ExportCsvLink table="users" />}>
       {users.length === 0 ? (
         <Empty>No registered users yet.</Empty>
       ) : (
