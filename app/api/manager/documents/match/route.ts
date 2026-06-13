@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { managerUploads } from "@/lib/db/schema";
+import { downloadObject, signedUrl } from "@/lib/storage";
 import { getCurrentManager } from "@/lib/manager/access";
 
 const BUCKET = "manager-docs";
@@ -14,14 +17,6 @@ const STOP_WORDS = new Set([
   "very","just","also","more","most","some","any","into","through","during",
   "before","after","above","below","between","out","off","over","under","again",
 ]);
-
-function db() {
-  return createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } }
-  );
-}
 
 function tokenize(text: string): string[] {
   return text
@@ -97,11 +92,7 @@ function trimContextStart(text: string): string {
 
 async function extractPdfText(storagePath: string): Promise<string | null> {
   try {
-    const { data, error } = await db().storage.from(BUCKET).download(storagePath);
-    if (error || !data) return null;
-
-    const arrayBuffer = await data.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    const buffer = await downloadObject(BUCKET, storagePath);
 
     // Dynamically import pdf-parse (Node runtime only)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -138,14 +129,22 @@ export async function POST(req: NextRequest) {
   if (queryTokens.length === 0) return NextResponse.json({ matches: [] });
 
   // Load all uploaded docs for this user (scoped by email for now)
-  const { data: docs, error } = await db()
-    .from("manager_uploads")
-    .select("id, filename, storage_path, text_content, text_extracted_at")
-    .eq("user_email", user.email);
+  let docs: { id: string; filename: string; storage_path: string; text_content: string | null }[];
+  try {
+    docs = await db
+      .select({
+        id: managerUploads.id,
+        filename: managerUploads.filename,
+        storage_path: managerUploads.storagePath,
+        text_content: managerUploads.textContent,
+      })
+      .from(managerUploads)
+      .where(eq(managerUploads.userEmail, user.email));
+  } catch {
+    return NextResponse.json({ matches: [] });
+  }
+  if (!docs.length) return NextResponse.json({ matches: [] });
 
-  if (error || !docs?.length) return NextResponse.json({ matches: [] });
-
-  const client = db();
   const matches: MatchResult[] = [];
 
   for (const doc of docs) {
@@ -156,10 +155,10 @@ export async function POST(req: NextRequest) {
     if (!text) {
       text = await extractPdfText(doc.storage_path);
       if (text) {
-        await client
-          .from("manager_uploads")
-          .update({ text_content: text, text_extracted_at: new Date().toISOString() })
-          .eq("id", doc.id);
+        await db
+          .update(managerUploads)
+          .set({ textContent: text, textExtractedAt: new Date().toISOString() })
+          .where(eq(managerUploads.id, doc.id));
       }
     }
 
@@ -169,9 +168,12 @@ export async function POST(req: NextRequest) {
     if (!best || best.score < 0.15) continue;
 
     // Get a signed URL so the user can open the PDF
-    const { data: signed } = await db().storage
-      .from(BUCKET)
-      .createSignedUrl(doc.storage_path, 3600);
+    let url: string | null = null;
+    try {
+      url = await signedUrl(BUCKET, doc.storage_path, 3600);
+    } catch {
+      url = null;
+    }
 
     matches.push({
       documentId: doc.id,
@@ -180,7 +182,7 @@ export async function POST(req: NextRequest) {
       before: best.before,
       after: best.after,
       score: best.score,
-      url: signed?.signedUrl ?? null,
+      url,
     });
   }
 

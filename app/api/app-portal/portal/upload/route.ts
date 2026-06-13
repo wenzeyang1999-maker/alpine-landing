@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/app-portal/supabase";
+import { db } from "@/lib/db";
+import { portalDocuments } from "@/lib/db/schema";
+import { ensureContainer, uploadObject } from "@/lib/storage";
 import { getAppAdminEmail } from "@/lib/app-portal/auth-session";
 
 export const runtime = "nodejs";
@@ -25,35 +27,44 @@ export async function POST(req: NextRequest) {
     const safeFilename = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
     const storagePath = `${token}/${Date.now()}-${safeFilename}`;
 
-    const { error: storageError } = await supabase.storage
-      .from("portal-uploads")
-      .upload(storagePath, buffer, {
-        contentType: "application/pdf",
-        upsert: false,
-      });
-
-    if (storageError) {
+    await ensureContainer("portal-uploads");
+    try {
+      await uploadObject("portal-uploads", storagePath, buffer, "application/pdf", { upsert: false });
+    } catch (storageError) {
       console.error("[portal/upload] Storage error:", storageError);
-      return NextResponse.json({ error: storageError.message }, { status: 500 });
+      return NextResponse.json({ error: (storageError as Error).message }, { status: 500 });
     }
 
-    const { data: row, error: dbError } = await supabase
-      .from("portal_documents")
-      .insert({
-        token,
-        filename: file.name,
-        file_size: file.size,
-        storage_path: storagePath,
-      })
-      .select()
-      .single();
+    try {
+      const [row] = await db
+        .insert(portalDocuments)
+        .values({
+          token,
+          filename: file.name,
+          fileSize: file.size,
+          storagePath,
+        })
+        .returning({
+          id: portalDocuments.id,
+          token: portalDocuments.token,
+          filename: portalDocuments.filename,
+          fileSize: portalDocuments.fileSize,
+          storagePath: portalDocuments.storagePath,
+          uploadedAt: portalDocuments.uploadedAt,
+        });
 
-    if (dbError) {
+      return NextResponse.json({
+        id: row.id,
+        token: row.token,
+        filename: row.filename,
+        file_size: row.fileSize,
+        storage_path: row.storagePath,
+        uploaded_at: row.uploadedAt,
+      });
+    } catch (dbError) {
       console.error("[portal/upload] DB error:", dbError);
-      return NextResponse.json({ error: dbError.message }, { status: 500 });
+      return NextResponse.json({ error: (dbError as Error).message }, { status: 500 });
     }
-
-    return NextResponse.json(row);
   } catch (e) {
     console.error("[portal/upload] Caught error:", e);
     return NextResponse.json({ error: String(e) }, { status: 500 });

@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/app-portal/supabase";
+import { eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { investorDocuments } from "@/lib/db/schema";
+import { signedUrl } from "@/lib/storage";
 import { getAppAdminEmail } from "@/lib/app-portal/auth-session";
 
 export const runtime = "nodejs";
@@ -14,22 +17,20 @@ export async function GET(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id") ?? "";
   if (!id) return NextResponse.json({ error: "missing id" }, { status: 400 });
 
-  const { data: doc } = await supabase
-    .from("investor_documents")
-    .select("storage_path")
-    .eq("id", id)
-    .maybeSingle();
+  const [doc] = await db
+    .select({ storagePath: investorDocuments.storagePath })
+    .from(investorDocuments)
+    .where(eq(investorDocuments.id, id))
+    .limit(1);
 
-  if (!doc?.storage_path) {
+  if (!doc?.storagePath) {
     return NextResponse.json({ error: "not found" }, { status: 404 });
   }
 
-  const { data, error } = await supabase.storage
-    .from(STORAGE_BUCKET)
-    .createSignedUrl(doc.storage_path, 300);
-
-  if (error || !data) {
+  try {
+    const url = await signedUrl(STORAGE_BUCKET, doc.storagePath, 300);
+    return NextResponse.redirect(url);
+  } catch {
     return NextResponse.json({ error: "not found" }, { status: 404 });
   }
-  return NextResponse.redirect(data.signedUrl);
 }

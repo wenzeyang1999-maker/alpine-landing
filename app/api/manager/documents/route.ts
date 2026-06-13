@@ -1,36 +1,50 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { and, eq, desc } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { managerUploads } from "@/lib/db/schema";
+import { signedUrl, removeObject } from "@/lib/storage";
 import { getCurrentManager } from "@/lib/manager/access";
 
 const BUCKET = "manager-docs";
 const SIGNED_URL_EXPIRY = 3600;
 
-function db() {
-  return createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } }
-  );
-}
-
 export async function GET() {
   const user = await getCurrentManager();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { data, error } = await db()
-    .from("manager_uploads")
-    .select("id, filename, storage_path, file_size, uploaded_at")
-    .eq("user_email", user.email)
-    .order("uploaded_at", { ascending: false });
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  let rows: { id: string; filename: string; storagePath: string; fileSize: number | null; uploadedAt: string }[];
+  try {
+    rows = await db
+      .select({
+        id: managerUploads.id,
+        filename: managerUploads.filename,
+        storagePath: managerUploads.storagePath,
+        fileSize: managerUploads.fileSize,
+        uploadedAt: managerUploads.uploadedAt,
+      })
+      .from(managerUploads)
+      .where(eq(managerUploads.userEmail, user.email))
+      .orderBy(desc(managerUploads.uploadedAt));
+  } catch (e) {
+    return NextResponse.json({ error: (e as Error).message }, { status: 500 });
+  }
 
   const docs = await Promise.all(
-    (data ?? []).map(async (doc: { id: string; filename: string; storage_path: string; file_size: number; uploaded_at: string }) => {
-      const { data: signed } = await db().storage
-        .from(BUCKET)
-        .createSignedUrl(doc.storage_path, SIGNED_URL_EXPIRY);
-      return { ...doc, url: signed?.signedUrl ?? null };
+    rows.map(async (doc) => {
+      let url: string | null = null;
+      try {
+        url = await signedUrl(BUCKET, doc.storagePath, SIGNED_URL_EXPIRY);
+      } catch {
+        url = null;
+      }
+      return {
+        id: doc.id,
+        filename: doc.filename,
+        storage_path: doc.storagePath,
+        file_size: doc.fileSize,
+        uploaded_at: doc.uploadedAt,
+        url,
+      };
     })
   );
 
@@ -44,17 +58,16 @@ export async function DELETE(req: Request) {
   const { id } = await req.json();
   if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
-  const { data: doc, error: findErr } = await db()
-    .from("manager_uploads")
-    .select("id, storage_path")
-    .eq("id", id)
-    .eq("user_email", user.email)
-    .single();
+  const [doc] = await db
+    .select({ id: managerUploads.id, storagePath: managerUploads.storagePath })
+    .from(managerUploads)
+    .where(and(eq(managerUploads.id, id), eq(managerUploads.userEmail, user.email)))
+    .limit(1);
 
-  if (findErr || !doc) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (!doc) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  await db().storage.from(BUCKET).remove([doc.storage_path]);
-  await db().from("manager_uploads").delete().eq("id", id);
+  await removeObject(BUCKET, doc.storagePath);
+  await db.delete(managerUploads).where(eq(managerUploads.id, id));
 
   return NextResponse.json({ ok: true });
 }

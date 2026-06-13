@@ -1,20 +1,15 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { and, eq, sql } from "drizzle-orm";
 import { readFile } from "fs/promises";
 import { join } from "path";
+import { db } from "@/lib/db";
+import { managerUploads, managerResponses } from "@/lib/db/schema";
+import { ensureContainer, uploadObject } from "@/lib/storage";
 import { getCurrentManager } from "@/lib/manager/access";
 
 const BUCKET = "manager-docs";
 const PDF_FILENAME = "Purpose Specialty Lending Trust Offering Memorandum 2021-05-16.pdf";
 const PDF_LOCAL_PATH = join(process.cwd(), "docs/purposeinvest", PDF_FILENAME);
-
-function db() {
-  return createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } }
-  );
-}
 
 // 14 unique answers sourced from the Offering Memorandum (2021-05-16)
 const SEED_ANSWERS: Array<{
@@ -159,49 +154,37 @@ const SEED_ANSWERS: Array<{
   },
 ];
 
-async function ensureBucket() {
-  const client = db();
-  const { data: buckets } = await client.storage.listBuckets();
-  if (!(buckets ?? []).some((b: { name: string }) => b.name === BUCKET)) {
-    await client.storage.createBucket(BUCKET, { public: false });
-  }
-}
-
 async function seedDocument(userEmail: string): Promise<string | null> {
-  const client = db();
-
   // Return existing doc id if already uploaded for this user
-  const { data: existing } = await client
-    .from("manager_uploads")
-    .select("id")
-    .eq("user_email", userEmail)
-    .eq("filename", PDF_FILENAME)
-    .maybeSingle();
+  const [existing] = await db
+    .select({ id: managerUploads.id })
+    .from(managerUploads)
+    .where(and(eq(managerUploads.userEmail, userEmail), eq(managerUploads.filename, PDF_FILENAME)))
+    .limit(1);
 
-  if (existing) return existing.id as string;
+  if (existing) return existing.id;
 
   const pdfBuffer = await readFile(PDF_LOCAL_PATH);
   const safeName = PDF_FILENAME.replace(/[^a-zA-Z0-9._-]/g, "_");
   const storagePath = `${userEmail}/${Date.now()}-${safeName}`;
 
-  await ensureBucket();
+  await ensureContainer(BUCKET);
 
-  const { error: uploadErr } = await client.storage
-    .from(BUCKET)
-    .upload(storagePath, pdfBuffer, { contentType: "application/pdf", upsert: false });
+  try {
+    await uploadObject(BUCKET, storagePath, pdfBuffer, "application/pdf", { upsert: false });
+  } catch {
+    return null;
+  }
 
-  if (uploadErr) return null;
-
-  const { data: doc } = await client
-    .from("manager_uploads")
-    .insert({
-      user_email: userEmail,
+  const [doc] = await db
+    .insert(managerUploads)
+    .values({
+      userEmail,
       filename: PDF_FILENAME,
-      storage_path: storagePath,
-      file_size: pdfBuffer.byteLength,
+      storagePath,
+      fileSize: pdfBuffer.byteLength,
     })
-    .select("id")
-    .single();
+    .returning({ id: managerUploads.id });
 
   return doc?.id ?? null;
 }
@@ -211,15 +194,12 @@ export async function POST() {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!user.firm_id) return NextResponse.json({ error: "No firm_id" }, { status: 400 });
 
-  const client = db();
-
   // Clear all existing responses for this firm
-  const { error: deleteErr } = await client
-    .from("manager_responses")
-    .delete()
-    .eq("firm_id", user.firm_id);
-
-  if (deleteErr) return NextResponse.json({ error: deleteErr.message }, { status: 500 });
+  try {
+    await db.delete(managerResponses).where(eq(managerResponses.firmId, user.firm_id));
+  } catch (deleteErr) {
+    return NextResponse.json({ error: (deleteErr as Error).message }, { status: 500 });
+  }
 
   // Upload the source document (best-effort)
   let docId: string | null = null;
@@ -231,23 +211,38 @@ export async function POST() {
 
   // Seed all answers with source references
   const rows = SEED_ANSWERS.map((a) => ({
-    firm_id: user.firm_id,
-    question_id: a.question_id,
-    chapter_num: a.chapter_num,
-    answer_text: a.answer_text,
-    answer_choice: null,
-    answer_multi: null,
-    uploaded_filename: null,
-    source_document_id: docId,
-    source_quote: a.source_quote,
-    updated_at: new Date().toISOString(),
+    firmId: user.firm_id,
+    questionId: a.question_id,
+    chapterNum: a.chapter_num,
+    answerText: a.answer_text,
+    answerChoice: null,
+    answerMulti: null,
+    uploadedFilename: null,
+    sourceDocumentId: docId,
+    sourceQuote: a.source_quote,
+    updatedAt: new Date().toISOString(),
   }));
 
-  const { error } = await client
-    .from("manager_responses")
-    .upsert(rows, { onConflict: "firm_id,question_id" });
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  try {
+    await db
+      .insert(managerResponses)
+      .values(rows)
+      .onConflictDoUpdate({
+        target: [managerResponses.firmId, managerResponses.questionId],
+        set: {
+          chapterNum: sql`excluded.chapter_num`,
+          answerText: sql`excluded.answer_text`,
+          answerChoice: sql`excluded.answer_choice`,
+          answerMulti: sql`excluded.answer_multi`,
+          uploadedFilename: sql`excluded.uploaded_filename`,
+          sourceDocumentId: sql`excluded.source_document_id`,
+          sourceQuote: sql`excluded.source_quote`,
+          updatedAt: sql`excluded.updated_at`,
+        },
+      });
+  } catch (error) {
+    return NextResponse.json({ error: (error as Error).message }, { status: 500 });
+  }
 
   return NextResponse.json({ ok: true, seeded: rows.length, docId });
 }

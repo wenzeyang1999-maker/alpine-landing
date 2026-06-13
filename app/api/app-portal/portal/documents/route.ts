@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/app-portal/supabase";
+import { eq, desc } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { portalDocuments } from "@/lib/db/schema";
+import { removeObject } from "@/lib/storage";
 import { getAppAdminEmail } from "@/lib/app-portal/auth-session";
 
 export async function GET(req: NextRequest) {
@@ -9,18 +12,32 @@ export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get("token");
   if (!token) return NextResponse.json({ error: "missing token" }, { status: 400 });
 
-  const { data, error } = await supabase
-    .from("portal_documents")
-    .select("id, filename, file_size, uploaded_at, storage_path")
-    .eq("token", token)
-    .order("uploaded_at", { ascending: false });
+  try {
+    const rows = await db
+      .select({
+        id: portalDocuments.id,
+        filename: portalDocuments.filename,
+        fileSize: portalDocuments.fileSize,
+        uploadedAt: portalDocuments.uploadedAt,
+        storagePath: portalDocuments.storagePath,
+      })
+      .from(portalDocuments)
+      .where(eq(portalDocuments.token, token))
+      .orderBy(desc(portalDocuments.uploadedAt));
 
-  if (error) {
+    return NextResponse.json(
+      rows.map((r) => ({
+        id: r.id,
+        filename: r.filename,
+        file_size: r.fileSize,
+        uploaded_at: r.uploadedAt,
+        storage_path: r.storagePath,
+      })),
+    );
+  } catch (error) {
     console.error("[portal/documents] DB error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: (error as Error).message }, { status: 500 });
   }
-
-  return NextResponse.json(data ?? []);
 }
 
 export async function DELETE(req: NextRequest) {
@@ -30,17 +47,20 @@ export async function DELETE(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id");
   if (!id) return NextResponse.json({ error: "missing id" }, { status: 400 });
 
-  const { data: doc } = await supabase
-    .from("portal_documents")
-    .select("storage_path")
-    .eq("id", id)
-    .single();
+  const [doc] = await db
+    .select({ storagePath: portalDocuments.storagePath })
+    .from(portalDocuments)
+    .where(eq(portalDocuments.id, id))
+    .limit(1);
 
-  if (doc?.storage_path) {
-    await supabase.storage.from("portal-uploads").remove([doc.storage_path]);
+  if (doc?.storagePath) {
+    await removeObject("portal-uploads", doc.storagePath);
   }
 
-  const { error } = await supabase.from("portal_documents").delete().eq("id", id);
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  try {
+    await db.delete(portalDocuments).where(eq(portalDocuments.id, id));
+  } catch (error) {
+    return NextResponse.json({ error: (error as Error).message }, { status: 500 });
+  }
   return NextResponse.json({ ok: true });
 }

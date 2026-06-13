@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { and, eq, desc } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { investorDocuments } from "@/lib/db/schema";
+import { uploadObject, removeObject } from "@/lib/storage";
 import { getCurrentInvestor, canAccessReport } from "@/lib/investor/access";
 import { isValidReportSlug } from "@/lib/investor/report-registry";
 
@@ -29,18 +32,34 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "not found" }, { status: 404 });
   }
 
-  const { data, error } = await supabase
-    .from("investor_documents")
-    .select("id, filename, file_size, status, uploaded_at, processed_at")
-    .eq("investor_id", investor.id)
-    .eq("report_slug", slug)
-    .order("uploaded_at", { ascending: false });
+  try {
+    const rows = await db
+      .select({
+        id: investorDocuments.id,
+        filename: investorDocuments.filename,
+        fileSize: investorDocuments.fileSize,
+        status: investorDocuments.status,
+        uploadedAt: investorDocuments.uploadedAt,
+        processedAt: investorDocuments.processedAt,
+      })
+      .from(investorDocuments)
+      .where(and(eq(investorDocuments.investorId, investor.id), eq(investorDocuments.reportSlug, slug)))
+      .orderBy(desc(investorDocuments.uploadedAt));
 
-  if (error) {
+    return NextResponse.json(
+      rows.map((r) => ({
+        id: r.id,
+        filename: r.filename,
+        file_size: r.fileSize,
+        status: r.status,
+        uploaded_at: r.uploadedAt,
+        processed_at: r.processedAt,
+      })),
+    );
+  } catch (error) {
     console.error("[investor/documents] list error:", error);
     return NextResponse.json({ error: "Couldn't load documents." }, { status: 500 });
   }
-  return NextResponse.json(data ?? []);
 }
 
 // ── POST — upload a PDF against a report ─────────────────────────────────────
@@ -86,36 +105,47 @@ export async function POST(req: NextRequest) {
     const safeName = (file.name || "document.pdf").replace(/[^a-zA-Z0-9._-]/g, "_");
     const storagePath = `investor/${investor.id}/${slug}/${Date.now()}-${safeName}`;
 
-    const { error: storageError } = await supabase.storage
-      .from(STORAGE_BUCKET)
-      .upload(storagePath, buffer, { contentType: "application/pdf", upsert: false });
-
-    if (storageError) {
+    try {
+      await uploadObject(STORAGE_BUCKET, storagePath, buffer, "application/pdf", { upsert: false });
+    } catch (storageError) {
       console.error("[investor/documents] storage error:", storageError);
       return NextResponse.json({ error: "Upload failed — please try again." }, { status: 500 });
     }
 
-    const { data: row, error: dbError } = await supabase
-      .from("investor_documents")
-      .insert({
-        investor_id: investor.id,
-        report_slug: slug,
-        filename: file.name || safeName,
-        file_size: buffer.length,
-        storage_path: storagePath,
-        status: "pending",
-      })
-      .select("id, filename, file_size, status, uploaded_at, processed_at")
-      .single();
+    try {
+      const [row] = await db
+        .insert(investorDocuments)
+        .values({
+          investorId: investor.id,
+          reportSlug: slug,
+          filename: file.name || safeName,
+          fileSize: buffer.length,
+          storagePath,
+          status: "pending",
+        })
+        .returning({
+          id: investorDocuments.id,
+          filename: investorDocuments.filename,
+          fileSize: investorDocuments.fileSize,
+          status: investorDocuments.status,
+          uploadedAt: investorDocuments.uploadedAt,
+          processedAt: investorDocuments.processedAt,
+        });
 
-    if (dbError || !row) {
+      return NextResponse.json({
+        id: row.id,
+        filename: row.filename,
+        file_size: row.fileSize,
+        status: row.status,
+        uploaded_at: row.uploadedAt,
+        processed_at: row.processedAt,
+      });
+    } catch (dbError) {
       console.error("[investor/documents] db error:", dbError);
       // Roll back the orphaned storage object — best effort.
-      await supabase.storage.from(STORAGE_BUCKET).remove([storagePath]);
+      await removeObject(STORAGE_BUCKET, storagePath);
       return NextResponse.json({ error: "Upload failed — please try again." }, { status: 500 });
     }
-
-    return NextResponse.json(row);
   } catch (err) {
     console.error("[investor/documents] upload error:", err);
     return NextResponse.json({ error: "Upload failed — please try again." }, { status: 500 });
@@ -131,29 +161,32 @@ export async function DELETE(req: NextRequest) {
   if (!id) return NextResponse.json({ error: "missing id" }, { status: 400 });
 
   // Authorize by (investor_id, report_slug, doc_id) together — never id alone.
-  const { data: doc } = await supabase
-    .from("investor_documents")
-    .select("id, investor_id, report_slug, storage_path")
-    .eq("id", id)
-    .maybeSingle();
+  const [doc] = await db
+    .select({
+      id: investorDocuments.id,
+      investorId: investorDocuments.investorId,
+      reportSlug: investorDocuments.reportSlug,
+      storagePath: investorDocuments.storagePath,
+    })
+    .from(investorDocuments)
+    .where(eq(investorDocuments.id, id))
+    .limit(1);
 
-  if (!doc || doc.investor_id !== investor.id) {
+  if (!doc || doc.investorId !== investor.id) {
     return NextResponse.json({ error: "not found" }, { status: 404 });
   }
-  if (!(await canAccessReport(investor.id, doc.report_slug))) {
+  if (!(await canAccessReport(investor.id, doc.reportSlug))) {
     return NextResponse.json({ error: "not found" }, { status: 404 });
   }
 
-  if (doc.storage_path) {
-    await supabase.storage.from(STORAGE_BUCKET).remove([doc.storage_path]);
+  if (doc.storagePath) {
+    await removeObject(STORAGE_BUCKET, doc.storagePath);
   }
-  const { error } = await supabase
-    .from("investor_documents")
-    .delete()
-    .eq("id", id)
-    .eq("investor_id", investor.id);
-
-  if (error) {
+  try {
+    await db
+      .delete(investorDocuments)
+      .where(and(eq(investorDocuments.id, id), eq(investorDocuments.investorId, investor.id)));
+  } catch (error) {
     console.error("[investor/documents] delete error:", error);
     return NextResponse.json({ error: "Couldn't delete the document." }, { status: 500 });
   }

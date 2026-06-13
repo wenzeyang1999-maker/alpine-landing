@@ -1,25 +1,11 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { db } from "@/lib/db";
+import { managerUploads } from "@/lib/db/schema";
+import { ensureContainer, uploadObject, removeObject } from "@/lib/storage";
 import { getCurrentManager } from "@/lib/manager/access";
 
 const BUCKET = "manager-docs";
 const MAX_BYTES = 20 * 1024 * 1024;
-
-function db() {
-  return createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } }
-  );
-}
-
-async function ensureBucket() {
-  const { data: buckets } = await db().storage.listBuckets();
-  const exists = (buckets ?? []).some((b: { name: string }) => b.name === BUCKET);
-  if (!exists) {
-    await db().storage.createBucket(BUCKET, { public: false });
-  }
-}
 
 export async function POST(req: Request) {
   const user = await getCurrentManager();
@@ -32,36 +18,46 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "File too large (max 20 MB)" }, { status: 413 });
   }
 
-  await ensureBucket();
+  await ensureContainer(BUCKET);
 
   const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
   const storagePath = `${user.email}/${Date.now()}-${safeName}`;
 
   const arrayBuffer = await file.arrayBuffer();
-  const { error: uploadErr } = await db().storage
-    .from(BUCKET)
-    .upload(storagePath, arrayBuffer, {
-      contentType: file.type || "application/octet-stream",
-      upsert: false,
-    });
-
-  if (uploadErr) return NextResponse.json({ error: uploadErr.message }, { status: 500 });
-
-  const { data: doc, error: dbErr } = await db()
-    .from("manager_uploads")
-    .insert({
-      user_email: user.email,
-      filename: file.name,
-      storage_path: storagePath,
-      file_size: file.size,
-    })
-    .select("id, filename, storage_path, file_size, uploaded_at")
-    .single();
-
-  if (dbErr) {
-    await db().storage.from(BUCKET).remove([storagePath]);
-    return NextResponse.json({ error: dbErr.message }, { status: 500 });
+  try {
+    await uploadObject(BUCKET, storagePath, arrayBuffer, file.type || "application/octet-stream", { upsert: false });
+  } catch (uploadErr) {
+    return NextResponse.json({ error: (uploadErr as Error).message }, { status: 500 });
   }
 
-  return NextResponse.json({ doc });
+  try {
+    const [doc] = await db
+      .insert(managerUploads)
+      .values({
+        userEmail: user.email,
+        filename: file.name,
+        storagePath,
+        fileSize: file.size,
+      })
+      .returning({
+        id: managerUploads.id,
+        filename: managerUploads.filename,
+        storagePath: managerUploads.storagePath,
+        fileSize: managerUploads.fileSize,
+        uploadedAt: managerUploads.uploadedAt,
+      });
+
+    return NextResponse.json({
+      doc: {
+        id: doc.id,
+        filename: doc.filename,
+        storage_path: doc.storagePath,
+        file_size: doc.fileSize,
+        uploaded_at: doc.uploadedAt,
+      },
+    });
+  } catch (dbErr) {
+    await removeObject(BUCKET, storagePath);
+    return NextResponse.json({ error: (dbErr as Error).message }, { status: 500 });
+  }
 }
