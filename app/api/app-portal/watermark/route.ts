@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PDFDocument, rgb, degrees } from "pdf-lib";
 import { Resend } from "resend";
-import { supabase } from "@/lib/app-portal/supabase";
+import { db } from "@/lib/db";
+import { watermarkDistributions } from "@/lib/db/schema";
 import { getAppAdminEmail } from "@/lib/app-portal/auth-session";
 import { wrapEmail } from "@/lib/app-portal/email-template";
 import { logAudit } from "@/lib/app-portal/audit-log";
@@ -104,13 +105,13 @@ export async function POST(req: NextRequest) {
       emailSent = true;
     }
 
-    // Log to Supabase
-    await supabase.from("watermark_distributions").insert({
-      recipient_name: recipientName,
-      recipient_email: recipientEmail ?? null,
+    // Log distribution
+    await db.insert(watermarkDistributions).values({
+      recipientName,
+      recipientEmail: recipientEmail ?? null,
       filename: file.name,
-      distributed_by: distributedBy,
-      email_sent: emailSent,
+      distributedBy,
+      emailSent,
     });
     await logAudit({
       actor: adminEmail,

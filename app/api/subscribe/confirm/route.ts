@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import { supabase } from "@/lib/supabase";
+import { eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { newsletterSubscribers } from "@/lib/db/schema";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const RESEND_AUDIENCE_ID = process.env.RESEND_AUDIENCE_ID;
@@ -25,43 +27,33 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const { data: row, error } = await supabase
-      .from("newsletter_subscribers")
-      .select("email, confirm_token_sent_at")
-      .eq("confirm_token", token)
-      .maybeSingle();
-
-    if (error) {
-      console.error("Subscribe confirm lookup error:", error);
-      return redirectTo(req, "/subscribe/confirmed?error=invalid");
-    }
+    const [row] = await db
+      .select({ email: newsletterSubscribers.email, confirmTokenSentAt: newsletterSubscribers.confirmTokenSentAt })
+      .from(newsletterSubscribers)
+      .where(eq(newsletterSubscribers.confirmToken, token))
+      .limit(1);
 
     if (!row) {
       return redirectTo(req, "/subscribe/confirmed?error=invalid");
     }
 
     // Check token age (≤ 7 days)
-    const sentAt = row.confirm_token_sent_at
-      ? new Date(row.confirm_token_sent_at).getTime()
+    const sentAt = row.confirmTokenSentAt
+      ? new Date(row.confirmTokenSentAt).getTime()
       : 0;
     if (!sentAt || Date.now() - sentAt > TOKEN_TTL_MS) {
       return redirectTo(req, "/subscribe/confirmed?error=invalid");
     }
 
     // Confirm: set confirmed_at, clear token (one-time use), clear unsubscribed_at.
-    const { error: upErr } = await supabase
-      .from("newsletter_subscribers")
-      .update({
-        confirmed_at: new Date().toISOString(),
-        confirm_token: null,
-        unsubscribed_at: null,
+    await db
+      .update(newsletterSubscribers)
+      .set({
+        confirmedAt: new Date().toISOString(),
+        confirmToken: null,
+        unsubscribedAt: null,
       })
-      .eq("email", row.email);
-
-    if (upErr) {
-      console.error("Subscribe confirm update error:", upErr);
-      return redirectTo(req, "/subscribe/confirmed?error=invalid");
-    }
+      .where(eq(newsletterSubscribers.email, row.email));
 
     // Best-effort Resend Audience sync.
     if (RESEND_AUDIENCE_ID) {
@@ -74,13 +66,10 @@ export async function GET(req: NextRequest) {
         if (rErr) {
           console.error("Subscribe confirm Resend sync error:", rErr);
         } else if (data?.id) {
-          await supabase
-            .from("newsletter_subscribers")
-            .update({
-              resend_contact_id: data.id,
-              resend_synced_at: new Date().toISOString(),
-            })
-            .eq("email", row.email);
+          await db
+            .update(newsletterSubscribers)
+            .set({ resendContactId: data.id, resendSyncedAt: new Date().toISOString() })
+            .where(eq(newsletterSubscribers.email, row.email));
         }
       } catch (e) {
         console.error("Subscribe confirm Resend sync exception:", e);

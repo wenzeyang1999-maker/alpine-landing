@@ -1,8 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@supabase/supabase-js";
 import crypto from "crypto";
+import { db } from "@/lib/db";
+import { users, newsletterSubscribers } from "@/lib/db/schema";
 import { notifyAdminNewMember } from "@/lib/admin-notify";
+
+// NOTE: analyst/admin identity still lives in Supabase Auth (this signup creates
+// the auth user via generateLink; app/api/auth/login verifies via the password
+// grant). Fully cutting this over is a separate auth migration — not just a token
+// swap — because login depends on the same Supabase Auth user store. DB writes
+// below are on Drizzle/Azure; only the auth user creation remains on Supabase.
+function authClient() {
+  return createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
+    auth: { persistSession: false },
+  });
+}
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const ADMIN_EMAIL = "azhang@alpinedd.com";
@@ -159,7 +172,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Create user in Supabase Auth and get a verification link in one call
-    const { data: linkData, error: linkError } = await supabase.auth.admin.generateLink({
+    const { data: linkData, error: linkError } = await authClient().auth.admin.generateLink({
       type: "signup",
       email,
       password,
@@ -181,29 +194,40 @@ export async function POST(req: NextRequest) {
 
     // Persist all profile fields in the users table + auto-subscribe to newsletter
     await Promise.all([
-      supabase.from("users").upsert(
-        {
+      db
+        .insert(users)
+        .values({
           email,
-          full_name,
+          fullName: full_name,
           organization,
-          user_type:  user_type  || null,
-          job_title:  job_title  || null,
-          aum:        aum        || null,
+          userType: user_type || null,
+          jobTitle: job_title || null,
+          aum: aum || null,
           role: "analyst",
-          is_active: false,
-        },
-        { onConflict: "email" }
-      ),
-      supabase.from("newsletter_subscribers").upsert(
-        {
+          isActive: false,
+        })
+        .onConflictDoUpdate({
+          target: users.email,
+          set: {
+            fullName: full_name,
+            organization,
+            userType: user_type || null,
+            jobTitle: job_title || null,
+            aum: aum || null,
+            role: "analyst",
+            isActive: false,
+          },
+        }),
+      db
+        .insert(newsletterSubscribers)
+        .values({
           email,
           source: "signup",
-          confirmed_at: new Date().toISOString(),
-          unsubscribe_token: crypto.randomBytes(32).toString("hex"),
-          consent_user_agent: req.headers.get("user-agent") ?? null,
-        },
-        { onConflict: "email", ignoreDuplicates: true }
-      ),
+          confirmedAt: new Date().toISOString(),
+          unsubscribeToken: crypto.randomBytes(32).toString("hex"),
+          consentUserAgent: req.headers.get("user-agent") ?? null,
+        })
+        .onConflictDoNothing({ target: newsletterSubscribers.email }),
     ]);
 
     // Fire emails in parallel

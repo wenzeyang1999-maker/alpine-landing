@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/app-portal/supabase";
+import { eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { users } from "@/lib/db/schema";
 import { signSession, SESSION, cookieOptions, isAppAdmin } from "@/lib/app-portal/auth-session";
 import { logAudit } from "@/lib/app-portal/audit-log";
 
@@ -48,21 +50,27 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid email or password." }, { status: 401 });
     }
 
-    // Enrich with users table data — include demo_access flag
+    // Enrich with users table data. (demo_access column does not exist in the
+    // schema, so it is always false — matching prior production behavior.)
     const normalizedEmail = email.trim().toLowerCase();
-    const { data: row } = await supabase
-      .from("users")
-      .select("full_name, role, demo_access")
-      .eq("email", normalizedEmail)
-      .single();
+    let row: { fullName: string | null; role: string } | undefined;
+    try {
+      [row] = await db
+        .select({ fullName: users.fullName, role: users.role })
+        .from(users)
+        .where(eq(users.email, normalizedEmail))
+        .limit(1);
+    } catch {
+      row = undefined;
+    }
 
     const res = NextResponse.json({
       user: {
         email: normalizedEmail,
-        full_name: row?.full_name ?? email,
+        full_name: row?.fullName ?? email,
         role: row?.role ?? "analyst",
       },
-      demo_access: row?.demo_access ?? false,
+      demo_access: false,
     });
     await setSessionCookieIfAdmin(res, normalizedEmail);
     if (isAppAdmin(normalizedEmail)) await logAudit({ actor: normalizedEmail, action: "auth.login" });

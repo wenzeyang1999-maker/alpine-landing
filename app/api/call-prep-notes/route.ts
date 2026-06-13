@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { callPrepNotes } from "@/lib/db/schema";
 import { isBlockedSlug, blockedResponse } from "@/lib/slug-guard";
 
 export async function GET(req: NextRequest) {
@@ -7,17 +9,12 @@ export async function GET(req: NextRequest) {
   if (!slug) return NextResponse.json({ error: "missing slug" }, { status: 400 });
   if (isBlockedSlug(slug)) return blockedResponse();
 
-  const { data, error } = await supabase
-    .from("call_prep_notes")
-    .select("note_key, content")
-    .eq("review_slug", slug);
+  const rows = await db
+    .select({ noteKey: callPrepNotes.noteKey, content: callPrepNotes.content })
+    .from(callPrepNotes)
+    .where(eq(callPrepNotes.reviewSlug, slug));
 
-  if (error) {
-    console.error("[call-prep-notes] DB error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  return NextResponse.json(data ?? []);
+  return NextResponse.json(rows.map((r) => ({ note_key: r.noteKey, content: r.content })));
 }
 
 export async function PUT(req: NextRequest) {
@@ -29,14 +26,17 @@ export async function PUT(req: NextRequest) {
   }
   if (isBlockedSlug(review_slug)) return blockedResponse();
 
-  const { error } = await supabase.from("call_prep_notes").upsert(
-    { review_slug, note_key, content: content ?? "", updated_at: new Date().toISOString() },
-    { onConflict: "review_slug,note_key" }
-  );
-
-  if (error) {
-    console.error("[call-prep-notes] upsert error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  try {
+    await db
+      .insert(callPrepNotes)
+      .values({ reviewSlug: review_slug, noteKey: note_key, content: content ?? "", updatedAt: new Date().toISOString() })
+      .onConflictDoUpdate({
+        target: [callPrepNotes.reviewSlug, callPrepNotes.noteKey],
+        set: { content: content ?? "", updatedAt: new Date().toISOString() },
+      });
+  } catch (e) {
+    console.error("[call-prep-notes] upsert error:", e);
+    return NextResponse.json({ error: (e as Error).message }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true });

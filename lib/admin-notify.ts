@@ -1,5 +1,7 @@
 import { Resend } from "resend";
-import { supabase } from "@/lib/supabase";
+import { isNull, desc } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { newsletterSubscribers, users } from "@/lib/db/schema";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const ADMIN_EMAIL = "azhang@alpinedd.com";
@@ -14,21 +16,28 @@ interface NotifyPayload {
 }
 
 async function fetchLists() {
-  const [subRes, userRes] = await Promise.all([
-    supabase
-      .from("newsletter_subscribers")
-      .select("email, source, confirmed_at, created_at")
-      .is("unsubscribed_at", null)
-      .order("created_at", { ascending: false }),
-    supabase
-      .from("users")
-      .select("email, full_name, organization, created_at")
-      .order("created_at", { ascending: false }),
+  const [subscribers, userRows] = await Promise.all([
+    db
+      .select({
+        email: newsletterSubscribers.email,
+        source: newsletterSubscribers.source,
+        confirmedAt: newsletterSubscribers.confirmedAt,
+        createdAt: newsletterSubscribers.createdAt,
+      })
+      .from(newsletterSubscribers)
+      .where(isNull(newsletterSubscribers.unsubscribedAt))
+      .orderBy(desc(newsletterSubscribers.createdAt)),
+    db
+      .select({
+        email: users.email,
+        fullName: users.fullName,
+        organization: users.organization,
+        createdAt: users.createdAt,
+      })
+      .from(users)
+      .orderBy(desc(users.createdAt)),
   ]);
-  return {
-    subscribers: subRes.data ?? [],
-    users: userRes.data ?? [],
-  };
+  return { subscribers, users: userRows };
 }
 
 function fmt(iso: string | null) {
@@ -79,8 +88,8 @@ function buildHtml(payload: NotifyPayload, subscribers: Lists["subscribers"], us
     subscribers.map(s => ({
       email: s.email,
       source: s.source,
-      confirmed: s.confirmed_at ? "✓ Confirmed" : "Pending",
-      joined: fmt(s.created_at),
+      confirmed: s.confirmedAt ? "✓ Confirmed" : "Pending",
+      joined: fmt(s.createdAt),
     })),
     [
       { label: "Email",     key: "email" },
@@ -92,10 +101,10 @@ function buildHtml(payload: NotifyPayload, subscribers: Lists["subscribers"], us
 
   const userRows = tableRows(
     users.map(u => ({
-      name:  u.full_name ?? "—",
+      name:  u.fullName ?? "—",
       email: u.email,
       org:   u.organization ?? "—",
-      joined: fmt(u.created_at),
+      joined: fmt(u.createdAt),
     })),
     [
       { label: "Name",   key: "name" },

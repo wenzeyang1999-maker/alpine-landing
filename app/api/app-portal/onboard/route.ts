@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import { supabase } from "@/lib/app-portal/supabase";
+import { db } from "@/lib/db";
+import { customers } from "@/lib/db/schema";
 import { getAppAdminEmail } from "@/lib/app-portal/auth-session";
 import { wrapEmail } from "@/lib/app-portal/email-template";
 import { logAudit } from "@/lib/app-portal/audit-log";
@@ -15,20 +16,21 @@ async function persistCustomer(payload: {
   onboarded_by: string;
 }) {
   try {
-    await supabase.from("customers").upsert(
-      {
-        name: payload.name,
-        email: payload.email,
-        organization: payload.organization || null,
-        fund_name: payload.fund_name || null,
-        portal_token: payload.portal_token,
-        notes: payload.notes || null,
-        onboarded_by: payload.onboarded_by,
-        plan: "starter",
-        status: "active",
-      },
-      { onConflict: "portal_token" },
-    );
+    const values = {
+      name: payload.name,
+      email: payload.email,
+      organization: payload.organization || null,
+      fundName: payload.fund_name || null,
+      portalToken: payload.portal_token,
+      notes: payload.notes || null,
+      onboardedBy: payload.onboarded_by,
+      plan: "starter",
+      status: "active",
+    };
+    await db
+      .insert(customers)
+      .values(values)
+      .onConflictDoUpdate({ target: customers.portalToken, set: values });
   } catch (err) {
     console.warn("[onboard] persist customer failed (non-blocking):", err);
   }

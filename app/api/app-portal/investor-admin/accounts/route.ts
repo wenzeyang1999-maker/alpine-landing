@@ -1,25 +1,40 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/app-portal/supabase";
+import { eq, desc } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { investors } from "@/lib/db/schema";
 import { getAppAdminEmail } from "@/lib/app-portal/auth-session";
 import { logAudit } from "@/lib/app-portal/audit-log";
 import { hashPassword } from "@/lib/investor/password";
 
 export const runtime = "nodejs";
 
+type InvestorRow = typeof investors.$inferSelect;
+
+// Preserve the snake_case API shape clients consume.
+function toApi(row: InvestorRow) {
+  return {
+    id: row.id,
+    email: row.email,
+    full_name: row.fullName,
+    organization: row.organization,
+    is_active: row.isActive,
+    created_at: row.createdAt,
+    last_login: row.lastLogin,
+  };
+}
+
 // GET — list investor accounts.
 export async function GET(req: NextRequest) {
   const admin = await getAppAdminEmail(req);
   if (!admin) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
-  const { data, error } = await supabase
-    .from("investors")
-    .select("id, email, full_name, organization, is_active, created_at, last_login")
-    .order("created_at", { ascending: false });
-  if (error) {
+  try {
+    const rows = await db.select().from(investors).orderBy(desc(investors.createdAt));
+    return NextResponse.json(rows.map(toApi));
+  } catch (error) {
     console.error("[investor-admin/accounts] list error:", error);
     return NextResponse.json({ error: "Couldn't load accounts." }, { status: 500 });
   }
-  return NextResponse.json(data ?? []);
 }
 
 // POST — create an investor account. { email, full_name, organization, password }
@@ -43,20 +58,22 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { data, error } = await supabase
-    .from("investors")
-    .insert({
-      email,
-      password_hash: hashPassword(password),
-      full_name: fullName || null,
-      organization: organization || null,
-    })
-    .select("id, email, full_name, organization, is_active, created_at, last_login")
-    .single();
+  try {
+    const [row] = await db
+      .insert(investors)
+      .values({
+        email,
+        passwordHash: hashPassword(password),
+        fullName: fullName || null,
+        organization: organization || null,
+      })
+      .returning();
 
-  if (error) {
+    await logAudit({ actor: admin, action: "investor.account.create", target: email });
+    return NextResponse.json(toApi(row));
+  } catch (error) {
     // 23505 = unique violation on the email column.
-    if (error.code === "23505") {
+    if ((error as { code?: string })?.code === "23505") {
       return NextResponse.json(
         { error: "An account with that email already exists." },
         { status: 409 },
@@ -65,9 +82,6 @@ export async function POST(req: NextRequest) {
     console.error("[investor-admin/accounts] create error:", error);
     return NextResponse.json({ error: "Couldn't create the account." }, { status: 500 });
   }
-
-  await logAudit({ actor: admin, action: "investor.account.create", target: email });
-  return NextResponse.json(data);
 }
 
 // PATCH — activate / deactivate an account. { id, is_active }
@@ -81,22 +95,19 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: "id and is_active are required." }, { status: 400 });
   }
 
-  const { data, error } = await supabase
-    .from("investors")
-    .update({ is_active: body.is_active })
-    .eq("id", id)
-    .select("id, email, full_name, organization, is_active, created_at, last_login")
-    .single();
-
-  if (error || !data) {
+  try {
+    const [row] = await db.update(investors).set({ isActive: body.is_active }).where(eq(investors.id, id)).returning();
+    if (!row) {
+      return NextResponse.json({ error: "Couldn't update the account." }, { status: 500 });
+    }
+    await logAudit({
+      actor: admin,
+      action: body.is_active ? "investor.account.activate" : "investor.account.deactivate",
+      target: row.email,
+    });
+    return NextResponse.json(toApi(row));
+  } catch (error) {
     console.error("[investor-admin/accounts] patch error:", error);
     return NextResponse.json({ error: "Couldn't update the account." }, { status: 500 });
   }
-
-  await logAudit({
-    actor: admin,
-    action: body.is_active ? "investor.account.activate" : "investor.account.deactivate",
-    target: data.email,
-  });
-  return NextResponse.json(data);
 }

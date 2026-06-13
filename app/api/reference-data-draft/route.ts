@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { referenceDataDraft } from "@/lib/db/schema";
 import { isBlockedSlug, blockedResponse } from "@/lib/slug-guard";
 
 export async function GET(req: NextRequest) {
@@ -7,18 +9,13 @@ export async function GET(req: NextRequest) {
   if (!slug) return NextResponse.json({ error: "missing slug" }, { status: 400 });
   if (isBlockedSlug(slug)) return blockedResponse();
 
-  const { data, error } = await supabase
-    .from("reference_data_draft")
-    .select("values")
-    .eq("review_slug", slug)
-    .maybeSingle();
+  const [row] = await db
+    .select({ values: referenceDataDraft.values })
+    .from(referenceDataDraft)
+    .where(eq(referenceDataDraft.reviewSlug, slug))
+    .limit(1);
 
-  if (error) {
-    console.error("[reference-data-draft] DB error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  return NextResponse.json({ values: data?.values ?? null });
+  return NextResponse.json({ values: row?.values ?? null });
 }
 
 export async function PUT(req: NextRequest) {
@@ -29,14 +26,17 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: "missing review_slug or values" }, { status: 400 });
   }
 
-  const { error } = await supabase.from("reference_data_draft").upsert(
-    { review_slug, values, updated_at: new Date().toISOString() },
-    { onConflict: "review_slug" }
-  );
-
-  if (error) {
-    console.error("[reference-data-draft] upsert error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  try {
+    await db
+      .insert(referenceDataDraft)
+      .values({ reviewSlug: review_slug, values, updatedAt: new Date().toISOString() })
+      .onConflictDoUpdate({
+        target: referenceDataDraft.reviewSlug,
+        set: { values, updatedAt: new Date().toISOString() },
+      });
+  } catch (e) {
+    console.error("[reference-data-draft] upsert error:", e);
+    return NextResponse.json({ error: (e as Error).message }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true });
@@ -47,14 +47,11 @@ export async function DELETE(req: NextRequest) {
   if (!slug) return NextResponse.json({ error: "missing slug" }, { status: 400 });
   if (isBlockedSlug(slug)) return blockedResponse();
 
-  const { error } = await supabase
-    .from("reference_data_draft")
-    .delete()
-    .eq("review_slug", slug);
-
-  if (error) {
-    console.error("[reference-data-draft] delete error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  try {
+    await db.delete(referenceDataDraft).where(eq(referenceDataDraft.reviewSlug, slug));
+  } catch (e) {
+    console.error("[reference-data-draft] delete error:", e);
+    return NextResponse.json({ error: (e as Error).message }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true });

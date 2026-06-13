@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/app-portal/supabase";
+import { eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { earlyAccessRequests } from "@/lib/db/schema";
 import { getAppAdminEmail } from "@/lib/app-portal/auth-session";
 import { logAudit } from "@/lib/app-portal/audit-log";
 
@@ -16,15 +18,11 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     }
 
     const update: Record<string, unknown> = { status };
-    if (status === "contacted") update.contacted_at = new Date().toISOString();
+    if (status === "contacted") update.contactedAt = new Date().toISOString();
     if (typeof notes === "string") update.notes = notes;
 
-    const { error } = await supabase
-      .from("early_access_requests")
-      .update(update)
-      .eq("id", params.id);
+    await db.update(earlyAccessRequests).set(update).where(eq(earlyAccessRequests.id, params.id));
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     await logAudit({ actor: adminEmail, action: "request.status", target: params.id, meta: { status } });
     return NextResponse.json({ ok: true });
   } catch (err: unknown) {

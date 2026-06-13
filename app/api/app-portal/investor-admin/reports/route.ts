@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/app-portal/supabase";
+import { eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { reportPublications } from "@/lib/db/schema";
 import { getAppAdminEmail } from "@/lib/app-portal/auth-session";
 import { logAudit } from "@/lib/app-portal/audit-log";
 import { allReportEntries, getReportEntry, isValidReportSlug } from "@/lib/investor/report-registry";
@@ -11,15 +13,17 @@ export async function GET(req: NextRequest) {
   const admin = await getAppAdminEmail(req);
   if (!admin) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
-  const { data: pubs, error } = await supabase
-    .from("report_publications")
-    .select("report_slug, published_at, published_by");
-  if (error) {
+  let pubs: { reportSlug: string; publishedAt: string }[];
+  try {
+    pubs = await db
+      .select({ reportSlug: reportPublications.reportSlug, publishedAt: reportPublications.publishedAt })
+      .from(reportPublications);
+  } catch (error) {
     console.error("[investor-admin/reports] list error:", error);
     return NextResponse.json({ error: "Couldn't load reports." }, { status: 500 });
   }
 
-  const pubMap = new Map((pubs ?? []).map((p) => [p.report_slug as string, p]));
+  const pubMap = new Map(pubs.map((p) => [p.reportSlug, p]));
   const reports = allReportEntries().map((e) => ({
     slug: e.slug,
     fundName: e.fundName,
@@ -28,7 +32,7 @@ export async function GET(req: NextRequest) {
     oddScore: e.oddScore,
     topicCount: e.topicCount,
     published: pubMap.has(e.slug),
-    publishedAt: pubMap.get(e.slug)?.published_at ?? null,
+    publishedAt: pubMap.get(e.slug)?.publishedAt ?? null,
   }));
   return NextResponse.json(reports);
 }
@@ -48,25 +52,20 @@ export async function POST(req: NextRequest) {
   }
   const entry = getReportEntry(slug)!;
 
-  if (publish) {
-    const { error } = await supabase
-      .from("report_publications")
-      .upsert(
-        { report_slug: slug, fund_name: entry.fundName, published_by: admin },
-        { onConflict: "report_slug", ignoreDuplicates: true },
-      );
-    if (error) {
-      console.error("[investor-admin/reports] publish error:", error);
-      return NextResponse.json({ error: "Couldn't publish the report." }, { status: 500 });
+  try {
+    if (publish) {
+      await db
+        .insert(reportPublications)
+        .values({ reportSlug: slug, fundName: entry.fundName, publishedBy: admin })
+        .onConflictDoNothing({ target: reportPublications.reportSlug });
+      await logAudit({ actor: admin, action: "investor.report.publish", target: slug });
+    } else {
+      await db.delete(reportPublications).where(eq(reportPublications.reportSlug, slug));
+      await logAudit({ actor: admin, action: "investor.report.unpublish", target: slug });
     }
-    await logAudit({ actor: admin, action: "investor.report.publish", target: slug });
-  } else {
-    const { error } = await supabase.from("report_publications").delete().eq("report_slug", slug);
-    if (error) {
-      console.error("[investor-admin/reports] unpublish error:", error);
-      return NextResponse.json({ error: "Couldn't unpublish the report." }, { status: 500 });
-    }
-    await logAudit({ actor: admin, action: "investor.report.unpublish", target: slug });
+  } catch (error) {
+    console.error("[investor-admin/reports] publish toggle error:", error);
+    return NextResponse.json({ error: "Couldn't update the report." }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true, slug, published: publish });

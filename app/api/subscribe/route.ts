@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { Resend } from "resend";
-import { supabase } from "@/lib/supabase";
+import { eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { newsletterSubscribers } from "@/lib/db/schema";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { notifyAdminNewMember } from "@/lib/admin-notify";
 
@@ -159,13 +161,18 @@ export async function POST(req: NextRequest) {
     const unsubscribeToken = newToken();
 
     // 6) Lookup existing row
-    const { data: existing, error: lookupErr } = await supabase
-      .from("newsletter_subscribers")
-      .select("email, confirmed_at, unsubscribed_at, unsubscribe_token")
-      .eq("email", normalized)
-      .maybeSingle();
-
-    if (lookupErr) {
+    let existing: { confirmedAt: string | null; unsubscribedAt: string | null; unsubscribeToken: string | null } | undefined;
+    try {
+      [existing] = await db
+        .select({
+          confirmedAt: newsletterSubscribers.confirmedAt,
+          unsubscribedAt: newsletterSubscribers.unsubscribedAt,
+          unsubscribeToken: newsletterSubscribers.unsubscribeToken,
+        })
+        .from(newsletterSubscribers)
+        .where(eq(newsletterSubscribers.email, normalized))
+        .limit(1);
+    } catch (lookupErr) {
       console.error("Subscribe lookup error:", lookupErr);
       return NextResponse.json(
         { detail: "Something went wrong. Please try again." },
@@ -184,50 +191,30 @@ export async function POST(req: NextRequest) {
     let activeConfirmToken = confirmToken;
 
     if (existing) {
-      const isConfirmed = !!existing.confirmed_at;
-      const isUnsubscribed = !!existing.unsubscribed_at;
+      const isConfirmed = !!existing.confirmedAt;
+      const isUnsubscribed = !!existing.unsubscribedAt;
 
-      if (isConfirmed && isUnsubscribed) {
-        // Re-subscribe-after-unsubscribe: do NOT silently restore.
-        // Issue NEW confirm token; clearing unsubscribed_at happens at confirm time.
-        const { error: upErr } = await supabase
-          .from("newsletter_subscribers")
-          .update({
-            confirm_token: confirmToken,
-            confirm_token_sent_at: new Date().toISOString(),
-            source: subSource,
-            consent_ip_hash: ipHash,
-            consent_user_agent: userAgent,
-            ...(fullName ? { full_name: fullName } : {}),
-          })
-          .eq("email", normalized);
-        if (upErr) {
-          console.error("Subscribe re-issue (unsubscribed) error:", upErr);
-          return NextResponse.json(
-            { detail: "Something went wrong. Please try again." },
-            { status: 500 }
-          );
-        }
-        mustSendEmail = true;
-        activeConfirmToken = confirmToken;
-      } else if (isConfirmed) {
+      if (isConfirmed && !isUnsubscribed) {
         // Already confirmed — idempotent, no email re-send.
         mustSendEmail = false;
       } else {
-        // Pending — re-issue confirm token in case original expired.
-        const { error: upErr } = await supabase
-          .from("newsletter_subscribers")
-          .update({
-            confirm_token: confirmToken,
-            confirm_token_sent_at: new Date().toISOString(),
-            source: subSource,
-            consent_ip_hash: ipHash,
-            consent_user_agent: userAgent,
-            ...(fullName ? { full_name: fullName } : {}),
-          })
-          .eq("email", normalized);
-        if (upErr) {
-          console.error("Subscribe re-issue (pending) error:", upErr);
+        // Re-issue confirm token. For confirmed+unsubscribed we do NOT silently
+        // restore — clearing unsubscribed_at happens at confirm time. For pending,
+        // re-issue in case the original token expired.
+        try {
+          await db
+            .update(newsletterSubscribers)
+            .set({
+              confirmToken,
+              confirmTokenSentAt: new Date().toISOString(),
+              source: subSource,
+              consentIpHash: ipHash,
+              consentUserAgent: userAgent,
+              ...(fullName ? { fullName } : {}),
+            })
+            .where(eq(newsletterSubscribers.email, normalized));
+        } catch (upErr) {
+          console.error("Subscribe re-issue error:", upErr);
           return NextResponse.json(
             { detail: "Something went wrong. Please try again." },
             { status: 500 }
@@ -238,19 +225,18 @@ export async function POST(req: NextRequest) {
       }
     } else {
       // 7) Brand-new row
-      const { error: insertErr } = await supabase
-        .from("newsletter_subscribers")
-        .insert({
+      try {
+        await db.insert(newsletterSubscribers).values({
           email: normalized,
           source: subSource,
-          confirm_token: confirmToken,
-          confirm_token_sent_at: new Date().toISOString(),
-          unsubscribe_token: unsubscribeToken,
-          consent_ip_hash: ipHash,
-          consent_user_agent: userAgent,
-          full_name: fullName,
+          confirmToken,
+          confirmTokenSentAt: new Date().toISOString(),
+          unsubscribeToken,
+          consentIpHash: ipHash,
+          consentUserAgent: userAgent,
+          fullName,
         });
-      if (insertErr) {
+      } catch (insertErr) {
         console.error("Subscribe insert error:", insertErr);
         return NextResponse.json(
           { detail: "Something went wrong. Please try again." },

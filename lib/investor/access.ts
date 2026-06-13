@@ -13,7 +13,9 @@
  */
 
 import { cookies } from "next/headers";
-import { supabase } from "@/lib/supabase";
+import { eq, and } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { investors, investorReports, reportPublications } from "@/lib/db/schema";
 import { verifySession, INVESTOR_SESSION } from "@/lib/investor/auth-session";
 import {
   isValidReportSlug,
@@ -38,18 +40,24 @@ export async function getCurrentInvestor(): Promise<InvestorUser | null> {
   const email = await verifySession(token);
   if (!email) return null;
 
-  const { data, error } = await supabase
-    .from("investors")
-    .select("id, email, full_name, organization, is_active")
-    .eq("email", email.trim().toLowerCase())
-    .maybeSingle();
+  const [row] = await db
+    .select({
+      id: investors.id,
+      email: investors.email,
+      fullName: investors.fullName,
+      organization: investors.organization,
+      isActive: investors.isActive,
+    })
+    .from(investors)
+    .where(eq(investors.email, email.trim().toLowerCase()))
+    .limit(1);
 
-  if (error || !data || !data.is_active) return null;
+  if (!row || !row.isActive) return null;
   return {
-    id: data.id,
-    email: data.email,
-    full_name: data.full_name ?? null,
-    organization: data.organization ?? null,
+    id: row.id,
+    email: row.email,
+    full_name: row.fullName ?? null,
+    organization: row.organization ?? null,
   };
 }
 
@@ -58,18 +66,18 @@ export async function getCurrentInvestor(): Promise<InvestorUser | null> {
  * Returns registry entries (report metadata) ready for the home page cards.
  */
 export async function getVisibleReports(investorId: string): Promise<ReportRegistryEntry[]> {
-  const [{ data: assigned }, { data: published }] = await Promise.all([
-    supabase.from("investor_reports").select("report_slug").eq("investor_id", investorId),
-    supabase.from("report_publications").select("report_slug"),
+  const [assigned, published] = await Promise.all([
+    db.select({ reportSlug: investorReports.reportSlug }).from(investorReports).where(eq(investorReports.investorId, investorId)),
+    db.select({ reportSlug: reportPublications.reportSlug }).from(reportPublications),
   ]);
 
   if (!assigned || assigned.length === 0) return [];
-  const publishedSlugs = new Set((published ?? []).map((r) => r.report_slug as string));
+  const publishedSlugs = new Set(published.map((r) => r.reportSlug));
 
   const seen = new Set<string>();
   const out: ReportRegistryEntry[] = [];
   for (const row of assigned) {
-    const slug = row.report_slug as string;
+    const slug = row.reportSlug;
     if (seen.has(slug)) continue;
     seen.add(slug);
     if (!publishedSlugs.has(slug)) continue;
@@ -86,19 +94,19 @@ export async function getVisibleReports(investorId: string): Promise<ReportRegis
 export async function canAccessReport(investorId: string, slug: string): Promise<boolean> {
   if (!investorId || !isValidReportSlug(slug)) return false;
 
-  const [{ data: investor }, { data: pub }, { data: assignment }] = await Promise.all([
-    supabase.from("investors").select("is_active").eq("id", investorId).maybeSingle(),
-    supabase.from("report_publications").select("report_slug").eq("report_slug", slug).maybeSingle(),
-    supabase
-      .from("investor_reports")
-      .select("report_slug")
-      .eq("investor_id", investorId)
-      .eq("report_slug", slug)
-      .maybeSingle(),
+  const [investorRows, pubRows, assignmentRows] = await Promise.all([
+    db.select({ isActive: investors.isActive }).from(investors).where(eq(investors.id, investorId)).limit(1),
+    db.select({ reportSlug: reportPublications.reportSlug }).from(reportPublications).where(eq(reportPublications.reportSlug, slug)).limit(1),
+    db
+      .select({ reportSlug: investorReports.reportSlug })
+      .from(investorReports)
+      .where(and(eq(investorReports.investorId, investorId), eq(investorReports.reportSlug, slug)))
+      .limit(1),
   ]);
 
-  if (!investor || !investor.is_active) return false;
-  if (!pub) return false;
-  if (!assignment) return false;
+  const investor = investorRows[0];
+  if (!investor || !investor.isActive) return false;
+  if (!pubRows[0]) return false;
+  if (!assignmentRows[0]) return false;
   return true;
 }

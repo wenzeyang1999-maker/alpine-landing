@@ -1,24 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createHash } from "crypto";
-import { createClient } from "@supabase/supabase-js";
+import { eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { managerTeamInvites, usersInManager } from "@/lib/db/schema";
 import { hashPassword, isAcceptablePassword } from "@/lib/manager/password";
 import { signSession, managerCookieOptions, MANAGER_SESSION } from "@/lib/manager/auth-session";
-import { managerDb } from "@/lib/manager/db";
-
-function publicDb() {
-  return createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } }
-  );
-}
 
 function hashToken(raw: string): string {
   return createHash("sha256").update(raw).digest("hex");
 }
-
-type InviteRow = { id: string; firm_id: string; created_by: string; revoked_at: string | null };
-type UserRow = { id: string };
 
 export async function POST(req: NextRequest) {
   try {
@@ -45,26 +35,25 @@ export async function POST(req: NextRequest) {
 
     const token_hash = hashToken(rawToken);
 
-    const { data: inviteRaw } = await publicDb()
-      .from("manager_team_invites")
-      .select("id, firm_id, created_by, revoked_at")
-      .eq("token_hash", token_hash)
-      .maybeSingle() as { data: InviteRow | null };
+    const [inviteRaw] = await db
+      .select({ id: managerTeamInvites.id, firmId: managerTeamInvites.firmId, createdBy: managerTeamInvites.createdBy, revokedAt: managerTeamInvites.revokedAt })
+      .from(managerTeamInvites)
+      .where(eq(managerTeamInvites.tokenHash, token_hash))
+      .limit(1);
 
     if (!inviteRaw) {
       return NextResponse.json({ error: "This invite link is not valid." }, { status: 404 });
     }
-    if (inviteRaw.revoked_at) {
+    if (inviteRaw.revokedAt) {
       return NextResponse.json({ error: "This invite link has been revoked." }, { status: 410 });
     }
 
     // If email already has an account (same or different firm), reject
-    const db = managerDb();
-    const { data: existingUser } = await db
-      .from("users")
-      .select("id")
-      .eq("email", email)
-      .maybeSingle() as { data: UserRow | null };
+    const [existingUser] = await db
+      .select({ id: usersInManager.id })
+      .from(usersInManager)
+      .where(eq(usersInManager.email, email))
+      .limit(1);
 
     if (existingUser) {
       return NextResponse.json(
@@ -75,21 +64,21 @@ export async function POST(req: NextRequest) {
 
     // Create the invitee — auto-verified
     const password_hash = hashPassword(password);
-    const { error: insertErr } = await db.from("users").insert({
-      firm_id: inviteRaw.firm_id,
-      email,
-      full_name,
-      job_title: job_title || null,
-      role: "member",
-      invited_by: inviteRaw.created_by,
-      password_hash,
-      password_set_at: new Date().toISOString(),
-      is_verified: true,
-      verified_at: new Date().toISOString(),
-      verified_by: "invite_link",
-    }) as { error: unknown };
-
-    if (insertErr) {
+    try {
+      await db.insert(usersInManager).values({
+        firmId: inviteRaw.firmId,
+        email,
+        fullName: full_name,
+        jobTitle: job_title || null,
+        role: "member",
+        invitedBy: inviteRaw.createdBy,
+        passwordHash: password_hash,
+        passwordSetAt: new Date().toISOString(),
+        isVerified: true,
+        verifiedAt: new Date().toISOString(),
+        verifiedBy: "invite_link",
+      });
+    } catch (insertErr) {
       console.error("Invite accept insert error:", insertErr);
       return NextResponse.json({ error: "Could not create account. Please try again." }, { status: 500 });
     }

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import { managerDb } from "@/lib/manager/db";
+import { eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { usersInManager, firmsInManager } from "@/lib/db/schema";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM_EMAIL = "Alpine Due Diligence <noreply@send.alpinedd.com>";
@@ -55,15 +57,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "userId required" }, { status: 400 });
     }
 
-    const db = managerDb();
+    const [userRaw] = (await db
+      .select({ id: usersInManager.id, email: usersInManager.email, full_name: usersInManager.fullName, is_verified: usersInManager.isVerified, firm_id: usersInManager.firmId })
+      .from(usersInManager)
+      .where(eq(usersInManager.id, userId))
+      .limit(1)) as UserRow[];
 
-    const { data: userRaw, error: fetchErr } = await db
-      .from("users")
-      .select("id, email, full_name, is_verified, firm_id")
-      .eq("id", userId)
-      .maybeSingle() as { data: UserRow | null; error: unknown };
-
-    if (fetchErr || !userRaw) {
+    if (!userRaw) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
@@ -72,23 +72,22 @@ export async function POST(req: NextRequest) {
     }
 
     // Approve
-    const { error: updateErr } = await db.from("users").update({
-      is_verified: true,
-      verified_at: new Date().toISOString(),
-      verified_by: ADMIN_EMAIL,
-    }).eq("id", userId) as { error: unknown };
-
-    if (updateErr) {
+    try {
+      await db
+        .update(usersInManager)
+        .set({ isVerified: true, verifiedAt: new Date().toISOString(), verifiedBy: ADMIN_EMAIL })
+        .where(eq(usersInManager.id, userId));
+    } catch (updateErr) {
       console.error("Verify update error:", updateErr);
       return NextResponse.json({ error: "Database error" }, { status: 500 });
     }
 
     // Get firm name for email
-    const { data: firmRaw } = await db
-      .from("firms")
-      .select("name")
-      .eq("id", userRaw.firm_id)
-      .maybeSingle() as { data: FirmRow | null };
+    const [firmRaw] = (await db
+      .select({ name: firmsInManager.name })
+      .from(firmsInManager)
+      .where(eq(firmsInManager.id, userRaw.firm_id))
+      .limit(1)) as FirmRow[];
 
     const firmName = firmRaw?.name ?? "your firm";
     const displayName = userRaw.full_name ? `, ${userRaw.full_name.split(" ")[0]}` : "";

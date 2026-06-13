@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/app-portal/supabase";
+import { eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { flagDraftEdits } from "@/lib/db/schema";
 import { isBlockedSlug, blockedResponse } from "@/lib/app-portal/slug-guard";
 import { getAppAdminEmail } from "@/lib/app-portal/auth-session";
 
@@ -11,18 +13,13 @@ export async function GET(req: NextRequest) {
   if (!slug) return NextResponse.json({ error: "missing slug" }, { status: 400 });
   if (isBlockedSlug(slug)) return blockedResponse();
 
-  const { data, error } = await supabase
-    .from("flag_draft_edits")
-    .select("flags")
-    .eq("review_slug", slug)
-    .maybeSingle();
+  const [row] = await db
+    .select({ flags: flagDraftEdits.flags })
+    .from(flagDraftEdits)
+    .where(eq(flagDraftEdits.reviewSlug, slug))
+    .limit(1);
 
-  if (error) {
-    console.error("[flag-draft] DB error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  return NextResponse.json({ flags: data?.flags ?? null });
+  return NextResponse.json({ flags: row?.flags ?? null });
 }
 
 export async function PUT(req: NextRequest) {
@@ -37,14 +34,17 @@ export async function PUT(req: NextRequest) {
   }
   if (isBlockedSlug(review_slug)) return blockedResponse();
 
-  const { error } = await supabase.from("flag_draft_edits").upsert(
-    { review_slug, flags, updated_at: new Date().toISOString() },
-    { onConflict: "review_slug" }
-  );
-
-  if (error) {
-    console.error("[flag-draft] upsert error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  try {
+    await db
+      .insert(flagDraftEdits)
+      .values({ reviewSlug: review_slug, flags, updatedAt: new Date().toISOString() })
+      .onConflictDoUpdate({
+        target: flagDraftEdits.reviewSlug,
+        set: { flags, updatedAt: new Date().toISOString() },
+      });
+  } catch (e) {
+    console.error("[flag-draft] upsert error:", e);
+    return NextResponse.json({ error: (e as Error).message }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true });

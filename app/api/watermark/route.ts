@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PDFDocument, rgb, degrees } from "pdf-lib";
 import { Resend } from "resend";
-import { supabase } from "@/lib/supabase";
+import { db } from "@/lib/db";
+import { watermarkDistributions } from "@/lib/db/schema";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM_EMAIL = "Alpine Due Diligence <notifications@alpinedd.com>";
@@ -119,13 +120,13 @@ export async function POST(req: NextRequest) {
       emailSent = true;
     }
 
-    // Log to Supabase
-    await supabase.from("watermark_distributions").insert({
-      recipient_name: recipientName,
-      recipient_email: recipientEmail ?? null,
+    // Log distribution
+    await db.insert(watermarkDistributions).values({
+      recipientName,
+      recipientEmail: recipientEmail ?? null,
       filename: file.name,
-      distributed_by: distributedBy,
-      email_sent: emailSent,
+      distributedBy,
+      emailSent,
     });
 
     return new NextResponse(Buffer.from(watermarkedBytes), {

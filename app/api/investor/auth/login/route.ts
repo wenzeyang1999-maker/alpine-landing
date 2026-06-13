@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { investors } from "@/lib/db/schema";
 import { verifyPassword } from "@/lib/investor/password";
 import {
   signSession,
@@ -31,13 +33,14 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { data: investor, error } = await supabase
-      .from("investors")
-      .select("id, email, password_hash, is_active")
-      .eq("email", email)
-      .maybeSingle();
-
-    if (error) {
+    let investor: { id: string; email: string; passwordHash: string; isActive: boolean } | undefined;
+    try {
+      [investor] = await db
+        .select({ id: investors.id, email: investors.email, passwordHash: investors.passwordHash, isActive: investors.isActive })
+        .from(investors)
+        .where(eq(investors.email, email))
+        .limit(1);
+    } catch (error) {
       console.error("[investor/login] DB error:", error);
       return NextResponse.json(
         { error: "Something went wrong. Please try again." },
@@ -45,8 +48,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const active = investor && investor.is_active ? investor : null;
-    const passwordOk = verifyPassword(password, active ? active.password_hash : DUMMY_HASH);
+    const active = investor && investor.isActive ? investor : null;
+    const passwordOk = verifyPassword(password, active ? active.passwordHash : DUMMY_HASH);
 
     // Identical 401 for unknown email, inactive account, and bad password.
     if (!active || !passwordOk) {
@@ -62,10 +65,10 @@ export async function POST(req: NextRequest) {
     );
 
     // Best-effort — never block login on this write.
-    await supabase
-      .from("investors")
-      .update({ last_login: new Date().toISOString() })
-      .eq("id", active.id);
+    await db
+      .update(investors)
+      .set({ lastLogin: new Date().toISOString() })
+      .where(eq(investors.id, active.id));
 
     return res;
   } catch (err) {

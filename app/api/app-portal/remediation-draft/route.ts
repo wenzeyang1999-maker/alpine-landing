@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/app-portal/supabase";
+import { eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { remediationDraftEdits } from "@/lib/db/schema";
 import { isBlockedSlug, blockedResponse } from "@/lib/app-portal/slug-guard";
 import { getAppAdminEmail } from "@/lib/app-portal/auth-session";
 
@@ -11,18 +13,13 @@ export async function GET(req: NextRequest) {
   if (!slug) return NextResponse.json({ error: "missing slug" }, { status: 400 });
   if (isBlockedSlug(slug)) return blockedResponse();
 
-  const { data, error } = await supabase
-    .from("remediation_draft_edits")
-    .select("before_close, post_close")
-    .eq("review_slug", slug)
-    .maybeSingle();
+  const [row] = await db
+    .select({ beforeClose: remediationDraftEdits.beforeClose, postClose: remediationDraftEdits.postClose })
+    .from(remediationDraftEdits)
+    .where(eq(remediationDraftEdits.reviewSlug, slug))
+    .limit(1);
 
-  if (error) {
-    console.error("[remediation-draft] DB error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  return NextResponse.json(data ?? null);
+  return NextResponse.json(row ? { before_close: row.beforeClose, post_close: row.postClose } : null);
 }
 
 export async function PUT(req: NextRequest) {
@@ -36,19 +33,22 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: "missing review_slug" }, { status: 400 });
   }
 
-  const { error } = await supabase.from("remediation_draft_edits").upsert(
-    {
-      review_slug,
-      before_close: before_close ?? [],
-      post_close: post_close ?? [],
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: "review_slug" }
-  );
-
-  if (error) {
-    console.error("[remediation-draft] upsert error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  try {
+    await db
+      .insert(remediationDraftEdits)
+      .values({
+        reviewSlug: review_slug,
+        beforeClose: before_close ?? [],
+        postClose: post_close ?? [],
+        updatedAt: new Date().toISOString(),
+      })
+      .onConflictDoUpdate({
+        target: remediationDraftEdits.reviewSlug,
+        set: { beforeClose: before_close ?? [], postClose: post_close ?? [], updatedAt: new Date().toISOString() },
+      });
+  } catch (e) {
+    console.error("[remediation-draft] upsert error:", e);
+    return NextResponse.json({ error: (e as Error).message }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true });

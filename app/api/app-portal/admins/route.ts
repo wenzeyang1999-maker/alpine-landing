@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/app-portal/supabase";
+import { eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { appAdmins } from "@/lib/db/schema";
 import { getAppAdminEmail } from "@/lib/app-portal/auth-session";
 import { logAudit } from "@/lib/app-portal/audit-log";
 
@@ -16,11 +18,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Valid email required" }, { status: 400 });
     }
 
-    const { error } = await supabase
-      .from("app_admins")
-      .upsert({ email: normalized, added_by: adminEmail, note: note || null }, { onConflict: "email" });
+    await db
+      .insert(appAdmins)
+      .values({ email: normalized, addedBy: adminEmail, note: note || null })
+      .onConflictDoUpdate({ target: appAdmins.email, set: { addedBy: adminEmail, note: note || null } });
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     await logAudit({ actor: adminEmail, action: "admin.add", target: normalized, meta: { note } });
     return NextResponse.json({
       ok: true,
@@ -47,8 +49,7 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: "Refusing to remove yourself." }, { status: 400 });
     }
 
-    const { error } = await supabase.from("app_admins").delete().eq("email", email);
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    await db.delete(appAdmins).where(eq(appAdmins.email, email));
     await logAudit({ actor: adminEmail, action: "admin.remove", target: email });
     return NextResponse.json({ ok: true });
   } catch (err: unknown) {

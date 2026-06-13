@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { reportDraftEdits } from "@/lib/db/schema";
 import { isBlockedSlug, blockedResponse } from "@/lib/slug-guard";
 
 export async function GET(req: NextRequest) {
@@ -7,18 +9,13 @@ export async function GET(req: NextRequest) {
   if (!slug) return NextResponse.json({ error: "missing slug" }, { status: 400 });
   if (isBlockedSlug(slug)) return blockedResponse();
 
-  const { data, error } = await supabase
-    .from("report_draft_edits")
-    .select("content")
-    .eq("review_slug", slug)
-    .maybeSingle();
+  const [row] = await db
+    .select({ content: reportDraftEdits.content })
+    .from(reportDraftEdits)
+    .where(eq(reportDraftEdits.reviewSlug, slug))
+    .limit(1);
 
-  if (error) {
-    console.error("[report-draft] DB error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  return NextResponse.json({ content: data?.content ?? null });
+  return NextResponse.json({ content: row?.content ?? null });
 }
 
 export async function PUT(req: NextRequest) {
@@ -29,14 +26,17 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: "missing review_slug" }, { status: 400 });
   }
 
-  const { error } = await supabase.from("report_draft_edits").upsert(
-    { review_slug, content: content ?? "", updated_at: new Date().toISOString() },
-    { onConflict: "review_slug" }
-  );
-
-  if (error) {
-    console.error("[report-draft] upsert error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  try {
+    await db
+      .insert(reportDraftEdits)
+      .values({ reviewSlug: review_slug, content: content ?? "", updatedAt: new Date().toISOString() })
+      .onConflictDoUpdate({
+        target: reportDraftEdits.reviewSlug,
+        set: { content: content ?? "", updatedAt: new Date().toISOString() },
+      });
+  } catch (e) {
+    console.error("[report-draft] upsert error:", e);
+    return NextResponse.json({ error: (e as Error).message }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true });
@@ -47,14 +47,11 @@ export async function DELETE(req: NextRequest) {
   if (!slug) return NextResponse.json({ error: "missing slug" }, { status: 400 });
   if (isBlockedSlug(slug)) return blockedResponse();
 
-  const { error } = await supabase
-    .from("report_draft_edits")
-    .delete()
-    .eq("review_slug", slug);
-
-  if (error) {
-    console.error("[report-draft] delete error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  try {
+    await db.delete(reportDraftEdits).where(eq(reportDraftEdits.reviewSlug, slug));
+  } catch (e) {
+    console.error("[report-draft] delete error:", e);
+    return NextResponse.json({ error: (e as Error).message }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true });

@@ -1,20 +1,10 @@
 import { createHash } from "crypto";
-import { createClient } from "@supabase/supabase-js";
-import { managerDb } from "@/lib/manager/db";
+import { eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { managerTeamInvites, firmsInManager } from "@/lib/db/schema";
 import InviteAcceptForm from "./InviteAcceptForm";
 import Link from "next/link";
 import { BG, INK, MUTED, BORDER } from "@/lib/constants";
-
-type InviteRow = { id: string; firm_id: string; revoked_at: string | null };
-type FirmRow = { name: string };
-
-function publicDb() {
-  return createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } }
-  );
-}
 
 export default async function InviteAcceptPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
@@ -25,22 +15,22 @@ export default async function InviteAcceptPage({ params }: { params: Promise<{ t
   let revoked = false;
 
   try {
-    const { data: invite } = await publicDb()
-      .from("manager_team_invites")
-      .select("id, firm_id, revoked_at")
-      .eq("token_hash", tokenHash)
-      .maybeSingle() as { data: InviteRow | null };
+    const [invite] = await db
+      .select({ id: managerTeamInvites.id, firmId: managerTeamInvites.firmId, revokedAt: managerTeamInvites.revokedAt })
+      .from(managerTeamInvites)
+      .where(eq(managerTeamInvites.tokenHash, tokenHash))
+      .limit(1);
 
     if (!invite) {
       invalid = true;
-    } else if (invite.revoked_at) {
+    } else if (invite.revokedAt) {
       revoked = true;
     } else {
-      const { data: firm } = await managerDb()
-        .from("firms")
-        .select("name")
-        .eq("id", invite.firm_id)
-        .maybeSingle() as { data: FirmRow | null };
+      const [firm] = await db
+        .select({ name: firmsInManager.name })
+        .from(firmsInManager)
+        .where(eq(firmsInManager.id, invite.firmId))
+        .limit(1);
       firmName = firm?.name ?? null;
     }
   } catch {

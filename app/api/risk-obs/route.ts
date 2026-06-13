@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { riskObservationEdits } from "@/lib/db/schema";
 import { isBlockedSlug, blockedResponse } from "@/lib/slug-guard";
 
 export async function GET(req: NextRequest) {
@@ -7,17 +9,18 @@ export async function GET(req: NextRequest) {
   if (!slug) return NextResponse.json({ error: "missing slug" }, { status: 400 });
   if (isBlockedSlug(slug)) return blockedResponse();
 
-  const { data, error } = await supabase
-    .from("risk_observation_edits")
-    .select("id, severity, title, detail, remediation")
-    .eq("review_slug", slug);
+  const rows = await db
+    .select({
+      id: riskObservationEdits.id,
+      severity: riskObservationEdits.severity,
+      title: riskObservationEdits.title,
+      detail: riskObservationEdits.detail,
+      remediation: riskObservationEdits.remediation,
+    })
+    .from(riskObservationEdits)
+    .where(eq(riskObservationEdits.reviewSlug, slug));
 
-  if (error) {
-    console.error("[risk-obs] DB error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  return NextResponse.json(data ?? []);
+  return NextResponse.json(rows);
 }
 
 export async function PUT(req: NextRequest) {
@@ -28,14 +31,17 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: "missing id or review_slug" }, { status: 400 });
   }
 
-  const { error } = await supabase.from("risk_observation_edits").upsert(
-    { id, review_slug, severity, title, detail: detail ?? "", remediation: remediation ?? "", updated_at: new Date().toISOString() },
-    { onConflict: "id,review_slug" }
-  );
-
-  if (error) {
-    console.error("[risk-obs] upsert error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  try {
+    await db
+      .insert(riskObservationEdits)
+      .values({ id, reviewSlug: review_slug, severity, title, detail: detail ?? "", remediation: remediation ?? "", updatedAt: new Date().toISOString() })
+      .onConflictDoUpdate({
+        target: [riskObservationEdits.id, riskObservationEdits.reviewSlug],
+        set: { severity, title, detail: detail ?? "", remediation: remediation ?? "", updatedAt: new Date().toISOString() },
+      });
+  } catch (e) {
+    console.error("[risk-obs] upsert error:", e);
+    return NextResponse.json({ error: (e as Error).message }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true });

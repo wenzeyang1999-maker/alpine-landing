@@ -1,15 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { sql } from "drizzle-orm";
+import { db } from "@/lib/db";
 import { verifyPassword } from "@/lib/manager/password";
 import { signSession, managerCookieOptions, MANAGER_SESSION } from "@/lib/manager/auth-session";
-
-function publicDb() {
-  return createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } }
-  );
-}
 
 type SessionRow = {
   id: string;
@@ -31,14 +24,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Email and password are required." }, { status: 400 });
     }
 
-    const { data, error: rpcErr } = await publicDb().rpc("get_manager_session", { p_email: email });
-
-    if (rpcErr) {
+    let rows: SessionRow[];
+    try {
+      rows = (await db.execute(sql`SELECT * FROM get_manager_session(${email})`)) as unknown as SessionRow[];
+    } catch (rpcErr) {
       console.error("Login RPC error:", rpcErr);
       return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
     }
 
-    const userRaw: SessionRow | null = Array.isArray(data) && data.length > 0 ? data[0] : null;
+    const userRaw: SessionRow | null = rows.length > 0 ? rows[0] : null;
     const storedHash: string | null = userRaw?.password_hash ?? null;
     const match = verifyPassword(password, storedHash);
 

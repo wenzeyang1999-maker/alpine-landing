@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/app-portal/supabase";
+import { eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { newsletterSubscribers } from "@/lib/db/schema";
 import { getAppAdminEmail } from "@/lib/app-portal/auth-session";
 import { logAudit } from "@/lib/app-portal/audit-log";
 
@@ -22,16 +24,11 @@ export async function PATCH(req: NextRequest, { params }: { params: { email: str
 
     const now = new Date().toISOString();
     const update: Record<string, unknown> = {};
-    if (action === "confirm")    { update.confirmed_at = now; update.unsubscribed_at = null; }
-    if (action === "unsubscribe"){ update.unsubscribed_at = now; }
-    if (action === "reactivate") { update.unsubscribed_at = null; }
+    if (action === "confirm")    { update.confirmedAt = now; update.unsubscribedAt = null; }
+    if (action === "unsubscribe"){ update.unsubscribedAt = now; }
+    if (action === "reactivate") { update.unsubscribedAt = null; }
 
-    const { error } = await supabase
-      .from("newsletter_subscribers")
-      .update(update)
-      .eq("email", subscriberEmail);
-
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    await db.update(newsletterSubscribers).set(update).where(eq(newsletterSubscribers.email, subscriberEmail));
 
     await logAudit({
       actor: adminEmail,

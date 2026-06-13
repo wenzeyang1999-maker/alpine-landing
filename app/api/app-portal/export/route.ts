@@ -1,30 +1,45 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/app-portal/supabase";
+import { desc } from "drizzle-orm";
+import type { PgColumn, PgTable } from "drizzle-orm/pg-core";
+import { db } from "@/lib/db";
+import { users, newsletterSubscribers, customers, earlyAccessRequests } from "@/lib/db/schema";
 import { getAppAdminEmail } from "@/lib/app-portal/auth-session";
 import { logAudit } from "@/lib/app-portal/audit-log";
 
-const EXPORTS = {
+// Each export maps CSV column names (snake_case, preserved in output) → Drizzle columns.
+type ExportConfig = {
+  table: PgTable;
+  columns: readonly string[];
+  select: Record<string, PgColumn>;
+  orderBy: PgColumn;
+};
+
+const EXPORTS: Record<string, ExportConfig> = {
   users: {
-    table: "users",
+    table: users,
     columns: ["email", "full_name", "organization", "role", "created_at"],
-    orderBy: "created_at",
+    select: { email: users.email, full_name: users.fullName, organization: users.organization, role: users.role, created_at: users.createdAt },
+    orderBy: users.createdAt,
   },
   subscribers: {
-    table: "newsletter_subscribers",
+    table: newsletterSubscribers,
     columns: ["email", "source", "confirmed_at", "unsubscribed_at", "created_at"],
-    orderBy: "created_at",
+    select: { email: newsletterSubscribers.email, source: newsletterSubscribers.source, confirmed_at: newsletterSubscribers.confirmedAt, unsubscribed_at: newsletterSubscribers.unsubscribedAt, created_at: newsletterSubscribers.createdAt },
+    orderBy: newsletterSubscribers.createdAt,
   },
   customers: {
-    table: "customers",
+    table: customers,
     columns: ["name", "email", "organization", "fund_name", "portal_token", "plan", "status", "onboarded_by", "created_at"],
-    orderBy: "created_at",
+    select: { name: customers.name, email: customers.email, organization: customers.organization, fund_name: customers.fundName, portal_token: customers.portalToken, plan: customers.plan, status: customers.status, onboarded_by: customers.onboardedBy, created_at: customers.createdAt },
+    orderBy: customers.createdAt,
   },
   requests: {
-    table: "early_access_requests",
+    table: earlyAccessRequests,
     columns: ["full_name", "email", "organization", "phone", "source", "status", "created_at", "contacted_at"],
-    orderBy: "created_at",
+    select: { full_name: earlyAccessRequests.fullName, email: earlyAccessRequests.email, organization: earlyAccessRequests.organization, phone: earlyAccessRequests.phone, source: earlyAccessRequests.source, status: earlyAccessRequests.status, created_at: earlyAccessRequests.createdAt, contacted_at: earlyAccessRequests.contactedAt },
+    orderBy: earlyAccessRequests.createdAt,
   },
-} as const;
+};
 
 type ExportKey = keyof typeof EXPORTS;
 
@@ -54,22 +69,21 @@ export async function GET(req: NextRequest) {
   }
 
   const cfg = EXPORTS[tableKey];
-  const { data, error } = await supabase
-    .from(cfg.table)
-    .select(cfg.columns.join(","))
-    .order(cfg.orderBy, { ascending: false })
-    .limit(5000);
+  let rows: Record<string, unknown>[];
+  try {
+    rows = (await db.select(cfg.select).from(cfg.table).orderBy(desc(cfg.orderBy)).limit(5000)) as Record<string, unknown>[];
+  } catch (e) {
+    return NextResponse.json({ error: (e as Error).message }, { status: 500 });
+  }
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-
-  const csv = toCsv((data ?? []) as unknown as Record<string, unknown>[], cfg.columns);
+  const csv = toCsv(rows, cfg.columns);
   const filename = `alpine_${tableKey}_${new Date().toISOString().slice(0, 10)}.csv`;
 
   await logAudit({
     actor: adminEmail,
     action: "export.csv",
     target: tableKey,
-    meta: { row_count: (data ?? []).length },
+    meta: { row_count: rows.length },
   });
 
   return new NextResponse(csv, {

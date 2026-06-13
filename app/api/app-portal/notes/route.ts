@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/app-portal/supabase";
+import { eq, and, sql } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { followupNotes, users } from "@/lib/db/schema";
 import { isBlockedSlug, blockedResponse } from "@/lib/app-portal/slug-guard";
 import { getAppAdminEmail } from "@/lib/app-portal/auth-session";
 
@@ -13,18 +15,15 @@ export async function GET(req: NextRequest) {
   if (!slug || !userEmail) return NextResponse.json({}, { status: 400 });
   if (isBlockedSlug(slug)) return blockedResponse();
 
-  const { data, error } = await supabase
-    .from("followup_notes")
-    .select("question_key, checked, note")
-    .eq("user_email", userEmail)
-    .eq("review_slug", slug);
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  const rows = await db
+    .select({ questionKey: followupNotes.questionKey, checked: followupNotes.checked, note: followupNotes.note })
+    .from(followupNotes)
+    .where(and(eq(followupNotes.userEmail, userEmail), eq(followupNotes.reviewSlug, slug)));
 
   // Convert rows → { [question_key]: { checked, note } }
   const state: Record<string, { checked: boolean; note: string }> = {};
-  for (const row of data ?? []) {
-    state[row.question_key] = { checked: row.checked, note: row.note };
+  for (const row of rows) {
+    state[row.questionKey] = { checked: row.checked, note: row.note };
   }
   return NextResponse.json(state);
 }
@@ -41,29 +40,28 @@ export async function POST(req: NextRequest) {
     }
     if (isBlockedSlug(slug)) return blockedResponse();
 
-    // Ensure user row exists (upsert)
-    await supabase
-      .from("users")
-      .upsert({ email: userEmail }, { onConflict: "email", ignoreDuplicates: true });
+    // Ensure user row exists (insert-or-ignore)
+    await db.insert(users).values({ email: userEmail }).onConflictDoNothing({ target: users.email });
 
     // Upsert each sub-item row
     const rows = Object.entries(state as Record<string, { checked: boolean; note: string }>).map(
       ([question_key, { checked, note }]) => ({
-        user_email: userEmail,
-        review_slug: slug,
-        question_key,
+        userEmail,
+        reviewSlug: slug,
+        questionKey: question_key,
         checked,
         note,
       })
     );
 
-    const { error } = await supabase
-      .from("followup_notes")
-      .upsert(rows, { onConflict: "user_email,review_slug,question_key" });
-
-    if (error) {
-      console.error("[notes POST] Supabase error:", error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+    if (rows.length > 0) {
+      await db
+        .insert(followupNotes)
+        .values(rows)
+        .onConflictDoUpdate({
+          target: [followupNotes.userEmail, followupNotes.reviewSlug, followupNotes.questionKey],
+          set: { checked: sql`excluded.checked`, note: sql`excluded.note` },
+        });
     }
 
     return NextResponse.json({ ok: true });

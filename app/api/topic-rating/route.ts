@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { eq, and } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { topicRatingEdits } from "@/lib/db/schema";
 import { isBlockedSlug, blockedResponse } from "@/lib/slug-guard";
 
 export async function GET(req: NextRequest) {
@@ -7,17 +9,12 @@ export async function GET(req: NextRequest) {
   if (!slug) return NextResponse.json({ error: "missing slug" }, { status: 400 });
   if (isBlockedSlug(slug)) return blockedResponse();
 
-  const { data, error } = await supabase
-    .from("topic_rating_edits")
-    .select("topic_number, rating, rationale")
-    .eq("review_slug", slug);
+  const rows = await db
+    .select({ topicNumber: topicRatingEdits.topicNumber, rating: topicRatingEdits.rating, rationale: topicRatingEdits.rationale })
+    .from(topicRatingEdits)
+    .where(eq(topicRatingEdits.reviewSlug, slug));
 
-  if (error) {
-    console.error("[topic-rating] DB error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  return NextResponse.json(data ?? []);
+  return NextResponse.json(rows.map((r) => ({ topic_number: r.topicNumber, rating: r.rating, rationale: r.rationale })));
 }
 
 export async function PUT(req: NextRequest) {
@@ -33,23 +30,25 @@ export async function PUT(req: NextRequest) {
   if ("rationale" in body) {
     rationale = body.rationale ?? "";
   } else {
-    const { data } = await supabase
-      .from("topic_rating_edits")
-      .select("rationale")
-      .eq("review_slug", review_slug)
-      .eq("topic_number", topic_number)
-      .maybeSingle();
-    rationale = data?.rationale ?? "";
+    const [existing] = await db
+      .select({ rationale: topicRatingEdits.rationale })
+      .from(topicRatingEdits)
+      .where(and(eq(topicRatingEdits.reviewSlug, review_slug), eq(topicRatingEdits.topicNumber, topic_number)))
+      .limit(1);
+    rationale = existing?.rationale ?? "";
   }
 
-  const { error } = await supabase.from("topic_rating_edits").upsert(
-    { review_slug, topic_number, rating, rationale, updated_at: new Date().toISOString() },
-    { onConflict: "review_slug,topic_number" }
-  );
-
-  if (error) {
-    console.error("[topic-rating] upsert error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  try {
+    await db
+      .insert(topicRatingEdits)
+      .values({ reviewSlug: review_slug, topicNumber: topic_number, rating, rationale, updatedAt: new Date().toISOString() })
+      .onConflictDoUpdate({
+        target: [topicRatingEdits.reviewSlug, topicRatingEdits.topicNumber],
+        set: { rating, rationale, updatedAt: new Date().toISOString() },
+      });
+  } catch (e) {
+    console.error("[topic-rating] upsert error:", e);
+    return NextResponse.json({ error: (e as Error).message }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true });

@@ -1,21 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createHash, randomBytes } from "crypto";
-import { createClient } from "@supabase/supabase-js";
+import { eq, desc } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { managerTeamInvites } from "@/lib/db/schema";
 import { getCurrentManager } from "@/lib/manager/access";
-
-function db() {
-  return createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } }
-  );
-}
 
 function hashToken(raw: string): string {
   return createHash("sha256").update(raw).digest("hex");
 }
-
-type InviteRow = { id: string; token_hash: string; created_at: string; revoked_at: string | null };
 
 export async function POST(req: NextRequest) {
   try {
@@ -28,19 +20,19 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json().catch(() => ({}));
-    const label: string = (body.label ?? "").trim() || null;
+    const label: string | null = (body.label ?? "").trim() || null;
 
     const rawToken = randomBytes(32).toString("hex");
     const token_hash = hashToken(rawToken);
 
-    const { error } = await db().from("manager_team_invites").insert({
-      firm_id: manager.firm_id,
-      token_hash,
-      created_by: manager.email,
-      label,
-    });
-
-    if (error) {
+    try {
+      await db.insert(managerTeamInvites).values({
+        firmId: manager.firm_id,
+        tokenHash: token_hash,
+        createdBy: manager.email,
+        label,
+      });
+    } catch (error) {
       console.error("Invite create error:", error);
       return NextResponse.json({ error: "Could not create invite" }, { status: 500 });
     }
@@ -55,18 +47,32 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const manager = await getCurrentManager();
     if (!manager) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const { data } = await db()
-      .from("manager_team_invites")
-      .select("id, token_hash, label, created_at, revoked_at")
-      .eq("firm_id", manager.firm_id)
-      .order("created_at", { ascending: false }) as { data: (InviteRow & { label: string | null })[] | null };
+    const rows = await db
+      .select({
+        id: managerTeamInvites.id,
+        tokenHash: managerTeamInvites.tokenHash,
+        label: managerTeamInvites.label,
+        createdAt: managerTeamInvites.createdAt,
+        revokedAt: managerTeamInvites.revokedAt,
+      })
+      .from(managerTeamInvites)
+      .where(eq(managerTeamInvites.firmId, manager.firm_id))
+      .orderBy(desc(managerTeamInvites.createdAt));
 
-    return NextResponse.json({ invites: data ?? [] });
+    const invites = rows.map((r) => ({
+      id: r.id,
+      token_hash: r.tokenHash,
+      label: r.label,
+      created_at: r.createdAt,
+      revoked_at: r.revokedAt,
+    }));
+
+    return NextResponse.json({ invites });
   } catch (err) {
     console.error("Invite list error:", err);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });

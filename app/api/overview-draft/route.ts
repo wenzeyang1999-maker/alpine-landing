@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { overviewDraftEdits } from "@/lib/db/schema";
 import { isBlockedSlug, blockedResponse } from "@/lib/slug-guard";
 
 export async function GET(req: NextRequest) {
@@ -7,18 +9,13 @@ export async function GET(req: NextRequest) {
   if (!slug) return NextResponse.json({ error: "missing slug" }, { status: 400 });
   if (isBlockedSlug(slug)) return blockedResponse();
 
-  const { data, error } = await supabase
-    .from("overview_draft_edits")
-    .select("fields")
-    .eq("review_slug", slug)
-    .maybeSingle();
+  const [row] = await db
+    .select({ fields: overviewDraftEdits.fields })
+    .from(overviewDraftEdits)
+    .where(eq(overviewDraftEdits.reviewSlug, slug))
+    .limit(1);
 
-  if (error) {
-    console.error("[overview-draft] DB error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  return NextResponse.json({ fields: data?.fields ?? null });
+  return NextResponse.json({ fields: row?.fields ?? null });
 }
 
 export async function PUT(req: NextRequest) {
@@ -29,14 +26,17 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: "missing review_slug or fields" }, { status: 400 });
   }
 
-  const { error } = await supabase.from("overview_draft_edits").upsert(
-    { review_slug, fields, updated_at: new Date().toISOString() },
-    { onConflict: "review_slug" }
-  );
-
-  if (error) {
-    console.error("[overview-draft] upsert error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  try {
+    await db
+      .insert(overviewDraftEdits)
+      .values({ reviewSlug: review_slug, fields, updatedAt: new Date().toISOString() })
+      .onConflictDoUpdate({
+        target: overviewDraftEdits.reviewSlug,
+        set: { fields, updatedAt: new Date().toISOString() },
+      });
+  } catch (e) {
+    console.error("[overview-draft] upsert error:", e);
+    return NextResponse.json({ error: (e as Error).message }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true });

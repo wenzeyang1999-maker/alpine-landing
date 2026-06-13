@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import { supabase } from "@/lib/supabase";
+import { db } from "@/lib/db";
+import { earlyAccessRequests } from "@/lib/db/schema";
 
 async function persistRequest(payload: {
   full_name: string;
@@ -12,15 +13,15 @@ async function persistRequest(payload: {
   user_agent: string | null;
 }) {
   try {
-    await supabase.from("early_access_requests").insert({
-      full_name: payload.full_name,
+    await db.insert(earlyAccessRequests).values({
+      fullName: payload.full_name,
       email: payload.email.trim().toLowerCase(),
       organization: payload.organization || null,
       phone: payload.phone || null,
       message: payload.message || null,
       source: payload.source,
       status: "new",
-      user_agent: payload.user_agent,
+      userAgent: payload.user_agent,
     });
   } catch (err) {
     console.warn("[form/early-access] persist failed (non-blocking):", err);

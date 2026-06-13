@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { headers } from "next/headers";
 import { BG, BG_CARD, INK, MUTED, BORDER, VIOLET } from "@/lib/app-portal/constants";
-import { supabase } from "@/lib/app-portal/supabase";
+import { desc } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { appAdmins } from "@/lib/db/schema";
 import { getAppAdminEmail, APP_ADMIN_ALLOWLIST } from "@/lib/app-portal/auth-session";
 import AdminsManager from "@/components/app-portal/admin/AdminsManager";
 
@@ -27,13 +29,18 @@ export default async function AdminsPage() {
   const fakeReq = new Request("http://internal/", { headers: { cookie: hdr.get("cookie") ?? "" } });
   const currentAdminEmail = await getAppAdminEmail(fakeReq);
 
-  const { data, error } = await supabase
-    .from("app_admins")
-    .select("email, added_at, added_by, note")
-    .order("added_at", { ascending: false });
-
-  const tableMissing = !!error && (error.code === "42P01" || error.message?.includes("does not exist"));
-  const rows: AdminRow[] = (data ?? []) as AdminRow[];
+  let rows: AdminRow[] = [];
+  let tableMissing = false;
+  try {
+    const data = await db
+      .select({ email: appAdmins.email, addedAt: appAdmins.addedAt, addedBy: appAdmins.addedBy, note: appAdmins.note })
+      .from(appAdmins)
+      .orderBy(desc(appAdmins.addedAt));
+    rows = data.map((r) => ({ email: r.email, added_at: r.addedAt, added_by: r.addedBy, note: r.note }));
+  } catch (e) {
+    const err = e as { code?: string; message?: string };
+    tableMissing = err.code === "42P01" || !!err.message?.includes("does not exist");
+  }
   const hardcoded = Array.from(APP_ADMIN_ALLOWLIST);
 
   return (

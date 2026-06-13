@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
-import { createClient } from "@supabase/supabase-js";
+import { sql } from "drizzle-orm";
+import { db } from "@/lib/db";
 import { verifySession, MANAGER_SESSION } from "./auth-session";
 
 export interface ManagerUser {
@@ -25,25 +26,23 @@ type SessionRow = {
   firm_name: string | null;
 };
 
-function publicDb() {
-  return createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } }
-  );
-}
-
 export async function getCurrentManager(): Promise<ManagerUser | null> {
   const jar = await cookies();
   const token = jar.get(MANAGER_SESSION.COOKIE_NAME)?.value;
   const email = await verifySession(token);
   if (!email) return null;
 
-  const { data, error } = await publicDb().rpc("get_manager_session", { p_email: email });
+  let rows: SessionRow[];
+  try {
+    rows = (await db.execute(
+      sql`SELECT * FROM get_manager_session(${email})`
+    )) as unknown as SessionRow[];
+  } catch {
+    return null;
+  }
+  if (!rows || rows.length === 0) return null;
 
-  if (error || !data || !Array.isArray(data) || data.length === 0) return null;
-
-  const row = data[0] as SessionRow;
+  const row = rows[0];
   if (!row) return null;
 
   return {

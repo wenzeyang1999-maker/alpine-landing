@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import { supabase } from "@/lib/app-portal/supabase";
+import { isNull, isNotNull, and } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { newsletterSubscribers, users } from "@/lib/db/schema";
 import { getAppAdminEmail } from "@/lib/app-portal/auth-session";
 import { wrapEmail, escapeBody } from "@/lib/app-portal/email-template";
 import { logAudit } from "@/lib/app-portal/audit-log";
@@ -55,16 +57,15 @@ async function loadRecipients(audience: Audience, custom: string[]): Promise<str
     return custom.map((e) => e.trim().toLowerCase()).filter((e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e));
   }
   if (audience === "active_subscribers") {
-    const { data } = await supabase
-      .from("newsletter_subscribers")
-      .select("email, confirmed_at, unsubscribed_at");
-    return (data ?? [])
-      .filter((r) => !r.unsubscribed_at && r.confirmed_at)
-      .map((r) => (r.email as string).toLowerCase());
+    const rows = await db
+      .select({ email: newsletterSubscribers.email })
+      .from(newsletterSubscribers)
+      .where(and(isNull(newsletterSubscribers.unsubscribedAt), isNotNull(newsletterSubscribers.confirmedAt)));
+    return rows.map((r) => r.email.toLowerCase());
   }
   if (audience === "all_users") {
-    const { data } = await supabase.from("users").select("email");
-    return (data ?? []).map((r) => (r.email as string).toLowerCase());
+    const rows = await db.select({ email: users.email }).from(users);
+    return rows.map((r) => r.email.toLowerCase());
   }
   return [];
 }

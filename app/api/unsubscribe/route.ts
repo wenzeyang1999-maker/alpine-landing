@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import { supabase } from "@/lib/supabase";
+import { eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { newsletterSubscribers } from "@/lib/db/schema";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const RESEND_AUDIENCE_ID = process.env.RESEND_AUDIENCE_ID;
@@ -22,30 +24,20 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const { data: row, error } = await supabase
-      .from("newsletter_subscribers")
-      .select("email, resend_contact_id")
-      .eq("unsubscribe_token", token)
-      .maybeSingle();
-
-    if (error) {
-      console.error("Unsubscribe lookup error:", error);
-      return redirectTo(req, "/subscribe/confirmed?error=invalid");
-    }
+    const [row] = await db
+      .select({ email: newsletterSubscribers.email, resendContactId: newsletterSubscribers.resendContactId })
+      .from(newsletterSubscribers)
+      .where(eq(newsletterSubscribers.unsubscribeToken, token))
+      .limit(1);
 
     if (!row) {
       return redirectTo(req, "/subscribe/confirmed?error=invalid");
     }
 
-    const { error: upErr } = await supabase
-      .from("newsletter_subscribers")
-      .update({ unsubscribed_at: new Date().toISOString() })
-      .eq("email", row.email);
-
-    if (upErr) {
-      console.error("Unsubscribe update error:", upErr);
-      return redirectTo(req, "/subscribe/confirmed?error=invalid");
-    }
+    await db
+      .update(newsletterSubscribers)
+      .set({ unsubscribedAt: new Date().toISOString() })
+      .where(eq(newsletterSubscribers.email, row.email));
 
     // Best-effort: mark unsubscribed in Resend Audience.
     if (RESEND_AUDIENCE_ID) {
