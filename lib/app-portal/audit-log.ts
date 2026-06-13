@@ -11,10 +11,6 @@ import { db } from "@/lib/db";
  *   broadcast.send, broadcast.dedupe
  *   request.status
  *   subscriber.confirm, subscriber.unsubscribe
- *
- * NOTE: the audit_log table is not part of the migrated schema (it was never
- * created in the source DB), so these inserts no-op via the catch below until
- * the table exists. Raw SQL keeps the table out of the Drizzle schema.
  */
 export async function logAudit(params: {
   actor: string;

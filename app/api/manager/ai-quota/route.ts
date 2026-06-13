@@ -3,10 +3,9 @@ import { sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { getCurrentManager } from "@/lib/manager/access";
 
-// NOTE: manager_ai_quota table + increment_ai_quota() function are not part of
-// the migrated schema (migration 034 was never applied to the source DB), so
-// these queries degrade gracefully via raw SQL + try/catch, preserving the
-// prior production behavior (GET → 0/20 default, POST → error if absent).
+// Backed by public.manager_ai_quota + increment_ai_quota() (migration 034,
+// applied to Azure). Raw SQL is kept for the atomic SECURITY DEFINER function
+// call; GET still defaults to 0/20 if a firm has no row yet.
 
 export async function GET() {
   const user = await getCurrentManager();

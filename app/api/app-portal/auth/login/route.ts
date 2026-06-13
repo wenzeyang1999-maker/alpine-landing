@@ -41,10 +41,10 @@ export async function POST(req: NextRequest) {
     // unknown email, unverified account, and bad password; dummy verify on miss
     // so response timing doesn't reveal account existence.
     const normalizedEmail = email.trim().toLowerCase();
-    let row: { fullName: string | null; role: string; passwordHash: string | null; isVerified: boolean } | undefined;
+    let row: { fullName: string | null; role: string; passwordHash: string | null; isVerified: boolean; demoAccess: boolean } | undefined;
     try {
       [row] = await db
-        .select({ fullName: users.fullName, role: users.role, passwordHash: users.passwordHash, isVerified: users.isVerified })
+        .select({ fullName: users.fullName, role: users.role, passwordHash: users.passwordHash, isVerified: users.isVerified, demoAccess: users.demoAccess })
         .from(users)
         .where(eq(users.email, normalizedEmail))
         .limit(1);
@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
         full_name: row.fullName ?? email,
         role: row.role ?? "analyst",
       },
-      demo_access: false,
+      demo_access: row.demoAccess,
     });
     await setSessionCookieIfAdmin(res, normalizedEmail);
     if (isAppAdmin(normalizedEmail)) await logAudit({ actor: normalizedEmail, action: "auth.login" });

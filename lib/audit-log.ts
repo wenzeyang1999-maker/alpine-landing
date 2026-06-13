@@ -3,11 +3,7 @@ import { db } from "@/lib/db";
 
 /**
  * Best-effort audit logger — failures never block the calling route.
- * Mirror of lib/app-portal/audit-log.ts; same audit_log table.
- *
- * NOTE: the audit_log table is not part of the migrated schema (it was never
- * created in the source DB), so these inserts no-op via the catch below until
- * the table exists. Raw SQL keeps the table out of the Drizzle schema.
+ * Mirror of lib/app-portal/audit-log.ts; same public.audit_log table.
  */
 export async function logAudit(params: {
   actor: string;

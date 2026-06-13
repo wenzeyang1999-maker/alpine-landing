@@ -1,8 +1,28 @@
-import { pgTable, pgSchema, unique, pgPolicy, uuid, text, integer, numeric, date, timestamp, index, inet, foreignKey, boolean, check, smallint, jsonb, bigint, uniqueIndex, primaryKey } from "drizzle-orm/pg-core"
+import { pgTable, index, uuid, text, jsonb, timestamp, integer, pgSchema, unique, pgPolicy, numeric, date, inet, foreignKey, boolean, check, smallint, bigint, uniqueIndex, primaryKey } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 export const manager = pgSchema("manager");
 
+
+export const auditLog = pgTable("audit_log", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+	actorEmail: text("actor_email").notNull(),
+	action: text().notNull(),
+	target: text(),
+	meta: jsonb(),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+}, (table) => [
+	index("audit_log_action_idx").using("btree", table.action.asc().nullsLast().op("text_ops")),
+	index("audit_log_actor_idx").using("btree", table.actorEmail.asc().nullsLast().op("text_ops")),
+	index("audit_log_created_at_idx").using("btree", table.createdAt.desc().nullsFirst().op("timestamptz_ops")),
+]);
+
+export const managerAiQuota = pgTable("manager_ai_quota", {
+	firmId: text("firm_id").primaryKey().notNull(),
+	runsUsed: integer("runs_used").default(0).notNull(),
+	maxRuns: integer("max_runs").default(20).notNull(),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+});
 
 export const firmsInManager = manager.table("firms", {
 	id: uuid().defaultRandom().primaryKey().notNull(),
@@ -513,6 +533,7 @@ export const users = pgTable("users", {
 	verifiedAt: timestamp("verified_at", { withTimezone: true, mode: 'string' }),
 	verificationToken: text("verification_token"),
 	verificationSentAt: timestamp("verification_sent_at", { withTimezone: true, mode: 'string' }),
+	demoAccess: boolean("demo_access").default(false).notNull(),
 }, (table) => [
 	uniqueIndex("users_verification_token_key").using("btree", table.verificationToken.asc().nullsLast().op("text_ops")).where(sql`(verification_token IS NOT NULL)`),
 	unique("users_email_key").on(table.email),
