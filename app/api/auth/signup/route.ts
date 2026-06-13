@@ -1,21 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import { createClient } from "@supabase/supabase-js";
 import crypto from "crypto";
+import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { users, newsletterSubscribers } from "@/lib/db/schema";
+import { hashPassword, isAcceptablePassword } from "@/lib/auth/password";
 import { notifyAdminNewMember } from "@/lib/admin-notify";
-
-// NOTE: analyst/admin identity still lives in Supabase Auth (this signup creates
-// the auth user via generateLink; app/api/auth/login verifies via the password
-// grant). Fully cutting this over is a separate auth migration — not just a token
-// swap — because login depends on the same Supabase Auth user store. DB writes
-// below are on Drizzle/Azure; only the auth user creation remains on Supabase.
-function authClient() {
-  return createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
-    auth: { persistSession: false },
-  });
-}
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const ADMIN_EMAIL = "azhang@alpinedd.com";
@@ -167,73 +157,65 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Name, email, company, and password are required." }, { status: 400 });
     }
 
-    if (password.length < 8) {
-      return NextResponse.json({ error: "Password must be at least 8 characters." }, { status: 400 });
+    const pw = isAcceptablePassword(password);
+    if (!pw.ok) {
+      return NextResponse.json({ error: pw.reason }, { status: 400 });
     }
 
-    // Create user in Supabase Auth and get a verification link in one call
-    const { data: linkData, error: linkError } = await authClient().auth.admin.generateLink({
-      type: "signup",
-      email,
-      password,
-      options: {
-        data: { full_name, organization, user_type, job_title: job_title || null, aum: aum || null },
-        redirectTo: "https://alpinedd.com/login",
-      },
-    });
+    const normalizedEmail = email.trim().toLowerCase();
 
-    if (linkError) {
-      const msg = linkError.message.toLowerCase();
-      if (msg.includes("already registered") || msg.includes("already exists") || msg.includes("unique")) {
+    // Reject duplicate emails up front (also guarded by the unique index below).
+    const [existing] = await db.select({ id: users.id }).from(users).where(eq(users.email, normalizedEmail)).limit(1);
+    if (existing) {
+      return NextResponse.json({ error: "An account with this email already exists." }, { status: 409 });
+    }
+
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+
+    // Persist the (unverified) user with a self-issued verification token,
+    // then auto-subscribe to the newsletter. Replaces Supabase Auth signup.
+    try {
+      await db.insert(users).values({
+        email: normalizedEmail,
+        passwordHash: hashPassword(password),
+        passwordSetAt: new Date().toISOString(),
+        fullName: full_name,
+        organization,
+        userType: user_type || null,
+        jobTitle: job_title || null,
+        aum: aum || null,
+        role: "analyst",
+        isActive: false,
+        isVerified: false,
+        verificationToken,
+        verificationSentAt: new Date().toISOString(),
+      });
+    } catch (e) {
+      if ((e as { code?: string })?.code === "23505") {
         return NextResponse.json({ error: "An account with this email already exists." }, { status: 409 });
       }
-      return NextResponse.json({ error: linkError.message }, { status: 400 });
+      throw e;
     }
 
-    const verificationUrl = linkData.properties.action_link;
+    await db
+      .insert(newsletterSubscribers)
+      .values({
+        email: normalizedEmail,
+        source: "signup",
+        confirmedAt: new Date().toISOString(),
+        unsubscribeToken: crypto.randomBytes(32).toString("hex"),
+        consentUserAgent: req.headers.get("user-agent") ?? null,
+      })
+      .onConflictDoNothing({ target: newsletterSubscribers.email });
 
-    // Persist all profile fields in the users table + auto-subscribe to newsletter
-    await Promise.all([
-      db
-        .insert(users)
-        .values({
-          email,
-          fullName: full_name,
-          organization,
-          userType: user_type || null,
-          jobTitle: job_title || null,
-          aum: aum || null,
-          role: "analyst",
-          isActive: false,
-        })
-        .onConflictDoUpdate({
-          target: users.email,
-          set: {
-            fullName: full_name,
-            organization,
-            userType: user_type || null,
-            jobTitle: job_title || null,
-            aum: aum || null,
-            role: "analyst",
-            isActive: false,
-          },
-        }),
-      db
-        .insert(newsletterSubscribers)
-        .values({
-          email,
-          source: "signup",
-          confirmedAt: new Date().toISOString(),
-          unsubscribeToken: crypto.randomBytes(32).toString("hex"),
-          consentUserAgent: req.headers.get("user-agent") ?? null,
-        })
-        .onConflictDoNothing({ target: newsletterSubscribers.email }),
-    ]);
+    const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host") ?? "alpinedd.com";
+    const proto = req.headers.get("x-forwarded-proto") ?? "https";
+    const verificationUrl = `${proto}://${host}/api/auth/verify?token=${verificationToken}`;
 
     // Fire emails in parallel
     await Promise.all([
-      notifyAdminNewMember({ event: "signup", email, name: full_name, organization, source: "signup" }),
-      sendVerificationEmail(email, full_name, verificationUrl),
+      notifyAdminNewMember({ event: "signup", email: normalizedEmail, name: full_name, organization, source: "signup" }),
+      sendVerificationEmail(normalizedEmail, full_name, verificationUrl),
     ]);
 
     return NextResponse.json({ status: "ok" });

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
+import { verifyPassword, DUMMY_HASH } from "@/lib/auth/password";
 import { signSession, SESSION, cookieOptions } from "@/lib/auth-session";
 import { isAppAdmin } from "@/lib/app-allowlist";
 import { logAudit } from "@/lib/audit-log";
@@ -38,27 +39,14 @@ export async function POST(req: NextRequest) {
       return res;
     }
 
-    // Verify credentials against Supabase Auth
-    const authRes = await fetch(`${process.env.SUPABASE_URL}/auth/v1/token?grant_type=password`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        apikey: process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      },
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (!authRes.ok) {
-      return NextResponse.json({ error: "Invalid email or password." }, { status: 401 });
-    }
-
-    // Enrich with users table data. (demo_access column does not exist in the
-    // schema, so it is always false — matching prior production behavior.)
+    // Verify credentials against our own users table (scrypt). Identical 401 for
+    // unknown email, unverified account, and bad password; run a dummy verify when
+    // the user is missing so response timing doesn't reveal account existence.
     const normalizedEmail = email.trim().toLowerCase();
-    let row: { fullName: string | null; role: string } | undefined;
+    let row: { fullName: string | null; role: string; passwordHash: string | null; isVerified: boolean } | undefined;
     try {
       [row] = await db
-        .select({ fullName: users.fullName, role: users.role })
+        .select({ fullName: users.fullName, role: users.role, passwordHash: users.passwordHash, isVerified: users.isVerified })
         .from(users)
         .where(eq(users.email, normalizedEmail))
         .limit(1);
@@ -66,11 +54,16 @@ export async function POST(req: NextRequest) {
       row = undefined;
     }
 
+    const passwordOk = verifyPassword(password, row?.passwordHash ?? DUMMY_HASH);
+    if (!row || !row.passwordHash || !row.isVerified || !passwordOk) {
+      return NextResponse.json({ error: "Invalid email or password." }, { status: 401 });
+    }
+
     const res = NextResponse.json({
       user: {
         email: normalizedEmail,
-        full_name: row?.fullName ?? email,
-        role: row?.role ?? "analyst",
+        full_name: row.fullName ?? email,
+        role: row.role ?? "analyst",
       },
       demo_access: false,
     });

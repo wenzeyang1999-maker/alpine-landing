@@ -107,19 +107,20 @@ export function hasDownloadableFile(source: string): boolean {
   return source in DEMO_FILES;
 }
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const BLOB_BASE_URL = process.env.NEXT_PUBLIC_BLOB_BASE_URL;
 
 /**
  * Return the public URL for a demo file, or null if not found.
- * Uses Supabase Storage when NEXT_PUBLIC_SUPABASE_URL is set, else local /demo-docs/.
+ * Uses the public Azure Blob demo-docs container when NEXT_PUBLIC_BLOB_BASE_URL
+ * is set, else local /demo-docs/.
  */
 export function getDemoFileUrl(filename: string): string | null {
   // Pass through direct API or absolute URLs (e.g. portal uploads)
   if (filename.startsWith("/api/") || filename.startsWith("http")) return filename;
   const realFile = DEMO_FILES[filename];
   if (!realFile) return null;
-  if (SUPABASE_URL) {
-    return `${SUPABASE_URL}/storage/v1/object/public/demo-docs/${realFile}`;
+  if (BLOB_BASE_URL) {
+    return `${BLOB_BASE_URL}/demo-docs/${realFile}`;
   }
   return `/demo-docs/${realFile}`;
 }

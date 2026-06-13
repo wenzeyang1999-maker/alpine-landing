@@ -1,4 +1,4 @@
-import { pgTable, pgSchema, unique, pgPolicy, uuid, text, integer, numeric, date, timestamp, index, inet, foreignKey, boolean, check, smallint, jsonb, bigint, primaryKey } from "drizzle-orm/pg-core"
+import { pgTable, pgSchema, unique, pgPolicy, uuid, text, integer, numeric, date, timestamp, index, inet, foreignKey, boolean, check, smallint, jsonb, bigint, uniqueIndex, primaryKey } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 export const manager = pgSchema("manager");
@@ -507,7 +507,14 @@ export const users = pgTable("users", {
 	jobTitle: text("job_title"),
 	aum: text(),
 	portalToken: text("portal_token"),
+	passwordHash: text("password_hash"),
+	passwordSetAt: timestamp("password_set_at", { withTimezone: true, mode: 'string' }),
+	isVerified: boolean("is_verified").default(false).notNull(),
+	verifiedAt: timestamp("verified_at", { withTimezone: true, mode: 'string' }),
+	verificationToken: text("verification_token"),
+	verificationSentAt: timestamp("verification_sent_at", { withTimezone: true, mode: 'string' }),
 }, (table) => [
+	uniqueIndex("users_verification_token_key").using("btree", table.verificationToken.asc().nullsLast().op("text_ops")).where(sql`(verification_token IS NOT NULL)`),
 	unique("users_email_key").on(table.email),
 ]);
 

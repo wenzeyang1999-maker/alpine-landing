@@ -4,25 +4,10 @@ export { APP_ADMIN_ALLOWLIST, isAppAdmin };
 
 const SESSION_COOKIE = "alpine_session";
 
-let _warnedFallback = false;
-
 function getSecret(): string {
   const explicit = process.env.AUTH_SESSION_SECRET;
-  if (explicit) return explicit;
-  const fallback = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!fallback) throw new Error("Missing AUTH_SESSION_SECRET or SUPABASE_SERVICE_ROLE_KEY");
-  // Surfacing once helps catch the "rotated Supabase key → all sessions invalidated"
-  // foot-gun. In prod you should set a dedicated AUTH_SESSION_SECRET (any 32+ char
-  // random string) so cookie signing is decoupled from the DB master key.
-  if (!_warnedFallback && process.env.NODE_ENV === "production") {
-    _warnedFallback = true;
-    console.warn(
-      "[auth-session] AUTH_SESSION_SECRET not set; falling back to SUPABASE_SERVICE_ROLE_KEY. " +
-      "Rotating the Supabase key will invalidate every active admin session. " +
-      "Set AUTH_SESSION_SECRET in your env to decouple.",
-    );
-  }
-  return fallback;
+  if (!explicit) throw new Error("Missing AUTH_SESSION_SECRET (any 32+ char random string)");
+  return explicit;
 }
 
 function bytesToHex(bytes: ArrayBuffer): string {
