@@ -120,14 +120,19 @@ export async function POST(req: NextRequest) {
       emailSent = true;
     }
 
-    // Log distribution
-    await db.insert(watermarkDistributions).values({
-      recipientName,
-      recipientEmail: recipientEmail ?? null,
-      filename: file.name,
-      distributedBy,
-      emailSent,
-    });
+    // Log distribution — best-effort, must not fail an already-completed download
+    // (the PDF is generated and the email already sent by this point).
+    try {
+      await db.insert(watermarkDistributions).values({
+        recipientName,
+        recipientEmail: recipientEmail ?? null,
+        filename: file.name,
+        distributedBy,
+        emailSent,
+      });
+    } catch (logErr) {
+      console.error("Watermark distribution log error:", logErr);
+    }
 
     return new NextResponse(Buffer.from(watermarkedBytes), {
       status: 200,

@@ -163,34 +163,44 @@ export async function POST(req: NextRequest) {
     }
 
     const normalizedEmail = email.trim().toLowerCase();
+    const verificationToken = crypto.randomBytes(32).toString("hex");
 
-    // Reject duplicate emails up front (also guarded by the unique index below).
-    const [existing] = await db.select({ id: users.id }).from(users).where(eq(users.email, normalizedEmail)).limit(1);
-    if (existing) {
+    // If the email already exists: a verified account is a hard duplicate (409),
+    // but an unverified one means the prior verification was never completed — treat
+    // a repeat signup as a resend (refresh password/profile + reissue the token).
+    const [existing] = await db
+      .select({ id: users.id, isVerified: users.isVerified })
+      .from(users)
+      .where(eq(users.email, normalizedEmail))
+      .limit(1);
+
+    if (existing?.isVerified) {
       return NextResponse.json({ error: "An account with this email already exists." }, { status: 409 });
     }
 
-    const verificationToken = crypto.randomBytes(32).toString("hex");
+    const profile = {
+      passwordHash: hashPassword(password),
+      passwordSetAt: new Date().toISOString(),
+      fullName: full_name,
+      organization,
+      userType: user_type || null,
+      jobTitle: job_title || null,
+      aum: aum || null,
+      role: "analyst",
+      isActive: false,
+      isVerified: false,
+      verificationToken,
+      verificationSentAt: new Date().toISOString(),
+    };
 
-    // Persist the (unverified) user with a self-issued verification token,
-    // then auto-subscribe to the newsletter. Replaces Supabase Auth signup.
     try {
-      await db.insert(users).values({
-        email: normalizedEmail,
-        passwordHash: hashPassword(password),
-        passwordSetAt: new Date().toISOString(),
-        fullName: full_name,
-        organization,
-        userType: user_type || null,
-        jobTitle: job_title || null,
-        aum: aum || null,
-        role: "analyst",
-        isActive: false,
-        isVerified: false,
-        verificationToken,
-        verificationSentAt: new Date().toISOString(),
-      });
+      if (existing) {
+        await db.update(users).set(profile).where(eq(users.id, existing.id));
+      } else {
+        await db.insert(users).values({ email: normalizedEmail, ...profile });
+      }
     } catch (e) {
+      // Lost race on the unique index → another signup verified first.
       if ((e as { code?: string })?.code === "23505") {
         return NextResponse.json({ error: "An account with this email already exists." }, { status: 409 });
       }
