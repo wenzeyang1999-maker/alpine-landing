@@ -69,7 +69,7 @@ export default async function AuditLogSection() {
           className="rounded p-3 font-body text-[13px]"
           style={{ background: "#FEF3C7", color: "#92400E", border: "1px solid #FDE68A" }}
         >
-          Table <code>audit_log</code> not found. Run <code>migrations/004_audit_log.sql</code> in Supabase to enable this section.
+          Table <code>audit_log</code> not found in the database. Apply the latest schema (see <code>lib/db</code>) to enable this section.
         </div>
       ) : rows.length === 0 ? (
         <Empty>No actions audited yet.</Empty>

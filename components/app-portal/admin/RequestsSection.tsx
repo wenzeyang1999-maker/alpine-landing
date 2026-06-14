@@ -73,7 +73,7 @@ export default async function RequestsSection() {
           className="rounded p-3 font-body text-[13px]"
           style={{ background: "#FEF3C7", color: "#92400E", border: "1px solid #FDE68A" }}
         >
-          Table <code>early_access_requests</code> not found. Run <code>migrations/001_early_access_requests.sql</code> in Supabase to enable this section.
+          Table <code>early_access_requests</code> not found in the database. Apply the latest schema (see <code>lib/db</code>) to enable this section.
         </div>
       ) : rows.length === 0 ? (
         <Empty>No early-access requests yet.</Empty>

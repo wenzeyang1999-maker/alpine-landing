@@ -79,7 +79,7 @@ export default async function AdminsPage() {
             className="rounded p-4 font-body text-[14px]"
             style={{ background: "#FEF3C7", color: "#92400E", border: "1px solid #FDE68A" }}
           >
-            Table <code>app_admins</code> not found. Run <code>migrations/003_app_admins.sql</code> in Supabase to enable this page.
+            Table <code>app_admins</code> not found in the database. Apply the latest schema (see <code>lib/db</code>) to enable this page.
           </div>
         ) : (
           <AdminsManager

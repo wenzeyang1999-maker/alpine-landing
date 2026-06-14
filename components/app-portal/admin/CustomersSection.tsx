@@ -75,7 +75,7 @@ export default async function CustomersSection() {
           className="rounded p-3 font-body text-[13px]"
           style={{ background: "#FEF3C7", color: "#92400E", border: "1px solid #FDE68A" }}
         >
-          Table <code>customers</code> not found. Run <code>migrations/002_customers.sql</code> in Supabase to enable this section.
+          Table <code>customers</code> not found in the database. Apply the latest schema (see <code>lib/db</code>) to enable this section.
         </div>
       ) : rows.length === 0 ? (
         <Empty>No customers onboarded yet. Use the &quot;Onboard customer&quot; button at the top to create one.</Empty>
