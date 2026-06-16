@@ -24,8 +24,10 @@ if (!email || !password) {
   console.error("Usage: DATABASE_URL=... node scripts/create-investor.mjs <email> <password> [name] [org]");
   process.exit(1);
 }
-if (password.length < 8) {
-  console.error("Password must be at least 8 characters.");
+// The admin UI enforces >= 8; this seed script allows shorter demo passwords
+// (e.g. the standard demo123) since login verification itself has no length rule.
+if (password.length < 4) {
+  console.error("Password must be at least 4 characters.");
   process.exit(1);
 }
 
