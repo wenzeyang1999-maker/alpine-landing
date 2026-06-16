@@ -37,6 +37,18 @@ jobs:
         run: npm ci
 
       - name: Build (standalone output)
+        env:
+          # ~17 routes construct `new Resend(process.env.RESEND_API_KEY)` at module
+          # load; `next build` imports them during page-data collection, so the key
+          # must be a non-empty string or the build throws. This placeholder is used
+          # ONLY at build — at runtime the route reads the REAL key from App Service
+          # (non-NEXT_PUBLIC env is not inlined; it's read live by server.js).
+          RESEND_API_KEY: re_build_placeholder_not_used_at_runtime
+          # NEXT_PUBLIC_* ARE inlined into the client bundle at build time, so these
+          # must carry the real production values (public by design — shipped to the
+          # browser anyway). Stored as repo Actions *variables*, not secrets.
+          NEXT_PUBLIC_BLOB_BASE_URL: ${{ vars.NEXT_PUBLIC_BLOB_BASE_URL }}
+          NEXT_PUBLIC_NOTES_TOKEN: ${{ vars.NEXT_PUBLIC_NOTES_TOKEN }}
         run: npm run build
 
       # Next's `output: "standalone"` emits a self-contained server at
