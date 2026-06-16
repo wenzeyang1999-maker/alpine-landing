@@ -64,10 +64,13 @@ jobs:
             const sig=c.createHmac("sha256",process.env.SEC).update(payload).digest("hex").slice(0,32);
             console.log(payload+"|"+sig);')
 
-          read -r CODE CT SIZE < <(curl -s -o /tmp/report.pdf \
+          OUT=$(curl -s -o /tmp/report.pdf \
             -w "%{http_code} %{content_type} %{size_download}" \
             -b "investor_session=${TOKEN}" \
-            "http://localhost:3000/api/investor/report-pdf?slug=trellis-capital-iv")
+            "http://localhost:3000/api/investor/report-pdf?slug=trellis-capital-iv" || true)
+          CODE=$(printf '%s' "$OUT" | awk '{print $1}')
+          CT=$(printf '%s' "$OUT" | awk '{print $2}')
+          SIZE=$(printf '%s' "$OUT" | awk '{print $3}')
           echo "PDF response: code=$CODE type=$CT size=$SIZE"
           echo "--- container logs (tail) ---"; docker logs app 2>&1 | tail -50
 
