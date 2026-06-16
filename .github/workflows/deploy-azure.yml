@@ -120,8 +120,16 @@ jobs:
           az webapp config appsettings set \
             --name "$AZURE_WEBAPP_NAME" --resource-group "$RESOURCE_GROUP" \
             --settings WEBSITES_PORT=3000 >/dev/null
+          # Hardening, enforced on every deploy: keep the app warm (no idle cold
+          # starts) and force HTTPS at the platform.
+          az webapp config set \
+            --name "$AZURE_WEBAPP_NAME" --resource-group "$RESOURCE_GROUP" \
+            --always-on true >/dev/null
+          az webapp update \
+            --name "$AZURE_WEBAPP_NAME" --resource-group "$RESOURCE_GROUP" \
+            --https-only true >/dev/null
           az webapp restart --name "$AZURE_WEBAPP_NAME" --resource-group "$RESOURCE_GROUP"
-          echo "Deployed $IMG"
+          echo "Deployed $IMG (always-on + https-only enforced)"
 
       # Fail loudly if the container didn't come up (e.g. AcrPull missing) so a
       # bad cutover is obvious and we can roll back, instead of a silent outage.
