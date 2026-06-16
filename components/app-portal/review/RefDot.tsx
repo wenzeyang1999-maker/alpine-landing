@@ -3,6 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import { SOURCE_META } from "@/lib/app-portal/ridgeline-data";
 import { AURORA_SOURCE_META } from "@/lib/app-portal/aurora-data";
+import { TRELLIS_SOURCE_META } from "@/lib/app-portal/trellis-data";
+import { GRANITE_SOURCE_META } from "@/lib/app-portal/granite-data";
+import { CORDOVA_SOURCE_META } from "@/lib/app-portal/cordova-data";
+import { BLACKPINE_SOURCE_META } from "@/lib/app-portal/blackpine-data";
+import { HAVENCREST_SOURCE_META } from "@/lib/app-portal/havencrest-data";
+import { RIDGELINE_RESORT_SOURCE_META } from "@/lib/app-portal/ridgeline-resort-data";
 import { downloadDemoFile, getDemoFileUrl } from "@/lib/app-portal/demo-downloads";
 
 export interface RefDotProps {
@@ -11,6 +17,17 @@ export interface RefDotProps {
   context?: string;
   color: "blue" | "emerald" | "amber" | "purple";
   slug?: string;
+  /**
+   * When set (length ≥ 1), this dot represents multiple sources and the popover
+   * lets the reader switch between them. Produced by renderCitations when it
+   * merges a run of directly-adjacent [[REF]] tokens. Overrides source/quote.
+   */
+  sources?: { source: string; quote: string }[];
+  /**
+   * "prose" = muted single-color dot for inline narrative citations.
+   * "table" (default) = source-colored dot for the evidence table.
+   */
+  variant?: "prose" | "table";
 }
 
 // ── Aurora doc metadata ──────────────────────────────────────────────────────
@@ -544,14 +561,1663 @@ function buildAuroraPassage(quote: string, filename: string, sourceLabel: string
   };
 }
 
+// ── Trellis doc metadata ──────────────────────────────────────────────────────
+function buildTrellisDocMeta(filename: string, label: string) {
+  const f = filename.toLowerCase();
+  const l = label.toLowerCase();
+  if (l.includes("form adv") || f.includes("form-adv") || f.includes("form_adv")) return { title: "Form ADV (ERA) — Part 2A", subtitle: "Trellis Capital Management, LLC", date: "Filed March 22, 2026", badge: "Regulatory Filing" };
+  if (l.includes("due diligence") || l.includes("ddq"))                          return { title: "Due Diligence Questionnaire (2026)", subtitle: "Trellis Capital Management, LLC", date: "March 2026", badge: "Fund Document" };
+  if (l.includes("limited partnership") || f.includes("lpa"))                     return { title: "Limited Partnership Agreement — Fund IV", subtitle: "Trellis Capital IV, L.P.", date: "Effective March 28, 2026", badge: "Legal" };
+  if (l.includes("private placement") || f.includes("ppm"))                       return { title: "Private Placement Memorandum — Fund IV", subtitle: "Trellis Capital IV, L.P.", date: "February 2026", badge: "Legal" };
+  if (l.includes("valuation") || f.includes("valuation"))                         return { title: "Valuation Policy", subtitle: "Trellis Capital Management, LLC", date: "Effective 2026", badge: "Operations" };
+  if (l.includes("subscription") || f.includes("subscription"))                   return { title: "Subscription Agreement Template — Fund IV", subtitle: "Trellis Capital IV, L.P.", date: "February 2026", badge: "Legal" };
+  if (l.includes("delaware"))                                                     return { title: "Delaware Division of Corporations — Entity Verification", subtitle: "Trellis Capital IV, L.P. · Trellis Capital GP IV, LLC", date: "Verified April 2026", badge: "Public Record" };
+  if (l.includes("iard") || l.includes("iapd") || l.includes("edgar") || l.includes("sec verification")) return { title: "SEC IAPD / IARD — Exempt Reporting Adviser", subtitle: "Trellis Capital Management, LLC", date: "ERA since March 9, 2019", badge: "SEC Verification" };
+  if (l.includes("alpine"))                                                       return { title: "Alpine ODD — Internal Cross-Reference Analysis", subtitle: "Trellis Capital Management, LLC · ODD Review 2026", date: "Prepared April 2026", badge: "Alpine Analysis" };
+  if (l.includes("apex"))                                                         return { title: "Apex Fund Services — Administrator Verification Call", subtitle: "Trellis Capital IV, L.P.", date: "Call Date: April 3, 2026", badge: "Third-Party Confirmation" };
+  if (l.includes("manager"))                                                      return { title: "Manager Due Diligence — Response", subtitle: "Trellis Capital Management, LLC", date: "2026", badge: "Manager Interview" };
+  return { title: label, subtitle: "Trellis Capital Management, LLC", date: "2026", badge: "Document" };
+}
+
+// ── Trellis passage builder ───────────────────────────────────────────────────
+function buildTrellisPassage(quote: string, filename: string, sourceLabel: string): { before: string; after: string; section: string; pageLabel: string } {
+  const f = filename.toLowerCase();
+  const q = quote.toLowerCase();
+  const l = sourceLabel.toLowerCase();
+
+  // Form ADV (ERA)
+  if (l.includes("form adv") || f.includes("form-adv") || f.includes("form_adv")) {
+    if (q.includes("san francisco") || q.includes("primary location")) return {
+      section: "Item 1 — Identifying Information",
+      before: "Trellis Capital Management, LLC is a Delaware limited liability company with its principal place of business located in ",
+      after: ". The firm is a pre-seed stage venture capital adviser founded in 2018 by Arjun Mehta and Priya Sharma, who each own 50% of the management company. The firm files as an Exempt Reporting Adviser in reliance on the venture capital adviser exemption under Section 203(l) of the Investment Advisers Act of 1940 and has filed in that capacity since March 9, 2019. The firm does not solicit retail investors; all investors are accredited investors and qualified purchasers investing through the firm's private fund vehicles.",
+      pageLabel: "Page 1 of 14",
+    };
+    if (q.includes("trellis capital management")) return {
+      section: "Item 1 — Identifying Information",
+      before: "This Form ADV is filed by ",
+      after: ", a Delaware limited liability company with its principal place of business in San Francisco, California. The firm is a pre-seed stage venture capital adviser founded in 2018 by Arjun Mehta and Priya Sharma, who each own 50% of the management company and file as an Exempt Reporting Adviser under the venture capital adviser exemption (Section 203(l) of the Investment Advisers Act of 1940) since March 9, 2019.",
+      pageLabel: "Page 1 of 14",
+    };
+    if (q.includes("280") || q.includes("aum") || q.includes("net assets") || q.includes("113.7") || q.includes("24.7")) return {
+      section: "Item 5 — Information About Your Advisory Business",
+      before: "As of December 31, 2025, the Adviser reports net assets of ",
+      after: " under management across its advised private fund vehicles, together with $113.7 million of uncalled capital commitments and co-investment special purpose vehicles holding an aggregate $24.7 million. All advisory activity is conducted on a discretionary basis. The Adviser does not manage separately managed accounts or wrap-fee programs.",
+      pageLabel: "Page 4 of 14",
+    };
+    if (q.includes("priya") || q.includes("mehta") || q.includes("50%") || q.includes("ownership") || q.includes("compliance")) return {
+      section: "Schedules A & B — Direct and Indirect Owners",
+      before: "The Adviser is owned in equal parts by its two founding Managing Partners: ",
+      after: ". Arjun Mehta (Co-Founder, Managing Partner) previously served as a principal at Founder Collective and was earlier associated with Foundation Capital. Priya Sharma (Co-Founder, Managing Partner) holds responsibility for the firm's compliance oversight in addition to her investment responsibilities. There are no outside institutional owners or third-party controlling interests in the management company.",
+      pageLabel: "Page 7 of 14",
+    };
+    return {
+      section: "Item 6 — Performance-Based Fees and Side-by-Side Management",
+      before: "The Adviser receives a management fee and a performance-based carried interest allocation from the funds it advises. The management fee is 2.0% per annum and carried interest is 20% of net profits, distributed under an American-style (deal-by-deal) waterfall without a preferred return. With respect to the matters described in this Item: ",
+      after: ". A management fee offset applies to any directors', monitoring, transaction, or break-up fees received from portfolio companies; the Adviser represents that such fees are not received in practice. The absence of a preferred return is uncommon in private equity but typical in pre-seed venture capital.",
+      pageLabel: "Page 5 of 14",
+    };
+  }
+
+  // DDQ
+  if (l.includes("due diligence") || l.includes("ddq")) {
+    if (q.includes("apex") || q.includes("administrator")) return {
+      section: "Section 5 — Service Providers",
+      before: "Fund Administrator: ",
+      after: ". Apex Fund Services, LLC has been engaged since Fund I and uses Xero for fund accounting and FundPanel for LP management and reporting. Apex performs capital account recordkeeping, capital call and distribution processing, and periodic NAV statements. Independent auditor: Baker Thompson & Co, a recognized auditor of venture capital funds in the Bay Area, audits the prior funds and certain co-investment SPVs. Banking is transitioning from Pacific Commerce to JP Morgan for Fund IV. Legal counsel: Morrison Cole Ashworth.",
+      pageLabel: "Page 18 of 44",
+    };
+    if (q.includes("sarah collins") || q.includes("operations") || q.includes("back office") || q.includes("headcount") || q.includes("fte") || q.includes("seven")) return {
+      section: "Section 2 — Firm Background and Team",
+      before: "The firm has a total headcount of seven full-time employees — six investment professionals and one operations professional. ",
+      after: ". Sarah Collins (Head of Operations, joined July 2025) focuses on running business operations and supporting the Managing Partners as an executive assistant, rather than serving as a dedicated back office resource for the funds. The investment team consists of Arjun Mehta and Priya Sharma (Co-Founders, Managing Partners), Kevin Chen (Principal), Rachel Winters (Associate), Ryan Mitchell (Analyst), and Vikram Nair (Chief Portfolio Officer, departure planned Summer 2026). Raj Patel has been retained as fractional CFO and is expected to focus on Apex oversight beginning Summer 2026.",
+      pageLabel: "Page 5 of 44",
+    };
+    if (q.includes("priya") || q.includes("compliance") || q.includes("summit") || q.includes("personal trading")) return {
+      section: "Section 4 — Compliance and Regulatory",
+      before: "The firm files as an Exempt Reporting Adviser and maintains a compliance binder containing the required ERA policies, including pay-to-play, insider trading, and anti-money laundering policies. With respect to compliance oversight and program administration: ",
+      after: ". Priya Sharma (Co-Founder, Managing Partner) is responsible for compliance oversight in addition to her investment responsibilities. Compliance consultant usage has been limited to engaging Summit Advisory for annual Form ADV preparation. There is no initial attestation or annual recertification of compliance policies required from staff, no annual compliance training program, and no written personal trading policy.",
+      pageLabel: "Page 12 of 44",
+    };
+    return {
+      section: "Section 3 — Fund Terms and Structure",
+      before: "Fund IV is being raised with an approximately $125 million initial close, a $175 million target, and a $200 million hard cap. The management fee is 2.0% and carried interest is 20% under an American-style waterfall with no preferred return. With respect to the specific terms applicable to this Fund: ",
+      after: ". The General Partner commits approximately 1% of total commitments (approximately $2.77 million), contributed in cash and invested pari passu with Limited Partners, free of management fees. Carried interest vests over four years for all investment staff.",
+      pageLabel: "Page 9 of 44",
+    };
+  }
+
+  // LPA / PPM
+  if (l.includes("limited partnership") || l.includes("private placement") || f.includes("lpa") || f.includes("ppm")) {
+    if (q.includes("delaware") || q.includes("march 28") || q.includes("gp iv") || q.includes("general partner")) return {
+      section: "Section 1 — Organization and Formation",
+      before: "Trellis Capital IV, L.P. (the \"Fund\") is organized as a ",
+      after: " and was formed on March 28, 2026 pursuant to a Certificate of Limited Partnership filed with the Delaware Secretary of State. Trellis Capital GP IV, LLC, a Delaware limited liability company, serves as the sole General Partner. Trellis Capital Management, LLC serves as the investment manager. Both entities have been confirmed against the Delaware Division of Corporations register.",
+      pageLabel: "Page 4 of 62",
+    };
+    if (q.includes("key person") || q.includes("succession") || q.includes("managing partner")) return {
+      section: "Section 12 — Key Person Provision",
+      before: "The Fund's key person provision is intended to ensure the continued involvement of the firm's Managing Partners in the investment process. ",
+      after: ". The key person event would be triggered only if both Arjun Mehta and Priya Sharma fail to devote sufficient time and attention to the Fund; the Managing Partners could assume each other's responsibilities in a single-principal event. No formal succession plan is documented and key person life insurance is not maintained.",
+      pageLabel: "Page 31 of 62",
+    };
+    return {
+      section: "Section 7 — Management Fee and Carried Interest",
+      before: "The General Partner is entitled to a management fee of 2.0% per annum and a carried interest allocation of 20% of net profits. Distributions follow an American-style (deal-by-deal) waterfall without a preferred return or hurdle. With respect to the Fund's economic terms: ",
+      after: ". A management fee offset applies to any directors', consulting, monitoring, transaction, or break-up fees received from portfolio companies, though the Manager represents that such fees are not received in practice. The American waterfall and absence of a preferred return are uncommon in private equity but typical in pre-seed venture capital, where meaningful hurdles would rarely trigger.",
+      pageLabel: "Page 18 of 62",
+    };
+  }
+
+  // Valuation Policy
+  if (l.includes("valuation") || f.includes("valuation")) {
+    return {
+      section: "Section 2 — Valuation Process and Governance",
+      before: "Trellis Capital Management prepares fair-value estimates for all portfolio investments in accordance with ASC 820 and applicable venture capital valuation guidelines. Early-stage positions are generally held at cost or the most recent priced financing round until a subsequent observable event. With respect to the firm's valuation process: ",
+      after: ". The Manager does not engage a dedicated third-party valuation agent; the Administrator, Apex Fund Services, prepares the books and records, and the annual audit by Baker Thompson & Co provides the primary external pricing check. Alpine has noted the absence of independent valuation verification as an area for enhancement.",
+      pageLabel: "Page 4 of 12",
+    };
+  }
+
+  // Subscription Agreement
+  if (l.includes("subscription") || f.includes("subscription")) {
+    return {
+      section: "Subscription Agreement — Investor Terms",
+      before: "This Subscription Agreement sets forth the terms pursuant to which an investor commits capital to Trellis Capital IV, L.P. The investor represents that it is an accredited investor and qualified purchaser. With respect to the specific terms applicable to this investor: ",
+      after: ". The General Partner may, in its discretion, enter into side letter arrangements with Limited Partners, including with respect to fees, co-investment priority, and reporting. Capital is drawn down over the Fund's investment period pursuant to capital call notices issued by the Administrator on behalf of the Manager.",
+      pageLabel: "Page 2 of 22",
+    };
+  }
+
+  // Delaware register
+  if (l.includes("delaware")) {
+    return {
+      section: "Delaware Division of Corporations — Entity Verification",
+      before: "Alpine performed a direct check against the Delaware Division of Corporations register to confirm the existence and good standing of the Fund and its General Partner entity. The register reflects the following: ",
+      after: ". Trellis Capital IV, L.P. (Delaware limited partnership, formed March 28, 2026) and Trellis Capital GP IV, LLC (Delaware limited liability company) were both confirmed on the register. No discrepancies were identified between the entity names disclosed by the Manager and the registered entities.",
+      pageLabel: "Delaware Register · Page 1",
+    };
+  }
+
+  // IARD / IAPD / SEC
+  if (l.includes("iard") || l.includes("iapd") || l.includes("edgar") || l.includes("sec")) {
+    return {
+      section: "SEC IAPD / IARD — Exempt Reporting Adviser Record",
+      before: "Investment Adviser Public Disclosure record for Trellis Capital Management, LLC. The firm is reported as an Exempt Reporting Adviser relying on the venture capital adviser exemption under Section 203(l) of the Investment Advisers Act of 1940, and has filed in that capacity since March 9, 2019. The record reflects: ",
+      after: ". The firm's record shows no reportable disciplinary events, regulatory actions, or criminal matters for the firm or its principals. Alpine confirmed ERA status via direct IAPD query during the ODD review. As an ERA, the firm is not subject to routine SEC examination but remains subject to the anti-fraud and pay-to-play provisions of the Advisers Act.",
+      pageLabel: "IAPD Record · Page 1",
+    };
+  }
+
+  // Apex verification call
+  if (l.includes("apex")) {
+    return {
+      section: "Apex Fund Services — Administrator Verification Call",
+      before: "Alpine conducted a verification call with Apex Fund Services, LLC on April 3, 2026, independent of the Manager, to corroborate the Fund's operational arrangements. Apex confirmed the following: ",
+      after: ". Apex confirmed its engagement as administrator since Fund I, its use of Xero and FundPanel, and the key service provider relationships including Baker Thompson & Co (auditor) and the banking transition from Pacific Commerce to JP Morgan. Apex reported no investor reporting errors across the prior funds and described wire authorization and cash control procedures without prompting from the Manager.",
+      pageLabel: "Apex Verification · Page 1",
+    };
+  }
+
+  // Alpine internal analysis
+  if (l.includes("alpine")) {
+    return {
+      section: "Alpine ODD — Internal Cross-Reference Analysis",
+      before: "Alpine Due Diligence — Internal Cross-Reference Analysis. ODD Engagement: Trellis Capital Management, LLC. This note summarizes Alpine's analysis of the documents submitted, the management responses, and the third-party verifications obtained during the review. The following finding was identified: ",
+      after: ". Two areas were elevated to higher-severity observations: (1) an investment professional (Priya Sharma, Co-Founder) holding compliance oversight, which Alpine has flagged as a required action before close; and (2) the absence of an internal back office resource, with the sole operations professional functioning as an executive assistant. These are partially mitigated by the planned fractional CFO engagement and Head of Finance hire.",
+      pageLabel: "Alpine Analysis · Page 1",
+    };
+  }
+
+  // Manager response / interview
+  if (l.includes("manager")) {
+    return {
+      section: "Manager Due Diligence — Response",
+      before: "The following response was provided by Trellis Capital Management in connection with Alpine's operational due diligence review: ",
+      after: ". Alpine reviewed the response against the DDQ, Form ADV, and third-party verifications, and incorporated it into the relevant section of the ODD report. The Manager was responsive, granted full access during the review, and voluntarily disclosed back office and cybersecurity limitations.",
+      pageLabel: "Manager Response · Page 1",
+    };
+  }
+
+  // Generic Trellis fallback
+  return {
+    section: "Document Reference — Alpine Due Diligence File",
+    before: `The following passage has been extracted from the referenced source (${sourceLabel}) maintained in Alpine's operational due diligence file for Trellis Capital IV, L.P. This material reflects information provided by Trellis Capital Management, LLC or obtained from independent registries and third-party verifications as of the date stated. Alpine has reviewed this material in connection with its ODD program but has not independently verified all factual representations except as specifically noted in the accompanying ODD report. The specific passage cited in the ODD analysis states: `,
+    after: ". Investors and Alpine personnel are reminded that any manager-provided document is proprietary and confidential and may not be reproduced or disclosed to third parties without the prior written consent of Trellis Capital Management, LLC. Please refer to the complete source document for full context, all defined terms, and applicable disclaimers.",
+    pageLabel: "Page 1",
+  };
+}
+
+// ── Granite doc metadata ──────────────────────────────────────────────────────
+function buildGraniteDocMeta(filename: string, label: string) {
+  const f = filename.toLowerCase();
+  const l = label.toLowerCase();
+  if (l.includes("odd report") || f.includes("sample_credit_granite_vii"))                          return { title: "Granite VII Credit Partners — ODD Report", subtitle: "Granite Capital Management, LLC · ODD Review 2026", date: "April 2026", badge: "Alpine Analysis" };
+  if (l.includes("form adv") || f.includes("form-adv") || f.includes("form_adv"))                    return { title: "Form ADV — Parts 1 & 2A", subtitle: "Granite Capital Management, LLC", date: "Filed March 30, 2026", badge: "Regulatory Filing" };
+  if (l.includes("due diligence") || l.includes("ddq"))                                              return { title: "Due Diligence Questionnaire (2026)", subtitle: "Granite Capital Management, LLC", date: "2026", badge: "Fund Document" };
+  if (l.includes("limited partnership") || f.includes("lpa") || f.includes("_lpa"))                  return { title: "Limited Partnership Agreement — Fund VII", subtitle: "Granite VII Credit Partners, L.P.", date: "Effective 2025", badge: "Legal" };
+  if (l.includes("private placement") || f.includes("ppm"))                                          return { title: "Private Placement Memorandum — Fund VII", subtitle: "Granite VII Credit Partners, L.P.", date: "2025", badge: "Legal" };
+  if (l.includes("valuation"))                                                                       return { title: "Valuation Policy", subtitle: "Granite Capital Management, LLC", date: "Revised January 2026", badge: "Operations" };
+  if (l.includes("code of ethics"))                                                                  return { title: "Code of Ethics", subtitle: "Granite Capital Management, LLC", date: "Revised January 2026", badge: "Compliance" };
+  if (l.includes("information security") || l.includes("wisp"))                                      return { title: "Written Information Security Program (2026)", subtitle: "Granite Capital Management, LLC", date: "2026", badge: "Compliance" };
+  if (l.includes("soc 2") || f.includes("soc"))                                                      return { title: "SOC 2 Type II Report — FY2025", subtitle: "Granite Capital Management, LLC · Schneider Downs", date: "Period ending December 31, 2025", badge: "Third-Party Audit" };
+  if (l.includes("administration agreement") || (l.includes("admin") && l.includes("agreement")))   return { title: "Administration Agreement — State Street", subtitle: "Granite VII Credit Partners, L.P.", date: "In effect since 2014", badge: "Operations" };
+  if (l.includes("state street") || (l.includes("admin") && l.includes("confirmation")))            return { title: "State Street — Administrator Verification Confirmation", subtitle: "Granite VII Credit Partners, L.P.", date: "Confirmed April 2026", badge: "Third-Party Confirmation" };
+  if (l.includes("pwc") || l.includes("audit"))                                                      return { title: "PwC — Audit Confirmation", subtitle: "Granite VII Credit Partners, L.P.", date: "FY2024 · Confirmed 2026", badge: "Third-Party Confirmation" };
+  if (l.includes("insurance"))                                                                       return { title: "Cyber Liability Insurance Certificate", subtitle: "Granite Capital Management, LLC", date: "Policy Year 2026", badge: "Financial" };
+  if (l.includes("investor letter") || l.includes("q4 2025"))                                        return { title: "Q4 2025 Investor Letter", subtitle: "Granite VII Credit Partners, L.P.", date: "Q4 2025", badge: "Investor Communication" };
+  if (l.includes("edgar") || l.includes("iard") || l.includes("iapd") || l.includes("sec"))         return { title: "SEC EDGAR / IAPD — Registered Investment Adviser", subtitle: "Granite Capital Management, LLC", date: "Registered since 2012 (IARD/CRD 152384)", badge: "SEC Verification" };
+  if (l.includes("delaware"))                                                                        return { title: "Delaware Division of Corporations — Entity Verification", subtitle: "Granite VII Credit Partners, L.P. · Granite Capital Management, LLC", date: "Verified April 2026", badge: "Public Record" };
+  return { title: label, subtitle: "Granite Capital Management, LLC", date: "2026", badge: "Document" };
+}
+
+// ── Granite passage builder ───────────────────────────────────────────────────
+function buildGranitePassage(quote: string, filename: string, sourceLabel: string): { before: string; after: string; section: string; pageLabel: string } {
+  const f = filename.toLowerCase();
+  const q = quote.toLowerCase();
+  const l = sourceLabel.toLowerCase();
+
+  // Form ADV (Registered Investment Adviser)
+  if (l.includes("form adv") || f.includes("form-adv") || f.includes("form_adv")) {
+    if (q.includes("new york") || q.includes("charlotte") || q.includes("chicago") || q.includes("primary location") || q.includes("hq")) return {
+      section: "Item 1 — Identifying Information",
+      before: "Granite Capital Management, LLC is a Delaware limited liability company with its principal place of business located in ",
+      after: ". The firm is an institutional middle-market direct lender founded in 2009 by Stephen Halloway (Chief Executive Officer) and Margaret Liu (Chief Investment Officer), both formerly senior credit professionals at GE Capital. The firm is registered with the U.S. Securities and Exchange Commission as an investment adviser (IARD/CRD 152384), having registered in 2012 as firmwide assets crossed the $100 million threshold. All advisory activity is conducted on a discretionary basis for private fund vehicles whose investors are accredited investors and qualified purchasers.",
+      pageLabel: "Page 1 of 18",
+    };
+    if (q.includes("granite capital management")) return {
+      section: "Item 1 — Identifying Information",
+      before: "This Form ADV is filed by ",
+      after: ", a Delaware limited liability company with its principal place of business in New York, with secondary offices in Charlotte, North Carolina and Chicago, Illinois. The firm is an SEC-registered investment adviser (IARD/CRD 152384), registered since 2012, and serves as investment manager to the Granite VII Credit Partners series of senior direct lending funds.",
+      pageLabel: "Page 1 of 18",
+    };
+    if (q.includes("4.21") || q.includes("aum") || q.includes("net assets") || q.includes("uncalled") || q.includes("1.83")) return {
+      section: "Item 5 — Information About Your Advisory Business",
+      before: "As of December 31, 2025, the Adviser reports regulatory assets under management of ",
+      after: " across the Granite Credit Partners series, two managed account vehicles, and one CLO, together with $1.83 billion of uncalled capital commitments. All advisory activity is conducted on a discretionary basis. The Adviser does not manage wrap-fee programs and does not solicit retail investors.",
+      pageLabel: "Page 4 of 18",
+    };
+    if (q.includes("78%") || q.includes("ownership") || q.includes("alpine pension") || q.includes("employees")) return {
+      section: "Schedules A & B — Direct and Indirect Owners",
+      before: "The Adviser is majority owned by its employees, with ownership broadly distributed across 17 partner-level professionals. The reported ownership composition is: ",
+      after: ". Alpine Pension Investors holds its 22% interest as a passive minority investor acquired in 2018, with no voting rights or operational involvement in the management company. There are no other outside institutional owners or third-party controlling interests.",
+      pageLabel: "Page 7 of 18",
+    };
+    if (q.includes("complaint") || q.includes("disciplinary") || q.includes("none") || q.includes("customer")) return {
+      section: "Item 11 — Disclosure Information",
+      before: "With respect to the disciplinary and customer-complaint history of the Adviser and its principals, the record reflects: ",
+      after: ". The firm has had no SEC examinations result in deficiency letters or enforcement actions, and has not been a party to any material litigation in its 15-year history. No reportable disciplinary, regulatory, or criminal matters exist for the firm or its management persons.",
+      pageLabel: "Page 11 of 18",
+    };
+    return {
+      section: "Item 5 — Fees and Compensation",
+      before: "The Adviser receives a management fee and a performance-based carried interest allocation from the funds it advises. For Granite VII the management fee is 1.50% per annum charged on invested capital during the investment period and on net asset value thereafter, and carried interest is 15% over a 7% preferred return with a 50/50 catch-up, calculated on a whole-of-fund basis. With respect to the matters described in this Item: ",
+      after: ". The annual amendment to this Form ADV was filed March 30, 2026. The firm is a member of the Loan Syndications and Trading Association and the Alternative Credit Council.",
+      pageLabel: "Page 5 of 18",
+    };
+  }
+
+  // DDQ
+  if (l.includes("due diligence") || l.includes("ddq")) {
+    if (q.includes("state street") || q.includes("pwc") || q.includes("jpmorgan") || q.includes("administrator") || q.includes("auditor") || q.includes("agent bank")) return {
+      section: "Section 5 — Service Providers",
+      before: "Fund Administrator: ",
+      after: ". State Street Alternative Investment Services has served as administrator since 2014 (transitioned to State Street's platform in 2018 following the SS&C acquisition) and provides books and records, NAV calculation, investor capital activity, AML/KYC, Form PF reporting, and FATCA/CRS compliance. Independent auditor: PricewaterhouseCoopers LLP, engaged since the firm's inception in 2010. Banking and agent-bank services, including the $400 million NAV facility, are provided by JPMorgan Chase, N.A. Fund counsel: Schulte Roth & Zabel LLP; transaction counsel: Kirkland & Ellis LLP.",
+      pageLabel: "Page 22 of 58",
+    };
+    if (q.includes("47 fte") || q.includes("headcount") || q.includes("47 ") || q.includes("investment professional") || q.includes("ortiz") || q.includes("walsh") || q.includes("wei chen") || q.includes("halloway") || q.includes("liu")) return {
+      section: "Section 2 — Firm Background and Team",
+      before: "Granite employs a total headcount of ",
+      after: ". Investment professionals have an average of 14 years of credit experience. The senior team includes Stephen Halloway (CEO) and Margaret Liu (CIO), both co-founders formerly of GE Capital, alongside Daniel Ortiz (Head of Originations, joined 2023 from Antares Capital), Priya Walsh (Head of Credit Risk, joined 2024 from Golub Capital), and Wei Chen (Chief Compliance Officer, joined 2025 from Sixth Street). All employees are subject to deferred carried interest vesting over five years.",
+      pageLabel: "Page 5 of 58",
+    };
+    if (q.includes("succession") || q.includes("key person insurance") || q.includes("25m") || q.includes("background check") || q.includes("hireright") || q.includes("deferred")) return {
+      section: "Section 2 — Governance and Succession",
+      before: "Granite maintains a formal written succession plan filed with its regulator. With respect to the firm's governance, insurance, and personnel controls: ",
+      after: ". The plan identifies Margaret Liu as immediate successor to Stephen Halloway, with Daniel Ortiz designated as CIO successor. Key person life insurance of $25 million is in place on each of the four Executive Committee members, and background checks are conducted by HireRight on initial hire with a three-year refresh for partner-level employees.",
+      pageLabel: "Page 8 of 58",
+    };
+    if (q.includes("wei chen") || q.includes("compliance") || q.includes("schulte roth") || q.includes("mock") || q.includes("attestation") || q.includes("pre-clear")) return {
+      section: "Section 4 — Compliance and Regulatory",
+      before: "The compliance program is led by Wei Chen, who joined as Chief Compliance Officer in March 2025 and reports directly to the Executive Committee with no investment responsibilities. With respect to the firm's compliance program: ",
+      after: ". The compliance team comprises four dedicated full-time professionals. Granite engages Schulte Roth & Zabel LLP as outside compliance counsel and performs an annual mock SEC exam each fall, the most recent of which was conducted in November 2025. Annual attestations are completed by all employees.",
+      pageLabel: "Page 14 of 58",
+    };
+    if (q.includes("nav facility") || q.includes("$400m") || q.includes("400 ") || q.includes("13.4") || q.includes("$185m") || q.includes("leverage") || q.includes("advance rate")) return {
+      section: "Section 7 — Investment Operations and Leverage",
+      before: "Granite VII utilizes a subscription/NAV credit facility to manage capital efficiency. The facility terms and current utilization are as follows: ",
+      after: ". The facility is provided by JPMorgan Chase, N.A. at a 30% advance rate against NAV. Outstanding borrowings as of December 31, 2025 represent a conservative share of NAV, and use of leverage is reviewed by the LPAC quarterly. Granite does not employ asset-level leverage beyond this facility.",
+      pageLabel: "Page 31 of 58",
+    };
+    if (q.includes("default rate") || q.includes("workout") || q.includes("henderson") || q.includes("cliffwater") || q.includes("covenant") || q.includes("concentration") || q.includes("atlas") || q.includes("4.2")) return {
+      section: "Section 6 — Portfolio Monitoring and Workout",
+      before: "Granite maintains a dedicated workout team and tracks borrower covenants in Black Mountain with automated alerts. With respect to the firm's portfolio controls and credit performance: ",
+      after: ". The workout team of four professionals is led by Sarah Henderson (joined 2020 from CarVal). The cumulative default rate across all vintages is 1.3% of invested capital, compared with the 1.8% Cliffwater Direct Lending Index benchmark. As of December 31, 2025, the largest single exposure (Atlas Industrial Holdings) sits at 4.2% of commitments against a 5.0% contractual cap.",
+      pageLabel: "Page 27 of 58",
+    };
+    return {
+      section: "Section 3 — Investment Committee and Process",
+      before: "The Investment Committee comprises five voting members, and new investments require a supermajority approval. With respect to the Fund's investment governance: ",
+      after: ". Priya Walsh, as Head of Credit Risk, holds explicit veto authority over all new investments. Underwriting follows a structured four-stage process culminating in a final IC vote, with mandatory third-party Quality of Earnings reports for all new originations. The committee meets weekly with ad-hoc sessions for time-sensitive opportunities.",
+      pageLabel: "Page 17 of 58",
+    };
+  }
+
+  // LPA / PPM
+  if (l.includes("limited partnership") || l.includes("private placement") || f.includes("lpa") || f.includes("ppm")) {
+    if (q.includes("delaware") || q.includes("cayman") || q.includes("feeder") || q.includes("vehicle") || q.includes("granite vii credit partners")) return {
+      section: "Section 1 — Organization and Formation",
+      before: "The Fund is organized as ",
+      after: ", with a parallel Cayman feeder, Granite VII Credit Partners (Cayman), Ltd., for non-US and US tax-exempt investors. Granite Capital Management, LLC serves as the investment manager. The Fund invests across senior secured first-lien and unitranche loans to U.S. middle-market sponsor-backed companies with EBITDA of $20 million to $150 million.",
+      pageLabel: "Page 4 of 74",
+    };
+    if (q.includes("strategy") || q.includes("first-lien") || q.includes("unitranche") || q.includes("ebitda") || q.includes("$20m") || q.includes("middle-market")) return {
+      section: "Section 2 — Investment Strategy and Limitations",
+      before: "The Fund pursues a senior direct lending strategy. The mandate and key portfolio limitations are as follows: ",
+      after: ". Maximum single-borrower concentration is contractually limited to 5% of total commitments. The strategy targets U.S. middle-market sponsor-backed companies sourced primarily from established private equity sponsor relationships.",
+      pageLabel: "Page 9 of 74",
+    };
+    if (q.includes("gp commitment") || q.includes("3.0%") || q.includes("$45m") || q.includes("pari passu") || q.includes("removal") || q.includes("66") || q.includes("75%") || q.includes("key person") || q.includes("mfn") || q.includes("most-favored") || q.includes("$50m")) return {
+      section: "Section 12 — GP Commitment and LP Protections",
+      before: "The Fund includes institutional LP protections alongside a meaningful General Partner commitment. With respect to the specific term cited: ",
+      after: ". The GP commitment is funded pari passu with Limited Partners and is not subject to any fee offset or cashless mechanism. LP protections include a most-favored-nation provision for commitments of $50 million or more, a seven-seat LP advisory committee, a 66 2/3% for-cause GP removal threshold, a 75% no-fault removal threshold, and a key person clause triggered if Stephen Halloway, Margaret Liu, or Daniel Ortiz cease to dedicate substantially all of their business time to Granite.",
+      pageLabel: "Page 41 of 74",
+    };
+    if (q.includes("8 year") || q.includes("term") || q.includes("investment period") || q.includes("harvest") || q.includes("extension")) return {
+      section: "Section 9 — Term and Investment Period",
+      before: "The Fund has an eight-year term, comprising a four-year investment period and a four-year harvesting period. With respect to the Fund's duration: ",
+      after: ". Up to two one-year extensions are available subject to LPAC approval. This is consistent with peer funds in the senior direct lending strategy.",
+      pageLabel: "Page 28 of 74",
+    };
+    return {
+      section: "Section 7 — Management Fee and Carried Interest",
+      before: "The Manager is entitled to a management fee of 1.50% per annum, charged on invested capital during the investment period and on net asset value thereafter, and the General Partner receives a carried interest allocation. With respect to the Fund's economic terms: ",
+      after: ". Carried interest is 15% over a 7% preferred return with a 50/50 catch-up, calculated on a whole-of-fund basis rather than deal-by-deal, which protects LPs from clawback risk on late-fund underperformance. A clawback provision applies through the end of the fund term, backed by an escrow of 20% of distributed carry.",
+      pageLabel: "Page 18 of 74",
+    };
+  }
+
+  // Valuation Policy
+  if (l.includes("valuation")) {
+    if (q.includes("houlihan") || q.includes("third-party") || q.includes("review") || q.includes("semi-annual") || q.includes("watch")) return {
+      section: "Section 3 — Third-Party Valuation Review",
+      before: "Granite engages an independent valuation firm to review its marks. The scope of that engagement is as follows: ",
+      after: ". Houlihan Lokey Valuation Advisors performs an independent valuation review semi-annually on 100% of the portfolio, with quarterly review of any credit placed on the firm's internal watch list. The engagement is structured as an independent review with Houlihan's own valuation conclusions rather than a pure consistency check. Granite serves as the valuation agent of record, which Alpine has flagged as an enhancement opportunity.",
+      pageLabel: "Page 6 of 16",
+    };
+    if (q.includes("committee") || q.includes("non-investment") || q.includes("3 of 5") || q.includes("majority") || q.includes("agent of record") || q.includes("in-house")) return {
+      section: "Section 2 — Valuation Committee and Governance",
+      before: "The valuation process is governed by a Valuation Committee chaired by Margaret Liu (CIO). With respect to its composition and authority: ",
+      after: ". The committee consists of five members — Margaret Liu, Caroline McKenzie (Head of Fund Operations), Wei Chen (CCO), Robert Yates (Head of Portfolio Management), and one rotating external LPAC member — such that non-investment professionals hold a three-of-five majority. Marks are approved by majority vote of the full committee.",
+      pageLabel: "Page 4 of 16",
+    };
+    return {
+      section: "Section 1 — Valuation Framework",
+      before: "Granite values its loan portfolio quarterly using the ASC 820 fair-value framework. For each quarterly valuation, the Valuation Committee considers borrower performance metrics, industry comparables and market spreads, stressed-credit factors, and the third-party valuation review. With respect to the firm's valuation process: ",
+      after: ". Loan existence is independently verified by the administrator, State Street, through direct confirmation of agent-bank loan balances each quarter. This policy was most recently revised in January 2026.",
+      pageLabel: "Page 3 of 16",
+    };
+  }
+
+  // Code of Ethics
+  if (l.includes("code of ethics")) {
+    return {
+      section: "Code of Ethics — Personal Trading",
+      before: "The Code of Ethics governs personal securities transactions by all employees of Granite Capital Management. With respect to the specific control cited: ",
+      after: ". Pre-clearance is required for all personal securities transactions other than open-end mutual funds, government securities, and certain ETFs. Brokerage statements are collected directly from custodians by the compliance team rather than through employee self-reporting, a 30-day minimum holding period is enforced for all preclearable securities, and employees are prohibited from trading securities held in client portfolios. Annual attestations are completed by all employees.",
+      pageLabel: "Page 7 of 24",
+    };
+  }
+
+  // WISP / Information Security
+  if (l.includes("information security") || l.includes("wisp")) {
+    return {
+      section: "Written Information Security Program — Controls and Resilience",
+      before: "Granite maintains a Written Information Security Program (WISP), Incident Response Plan, and Business Continuity Plan, all reviewed annually by Mandiant. With respect to the firm's security and resilience controls: ",
+      after: ". The program is overseen by the Director of Information Technology, Robert Sokolov, reporting to the Chief Operating Officer. All systems use single sign-on through Microsoft Entra ID with mandatory multi-factor authentication, endpoint protection via Microsoft Defender and CrowdStrike Falcon, and an annual tabletop exercise simulating both a cyber incident and a physical disruption to the New York headquarters. Granite has experienced no material cybersecurity incidents in the past five years.",
+      pageLabel: "Page 5 of 20",
+    };
+  }
+
+  // SOC 2 Type II Report
+  if (l.includes("soc 2") || f.includes("soc")) {
+    return {
+      section: "SOC 2 Type II — Independent Service Auditor's Report",
+      before: "Schneider Downs performed the SOC 2 Type II examination of Granite's controls for the period ending December 31, 2025. The report reflects the following: ",
+      after: ". Granite has commissioned annual SOC 2 Type II audits since 2019, and the FY2025 examination resulted in an unqualified opinion. Granite separately engages Mandiant to perform annual external penetration testing; the 2025 test identified three medium-severity findings, all remediated within 45 days. Monthly phishing simulations via KnowBe4 yield a rolling 12-month click rate of 1.4%, below the 3.2% financial services benchmark.",
+      pageLabel: "SOC 2 Report · Page 3",
+    };
+  }
+
+  // Administration Agreement
+  if (l.includes("administration agreement") || (l.includes("admin") && l.includes("agreement"))) {
+    return {
+      section: "Administration Agreement — Scope of Services",
+      before: "This Administration Agreement sets forth the services provided by State Street Alternative Investment Services to the Fund. With respect to the scope of the engagement: ",
+      after: ". State Street has served as administrator since 2014 and provides books and records, NAV calculation, investor capital activity, AML/KYC, Form PF regulatory reporting, and FATCA/CRS compliance, delivering monthly NAV and quarterly capital statements to investors. Granite's Head of Fund Operations, Caroline McKenzie, conducts an annual on-site visit to State Street's Boston operations center and reviews the SOC 1 Type II report each year.",
+      pageLabel: "Page 2 of 34",
+    };
+  }
+
+  // State Street verification confirmation
+  if (l.includes("state street") || (l.includes("admin") && l.includes("confirmation"))) {
+    return {
+      section: "State Street — Administrator Verification Confirmation",
+      before: "Alpine contacted State Street Alternative Investment Services directly, independent of the Manager, to corroborate the Fund's operational arrangements. State Street confirmed the following: ",
+      after: ". State Street confirmed its engagement as administrator since 2014, its provision of monthly NAV and quarterly capital statements, and its quarterly agent-bank loan-balance confirmations supporting asset existence. State Street reported no investor reporting errors and described the dual-approval wire authorization process without prompting from the Manager.",
+      pageLabel: "State Street Confirmation · Page 1",
+    };
+  }
+
+  // PwC audit confirmation
+  if (l.includes("pwc") || l.includes("audit")) {
+    return {
+      section: "PwC — Audit Confirmation",
+      before: "Alpine contacted PricewaterhouseCoopers LLP directly to confirm its engagement and audit history with the Fund. PwC confirmed the following: ",
+      after: ". PwC has served as Granite's fund auditor since the firm's inception in 2010, issues an unqualified audit opinion within 90 days of fiscal year-end annually, and reported no restatements, material weaknesses, or significant deficiencies across the firm's 15-year audit history. The audit fee for FY2024 was $385,000.",
+      pageLabel: "PwC Confirmation · Page 1",
+    };
+  }
+
+  // Cyber liability insurance
+  if (l.includes("insurance")) {
+    return {
+      section: "Cyber Liability Insurance Certificate",
+      before: "This certificate evidences the cyber liability coverage maintained by Granite Capital Management, LLC. The policy limits are as follows: ",
+      after: ". The coverage applies to the firm's New York headquarters and secondary offices and is maintained alongside the firm's broader resilience program, including its WISP, Incident Response Plan, and Business Continuity Plan. Granite has experienced no material cybersecurity incidents or data breaches in the past five years.",
+      pageLabel: "Insurance Certificate · Page 1",
+    };
+  }
+
+  // Q4 2025 Investor Letter
+  if (l.includes("investor letter") || l.includes("q4 2025")) {
+    return {
+      section: "Q4 2025 Investor Letter",
+      before: "This quarterly investor letter for Granite VII Credit Partners, L.P., signed by Margaret Liu (CIO), was delivered within 45 days of quarter-end. The relevant disclosure states: ",
+      after: ". Each letter runs approximately 18 to 22 pages and includes portfolio-level performance metrics, top-10 borrower exposures with named-borrower commentary, watch-list credit disclosure, leverage attribution, capital activity, and a market outlook. The firm also hosts an annual investor day each May in New York, attended by approximately 75% of LPs by capital.",
+      pageLabel: "Q4 2025 Letter · Page 1",
+    };
+  }
+
+  // SEC EDGAR / IAPD verification
+  if (l.includes("edgar") || l.includes("iard") || l.includes("iapd") || l.includes("sec")) {
+    return {
+      section: "SEC EDGAR / IAPD — Registered Investment Adviser Record",
+      before: "Investment Adviser Public Disclosure record for Granite Capital Management, LLC. The firm is a U.S. Securities and Exchange Commission registered investment adviser (IARD/CRD 152384), registered since 2012 as firmwide AUM crossed the $100 million threshold. The record reflects: ",
+      after: ". The firm's record shows no SEC examinations resulting in deficiency letters or enforcement actions, and no reportable disciplinary, regulatory, or criminal matters for the firm or its principals. Alpine confirmed registered-adviser status via direct IAPD query during the ODD review. As a registered adviser, the firm is subject to routine SEC examination and the full compliance obligations of the Investment Advisers Act of 1940.",
+      pageLabel: "IAPD Record · Page 1",
+    };
+  }
+
+  // Delaware register
+  if (l.includes("delaware")) {
+    return {
+      section: "Delaware Division of Corporations — Entity Verification",
+      before: "Alpine performed a direct check against the Delaware Division of Corporations register to confirm the existence and good standing of the Manager and Fund entities. The register reflects the following: ",
+      after: ". Granite Capital Management, LLC (formed March 14, 2009) and Granite VII Credit Partners, L.P. were both confirmed on the register. No discrepancies were identified between the entity names disclosed by the Manager and the registered entities.",
+      pageLabel: "Delaware Register · Page 1",
+    };
+  }
+
+  // Alpine ODD report / internal analysis
+  if (l.includes("odd report") || l.includes("alpine") || f.includes("sample_credit_granite_vii")) {
+    return {
+      section: "Alpine ODD — Internal Cross-Reference Analysis",
+      before: "Alpine Due Diligence — Operational Due Diligence Report. ODD Engagement: Granite Capital Management, LLC · Granite VII Credit Partners, L.P. This report summarizes Alpine's analysis of the documents submitted, the management responses, and the third-party verifications obtained during the review. The following finding was identified: ",
+      after: ". The overall engagement is rated GREEN, with two YELLOW chapters (Investment Operations and Valuation) reflecting industry-normal use of a moderate NAV facility and an in-house valuation agent of record supported by strong Houlihan Lokey third-party review. Alpine recommends an accept rating subject to post-close monitoring of leverage utilization and Valuation Committee composition.",
+      pageLabel: "Alpine Analysis · Page 1",
+    };
+  }
+
+  // Generic Granite fallback
+  return {
+    section: "Document Reference — Alpine Due Diligence File",
+    before: `The following passage has been extracted from the referenced source (${sourceLabel}) maintained in Alpine's operational due diligence file for Granite VII Credit Partners, L.P. This material reflects information provided by Granite Capital Management, LLC or obtained from independent registries and third-party verifications as of the date stated. Alpine has reviewed this material in connection with its ODD program but has not independently verified all factual representations except as specifically noted in the accompanying ODD report. The specific passage cited in the ODD analysis states: `,
+    after: ". Investors and Alpine personnel are reminded that any manager-provided document is proprietary and confidential and may not be reproduced or disclosed to third parties without the prior written consent of Granite Capital Management, LLC. Please refer to the complete source document for full context, all defined terms, and applicable disclaimers.",
+    pageLabel: "Page 1",
+  };
+}
+// ── Cordova doc metadata ──────────────────────────────────────────────────────
+function buildCordovaDocMeta(filename: string, label: string) {
+  const f = filename.toLowerCase();
+  const l = label.toLowerCase();
+  if (l.includes("odd report") || f.includes("sample_re_cordova_jv"))            return { title: "Cordova JV III — ODD Report", subtitle: "Cordova JV Real Estate Fund III, L.P. · Alpine ODD Review 2026", date: "Prepared April 2026", badge: "ODD Report" };
+  if (l.includes("form adv") || f.includes("form-adv") || f.includes("form_adv")) return { title: "Form ADV (ERA) — Part 1 & 2A", subtitle: "Cordova Capital Partners, LLC", date: "ERA annual filing March 2026", badge: "Regulatory Filing" };
+  if (l.includes("due diligence") || l.includes("ddq") || f.includes("ddq"))      return { title: "Due Diligence Questionnaire (2026)", subtitle: "Cordova Capital Partners, LLC", date: "2026", badge: "Fund Document" };
+  if (l.includes("limited partnership") || f.includes("lpa") || f.includes("jv_agreement")) return { title: "Limited Partnership Agreement — Fund III", subtitle: "Cordova JV Real Estate Fund III, L.P.", date: "Effective 2024", badge: "Legal" };
+  if (l.includes("private placement") || f.includes("ppm"))                       return { title: "Private Placement Memorandum — Fund III", subtitle: "Cordova JV Real Estate Fund III, L.P.", date: "2024", badge: "Legal" };
+  if (l.includes("valuation"))                                                    return { title: "Valuation Policy", subtitle: "Cordova Capital Partners, LLC", date: "Effective October 2024", badge: "Operations" };
+  if (l.includes("code of ethics"))                                               return { title: "Code of Ethics", subtitle: "Cordova Capital Partners, LLC", date: "Effective October 2024", badge: "Compliance" };
+  if (l.includes("information security") || l.includes("wisp"))                   return { title: "Written Information Security Program (WISP)", subtitle: "Cordova Capital Partners, LLC", date: "Reviewed 2024", badge: "Compliance" };
+  if (l.includes("administration agreement") || l.includes("ss&c") || l.includes("admin")) return { title: "Administration Agreement — SS&C ALPS", subtitle: "Cordova JV Real Estate Fund III, L.P.", date: "Effective 2018", badge: "Service Provider" };
+  if (l.includes("audit") || l.includes("kpmg"))                                  return { title: "KPMG LLP — Audit Confirmation", subtitle: "Cordova JV Real Estate Fund III, L.P.", date: "FY2024 Audit", badge: "Third-Party Confirmation" };
+  if (l.includes("insurance"))                                                    return { title: "Cyber Liability Insurance Certificate", subtitle: "Cordova Capital Partners, LLC", date: "2026 Policy Year", badge: "Insurance" };
+  if (l.includes("investor letter") || f.includes("letter"))                      return { title: "Q4 2025 Investor Letter", subtitle: "Cordova JV Real Estate Fund III, L.P.", date: "Q4 2025", badge: "Investor Communication" };
+  if (l.includes("edgar") || l.includes("sec"))                                   return { title: "SEC EDGAR — Exempt Reporting Adviser Filing", subtitle: "Cordova Capital Partners, LLC", date: "ERA since 2016", badge: "SEC Verification" };
+  if (l.includes("texas") || l.includes("secretary of state") || l.includes("sos")) return { title: "Texas Secretary of State — Entity Registry", subtitle: "Cordova Capital Partners, LLC", date: "Verified 2026", badge: "Public Record" };
+  return { title: label, subtitle: "Cordova Capital Partners, LLC", date: "2026", badge: "Document" };
+}
+
+// ── Cordova passage builder ───────────────────────────────────────────────────
+function buildCordovaPassage(quote: string, filename: string, sourceLabel: string): { before: string; after: string; section: string; pageLabel: string } {
+  const f = filename.toLowerCase();
+  const l = sourceLabel.toLowerCase();
+  const q = quote.toLowerCase();
+
+  // Form ADV (ERA)
+  if (l.includes("form adv") || f.includes("form-adv") || f.includes("form_adv")) {
+    if (q.includes("dallas") || q.includes("phoenix") || q.includes("primary location")) return {
+      section: "Item 1 — Identifying Information",
+      before: "Cordova Capital Partners, LLC is a Texas limited liability company with its principal place of business located in ",
+      after: ". The firm is a value-add multifamily real estate sponsor founded in 2014 by Carlos Mendoza, focused on joint-venture equity investments in Sun Belt markets (Texas, Arizona, North Carolina, Florida, and Tennessee). The firm files with the SEC as an Exempt Reporting Adviser in reliance on the private fund adviser exemption under Section 203(m) of the Investment Advisers Act of 1940 and has filed in that capacity since 2016. All investors are accredited investors and qualified purchasers investing through the firm's private fund vehicles.",
+      pageLabel: "Page 1 of 16",
+    };
+    if (q.includes("cordova capital partners")) return {
+      section: "Item 1 — Identifying Information",
+      before: "This Form ADV is filed by ",
+      after: ", a Texas limited liability company with its principal place of business in Dallas, Texas and a secondary office in Phoenix, Arizona. The firm is a value-add multifamily real estate sponsor founded in 2014 by Carlos Mendoza (Managing Principal and Chief Investment Officer) and files with the SEC as an Exempt Reporting Adviser under Section 203(m) of the Investment Advisers Act of 1940.",
+      pageLabel: "Page 1 of 16",
+    };
+    if (q.includes("1.10 billion") || q.includes("aum") || q.includes("net assets") || q.includes("370")) return {
+      section: "Item 5 — Information About Your Advisory Business",
+      before: "As of December 31, 2025, the Adviser reports firmwide regulatory net assets of ",
+      after: " under management across its advised private real estate fund vehicles, together with $370 million of uncalled capital commitments. The firm has acquired 47 multifamily properties totaling 14,200 units across three joint-venture fund vintages. All advisory activity is conducted on a discretionary basis. The Adviser does not manage separately managed accounts or wrap-fee programs.",
+      pageLabel: "Page 4 of 16",
+    };
+    if (q.includes("mendoza") || q.includes("vance") || q.includes("park") || q.includes("60%") || q.includes("ownership") || q.includes("25%") || q.includes("15%")) return {
+      section: "Schedules A & B — Direct and Indirect Owners",
+      before: "The Adviser is owned by its three principals as follows: ",
+      after: ". Carlos Mendoza (Managing Principal and Chief Investment Officer) was formerly Director of Acquisitions at TruAmerica Multifamily and earlier a Senior Associate at Lone Star Funds. Stephanie Vance (Co-Founder, Head of Asset Management) was formerly with Camden Property Trust. Daniel Park (Chief Financial Officer, joined 2017) was formerly with JLL Capital Markets and also serves as Chief Compliance Officer. There are no outside institutional owners or third-party controlling interests in the management company.",
+      pageLabel: "Page 7 of 16",
+    };
+    return {
+      section: "Item 5 — Fees and Compensation",
+      before: "The Adviser receives a management fee and a carried interest allocation from the funds it advises. The management fee for Fund III is 1.50% per annum and carried interest is 20% of net profits over an 8% preferred return with a 50/50 catch-up, calculated on a deal-by-deal basis subject to a European-style full clawback at fund-end. With respect to the matters described in this Item: ",
+      after: ". The General Partner commits 2.0% of total commitments in cash, invested pari passu with Limited Partners and free of any management fee offset. The firm intends to transition to full SEC registration as a Registered Investment Adviser in Q3 2026 as its assets under management scale beyond the private fund adviser exemption threshold.",
+      pageLabel: "Page 5 of 16",
+    };
+  }
+
+  // DDQ
+  if (l.includes("due diligence") || l.includes("ddq") || f.includes("ddq")) {
+    if (q.includes("ss&c") || q.includes("kpmg") || q.includes("wells fargo") || q.includes("goodwin") || q.includes("administrator") || q.includes("auditor")) return {
+      section: "Section 5 — Service Providers",
+      before: "Fund Administrator: ",
+      after: ". SS&C ALPS Alternative Fund Services has been engaged since 2018 and provides NAV calculation, investor capital activity, AML/KYC, regulatory reporting, and FATCA/CRS compliance. Independent auditor: KPMG LLP, engaged since 2018, delivers its annual audit opinion within 100 days of fiscal year-end. Primary banking is held with Wells Fargo, N.A. at the fund level, with property-level SPV accounts held at regional banks. Legal counsel: Goodwin Procter LLP.",
+      pageLabel: "Page 22 of 58",
+    };
+    if (q.includes("18 fte") || q.includes("headcount") || q.includes("acquisitions") || q.includes("asset management") || q.includes("operating partner")) return {
+      section: "Section 2 — Firm Background and Team",
+      before: "The firm has a total headcount of ",
+      after: ". Cordova employs a joint-venture sponsor model: the firm partners with experienced regional operating partners — typically property management companies with deep local market expertise — to acquire and renovate underperforming Class B and C multifamily assets. Cordova provides equity capital, oversight, and strategic direction while operating partners handle day-to-day property management and on-site renovation execution. Cordova currently maintains active joint ventures with 6 operating partners across three fund vintages.",
+      pageLabel: "Page 6 of 58",
+    };
+    if (q.includes("succession") || q.includes("key person insurance") || q.includes("background") || q.includes("$10m")) return {
+      section: "Section 2 — Ownership, Succession and Governance",
+      before: "With respect to ownership continuity and governance controls at the management company: ",
+      after: ". Carlos Mendoza owns 60% of Cordova and holds both the Managing Principal and Chief Investment Officer roles; no formal written succession plan exists, and succession discussions have been informal among the three principals. Key person life insurance of $10 million is maintained on Carlos Mendoza only — Stephanie Vance and Daniel Park are not covered. Background checks on new hires are performed internally by the Managing Principal rather than by a third-party vendor, and no periodic refresh checks are performed.",
+      pageLabel: "Page 9 of 58",
+    };
+    if (q.includes("daniel park") || q.includes("chief compliance") || q.includes("apex compliance") || q.includes("compliance manual") || q.includes("brokerage") || q.includes("holding period")) return {
+      section: "Section 4 — Compliance and Regulatory",
+      before: "The firm files as an Exempt Reporting Adviser and engaged Apex Compliance Advisors LLC as outside compliance consultant in Q1 2022. With respect to compliance oversight and program administration: ",
+      after: ". Daniel Park serves as Chief Compliance Officer in addition to his Chief Financial Officer responsibilities, which Alpine has flagged as a segregation of duties concern ahead of the planned full RIA registration. Apex performs an annual compliance review (most recently November 2025) and supports regulatory filings and code of ethics enforcement. The current compliance manual is dated October 2024 with a 2026 revision in progress.",
+      pageLabel: "Page 14 of 58",
+    };
+    if (q.includes("vantage") || q.includes("soc 2") || q.includes("penetration") || q.includes("phishing") || q.includes("4.8%") || q.includes("defender") || q.includes("microsoft")) return {
+      section: "Section 6 — Technology and Cybersecurity",
+      before: "Cordova operates on Microsoft 365 supplemented by Yardi Voyager for property accounting and Juniper Square for investor reporting, with single sign-on through Microsoft Entra ID and mandatory MFA. With respect to the firm's cybersecurity program: ",
+      after: ". Cordova engaged Vantage Tech LLC in March 2023 as outsourced IT and cybersecurity provider; its service tier does not include data loss prevention or advanced threat detection. The firm has not commissioned a SOC 2 audit, and a first external penetration test was performed by Bishop Fox in November 2024 with all three medium-severity findings remediated within 60 days. The rolling four-quarter phishing click rate is 4.8%, above the 3.2% financial services benchmark.",
+      pageLabel: "Page 26 of 58",
+    };
+    if (q.includes("ltv") || q.includes("bridge") || q.includes("agency") || q.includes("texas concentration") || q.includes("41%") || q.includes("dallas") || q.includes("houston") || q.includes("investment committee") || q.includes("2 of 3") || q.includes("quality of earnings")) return {
+      section: "Section 7 — Investment Operations and Portfolio Controls",
+      before: "The Investment Committee comprises three voting members (Carlos Mendoza, Stephanie Vance, and Daniel Park) with approval by majority consent. With respect to portfolio construction and financing: ",
+      after: ". Each acquisition is financed with asset-level non-recourse debt at 60–70% loan-to-value, sourced from agency lenders (Fannie Mae, Freddie Mac) for stabilized assets and bridge lenders for value-add transitions, with bridge debt refinanced to agency debt upon stabilization (typically 18–30 months post-acquisition). As of December 31, 2025, aggregate fund-level leverage is 64% LTV and the portfolio shows 41% of NAV across the Dallas and Houston MSAs combined, within the LPA's 35% single-market cap measured at MSA level.",
+      pageLabel: "Page 31 of 58",
+    };
+    if (q.includes("cushman") || q.includes("appraisal") || q.includes("juniper square") || q.includes("quarterly report") || q.includes("investor day") || q.includes("waterfall")) return {
+      section: "Section 8 — Valuation and Investor Reporting",
+      before: "Cordova values its multifamily portfolio quarterly under the ASC 820 fair-value framework using discounted cash flow, sales comparable, and replacement cost approaches. With respect to independent oversight and investor reporting: ",
+      after: ". Cushman & Wakefield provides independent annual appraisals on all properties, with a semi-annual cadence under consideration for Fund III. Quarterly investor reports are delivered within 60 days of quarter-end through Juniper Square, and audited annual financials are delivered within 100 days of fiscal year-end. The carry waterfall is calculated by SS&C through its proprietary system and reviewed by Daniel Park.",
+      pageLabel: "Page 38 of 58",
+    };
+    return {
+      section: "Section 3 — Fund Terms and Track Record",
+      before: "Cordova JV Real Estate Fund III, L.P. is being raised with a $750 million target and an $850 million hard cap, having raised $520 million through December 2025. With respect to the specific terms and track record applicable to this Fund: ",
+      after: ". The firm has raised three joint-venture fund vintages: Cordova JV I (2016, $185 million, fully realized at 18.4% gross IRR / 1.92x MOIC), Cordova JV II (2019, $410 million, approximately 70% realized at 16.1% interim gross IRR), and the current Cordova JV III. The General Partner commits 2.0% of total commitments in cash (approximately $17 million at the hard cap), invested pari passu with Limited Partners and free of any fee offset.",
+      pageLabel: "Page 11 of 58",
+    };
+  }
+
+  // LPA / PPM
+  if (l.includes("limited partnership") || l.includes("private placement") || f.includes("lpa") || f.includes("ppm") || f.includes("jv_agreement")) {
+    if (q.includes("delaware") || q.includes("cayman") || q.includes("feeder") || q.includes("general partner") || q.includes("fund vehicle")) return {
+      section: "Section 1 — Organization and Formation",
+      before: "Cordova JV Real Estate Fund III, L.P. (the \"Fund\") is organized as a ",
+      after: ", with a Cayman Islands feeder vehicle (Cordova JV III (Cayman), Ltd.) for non-US and US tax-exempt investors. The Fund invests across joint-venture equity positions in value-add multifamily acquisitions in Sun Belt markets. A single-asset concentration cap of 8% of total commitments and a single-market concentration cap of 35% of total commitments apply. Cordova Capital Partners, LLC serves as the investment manager and sponsor.",
+      pageLabel: "Page 4 of 74",
+    };
+    if (q.includes("key person") || q.includes("removal") || q.includes("lpac") || q.includes("most-favored") || q.includes("mfn") || q.includes("$25m") || q.includes("75%") || q.includes("50% lp")) return {
+      section: "Section 12 — Limited Partner Protections",
+      before: "The Fund affords Limited Partners a suite of governance protections negotiated through ILPA-aligned outside counsel. With respect to LP rights and the key person provision: ",
+      after: ". Most-favored-nation rights are available to commitments of $25 million or more; the LPAC has 7 seats; the General Partner may be removed for cause on a 50% LP vote and on a no-fault basis on a 75% LP vote; and the key person clause is triggered if Carlos Mendoza ceases to dedicate substantially all of his time to the Fund. The LPAC meets twice annually and reviews valuation summaries, leverage utilization, and concentration metrics.",
+      pageLabel: "Page 33 of 74",
+    };
+    if (q.includes("8 year") || q.includes("8-year") || q.includes("term") || q.includes("investment period") || q.includes("extension")) return {
+      section: "Section 9 — Term and Investment Period",
+      before: "The Fund has a total term of ",
+      after: " comprising a four-year investment period and a four-year harvesting period, with up to two one-year extensions subject to LPAC approval. This structure is consistent with peer joint-venture value-add multifamily funds. During the investment period the management fee is charged on invested capital; thereafter it is charged on net asset value excluding realized assets.",
+      pageLabel: "Page 24 of 74",
+    };
+    return {
+      section: "Section 7 — Management Fee, Carried Interest and GP Commitment",
+      before: "The General Partner is entitled to a management fee of 1.50% per annum (on invested capital during the investment period and on net asset value excluding realized assets thereafter) and a carried interest allocation of 20% of net profits over an 8% preferred return with a 50/50 catch-up. With respect to the Fund's economic terms: ",
+      after: ". Carried interest is calculated on a deal-by-deal basis subject to a European-style full clawback at fund-end, which substantially mitigates early-distribution exposure. The General Partner commits 2.0% of total commitments in cash (approximately $17 million at the $850 million hard cap), funded pari passu with Limited Partners and free of any management fee offset.",
+      pageLabel: "Page 18 of 74",
+    };
+  }
+
+  // Valuation Policy
+  if (l.includes("valuation")) {
+    return {
+      section: "Section 2 — Valuation Process and Governance",
+      before: "Cordova Capital Partners prepares fair-value estimates for all multifamily portfolio investments quarterly in accordance with the ASC 820 framework, applying discounted cash flow (weighted 60–70%), sales comparable, and replacement cost approaches. With respect to the firm's valuation process and governance: ",
+      after: ". The Valuation Committee comprises five members — Stephanie Vance (Chair), Carlos Mendoza, Daniel Park, and two non-investment members drawn from Apex Compliance Advisors and SS&C — and approves valuations by majority vote. Cordova serves as the in-house valuation agent of record, with Cushman & Wakefield providing independent annual appraisals as the primary external pricing check. Alpine has noted the annual appraisal cadence and the 2-of-5 non-investment composition as areas for enhancement.",
+      pageLabel: "Page 4 of 14",
+    };
+  }
+
+  // Code of Ethics
+  if (l.includes("code of ethics")) {
+    return {
+      section: "Code of Ethics — Personal Trading and Pre-Clearance",
+      before: "Cordova Capital Partners maintains a Code of Ethics governing personal securities transactions by all employees. With respect to pre-clearance and personal trading controls: ",
+      after: ". Pre-clearance is required only for securities on the firm's restricted list (currently empty, as the firm does not invest in public securities); quarterly personal trading reports are submitted by all employees through Apex's portal; and brokerage statements are collected via employee self-reporting rather than custodian-direct. There is no minimum holding period and no formal prohibition on trading securities held by the funds — gaps Alpine has recommended closing ahead of full RIA registration.",
+      pageLabel: "Page 3 of 11",
+    };
+  }
+
+  // WISP / Information Security
+  if (l.includes("information security") || l.includes("wisp")) {
+    return {
+      section: "Written Information Security Program — Controls and Resilience",
+      before: "Cordova Capital Partners maintains a Written Information Security Program (WISP) alongside an Incident Response Plan and a Business Continuity Plan, most recently reviewed in mid-2024. With respect to the firm's security and resilience controls: ",
+      after: ". Infrastructure runs on Microsoft 365 with Microsoft Entra ID single sign-on and mandatory MFA, and Microsoft Defender provides endpoint protection without data loss prevention. Cordova has not yet conducted a formal tabletop exercise of the Business Continuity Plan — an exercise is planned for Q3 2026 — and cyber liability insurance is limited to $5 million per occurrence and $5 million aggregate, which Alpine views as modest for a manager of Cordova's $1.1 billion AUM scale.",
+      pageLabel: "Page 2 of 9",
+    };
+  }
+
+  // Administration Agreement — SS&C
+  if (l.includes("administration agreement") || l.includes("ss&c") || l.includes("admin")) {
+    return {
+      section: "Administration Agreement — SS&C ALPS Alternative Fund Services",
+      before: "This Administration Agreement engages SS&C ALPS Alternative Fund Services as fund administrator to Cordova JV Real Estate Fund III, L.P., continuing a relationship in place since 2018. Under the agreement, the Administrator provides the following services: ",
+      after: ". The Administrator performs NAV calculation, investor capital activity processing, AML/KYC, regulatory reporting, FATCA/CRS compliance, and carry waterfall calculation through its proprietary system. Daniel Park (CFO) reviews the Administrator's annual SOC 1 Type II report and conducts an annual relationship-manager call. Alpine corroborated the engagement and scope of services directly with SS&C during the review.",
+      pageLabel: "Page 1 of 6",
+    };
+  }
+
+  // Audit Letter — KPMG
+  if (l.includes("audit") || l.includes("kpmg")) {
+    return {
+      section: "KPMG LLP — Audit Confirmation",
+      before: "Alpine obtained direct confirmation from KPMG LLP, independent auditor to Cordova JV Real Estate Fund III, L.P. since 2018, in connection with its operational due diligence review. KPMG confirmed the following: ",
+      after: ". KPMG delivers its annual audit opinion within 100 days of fiscal year-end; the audit fee for FY2024 was $310,000; and no restatements, material weaknesses, or significant deficiencies have been reported across the engagement. KPMG replaced a regional firm that had audited Cordova JV I. Alpine confirmed the engagement and clean audit history directly with the auditor, independent of the Manager.",
+      pageLabel: "Audit Confirmation · Page 1",
+    };
+  }
+
+  // Insurance Certificate
+  if (l.includes("insurance")) {
+    return {
+      section: "Cyber Liability Insurance Certificate",
+      before: "This certificate evidences cyber liability insurance coverage maintained by Cordova Capital Partners, LLC. The policy provides the following limits of liability: ",
+      after: ". The limit of $5 million per occurrence and $5 million aggregate is, in Alpine's view, modest relative to institutional benchmarks of $10 million to $25 million typical for managers at Cordova's $1.1 billion AUM scale. Alpine has recommended that the limit be increased to at least $10 million per occurrence by the next renewal.",
+      pageLabel: "Insurance Certificate · Page 1",
+    };
+  }
+
+  // Q4 2025 Investor Letter
+  if (l.includes("investor letter") || f.includes("letter")) {
+    return {
+      section: "Q4 2025 Investor Letter",
+      before: "This quarterly investor letter for Cordova JV Real Estate Fund III, L.P. was delivered within 60 days of quarter-end and signed by Carlos Mendoza (Chief Investment Officer). The letter, approximately 16–20 pages including asset-level NOI commentary on all properties, reports the following: ",
+      after: ". The letter includes a portfolio-level NAV summary, asset-level NOI commentary, debt summary, capex spend tracking against business plan, and a market outlook. Cordova hosts an annual investor day each spring in Dallas, attended in 2025 by approximately 60% of LPs by capital and including property tours of three Cordova-owned Dallas-metro assets.",
+      pageLabel: "Page 1 of 18",
+    };
+  }
+
+  // SEC EDGAR / ERA filing
+  if (l.includes("edgar") || l.includes("sec")) {
+    return {
+      section: "SEC EDGAR — Exempt Reporting Adviser Record",
+      before: "SEC EDGAR record for Cordova Capital Partners, LLC. The firm is reported as an Exempt Reporting Adviser relying on the private fund adviser exemption under Section 203(m) of the Investment Advisers Act of 1940, and has filed in that capacity since 2016. The record reflects: ",
+      after: ". The firm's record shows no SEC examinations, regulatory actions, or disciplinary matters for the firm or its principals. Alpine notes that Cordova's current AUM exceeds the $150 million private fund adviser threshold, and the Manager has indicated a transition to full Registered Investment Adviser status is planned for Q3 2026. Alpine confirmed ERA status via direct EDGAR query during the ODD review.",
+      pageLabel: "EDGAR Record · Page 1",
+    };
+  }
+
+  // Texas Secretary of State registry
+  if (l.includes("texas") || l.includes("secretary of state") || l.includes("sos")) {
+    return {
+      section: "Texas Secretary of State — Entity Verification",
+      before: "Alpine performed a direct check against the Texas Secretary of State registry to confirm the existence and good standing of the management company. The registry reflects the following: ",
+      after: ". Cordova Capital Partners, LLC was confirmed as a Texas limited liability company formed June 11, 2014 and in good standing. No discrepancies were identified between the entity name disclosed by the Manager and the registered entity. Cordova is headquartered in Dallas, Texas with a secondary office in Phoenix, Arizona.",
+      pageLabel: "Texas Registry · Page 1",
+    };
+  }
+
+  // ODD Report (Alpine internal)
+  if (l.includes("odd report") || f.includes("sample_re_cordova_jv")) {
+    return {
+      section: "Cordova JV III — Alpine ODD Report",
+      before: "Alpine Due Diligence — Operational Due Diligence Report. ODD Engagement: Cordova Capital Partners, LLC (Cordova JV Real Estate Fund III, L.P.). This report summarizes Alpine's analysis of the documents submitted, the management responses, and the third-party verifications obtained during the review. The following finding was identified: ",
+      after: ". The Fund received an overall YELLOW rating with a watchlist recommendation, reflecting emerging-manager governance characteristics across four YELLOW chapters — concentrated ownership in Carlos Mendoza, the combined CFO/CCO role, cybersecurity program maturity, and annual valuation cadence — partially mitigated by a strong realized Sun Belt multifamily track record and a robust operating partner diligence framework.",
+      pageLabel: "ODD Report · Page 1",
+    };
+  }
+
+  // Generic Cordova fallback
+  return {
+    section: "Document Reference — Alpine Due Diligence File",
+    before: `The following passage has been extracted from the referenced source (${sourceLabel}) maintained in Alpine's operational due diligence file for Cordova JV Real Estate Fund III, L.P. This material reflects information provided by Cordova Capital Partners, LLC or obtained from independent registries and third-party verifications as of the date stated. Alpine has reviewed this material in connection with its ODD program but has not independently verified all factual representations except as specifically noted in the accompanying ODD report. The specific passage cited in the ODD analysis states: `,
+    after: ". Investors and Alpine personnel are reminded that any manager-provided document is proprietary and confidential and may not be reproduced or disclosed to third parties without the prior written consent of Cordova Capital Partners, LLC. Please refer to the complete source document for full context, all defined terms, and applicable disclaimers.",
+    pageLabel: "Page 1",
+  };
+}
+// ── Blackpine doc metadata ────────────────────────────────────────────────────
+function buildBlackpineDocMeta(filename: string, label: string) {
+  const f = filename.toLowerCase();
+  const l = label.toLowerCase();
+  if (l.includes("odd report") || f.includes("sample_credit_blackpine_plus"))     return { title: "Operational Due Diligence Report — Blackpine Credit Plus IV", subtitle: "Blackpine Credit Plus IV, L.P. · Alpine ODD Review", date: "April 2026", badge: "Alpine Analysis" };
+  if (l.includes("form adv") || f.includes("form-adv") || f.includes("form_adv"))  return { title: "Form ADV — Parts 1 & 2A", subtitle: "Blackpine Asset Management, LLC", date: "Filed March 2026", badge: "Regulatory Filing" };
+  if (l.includes("due diligence") || l.includes("ddq"))                            return { title: "Due Diligence Questionnaire (2026)", subtitle: "Blackpine Asset Management, LLC", date: "2026", badge: "Fund Document" };
+  if (l.includes("limited partnership") || f.includes("lpa"))                       return { title: "Limited Partnership Agreement — Fund IV", subtitle: "Blackpine Credit Plus IV, L.P.", date: "Effective 2025", badge: "Fund Document" };
+  if (l.includes("private placement") || f.includes("ppm"))                         return { title: "Private Placement Memorandum — Fund IV", subtitle: "Blackpine Credit Plus IV, L.P.", date: "2025", badge: "Fund Document" };
+  if (l.includes("valuation"))                                                      return { title: "Valuation Policy", subtitle: "Blackpine Asset Management, LLC", date: "Effective February 2026", badge: "Operations Document" };
+  if (l.includes("code of ethics"))                                                 return { title: "Code of Ethics", subtitle: "Blackpine Asset Management, LLC", date: "Effective February 2026", badge: "Compliance Document" };
+  if (l.includes("wisp") || l.includes("information security"))                     return { title: "Written Information Security Program (WISP)", subtitle: "Blackpine Asset Management, LLC", date: "2026", badge: "Compliance Document" };
+  if (l.includes("admin") || l.includes("ss&c"))                                    return { title: "Administration Agreement — SS&C Technologies", subtitle: "Blackpine Credit Plus IV, L.P.", date: "Effective 2018", badge: "Service Provider Agreement" };
+  if (l.includes("audit"))                                                          return { title: "Ernst & Young LLP — Audit Confirmation", subtitle: "Blackpine Credit Plus IV, L.P.", date: "FY2024", badge: "Third-Party Confirmation" };
+  if (l.includes("sec examination") || l.includes("sec letter") || l.includes("closing letter")) return { title: "SEC Examination Closing Letter", subtitle: "Blackpine Asset Management, LLC", date: "Q3 2024", badge: "Regulatory Filing" };
+  if (l.includes("insurance"))                                                      return { title: "Cyber Liability Insurance Certificate", subtitle: "Blackpine Asset Management, LLC", date: "2026", badge: "Insurance" };
+  if (l.includes("investor letter") || l.includes("q4 2025"))                       return { title: "Q4 2025 Investor Letter", subtitle: "Blackpine Credit Plus IV, L.P.", date: "Q4 2025", badge: "Investor Communication" };
+  if (l.includes("edgar") || l.includes("iard") || l.includes("iapd") || l.includes("sec verification") || l.includes("registered adviser")) return { title: "SEC EDGAR / IARD — Registered Adviser Record", subtitle: "Blackpine Asset Management, LLC", date: "Registered since 2019", badge: "SEC Verification" };
+  if (l.includes("delaware"))                                                       return { title: "Delaware Division of Corporations — Entity Verification", subtitle: "Blackpine Credit Plus IV, L.P. · Blackpine Asset Management, LLC", date: "Verified April 2026", badge: "Public Record" };
+  return { title: label, subtitle: "Blackpine Asset Management, LLC", date: "2026", badge: "Document" };
+}
+
+// ── Blackpine passage builder ─────────────────────────────────────────────────
+function buildBlackpinePassage(quote: string, filename: string, sourceLabel: string): { before: string; after: string; section: string; pageLabel: string } {
+  const f = filename.toLowerCase();
+  const q = quote.toLowerCase();
+  const l = sourceLabel.toLowerCase();
+
+  // Form ADV
+  if (l.includes("form adv") || f.includes("form-adv") || f.includes("form_adv")) {
+    if (q.includes("new york") || q.includes("london") || q.includes("primary location")) return {
+      section: "Item 1 — Identifying Information",
+      before: "Blackpine Asset Management, LLC is a Delaware limited liability company with its principal place of business located in ",
+      after: ". The firm was founded in 2017 by Martin Lin and focuses on opportunistic and stressed/distressed corporate credit, primarily in North American and European leveraged loan and high-yield markets. The firm is registered with the U.S. Securities and Exchange Commission as an investment adviser and maintains a small research outpost in London that is subject to UK FCA regulation. All advisory activity is conducted on a discretionary basis for private fund vehicles and separate accounts held by qualified institutional clients.",
+      pageLabel: "Page 1 of 18",
+    };
+    if (q.includes("blackpine asset management")) return {
+      section: "Item 1 — Identifying Information",
+      before: "This Form ADV is filed by ",
+      after: ", a Delaware limited liability company headquartered in New York with a research outpost in London. The firm was founded in 2017 by Martin Lin (Founder, Chief Investment Officer, and Portfolio Manager), formerly Co-Head of Special Situations at Goldwater Credit Partners and previously a Vice President in Apollo Global Management’s Distressed Credit group. The firm has been registered with the SEC as an investment adviser since 2019.",
+      pageLabel: "Page 1 of 18",
+    };
+    if (q.includes("$850m") || q.includes("$1.025b") || q.includes("net assets") || q.includes("$175m") || q.includes("separate accounts") || q.includes("aum")) return {
+      section: "Item 5 — Information About Your Advisory Business",
+      before: "As of December 31, 2025, the Adviser reports regulatory assets under management reflecting net assets of ",
+      after: " across its advised Blackpine Credit Plus fund vehicles and two institutional separate accounts, together with $215 million of uncalled capital commitments. All advisory activity is conducted on a discretionary basis. The Adviser files Form PF as a large hedge fund adviser and does not manage wrap-fee programs.",
+      pageLabel: "Page 4 of 18",
+    };
+    if (q.includes("lin 72%") || q.includes("reyes 15%") || q.includes("foster 8%") || q.includes("ownership") || q.includes("reserved")) return {
+      section: "Schedules A & B — Direct and Indirect Owners",
+      before: "The Adviser’s equity is held as follows: ",
+      after: ". Martin Lin (Founder, Chief Investment Officer, and Portfolio Manager) holds the controlling interest. Alexandra Reyes (Head of Research, joined 2018, former Director at Centerbridge) and Daniel Foster (Chief Operating Officer, joined 2019, former Anchorage Capital) hold minority interests, with the remaining 5% reserved for future grant. There are no outside institutional owners or third-party controlling interests in the management company.",
+      pageLabel: "Page 7 of 18",
+    };
+    if (q.includes("martin lin")) return {
+      section: "Schedules A & B — Direct and Indirect Owners",
+      before: "The Adviser is controlled by its Founder and Chief Investment Officer, ",
+      after: ", who owns 72% of the management company and serves as sole Portfolio Manager across the Blackpine Credit Plus series. Lin was formerly Co-Head of Special Situations at Goldwater Credit Partners and prior to that a Vice President in Apollo Global Management’s Distressed Credit group. Alexandra Reyes (Head of Research) and Daniel Foster (Chief Operating Officer) hold the remaining principal interests.",
+      pageLabel: "Page 7 of 18",
+    };
+    return {
+      section: "Item 7 — Financial Industry Affiliations and Private Funds",
+      before: "The Adviser advises the Blackpine Credit Plus series of private funds, which pursue an opportunistic and stressed/distressed corporate credit strategy. With respect to the matters described in this Item: ",
+      after: ". The Adviser receives a management fee and a carried interest allocation from the funds it advises. The funds are offered solely to accredited investors and qualified purchasers and are not registered under the Investment Company Act of 1940 in reliance on Sections 3(c)(7) thereof.",
+      pageLabel: "Page 9 of 18",
+    };
+  }
+
+  // DDQ
+  if (l.includes("due diligence") || l.includes("ddq")) {
+    if (q.includes("18 ftes") || q.includes("headcount") || q.includes("research/trading")) return {
+      section: "Section 2 — Firm Background and Team",
+      before: "The firm reports a total headcount of ",
+      after: ". The investment team has averaged 11 years of credit experience. Senior personnel include Martin Lin (Founder, CIO, and sole Portfolio Manager), Alexandra Reyes (Head of Research), Daniel Foster (Chief Operating Officer), and Sarah Klein (Head of Capital Formation). Two senior analysts departed in 2025: Robert Chen left in March 2025 to launch his own credit fund, and David Marshall left in October 2025 to join a strategic.",
+      pageLabel: "Page 5 of 48",
+    };
+    if (q.includes("martin lin — sole pm") || q.includes("unilateral") || q.includes("sole pm")) return {
+      section: "Section 6 — Investment Process and Decision Authority",
+      before: "Investment decision authority within the Blackpine Credit Plus series rests with a single individual: ",
+      after: ". The 5-member Investment Committee (Lin, Reyes, Foster, plus two senior analysts) provides advisory input through formal IC presentations on each new position exceeding 2% of fund commitments, but the IC’s role is consultative rather than decisional. IC meetings are held weekly, recorded, and minuted for SEC examination purposes. Smaller positions may be initiated by Lin within written investment guidelines.",
+      pageLabel: "Page 22 of 48",
+    };
+    if (q.includes("advisory only") || q.includes("ic ") || q.includes("investment committee") || q.includes("5 members") || q.includes("consultative")) return {
+      section: "Section 6 — Investment Process and Decision Authority",
+      before: "The Investment Committee structure is described as follows: ",
+      after: ". The committee meets weekly and reviews all new positions exceeding 2% of fund commitments; however, final investment authority rests with Martin Lin alone. The IC process, Alexandra Reyes’ ability to challenge thesis, and the strategy’s relatively short holding periods (typically 18–30 months) partially mitigate the sole-PM structure.",
+      pageLabel: "Page 22 of 48",
+    };
+    if (q.includes("daniel foster (coo) — combined") || q.includes("combined role") || q.includes("chief compliance")) return {
+      section: "Section 4 — Compliance and Regulatory",
+      before: "The firm’s Chief Compliance Officer role is staffed as follows: ",
+      after: ". Daniel Foster serves as Chief Compliance Officer in addition to his operational responsibilities as Chief Operating Officer. The firm has engaged Apex Compliance Advisors LLC as outside compliance consultant since inception (2017), which performs an annual compliance review and supports regulatory filings, code of ethics enforcement, and policy updates. The compliance manual was last revised in February 2026. Alpine notes the combined COO/CCO role as a segregation of duties concern given the strategy’s illiquid valuation complexity.",
+      pageLabel: "Page 14 of 48",
+    };
+    if (q.includes("succession") || q.includes("not formalized")) return {
+      section: "Section 2 — Firm Background and Team",
+      before: "With respect to succession planning, the firm’s response was: ",
+      after: ". The LPA’s key person provision is triggered if Martin Lin ceases to dedicate substantially all of his time to Blackpine. Key person life insurance of $15 million is in place on Lin only. Alpine has flagged the concentration of ownership and decision authority in a single founder, combined with the absence of a written succession plan, as a required area for enhancement.",
+      pageLabel: "Page 6 of 48",
+    };
+    if (q.includes("$15m") || q.includes("key person")) return {
+      section: "Section 2 — Firm Background and Team",
+      before: "Key person life insurance is maintained as follows: ",
+      after: ". The key person provision under the LPA is triggered if Martin Lin ceases to dedicate substantially all of his time to Blackpine. No coverage is maintained on other senior principals, and no formal written succession plan currently exists.",
+      pageLabel: "Page 6 of 48",
+    };
+    if (q.includes("robert chen") || q.includes("david marshall") || q.includes("departed")) return {
+      section: "Section 2 — Firm Background and Team",
+      before: "With respect to recent senior personnel turnover, the firm disclosed: ",
+      after: ". Both departures were characterized as amicable. They nonetheless represent meaningful turnover within a small (8-person) research team over a nine-month period in 2025, and Alpine recommends monitoring research team stability through the next vintage.",
+      pageLabel: "Page 7 of 48",
+    };
+    if (q.includes("ss&c") || q.includes("ernst") || q.includes("citi") || q.includes("houlihan") || q.includes("schulte") || q.includes("administrator") || q.includes("auditor")) return {
+      section: "Section 5 — Service Providers",
+      before: "The Fund’s service provider arrangements are as follows: ",
+      after: ". SS&C Technologies has served as fund administrator across all four funds since inception in 2018, providing NAV calculation, investor capital activity, AML/KYC, and regulatory reporting. Ernst & Young LLP audits the fund (since inception); Citi Prime Finance serves as primary prime broker with a $150 million committed financing line; JPMorgan Chase serves as secondary prime/custodian; Schulte Roth & Zabel LLP serves as fund counsel with Akin Gump as restructuring counsel; and Houlihan Lokey Valuation Advisors serves as independent valuation agent on all Level 3 positions.",
+      pageLabel: "Page 18 of 48",
+    };
+    if (q.includes("repo") || q.includes("$185m") || q.includes("30% of nav") || q.includes("22%") || q.includes("leverage")) return {
+      section: "Section 7 — Leverage and Financing",
+      before: "The Fund’s use of financing leverage is described as follows: ",
+      after: ". Blackpine utilizes a $150 million committed repurchase facility with Citi as primary financing source, plus additional repo lines with two secondary banks. As of December 31, 2025, gross repo borrowings were $185 million (30% of NAV) and net leverage after offsetting cash positions was 22% of NAV. Moderate leverage is consistent with opportunistic credit strategies but introduces tail risk under credit market stress.",
+      pageLabel: "Page 26 of 48",
+    };
+    if (q.includes("lmc holdings") || q.includes("7.4%") || q.includes("top 10") || q.includes("51%") || q.includes("concentration")) return {
+      section: "Section 7 — Portfolio Concentration",
+      before: "Portfolio concentration as of December 31, 2025 is reported as follows: ",
+      after: ". The fund’s single-position concentration cap is 8.0% of total commitments. The largest single position (LMC Holdings 8.875% Senior Notes) stands at 7.4% of commitments, near the contractual cap; the top 10 positions represent 51% of NAV, reflecting a moderately concentrated book consistent with the opportunistic credit strategy.",
+      pageLabel: "Page 27 of 48",
+    };
+    return {
+      section: "Section 3 — Fund Terms and Structure",
+      before: "Blackpine Credit Plus IV is being raised with a $400 million target, against which approximately $260 million had been raised through December 2025. The management fee is 1.75% on commitments during the investment period, stepping to 1.50% on NAV thereafter, with 20% carried interest over an 8% preferred return. With respect to the specific terms applicable to this Fund: ",
+      after: ". The General Partner commits 2% of total commitments in cash (approximately $8 million at target), invested pari passu with Limited Partners. Carried interest is calculated on a whole-of-fund basis with a clawback backed by an escrow of 30% of distributed carry.",
+      pageLabel: "Page 9 of 48",
+    };
+  }
+
+  // LPA / PPM
+  if (l.includes("limited partnership") || l.includes("private placement") || f.includes("lpa") || f.includes("ppm")) {
+    if (q.includes("delaware lp") || q.includes("cayman") || q.includes("master-feeder") || q.includes("fund vehicle") || q.includes("parallel feeder")) return {
+      section: "Section 1 — Organization and Formation",
+      before: "The Fund is constituted as follows: ",
+      after: ". Blackpine Credit Plus IV, L.P. is organized as a Delaware limited partnership, with a Cayman master-feeder structure (Blackpine Credit Plus IV (Cayman), Ltd.) accommodating non-US and US tax-exempt investors. Blackpine Asset Management, LLC serves as the investment manager. The Fund invests across stressed corporate credit, distressed debt, and selective rescue financings in North America and Europe.",
+      pageLabel: "Page 4 of 88",
+    };
+    if (q.includes("1.75%") || q.includes("1.50%") || q.includes("management fee")) return {
+      section: "Section 7 — Management Fee",
+      before: "The Manager is entitled to a management fee, charged as follows: ",
+      after: ". The fee is 1.75% per annum on total commitments during the investment period (years 1–3), stepping down to 1.50% on net asset value thereafter (years 4–8). No management fee offset arrangement applies to the GP commitment, which is invested pari passu with Limited Partners free of fee.",
+      pageLabel: "Page 18 of 88",
+    };
+    if (q.includes("20% over 8%") || q.includes("preferred return") || q.includes("catch-up") || q.includes("carried interest") || q.includes("whole-of-fund") || q.includes("clawback") || q.includes("escrow")) return {
+      section: "Section 8 — Carried Interest and Distributions",
+      before: "Carried interest and the distribution waterfall are structured as follows: ",
+      after: ". Carried interest is 20% of net profits over an 8% preferred return with a 50/50 catch-up, calculated on a whole-of-fund basis. A clawback provision applies through the end of the fund term, and the GP’s clawback obligation is backed by an escrow of 30% of distributed carry. Alpine views the whole-of-fund carry with material escrow as well-aligned with LP interests.",
+      pageLabel: "Page 21 of 88",
+    };
+    if (q.includes("6 years") || q.includes("3 investment") || q.includes("harvest") || q.includes("extension") || q.includes("total term")) return {
+      section: "Section 3 — Term of the Fund",
+      before: "The Fund’s term is structured as follows: ",
+      after: ". The Fund has a 6-year base term (3-year investment period plus 3-year harvest period) with up to two one-year extensions subject to LPAC approval. The shorter-than-typical base term reflects the strategy’s faster realization cycle relative to direct lending or real estate credit.",
+      pageLabel: "Page 8 of 88",
+    };
+    if (q.includes("2.0% in cash") || q.includes("gp commitment") || q.includes("$8m") || q.includes("pari passu")) return {
+      section: "Section 6 — General Partner Commitment",
+      before: "The General Partner commitment is set as follows: ",
+      after: ". The GP has committed 2% of total commitments in cash, equating to approximately $8 million at the $400 million target, invested pari passu with Limited Partners and free of management fees. Alpine views the cash GP commitment as a constructive alignment of interest.",
+      pageLabel: "Page 16 of 88",
+    };
+    if (q.includes("key person") || q.includes("martin lin ceases") || q.includes("substantially full-time")) return {
+      section: "Section 12 — Key Person Provision",
+      before: "The Fund’s key person provision operates as follows: ",
+      after: ". The provision is triggered if Martin Lin ceases substantially full-time involvement with Blackpine, upon which the investment period is suspended pending an LP vote. No formal written succession plan is documented; key person life insurance of $15 million is maintained on Lin only.",
+      pageLabel: "Page 31 of 88",
+    };
+    if (q.includes("most-favored-nation") || q.includes("mfn") || q.includes("$25m") || q.includes("lpac seats") || q.includes("removal") || q.includes("lp vote")) return {
+      section: "Section 11 — Limited Partner Protections",
+      before: "The Fund affords Limited Partners the following governance protections: ",
+      after: ". Most-favored-nation rights are extended for commitments of $25 million or greater; the LPAC comprises 5 seats; for-cause GP removal requires a 50% LP vote, and no-fault GP removal requires a 75% LP vote. A key person clause is triggered if Martin Lin ceases substantially full-time involvement.",
+      pageLabel: "Page 28 of 88",
+    };
+    if (q.includes("8% of total commitments") || q.includes("concentration cap") || q.includes("single-position")) return {
+      section: "Section 9 — Investment Guidelines and Limitations",
+      before: "The Fund’s investment limitations include a single-position concentration ceiling, set as follows: ",
+      after: ". The cap of 8% of total commitments applies on a cost basis at the time of investment. The Fund invests across stressed corporate credit, distressed debt, and selective rescue financings in North America and Europe, consistent with the opportunistic credit mandate described in the Private Placement Memorandum.",
+      pageLabel: "Page 24 of 88",
+    };
+    return {
+      section: "Section 2 — Investment Strategy and Objective",
+      before: "The Fund pursues an opportunistic and stressed/distressed corporate credit strategy. With respect to the matters described in this section: ",
+      after: ". The strategy spans stressed loans and bonds trading at discounts to par, true distressed (Chapter 11 / restructuring) positions, and selective rescue financings across North American and European leveraged loan and high-yield markets. Capital is drawn down over the Fund’s investment period pursuant to capital call notices issued by the Manager.",
+      pageLabel: "Page 6 of 88",
+    };
+  }
+
+  // Valuation Policy
+  if (l.includes("valuation")) {
+    if (q.includes("houlihan") || q.includes("agent of record") || q.includes("level 3") || q.includes("independently") || q.includes("market color")) return {
+      section: "Section 3 — Independent Valuation of Illiquid Positions",
+      before: "For illiquid positions, the firm relies on an independent valuation agent of record, as follows: ",
+      after: ". Houlihan Lokey Valuation Advisors independently marks all Level 3 positions — distressed positions in restructuring, non-traded bank loans, and rescue financings — on a quarterly basis. Blackpine does not produce its own marks on Level 3 positions, providing only market color and trading observations. Level 3 positions represented approximately 25% of NAV as of December 31, 2025. Alpine regards the independent agent-of-record arrangement as a meaningful strength given the strategy’s valuation complexity.",
+      pageLabel: "Page 5 of 16",
+    };
+    if (q.includes("level 1") || q.includes("level 2") || q.includes("mark-to-market") || q.includes("broker-quoted") || q.includes("bloomberg") || q.includes("median")) return {
+      section: "Section 2 — Valuation Framework (ASC 820)",
+      before: "Portfolio positions are classified into fair-value tiers under ASC 820 and marked as follows: ",
+      after: ". Level 1 positions (approximately 35% of NAV) are publicly traded debt and equity securities marked daily via Bloomberg composite pricing. Level 2 positions (approximately 40% of NAV) are less-liquid loans and high-yield bonds marked using three broker quotes (Citi, JPMorgan, plus a rotating third) with the median price used. Level 3 positions (approximately 25% of NAV) are independently valued quarterly by Houlihan Lokey.",
+      pageLabel: "Page 4 of 16",
+    };
+    if (q.includes("committee") || q.includes("non-investment") || q.includes("3 of 5") || q.includes("majority vote") || q.includes("composition")) return {
+      section: "Section 4 — Valuation Committee Governance",
+      before: "The Valuation Committee is constituted as follows: ",
+      after: ". The committee comprises five members — Daniel Foster (COO/CCO, Chair), an Apex Compliance Advisors representative, an SS&C senior representative, Alexandra Reyes (Head of Research), and Martin Lin (CIO) — with non-investment members holding 3 of 5 seats. The committee meets quarterly to review Houlihan Lokey’s marks on Level 3 positions; Lin’s role is advisory and he cannot override Houlihan’s marks unilaterally.",
+      pageLabel: "Page 7 of 16",
+    };
+    return {
+      section: "Section 2 — Valuation Process and Governance",
+      before: "Blackpine Asset Management prepares and reviews fair-value estimates for all portfolio investments in accordance with ASC 820 and the firm’s written Valuation Policy. With respect to the firm’s valuation process: ",
+      after: ". The firm engages Houlihan Lokey Valuation Advisors as independent valuation agent of record on all Level 3 illiquid positions, marked quarterly, while liquid Level 1 and Level 2 positions are marked via Bloomberg composite pricing and broker quotes respectively. The Valuation Committee, with a non-investment majority, reviews all marks quarterly.",
+      pageLabel: "Page 4 of 16",
+    };
+  }
+
+  // Code of Ethics
+  if (l.includes("code of ethics")) {
+    if (q.includes("pre-clear") || q.includes("preclear") || q.includes("preclearable")) return {
+      section: "Section 3 — Personal Securities Transactions",
+      before: "All employees are subject to a pre-clearance requirement, which applies as follows: ",
+      after: ". Pre-clearance is required for all securities transactions other than open-end mutual funds, US Treasuries, and certain ETFs. A 30-day minimum holding period applies to all preclearable securities, and brokerage statements are collected directly from custodians by Apex Compliance Advisors. Annual attestations are completed by all employees.",
+      pageLabel: "Page 6 of 22",
+    };
+    if (q.includes("30 days") || q.includes("holding period")) return {
+      section: "Section 3 — Personal Securities Transactions",
+      before: "A minimum holding period applies to personal securities transactions, set at ",
+      after: " for all preclearable securities. Pre-clearance is required for all securities transactions other than open-end mutual funds, US Treasuries, and certain ETFs. Brokerage statements are collected custodian-direct by Apex Compliance Advisors, and annual attestations are completed by all employees. Alpine assessed the firm’s personal trading controls as robust — meaningfully stronger than its compliance staffing alone would suggest, owing largely to Apex’s role.",
+      pageLabel: "Page 6 of 22",
+    };
+    return {
+      section: "Section 1 — Standards of Business Conduct",
+      before: "The Code of Ethics establishes standards of business conduct applicable to all supervised persons. With respect to the matters described in this section: ",
+      after: ". The Code requires pre-clearance for all preclearable securities, imposes a 30-day minimum holding period, mandates custodian-direct collection of brokerage statements via Apex Compliance Advisors, and requires annual attestations from all employees. The Code was last revised in February 2026.",
+      pageLabel: "Page 2 of 22",
+    };
+  }
+
+  // WISP / Information Security
+  if (l.includes("wisp") || l.includes("information security")) {
+    return {
+      section: "Written Information Security Program — Overview",
+      before: "Blackpine maintains a Written Information Security Program (WISP) together with an Incident Response Plan and Business Continuity Plan, reviewed annually. With respect to the firm’s information security and resilience controls: ",
+      after: ". The firm operates a Microsoft 365 stack with Microsoft Entra ID single sign-on and mandatory MFA, CrowdStrike Falcon endpoint protection, and Smarsh communication archiving deployed firmwide in 2024. Vantage Tech LLC has served as outsourced IT and cybersecurity provider since 2020, and Mandiant has conducted annual penetration testing since 2023. The BCP is tested annually via tabletop exercise (most recent September 2025), and the firm has not experienced any material cybersecurity incidents. Cyber liability insurance is maintained at $10 million per occurrence and aggregate.",
+      pageLabel: "Page 1 of 20",
+    };
+  }
+
+  // Administration Agreement (SS&C)
+  if (l.includes("admin") || l.includes("ss&c")) {
+    return {
+      section: "Administration Agreement — Scope of Services",
+      before: "SS&C Technologies serves as fund administrator to Blackpine Credit Plus IV, L.P. and the broader Blackpine Credit Plus series since inception in 2018. Under the Administration Agreement, SS&C provides the following services: ",
+      after: ". SS&C performs NAV calculation, investor capital activity processing, AML/KYC, FATCA/CRS, and regulatory reporting, and reconciles asset existence to Citi and JPMorgan prime broker statements monthly. Daniel Foster (COO) reviews SS&C’s annual SOC 1 Type II report and conducts quarterly relationship calls. Quarterly NAV statements are issued to investors.",
+      pageLabel: "Page 3 of 30",
+    };
+  }
+
+  // Audit Letter (EY)
+  if (l.includes("audit")) {
+    return {
+      section: "Auditor Confirmation — Ernst & Young LLP",
+      before: "Ernst & Young LLP has served as independent auditor to Blackpine Credit Plus IV, L.P. since inception in 2018. With respect to the audit engagement and history: ",
+      after: ". EY delivers its annual audit opinion within 90 days of fiscal year-end; the audit fee for FY2024 was $295,000. No restatements, material weaknesses, or significant deficiencies have been reported across the firm’s history. Alpine confirmed the engagement directly with EY during the ODD review.",
+      pageLabel: "Audit Confirmation · Page 1",
+    };
+  }
+
+  // SEC Examination Closing Letter
+  if (l.includes("sec examination") || l.includes("sec letter") || l.includes("closing letter")) {
+    return {
+      section: "SEC Examination — Closing Letter",
+      before: "The most recent SEC examination of Blackpine Asset Management, LLC was conducted in Q1 2024. The closing letter reflects the following: ",
+      after: ". The deficiency letter cited books-and-records retention deficiencies under Rule 204-2, specifically that certain email communications were not retained for the required periods. Blackpine remediated by deploying Smarsh email archiving firmwide and producing evidence of remediation; the SEC closed the matter in Q3 2024 without enforcement action. The firm has no other regulatory actions, customer complaints, or material litigation.",
+      pageLabel: "SEC Letter · Page 1",
+    };
+  }
+
+  // Insurance Certificate
+  if (l.includes("insurance")) {
+    return {
+      section: "Cyber Liability Insurance Certificate",
+      before: "The firm maintains cyber liability insurance evidenced by certificate, with limits as follows: ",
+      after: ". The policy provides $10 million per occurrence and $10 million in the aggregate, which Alpine assessed as adequate for the firm’s size. Coverage supports the firm’s broader resilience posture alongside its WISP, Incident Response Plan, and Business Continuity Plan.",
+      pageLabel: "Insurance Cert · Page 1",
+    };
+  }
+
+  // Q4 2025 Investor Letter
+  if (l.includes("investor letter") || l.includes("q4 2025")) {
+    return {
+      section: "Q4 2025 Investor Letter — Reporting and Communications",
+      before: "Blackpine produces quarterly investor letters within 45 days of each quarter-end. The Q4 2025 letter reflects the firm’s standard reporting practice, described as follows: ",
+      after: ". Letters run approximately 14–18 pages and include performance attribution by asset class, named-position commentary on the top 10 holdings, restructuring updates, leverage attribution, and a market outlook. Martin Lin personally writes the market commentary section and Alexandra Reyes writes the position-level updates. The firm also hosts an annual investor day each May in New York attended by approximately 70% of LPs by capital.",
+      pageLabel: "Q4 2025 Letter · Page 1",
+    };
+  }
+
+  // SEC EDGAR / IARD verification
+  if (l.includes("edgar") || l.includes("iard") || l.includes("iapd") || l.includes("sec verification") || l.includes("registered adviser")) {
+    return {
+      section: "SEC EDGAR / IARD — Registered Adviser Record",
+      before: "Investment Adviser Public Disclosure record for Blackpine Asset Management, LLC. The firm is reported as an SEC-registered investment adviser (IARD/CRD 304882), registered since 2019 as assets under management crossed the RIA threshold. The record reflects: ",
+      after: ". The firm’s record shows no reportable disciplinary events beyond the Q1 2024 examination deficiency letter, which was remediated and closed without enforcement in Q3 2024. The firm is subject to a Form PF filing obligation as a large hedge fund adviser and to UK FCA regulation via its London research outpost. Alpine confirmed registration status via direct IARD query during the ODD review.",
+      pageLabel: "IARD Record · Page 1",
+    };
+  }
+
+  // Delaware register
+  if (l.includes("delaware")) {
+    return {
+      section: "Delaware Division of Corporations — Entity Verification",
+      before: "Alpine performed a direct check against the Delaware Division of Corporations register to confirm the existence and good standing of the Fund and its Manager. The register reflects the following: ",
+      after: ". Blackpine Credit Plus IV, L.P. (Delaware limited partnership) and Blackpine Asset Management, LLC (Delaware limited liability company, formed September 8, 2017) were both confirmed on the register. No discrepancies were identified between the entity names disclosed by the Manager and the registered entities.",
+      pageLabel: "Delaware Register · Page 1",
+    };
+  }
+
+  // Alpine ODD Report
+  if (l.includes("odd report") || f.includes("sample_credit_blackpine_plus")) {
+    return {
+      section: "Alpine ODD — Operational Due Diligence Report",
+      before: "Alpine Due Diligence — Operational Due Diligence Report. ODD Engagement: Blackpine Credit Plus IV, L.P. (Manager: Blackpine Asset Management, LLC). This report summarizes Alpine’s analysis of the documents submitted, the management responses, and the third-party verifications obtained during the review. The following finding was identified: ",
+      after: ". The overall engagement is rated YELLOW (watchlist), with a RED rating in Investment Operations driven by the sole portfolio manager structure (Martin Lin holds unilateral final investment authority), and YELLOW ratings in Governance, Compliance, and Technology. These are partially mitigated by an independent valuation agent of record (Houlihan Lokey), institutional-grade service providers, and a strong realized track record across three prior vintages.",
+      pageLabel: "Alpine ODD Report · Page 1",
+    };
+  }
+
+  // Generic Blackpine fallback
+  return {
+    section: "Document Reference — Alpine Due Diligence File",
+    before: `The following passage has been extracted from the referenced source (${sourceLabel}) maintained in Alpine’s operational due diligence file for Blackpine Credit Plus IV, L.P. This material reflects information provided by Blackpine Asset Management, LLC or obtained from independent registries and third-party verifications as of the date stated. Alpine has reviewed this material in connection with its ODD program but has not independently verified all factual representations except as specifically noted in the accompanying ODD report. The specific passage cited in the ODD analysis states: `,
+    after: ". Investors and Alpine personnel are reminded that any manager-provided document is proprietary and confidential and may not be reproduced or disclosed to third parties without the prior written consent of Blackpine Asset Management, LLC. Please refer to the complete source document for full context, all defined terms, and applicable disclaimers.",
+    pageLabel: "Page 1",
+  };
+}
+// ── Havencrest doc metadata ───────────────────────────────────────────────────
+function buildHavencrestDocMeta(filename: string, label: string) {
+  const f = filename.toLowerCase();
+  const l = label.toLowerCase();
+  if (l.includes("form adv") || f.includes("form-adv") || f.includes("form_adv") || f.includes("form_adv")) return { title: "Form ADV — Parts 1 & 2A", subtitle: "Havencrest Real Estate Advisors, LLC", date: "Filed March 28, 2026", badge: "Regulatory Filing" };
+  if (l.includes("due diligence") || l.includes("ddq"))                          return { title: "Due Diligence Questionnaire (2026)", subtitle: "Havencrest Real Estate Advisors, LLC", date: "2026", badge: "Fund Document" };
+  if (l.includes("limited partnership") || f.includes("lpa"))                     return { title: "Limited Partnership Agreement — Trust V", subtitle: "Havencrest Industrial Trust V, L.P.", date: "Effective 2026", badge: "Legal" };
+  if (l.includes("private placement") || f.includes("ppm"))                       return { title: "Private Placement Memorandum — Trust V", subtitle: "Havencrest Industrial Trust V, L.P.", date: "2026", badge: "Legal" };
+  if (l.includes("valuation") || f.includes("valuation"))                         return { title: "Valuation Policy", subtitle: "Havencrest Real Estate Advisors, LLC", date: "Effective January 2026", badge: "Operations" };
+  if (l.includes("code of ethics") || f.includes("code") || f.includes("ethics")) return { title: "Code of Ethics", subtitle: "Havencrest Real Estate Advisors, LLC", date: "Effective January 2026", badge: "Compliance" };
+  if (l.includes("information security") || l.includes("wisp") || f.includes("wisp")) return { title: "Written Information Security Program", subtitle: "Havencrest Real Estate Advisors, LLC", date: "2026", badge: "Compliance" };
+  if (l.includes("soc 2") || l.includes("soc2") || f.includes("soc"))             return { title: "SOC 2 Type II Report — FY2025", subtitle: "Havencrest Real Estate Advisors, LLC · Examined by Schneider Downs", date: "FY2025", badge: "Third-Party Audit" };
+  if (l.includes("administration agreement") || l.includes("admin"))              return { title: "Administration Agreement — SS&C Technologies", subtitle: "Havencrest Industrial Trust V, L.P.", date: "2026", badge: "Service Provider Agreement" };
+  if (l.includes("audit") || f.includes("audit"))                                 return { title: "Audit Confirmation — PricewaterhouseCoopers LLP", subtitle: "Havencrest Industrial Trust V, L.P.", date: "FY2024", badge: "Third-Party Confirmation" };
+  if (l.includes("insurance") || f.includes("insurance"))                         return { title: "Cyber Liability Insurance Certificate", subtitle: "Havencrest Real Estate Advisors, LLC", date: "2026", badge: "Insurance" };
+  if (l.includes("investor letter") || l.includes("q4 2025") || f.includes("letter")) return { title: "Q4 2025 Investor Letter", subtitle: "Havencrest Industrial Trust V, L.P.", date: "Q4 2025", badge: "Investor Communication" };
+  if (l.includes("edgar") || l.includes("iard") || l.includes("iapd") || l.includes("sec")) return { title: "SEC EDGAR / IARD — Registered Investment Adviser Record", subtitle: "Havencrest Real Estate Advisors, LLC", date: "RIA since 2014 (CRD 158263)", badge: "SEC Verification" };
+  if (l.includes("delaware"))                                                     return { title: "Delaware Division of Corporations — Entity Verification", subtitle: "Havencrest Industrial Trust V, L.P. · Havencrest Real Estate Advisors, LLC", date: "Verified 2026", badge: "Public Record" };
+  if (l.includes("odd report") || f.includes("sample_re_havencrest") || f.includes("havencrest_trust")) return { title: "Havencrest Industrial Trust V — ODD Report", subtitle: "Havencrest Real Estate Advisors, LLC · Alpine ODD Review", date: "April 2026", badge: "ODD Report" };
+  return { title: label, subtitle: "Havencrest Real Estate Advisors, LLC", date: "2026", badge: "Document" };
+}
+
+// ── Havencrest passage builder ────────────────────────────────────────────────
+function buildHavencrestPassage(quote: string, filename: string, sourceLabel: string): { before: string; after: string; section: string; pageLabel: string } {
+  const f = filename.toLowerCase();
+  const q = quote.toLowerCase();
+  const l = sourceLabel.toLowerCase();
+
+  // Form ADV
+  if (l.includes("form adv") || f.includes("form-adv") || f.includes("form_adv")) {
+    if (q.includes("chicago") || q.includes("primary location") || q.includes("regional")) return {
+      section: "Item 1 — Identifying Information",
+      before: "Havencrest Real Estate Advisors, LLC is a Delaware limited liability company with its principal place of business located in ",
+      after: ". The firm is a Core+ industrial and logistics real estate manager founded in 2008 by Patricia Vega (Chief Executive Officer) and Mark Donovan (Chief Investment Officer), both formerly senior real estate professionals at Prologis. The firm is registered with the U.S. Securities and Exchange Commission as an investment adviser (IARD/CRD 158263) since 2014, structures its funds as REITs, and advises closed-end private fund vehicles whose investors are accredited investors and qualified purchasers.",
+      pageLabel: "Page 1 of 18",
+    };
+    if (q.includes("havencrest real estate advisors")) return {
+      section: "Item 1 — Identifying Information",
+      before: "This Form ADV is filed by ",
+      after: ", a Delaware limited liability company headquartered in Chicago, Illinois, with regional offices in Atlanta, Dallas, and Los Angeles. The firm is a Core+ industrial and logistics real estate manager founded in 2008 by Patricia Vega and Mark Donovan, and has been registered with the SEC as an investment adviser (IARD/CRD 158263) since 2014.",
+      pageLabel: "Page 1 of 18",
+    };
+    if (q.includes("3.42") || q.includes("aum") || q.includes("net assets") || q.includes("785")) return {
+      section: "Item 5 — Information About Your Advisory Business",
+      before: "As of December 31, 2025, the Adviser reports firmwide regulatory net assets of ",
+      after: " under management across its advised closed-end private fund vehicles, together with $785 million of uncalled capital commitments. All advisory activity is conducted on a discretionary basis. The Adviser does not manage separately managed accounts or wrap-fee programs and advises only private fund REIT vehicles investing in Core+ industrial real estate.",
+      pageLabel: "Page 5 of 18",
+    };
+    if (q.includes("employees 82") || q.includes("greenhill") || q.includes("ownership") || q.includes("82%")) return {
+      section: "Schedules A & B — Direct and Indirect Owners",
+      before: "The Adviser is majority owned by its employees, with ownership distributed as follows: ",
+      after: ". Employee ownership is held by 23 senior-level professionals (the four-member Executive Committee plus 19 partner-level employees). Greenhill Pension Trust holds a passive minority interest acquired in 2017 and exercises no control or management role. There are no other outside institutional owners or third-party controlling interests in the management company.",
+      pageLabel: "Page 9 of 18",
+    };
+    if (q.includes("registered") || q.includes("ria") || q.includes("158263") || q.includes("examination") || q.includes("complaint") || q.includes("none")) return {
+      section: "Item 11 — Disciplinary Information",
+      before: "The Adviser has been registered with the U.S. Securities and Exchange Commission as an investment adviser (IARD/CRD 158263) since 2014. With respect to disciplinary and regulatory history: ",
+      after: ". The firm reports no SEC examinations resulting in deficiency letters or enforcement actions, no material litigation in its 17-year history, and no material customer complaints on record. The firm structures its funds as REITs and maintains a dedicated REIT compliance function in addition to its core investment adviser compliance program.",
+      pageLabel: "Page 12 of 18",
+    };
+    return {
+      section: "Item 5 — Fees and Compensation",
+      before: "The Adviser receives a management fee and a performance-based carried interest allocation from the funds it advises. The management fee is 1.25% per annum on total commitments during the four-year investment period, stepping to 1.00% on invested capital thereafter, and carried interest is 15% over a 7% preferred return with a 50/50 catch-up. With respect to the matters described in this Item: ",
+      after: ". Carried interest is calculated on a whole-of-fund basis with a clawback through the end of the fund term, backed by a 25% escrow of distributed carry. The General Partner commits 3% of total commitments in cash, funded pari passu with Limited Partners and free of any fee offset.",
+      pageLabel: "Page 6 of 18",
+    };
+  }
+
+  // DDQ
+  if (l.includes("due diligence") || l.includes("ddq")) {
+    if (q.includes("ss&c") || q.includes("pwc") || q.includes("pricewaterhouse") || q.includes("administrator") || q.includes("auditor") || q.includes("goodwin") || q.includes("jpmorgan")) return {
+      section: "Section 5 — Service Providers",
+      before: "Fund Administrator: ",
+      after: ". SS&C Technologies has served as administrator across all five funds since 2010 and provides NAV calculation, investor capital activity, AML/KYC, FATCA/CRS, and REIT testing support. The independent auditor is PricewaterhouseCoopers LLP, engaged since 2010 (a 15-year tenure), with no restatements or material weaknesses across the audit history. JPMorgan Chase, N.A. serves as primary bank at the fund and property-SPV level; fund counsel is Goodwin Procter LLP and REIT tax counsel is Sidley Austin LLP. Independent appraisals are provided quarterly by Cushman & Wakefield with semi-annual rotating secondary appraisals by CBRE.",
+      pageLabel: "Page 22 of 58",
+    };
+    if (q.includes("42 fte") || q.includes("headcount") || q.includes("acquisitions") || q.includes("asset mgmt") || q.includes("42 ")) return {
+      section: "Section 2 — Firm Background and Team",
+      before: "The firm employs a total of ",
+      after: " across acquisitions, asset management, capital markets, operations and finance, investor relations, and administration. Investment professionals average 13 years of industrial real estate experience. Senior leadership comprises Patricia Vega (CEO), Mark Donovan (CIO), Lauren Foster (Head of Acquisitions), Robert Kim (Head of Asset Management), and Sandra Chen (CFO). Background checks are conducted by HireRight on initial hire and refreshed every three years for partner-level employees.",
+      pageLabel: "Page 5 of 58",
+    };
+    if (q.includes("amazon") || q.includes("fedex") || q.includes("walmart") || q.includes("top 3") || q.includes("top 10") || q.includes("noi") || q.includes("11.8") || q.includes("28%") || q.includes("51%") || q.includes("8.4") || q.includes("investment-grade")) return {
+      section: "Section 6 — Portfolio and Tenant Concentration",
+      before: "As of December 31, 2025, tenant concentration across the fund portfolio is reported as follows: ",
+      after: ". The concentration is largely industry-inherent in the e-commerce-driven modern industrial logistics strategy and is mitigated through tenant-level credit underwriting for all leases over 100,000 SF, long-term lease durations (weighted-average remaining lease term of 8.4 years), a tenant credit skew under which 82% of NOI is from investment-grade rated tenants, and geographic diversification across primary logistics corridors. The single-tenant cap under the LPA is 12% of total commitments on an NOI basis.",
+      pageLabel: "Page 31 of 58",
+    };
+    if (q.includes("maria santos") || q.includes("cco") || q.includes("compliance") || q.includes("schulte") || q.includes("mock") || q.includes("pre-clearance") || q.includes("attestation")) return {
+      section: "Section 4 — Compliance and Regulatory",
+      before: "The firm is an SEC-registered investment adviser and maintains a dedicated compliance program. With respect to compliance oversight and program administration: ",
+      after: ". Maria Santos joined as Chief Compliance Officer in 2018 with 12 years of real estate fund compliance experience, reports directly to the Executive Committee, and holds no investment responsibilities. The compliance team comprises three full-time professionals plus a part-time REIT tax specialist. The firm engages Schulte Roth & Zabel LLP as outside compliance counsel and performs an annual mock SEC exam each fall, most recently in October 2025.",
+      pageLabel: "Page 18 of 58",
+    };
+    if (q.includes("cushman") || q.includes("cbre") || q.includes("appraisal") || q.includes("valuation agent")) return {
+      section: "Section 7 — Valuation and Reporting",
+      before: "The fund values its industrial portfolio quarterly under the ASC 820 fair-value framework using an independent third-party appraiser. With respect to the appraisal arrangements: ",
+      after: ". Cushman & Wakefield serves as the primary valuation agent of record (not merely a reviewer), providing quarterly appraisals on 100% of properties, and the Manager does not produce internal marks separate from the Cushman appraisals. CBRE provides semi-annual rotating secondary appraisals on approximately one-third of the portfolio each cycle to provide quality control.",
+      pageLabel: "Page 38 of 58",
+    };
+    if (q.includes("succession") || q.includes("key person insurance") || q.includes("$20m on") || q.includes("vesting") || q.includes("carry vesting")) return {
+      section: "Section 2 — Governance and Succession",
+      before: "The firm maintains a formal written succession plan and incentive-alignment framework. With respect to governance protections: ",
+      after: ". Mark Donovan is designated successor CEO and Lauren Foster (Head of Acquisitions) is designated successor CIO. Key person life insurance of $20 million is maintained on each of the four Executive Committee members. All carry-eligible employees are subject to a five-year carry vesting schedule, reinforcing long-term alignment between investment professionals and Limited Partners.",
+      pageLabel: "Page 7 of 58",
+    };
+    return {
+      section: "Section 3 — Fund Terms and Structure",
+      before: "Havencrest Industrial Trust V is structured as a Delaware limited partnership investing through a Delaware REIT vehicle, with a Cayman feeder accommodating non-US and US tax-exempt investors. The management fee is 1.25% on commitments during the four-year investment period (stepping to 1.00% on invested capital thereafter) and carried interest is 15% over a 7% preferred return with a 50/50 catch-up. With respect to the specific terms applicable to this Fund: ",
+      after: ". The General Partner commits 3% of total commitments in cash (approximately $45 million at the $1.5 billion hard cap), funded pari passu with Limited Partners and free of any fee offset. The fund imposes a conservative 55% loan-to-value cap at the fund level and a 10-year term (four-year investment period plus six-year harvest) with up to two one-year extensions subject to LPAC approval.",
+      pageLabel: "Page 12 of 58",
+    };
+  }
+
+  // LPA / PPM
+  if (l.includes("limited partnership") || l.includes("private placement") || f.includes("lpa") || f.includes("ppm")) {
+    if (q.includes("delaware") || q.includes("cayman") || q.includes("reit") || q.includes("feeder") || q.includes("delaware lp")) return {
+      section: "Section 1 — Organization and Structure",
+      before: "Havencrest Industrial Trust V, L.P. (the \"Fund\") is organized as a ",
+      after: " and invests through a Delaware REIT vehicle that is intended to satisfy the requirements of IRC Sections 856 through 860. A Cayman feeder, Havencrest Industrial Trust V (Cayman), Ltd., accommodates non-US and US tax-exempt investors. The General Partner and the investment manager, Havencrest Real Estate Advisors, LLC, have both been confirmed against the Delaware Division of Corporations register.",
+      pageLabel: "Page 4 of 72",
+    };
+    if (q.includes("key person") || q.includes("vega") || q.includes("donovan") || q.includes("foster") || q.includes("removal") || q.includes("lpac") || q.includes("most-favored") || q.includes("mfn")) return {
+      section: "Section 12 — LP Protections and Key Person Provision",
+      before: "The Fund includes a suite of Limited Partner protections together with a key person provision intended to ensure the continued involvement of the firm's senior leaders in the investment process. With respect to these protections: ",
+      after: ". The key person clause is triggered if any two of Patricia Vega, Mark Donovan, or Lauren Foster cease to be substantially full-time involved with the Fund. Additional protections include most-favored-nation rights for commitments of $50 million or more, a nine-seat LP Advisory Committee with broad investor representation, for-cause GP removal on a 50% LP vote, and no-fault GP removal on a 75% LP vote.",
+      pageLabel: "Page 38 of 72",
+    };
+    if (q.includes("ltv") || q.includes("55%") || q.includes("6%") || q.includes("25%") || q.includes("12%") || q.includes("concentration") || q.includes("cap")) return {
+      section: "Section 9 — Investment Limitations and Leverage",
+      before: "The Fund's investment program is subject to portfolio concentration and leverage limitations set out in the Agreement. With respect to these limitations: ",
+      after: ". Maximum single-property concentration is 6% of total commitments, maximum single-market concentration is 25%, and maximum single-tenant concentration is 12% on an NOI basis. The Fund is subject to a 55% loan-to-value cap at the fund level — conservative for industrial real estate, where 60-65% is more typical — which the Manager has indicated is a deliberate choice to align with risk-conscious institutional Limited Partners.",
+      pageLabel: "Page 26 of 72",
+    };
+    return {
+      section: "Section 7 — Management Fee and Carried Interest",
+      before: "The General Partner is entitled to a management fee of 1.25% per annum on total commitments during the four-year investment period, stepping to 1.00% on invested capital thereafter, and a carried interest allocation of 15% over a 7% preferred return with a 50/50 catch-up. With respect to the Fund's economic terms: ",
+      after: ". Carried interest is calculated on a whole-of-fund basis with a clawback through the end of the fund term, backed by a 25% escrow of distributed carry. The General Partner commits 3% of total commitments in cash (approximately $45 million at the $1.5 billion hard cap), funded pari passu with Limited Partners and free of any management fee offset. The Fund has a 10-year base term (four-year investment plus six-year harvest) with up to two one-year extensions subject to LPAC approval.",
+      pageLabel: "Page 19 of 72",
+    };
+  }
+
+  // Valuation Policy
+  if (l.includes("valuation") || f.includes("valuation")) {
+    if (q.includes("committee") || q.includes("non-investment") || q.includes("4 non-investment") || q.includes("composition")) return {
+      section: "Section 3 — Valuation Committee",
+      before: "The Valuation Committee oversees the quarterly valuation process and approves marks. The Committee is composed as follows: ",
+      after: ". Non-investment members hold four of the six seats (the CFO as Chair, the CCO, the SS&C senior representative, and the outside Cushman & Wakefield engagement leader), with Robert Kim (Head of Asset Management) and Mark Donovan (CIO) completing the Committee. The Committee meets quarterly to review the Cushman & Wakefield appraisals and approve the resulting marks.",
+      pageLabel: "Page 6 of 14",
+    };
+    return {
+      section: "Section 2 — Valuation Process and Governance",
+      before: "Havencrest values its industrial portfolio quarterly under the ASC 820 fair-value framework. The valuation process is led by an independent third-party appraiser. With respect to the firm's valuation process: ",
+      after: ". Cushman & Wakefield serves as the primary valuation agent of record, providing quarterly appraisals on 100% of properties, and Havencrest does not produce internal marks separate from the Cushman appraisals. CBRE provides semi-annual rotating secondary appraisals on approximately one-third of the portfolio each cycle as a quality-control check. Property existence and ownership are verified by SS&C through annual review of title insurance policies and deeds, and by PwC as part of the annual audit.",
+      pageLabel: "Page 4 of 14",
+    };
+  }
+
+  // Code of Ethics
+  if (l.includes("code of ethics") || f.includes("ethics")) {
+    return {
+      section: "Code of Ethics — Personal Trading",
+      before: "The Code of Ethics governs personal securities transactions by all employees of Havencrest Real Estate Advisors, LLC. With respect to the firm's personal trading controls: ",
+      after: ". Pre-clearance is required for all personal securities transactions other than open-end mutual funds, government securities, and certain ETFs; brokerage statements are collected directly from custodians with no employee self-reporting; a 30-day minimum holding period applies; and annual attestations are completed by all employees. Given the firm's focus on private real estate, there is minimal overlap between employee personal trading and fund holdings, but the controls are nonetheless robust.",
+      pageLabel: "Page 3 of 16",
+    };
+  }
+
+  // WISP / Information Security
+  if (l.includes("information security") || l.includes("wisp") || f.includes("wisp")) {
+    return {
+      section: "Written Information Security Program — Controls and Resilience",
+      before: "Havencrest maintains a Written Information Security Program (WISP) together with an Incident Response Plan and Business Continuity Plan, all reviewed annually by Mandiant. With respect to the firm's information security and resilience controls: ",
+      after: ". The firm operates a cloud-based Microsoft 365 stack with single sign-on through Microsoft Entra ID and mandatory MFA, CrowdStrike Falcon endpoint protection including DLP, annual SOC 2 Type II audits since 2018, annual Mandiant external penetration testing, and monthly KnowBe4 simulated phishing campaigns (rolling 12-month click rate of 1.7%). The firm has not experienced any material cybersecurity incidents, data breaches, or business disruptions in the past five years.",
+      pageLabel: "Page 2 of 20",
+    };
+  }
+
+  // SOC 2 Report
+  if (l.includes("soc 2") || l.includes("soc2") || f.includes("soc")) {
+    return {
+      section: "SOC 2 Type II Report — FY2025",
+      before: "This SOC 2 Type II report was prepared by Schneider Downs covering the fiscal year 2025 examination period for Havencrest Real Estate Advisors, LLC. With respect to the examination result: ",
+      after: ". The report resulted in an unqualified opinion. Havencrest has commissioned annual SOC 2 Type II audits since 2018. Complementary external testing is provided by Mandiant, which conducts annual penetration testing; the 2025 test identified two low-severity findings, both remediated within 30 days. The firm maintains $20 million per occurrence / $20 million aggregate of cyber liability insurance.",
+      pageLabel: "SOC 2 Report · Page 1",
+    };
+  }
+
+  // Administration Agreement
+  if (l.includes("administration agreement") || l.includes("admin")) {
+    return {
+      section: "Administration Agreement — Scope of Services",
+      before: "This Administration Agreement sets out the services provided by SS&C Technologies to Havencrest Industrial Trust V, L.P. With respect to the administrator's engagement and scope: ",
+      after: ". SS&C Technologies has served as administrator across all five Havencrest funds since 2010 and provides NAV calculation, investor capital activity processing, AML/KYC, FATCA/CRS, and REIT testing support. Sandra Chen (CFO) reviews SS&C's annual SOC 1 Type II report and conducts quarterly relationship calls. SS&C also calculates the carry waterfall through its proprietary system, reviewed by the CFO and approved by the CCO.",
+      pageLabel: "Page 1 of 28",
+    };
+  }
+
+  // Audit Letter / PwC
+  if (l.includes("audit") || f.includes("audit")) {
+    return {
+      section: "PwC — Audit Confirmation",
+      before: "PricewaterhouseCoopers LLP has provided the following confirmation in connection with its audit of Havencrest Industrial Trust V, L.P. and Alpine's operational due diligence review: ",
+      after: ". PwC has served as Havencrest's auditor since 2010, a 15-year tenure, and delivers its annual opinion within 90 days of fiscal year-end. The audit fee for FY2024 was $580,000, and PwC also reviews REIT compliance under IRC Sections 856-860 as part of the annual audit. No restatements, material weaknesses, or significant deficiencies have been reported across the 15-year audit history.",
+      pageLabel: "Audit Confirmation · Page 1",
+    };
+  }
+
+  // Insurance Certificate
+  if (l.includes("insurance") || f.includes("insurance")) {
+    return {
+      section: "Cyber Liability Insurance Certificate",
+      before: "This certificate evidences the cyber liability insurance coverage maintained by Havencrest Real Estate Advisors, LLC. With respect to the coverage in force: ",
+      after: ". The cyber liability limit is $20 million per occurrence / $20 million aggregate — institutional-grade for the firm's $3.4 billion AUM scale. The coverage supports the firm's broader resilience posture, which includes an annually reviewed WISP, IRP, and BCP, annual tabletop exercises simulating both cyber incidents and physical disruptions to the Chicago headquarters, and a clean five-year incident history.",
+      pageLabel: "Insurance Certificate · Page 1",
+    };
+  }
+
+  // Q4 2025 Investor Letter
+  if (l.includes("investor letter") || l.includes("q4 2025") || f.includes("letter")) {
+    return {
+      section: "Q4 2025 Investor Letter",
+      before: "This quarterly investor letter for Havencrest Industrial Trust V, L.P. was delivered within 45 days of quarter-end and signed by Patricia Vega (CEO) and Mark Donovan (CIO). With respect to the portfolio update communicated to Limited Partners: ",
+      after: ". The letter runs approximately 22 to 28 pages and includes portfolio-level performance metrics, property-level commentary on the top 20 properties, new acquisitions and dispositions, tenant concentration metrics, leasing activity by region, and a market outlook. Havencrest hosts an annual investor day each May in Chicago, attended by approximately 78% of Limited Partners by capital, with property tours of two Chicago-area assets.",
+      pageLabel: "Q4 2025 Letter · Page 1",
+    };
+  }
+
+  // SEC EDGAR / IARD
+  if (l.includes("edgar") || l.includes("iard") || l.includes("iapd") || l.includes("sec")) {
+    return {
+      section: "SEC EDGAR / IARD — Registered Investment Adviser Record",
+      before: "Investment Adviser registration record for Havencrest Real Estate Advisors, LLC. The firm is registered with the U.S. Securities and Exchange Commission as an investment adviser (IARD/CRD 158263) since 2014. The record reflects: ",
+      after: ". The firm's record shows no SEC examinations resulting in deficiency letters or enforcement actions, no material litigation in its 17-year history, and no material customer complaints on record. Alpine confirmed registration status via direct EDGAR/IARD query during the ODD review. The firm structures its funds as REITs and maintains a dedicated REIT compliance function in addition to its core investment adviser compliance program.",
+      pageLabel: "IARD Record · Page 1",
+    };
+  }
+
+  // Delaware register
+  if (l.includes("delaware")) {
+    return {
+      section: "Delaware Division of Corporations — Entity Verification",
+      before: "Alpine performed a direct check against the Delaware Division of Corporations register to confirm the existence and good standing of the Fund and its management entity. The register reflects the following: ",
+      after: ". Havencrest Industrial Trust V, L.P. (Delaware limited partnership) and Havencrest Real Estate Advisors, LLC (Delaware limited liability company, formed April 22, 2008) were both confirmed on the register. No discrepancies were identified between the entity names disclosed by the Manager and the registered entities.",
+      pageLabel: "Delaware Register · Page 1",
+    };
+  }
+
+  // ODD Report
+  if (l.includes("odd report") || f.includes("sample_re_havencrest") || f.includes("havencrest_trust")) {
+    return {
+      section: "Havencrest Industrial Trust V — ODD Report",
+      before: "Alpine Due Diligence — Operational Due Diligence Report. ODD Engagement: Havencrest Real Estate Advisors, LLC. This report summarizes Alpine's analysis of the documents submitted, the management responses, and the third-party verifications obtained during the review. With respect to the matter cited: ",
+      after: ". Alpine recommends an accept rating. The single YELLOW chapter (Investment Operations) reflects industry-inherent tenant concentration in the e-commerce-driven industrial strategy — with Amazon at 11.8% of NOI, near the 12% LPA cap — well-mitigated by tenant credit quality (82% investment-grade NOI) and lease duration (8.4-year weighted-average remaining lease term).",
+      pageLabel: "ODD Report · Page 1",
+    };
+  }
+
+  // Generic Havencrest fallback
+  return {
+    section: "Document Reference — Alpine Due Diligence File",
+    before: `The following passage has been extracted from the referenced source (${sourceLabel}) maintained in Alpine's operational due diligence file for Havencrest Industrial Trust V, L.P. This material reflects information provided by Havencrest Real Estate Advisors, LLC or obtained from independent registries and third-party verifications as of the date stated. Alpine has reviewed this material in connection with its ODD program but has not independently verified all factual representations except as specifically noted in the accompanying ODD report. The specific passage cited in the ODD analysis states: `,
+    after: ". Investors and Alpine personnel are reminded that any manager-provided document is proprietary and confidential and may not be reproduced or disclosed to third parties without the prior written consent of Havencrest Real Estate Advisors, LLC. Please refer to the complete source document for full context, all defined terms, and applicable disclaimers.",
+    pageLabel: "Page 1",
+  };
+}
+// ── Ridgeline Resort doc metadata ─────────────────────────────────────────────
+function buildRidgelineResortDocMeta(filename: string, label: string) {
+  const f = filename.toLowerCase();
+  const l = label.toLowerCase();
+  if (l.includes("form adv") || f.includes("form-adv") || f.includes("form_adv"))      return { title: "Form ADV (ERA) — Part 2A", subtitle: "Ridgeline Resort Capital, LLC", date: "Filed March 2026", badge: "Regulatory Filing" };
+  if (l.includes("due diligence") || l.includes("ddq") || f.includes("ddq"))            return { title: "Due Diligence Questionnaire (2026)", subtitle: "Ridgeline Resort Capital, LLC", date: "2026", badge: "Fund Document" };
+  if (l.includes("limited partnership") || f.includes("lpa"))                           return { title: "Limited Partnership Agreement — Fund III", subtitle: "Ridgeline Resort Holdings III, L.P.", date: "Effective 2025", badge: "Legal" };
+  if (l.includes("private placement") || f.includes("ppm"))                             return { title: "Private Placement Memorandum — Fund III", subtitle: "Ridgeline Resort Holdings III, L.P.", date: "2025", badge: "Legal" };
+  if (l.includes("valuation") || f.includes("valuation"))                               return { title: "Valuation Policy", subtitle: "Ridgeline Resort Capital, LLC", date: "Effective September 2024", badge: "Operations" };
+  if (l.includes("code of ethics") || f.includes("code"))                               return { title: "Code of Ethics", subtitle: "Ridgeline Resort Capital, LLC", date: "Effective September 2024", badge: "Compliance" };
+  if (l.includes("information security") || l.includes("wisp") || f.includes("wisp"))   return { title: "Written Information Security Program (WISP)", subtitle: "Ridgeline Resort Capital, LLC", date: "2024", badge: "Compliance" };
+  if (l.includes("administration") || l.includes("admin") || f.includes("admin"))       return { title: "Administration Agreement — SS&C ALPS", subtitle: "Ridgeline Resort Holdings III, L.P.", date: "Engaged 2018", badge: "Service Provider Agreement" };
+  if (l.includes("audit") || f.includes("audit"))                                       return { title: "KPMG LLP — Audit Confirmation", subtitle: "Ridgeline Resort Holdings III, L.P.", date: "FY2024", badge: "Third-Party Confirmation" };
+  if (l.includes("insurance") || f.includes("insurance"))                               return { title: "Cyber Liability Insurance Certificate", subtitle: "Ridgeline Resort Capital, LLC", date: "2025–2026 Policy Year", badge: "Insurance" };
+  if (l.includes("investor letter") || l.includes("q4 2025") || f.includes("letter"))   return { title: "Q4 2025 Investor Letter", subtitle: "Ridgeline Resort Holdings III, L.P.", date: "Q4 2025", badge: "Investor Communication" };
+  if (l.includes("edgar") || l.includes("sec") || l.includes("iard") || l.includes("iapd")) return { title: "SEC EDGAR — Exempt Reporting Adviser Filing", subtitle: "Ridgeline Resort Capital, LLC", date: "ERA since 2017", badge: "SEC Verification" };
+  if (l.includes("delaware"))                                                           return { title: "Delaware Division of Corporations — Entity Verification", subtitle: "Ridgeline Resort Holdings III, L.P. · Ridgeline Resort Capital, LLC", date: "Verified April 2026", badge: "Public Record" };
+  if (l.includes("odd report") || l.includes("alpine") || f.includes("ridgeline_iii")) return { title: "Ridgeline Resort III — ODD Report (April 2026)", subtitle: "Ridgeline Resort Capital, LLC · Alpine ODD Review 2026", date: "Prepared April 2026", badge: "Alpine Analysis" };
+  return { title: label, subtitle: "Ridgeline Resort Capital, LLC", date: "2026", badge: "Document" };
+}
+
+// ── Ridgeline Resort passage builder ──────────────────────────────────────────
+function buildRidgelineResortPassage(quote: string, filename: string, sourceLabel: string): { before: string; after: string; section: string; pageLabel: string } {
+  const f = filename.toLowerCase();
+  const l = sourceLabel.toLowerCase();
+  const q = quote.toLowerCase();
+
+  // Form ADV (ERA)
+  if (l.includes("form adv") || f.includes("form-adv") || f.includes("form_adv")) {
+    if (q.includes("miami") || q.includes("primary location") || q.includes("phoenix") || q.includes("denver")) return {
+      section: "Item 1 — Identifying Information",
+      before: "Ridgeline Resort Capital, LLC is a Delaware limited liability company with its principal place of business and regional offices located in ",
+      after: ". The firm is an opportunistic hospitality real estate adviser founded in 2015 by Jonathan Reid (Managing Partner, Chief Investment Officer) and Catherine Walsh (Co-Founder, Chief Operating Officer), both previously senior hospitality investment professionals at Starwood Capital Group. The firm files as an Exempt Reporting Adviser in reliance on the private fund adviser exemption under Section 203(m) of the Investment Advisers Act of 1940 and has filed in that capacity since 2017. All investors are accredited investors and qualified purchasers investing through the firm's private fund vehicles.",
+      pageLabel: "Page 1 of 16",
+    };
+    if (q.includes("ridgeline resort capital")) return {
+      section: "Item 1 — Identifying Information",
+      before: "This Form ADV is filed by ",
+      after: ", a Delaware limited liability company headquartered in Miami, Florida with a regional office in Phoenix, Arizona and a satellite presence in Denver, Colorado. The firm is an opportunistic hospitality real estate adviser founded in 2015 by Jonathan Reid and Catherine Walsh, both formerly of Starwood Capital Group, and files as an Exempt Reporting Adviser under Section 203(m) of the Investment Advisers Act of 1940. A transition to full Registered Investment Adviser status is planned for the fourth quarter of 2026.",
+      pageLabel: "Page 1 of 16",
+    };
+    if (q.includes("720") || q.includes("aum") || q.includes("net assets") || q.includes("310")) return {
+      section: "Item 5 — Information About Your Advisory Business",
+      before: "As of December 31, 2025, the Adviser reports firmwide net assets of ",
+      after: " under management across its advised private fund vehicles, together with $310 million of uncalled capital commitments. The firm has acquired 24 hospitality assets across three fund vintages, comprising approximately 8,400 keys. All advisory activity is conducted on a discretionary basis. The Adviser does not manage separately managed accounts or wrap-fee programs.",
+      pageLabel: "Page 4 of 16",
+    };
+    if (q.includes("reid") || q.includes("walsh") || q.includes("60%") || q.includes("40%") || q.includes("ownership") || q.includes("starwood")) return {
+      section: "Schedules A & B — Direct and Indirect Owners",
+      before: "The Adviser is owned by its two founding principals: ",
+      after: ". Jonathan Reid (Managing Partner, Chief Investment Officer) owns 60% and drives final acquisition decisions; Catherine Walsh (Co-Founder, Chief Operating Officer) owns 40%. Both founders previously held senior hospitality investment roles at Starwood Capital Group and have worked together for 18 years. There are no outside institutional owners or third-party controlling interests in the management company, and no third senior partner exists outside the two founders.",
+      pageLabel: "Page 7 of 16",
+    };
+    return {
+      section: "Item 6 — Performance-Based Fees and Side-by-Side Management",
+      before: "The Adviser receives a management fee and a performance-based carried interest allocation from the funds it advises. The management fee is 1.50% per annum on commitments during the investment period and carried interest is 20% of net profits over an 8% preferred return with a 50/50 catch-up. With respect to the matters described in this Item: ",
+      after: ". Carried interest is calculated on a deal-by-deal basis subject to a European-style full clawback at fund-end. The General Partner commits 2% of total commitments in cash, invested pari passu with Limited Partners. The Adviser does not currently advise registered investment companies or business development companies.",
+      pageLabel: "Page 5 of 16",
+    };
+  }
+
+  // DDQ
+  if (l.includes("due diligence") || l.includes("ddq") || f.includes("ddq")) {
+    if (q.includes("ss&c") || q.includes("kpmg") || q.includes("administrator") || q.includes("auditor") || q.includes("wells fargo") || q.includes("goodwin")) return {
+      section: "Section 5 — Service Providers",
+      before: "Fund Administrator: ",
+      after: ". SS&C ALPS Alternative Fund Services has served as fund administrator since 2018, providing NAV calculation, investor capital activity, AML/KYC, and FATCA/CRS compliance. Independent auditor: KPMG LLP, engaged since 2018, delivers its annual opinion within 100 days of fiscal year-end. Primary banking is held at Wells Fargo, N.A. Fund counsel is Goodwin Procter LLP, with Hunton Andrews Kurth serving as hospitality transaction counsel.",
+      pageLabel: "Page 22 of 48",
+    };
+    if (q.includes("marriott") || q.includes("hyatt") || q.includes("hilton") || q.includes("operator") || q.includes("auberge") || q.includes("two roads")) return {
+      section: "Section 6 — Hotel Operators",
+      before: "The fund's properties are operated under property-by-property management agreements with leading hospitality brands. Operator allocation is as follows: ",
+      after: ". Independent operators including Two Roads Hospitality and Auberge Resorts handle select boutique luxury positions. Ridgeline Resort maintains a written Hotel Operator Diligence Policy requiring financial review, operator track record analysis at comparable properties, on-site visits to operator headquarters and managed properties, and reference checks across hotel ownership groups. Each management agreement carries detailed performance metrics and termination rights.",
+      pageLabel: "Page 26 of 48",
+    };
+    if (q.includes("susan mitchell") || q.includes("cipperman") || q.includes("compliance") || q.includes("era") || q.includes("ria")) return {
+      section: "Section 4 — Compliance and Regulatory",
+      before: "The firm files as an Exempt Reporting Adviser under Section 203(m) of the Investment Advisers Act and is planning a transition to full RIA registration in the fourth quarter of 2026. With respect to compliance oversight and program administration: ",
+      after: ". Susan Mitchell serves as Chief Compliance Officer, dedicated to compliance with no investment role, having joined in 2020 from Cipperman Compliance Services. She is the sole in-house compliance professional. Ridgeline Resort engages Cipperman Compliance Services as outside compliance consultant since inception, performing an annual compliance review and supporting the planned RIA transition. The compliance manual is dated September 2024 with a 2026 revision in progress.",
+      pageLabel: "Page 14 of 48",
+    };
+    if (q.includes("22 fte") || q.includes("headcount") || q.includes("revenue management") || q.includes("krishnan") || q.includes("acquisitions") || q.includes("thompson") || q.includes("park")) return {
+      section: "Section 2 — Firm Background and Team",
+      before: "The firm employs a total of ",
+      after: ". The team comprises 8 acquisitions professionals, 6 in asset management, a specialized 3-person revenue management team led by Anita Krishnan (former Marriott corporate revenue management), 3 in operations and finance, 1 compliance professional, and 1 administrative. Ryan Thompson (Head of Acquisitions, joined 2017) was formerly a Director at Brookfield Hotels and David Park (CFO, joined 2018) is a CPA formerly of Hersha Hospitality. Investment professionals average 10 years of hospitality experience.",
+      pageLabel: "Page 5 of 48",
+    };
+    if (q.includes("davenport") || q.includes("departed") || q.includes("turnover") || q.includes("hireright") || q.includes("background")) return {
+      section: "Section 2 — Firm Background and Team",
+      before: "With respect to recent personnel changes and screening procedures: ",
+      after: ". Marcus Davenport (Senior Asset Manager) departed in July 2025 to join Hyatt Capital. Background checks are performed externally by HireRight on initial hire only, with no refresh cadence currently in place. No other senior departures have occurred during the review period.",
+      pageLabel: "Page 6 of 48",
+    };
+    if (q.includes("succession") || q.includes("key person insurance") || q.includes("$10m") || q.includes("life insurance")) return {
+      section: "Section 2 — Governance and Succession",
+      before: "With respect to governance continuity and key person protection: ",
+      after: ". No formal written succession plan exists. Key person life insurance of $10 million is in place on Jonathan Reid only; Catherine Walsh is not covered. The two founders own all firm equity on a 60/40 basis, with no third senior partner to provide an independent governance counterbalance.",
+      pageLabel: "Page 7 of 48",
+    };
+    if (q.includes("four seasons aspen") || q.includes("11.4") || q.includes("concentration") || q.includes("sun belt") || q.includes("ltv") || q.includes("revpar") || q.includes("ltv")) return {
+      section: "Section 7 — Portfolio and Investment Operations",
+      before: "With respect to portfolio concentration, leverage, and underwriting controls as of December 31, 2025: ",
+      after: ". The largest single property, Four Seasons Aspen, represents 11.4% of fund commitments against the 12% LPA cap; the top three properties combined represent 31% of fund NAV. Asset-level non-recourse mortgage debt is sourced from hotel-specialist lenders at 55–65% LTV per asset (aggregate fund LTV of 61%). The underwriting model stress-tests RevPAR ±15% from base case, and a dedicated 3-person revenue management team works directly with property operators on pricing and distribution.",
+      pageLabel: "Page 30 of 48",
+    };
+    if (q.includes("ridgeline resort i") || q.includes("ridgeline resort ii") || q.includes("ridgeline resort iii") || q.includes("irr") || q.includes("moic") || q.includes("track record") || q.includes("16.8") || q.includes("13.4")) return {
+      section: "Section 3 — Track Record",
+      before: "The firm has raised three funds across its history. With respect to realized and interim performance: ",
+      after: ". Ridgeline Resort I (2016, $185M) is fully realized at a 16.8% gross IRR and 1.81x MOIC across 8 investments; Ridgeline Resort II (2020, $385M) is approximately 58% realized at a 13.4% interim gross IRR, affected by an extended COVID-period hold; and Ridgeline Resort III (current) targets $750M with an $850M hard cap and had raised $470M through December 2025.",
+      pageLabel: "Page 9 of 48",
+    };
+    return {
+      section: "Section 1 — Firm Overview",
+      before: "Ridgeline Resort Capital, LLC pursues an opportunistic hospitality real estate strategy across luxury and upper-upscale resorts, boutique urban hotels in primary travel destinations, and selective ski-resort acquisitions. With respect to the matter described in this section: ",
+      after: ". The firm acquires underperforming or rebrand-candidate assets, repositions operations through brand affiliation changes, capex renovation programs, and revenue management optimization, then exits to strategic operators or institutional capital after 4–6 years of stabilization. Ridgeline Resort is headquartered in Miami with regional offices in Phoenix and Denver.",
+      pageLabel: "Page 3 of 48",
+    };
+  }
+
+  // LPA / PPM
+  if (l.includes("limited partnership") || l.includes("private placement") || f.includes("lpa") || f.includes("ppm")) {
+    if (q.includes("delaware") || q.includes("cayman") || q.includes("feeder") || q.includes("general partner") || q.includes("holdings iii")) return {
+      section: "Section 1 — Organization and Formation",
+      before: "Ridgeline Resort Holdings III, L.P. (the \"Fund\") is organized as a ",
+      after: " and is structured with a Cayman feeder, Ridgeline Resort Holdings III (Cayman), Ltd., for non-US and US tax-exempt investors. Ridgeline Resort Capital, LLC serves as the investment manager and General Partner of record. Both the Fund and the management entity have been confirmed against the Delaware Division of Corporations register.",
+      pageLabel: "Page 4 of 68",
+    };
+    if (q.includes("strategy") || q.includes("opportunistic") || q.includes("resorts") || q.includes("boutique") || q.includes("ski")) return {
+      section: "Section 2 — Investment Strategy and Objectives",
+      before: "The Fund pursues an opportunistic hospitality real estate strategy, investing across ",
+      after: ". The Manager acquires underperforming or rebrand-candidate hospitality assets, repositions them through brand affiliation changes, capex renovation programs, and revenue management optimization, and targets exits after 4–6 years of stabilization. Maximum single-property concentration is 12% of total commitments and maximum single-market concentration is 30%.",
+      pageLabel: "Page 11 of 68",
+    };
+    if (q.includes("12%") || q.includes("30%") || q.includes("concentration cap") || q.includes("single-property") || q.includes("single-market")) return {
+      section: "Section 5 — Investment Limitations",
+      before: "The Fund's organizational documents impose the following diversification limits: ",
+      after: ". The single-property cap of 12% is higher than typical multifamily funds, reflecting hospitality's per-asset capital intensity, while the single-market cap of 30% constrains geographic concentration. These limits may be exceeded only with LPAC approval.",
+      pageLabel: "Page 16 of 68",
+    };
+    if (q.includes("key person") || q.includes("removal") || q.includes("mfn") || q.includes("most-favored") || q.includes("lpac") || q.includes("vote")) return {
+      section: "Section 12 — LP Protections and Key Person Provision",
+      before: "The Fund affords Limited Partners the following governance protections: ",
+      after: ". Most-favored-nation rights are available to commitments of $25 million or more; the LPAC holds 7 seats; for-cause GP removal requires a 50% LP vote and no-fault removal a 75% LP vote. The key person clause is triggered if either Jonathan Reid OR Catherine Walsh ceases substantially full-time involvement in the Fund.",
+      pageLabel: "Page 33 of 68",
+    };
+    if (q.includes("term") || q.includes("7 year") || q.includes("seven year") || q.includes("investment period") || q.includes("harvest") || q.includes("extension")) return {
+      section: "Section 9 — Term and Investment Period",
+      before: "The Fund's duration is structured as follows: ",
+      after: ". This comprises a 4-year investment period and a 3-year harvest period, with up to two one-year extensions subject to LPAC approval. The 7-year base term is shorter than core real estate strategies, reflecting the value-add to opportunistic positioning and the typical 4–6 year hold per asset.",
+      pageLabel: "Page 25 of 68",
+    };
+    if (q.includes("2.0%") || q.includes("2%") || q.includes("gp commit") || q.includes("$17m") || q.includes("pari passu")) return {
+      section: "Section 8 — General Partner Commitment",
+      before: "The General Partner has committed ",
+      after: ", equating to approximately $17 million at the $850 million hard cap, contributed in cash and invested pari passu with Limited Partners. The GP commitment is funded in cash rather than through a management fee waiver, aligning the General Partner with Limited Partner economics.",
+      pageLabel: "Page 22 of 68",
+    };
+    return {
+      section: "Section 7 — Management Fee and Carried Interest",
+      before: "The General Partner is entitled to a management fee of 1.50% per annum on total commitments during the 4-year investment period, stepping to 1.25% on NAV thereafter, and a carried interest allocation of 20% of net profits over an 8% preferred return with a 50/50 catch-up. With respect to the Fund's economic terms: ",
+      after: ". Carried interest is calculated on a deal-by-deal basis subject to a European-style full clawback at fund-end, which substantially mitigates early-distribution risk. The General Partner commits 2% of total commitments in cash, invested pari passu with Limited Partners.",
+      pageLabel: "Page 18 of 68",
+    };
+  }
+
+  // Valuation Policy
+  if (l.includes("valuation") || f.includes("valuation")) {
+    if (q.includes("cushman") || q.includes("appraisal") || q.includes("independent") || q.includes("annual") || q.includes("semi-annual")) return {
+      section: "Section 4 — Independent Third-Party Review",
+      before: "Independent valuation oversight is provided as follows: ",
+      after: ". Cushman & Wakefield Hospitality provides independent appraisals on all properties on an annual cadence. Alpine notes that for a cyclical hospitality strategy with rapidly changing RevPAR trends, semi-annual or quarterly appraisals would provide stronger independent oversight, particularly through market cycle transitions; annual cadence is acceptable for stabilized post-renovation assets but limits oversight during the value-add hold period.",
+      pageLabel: "Page 6 of 14",
+    };
+    if (q.includes("committee") || q.includes("non-investment") || q.includes("agent of record") || q.includes("in-house")) return {
+      section: "Section 3 — Valuation Governance",
+      before: "Valuation governance is administered as follows: ",
+      after: ". The Valuation Committee comprises five members — David Park (CFO, Chair), Anita Krishnan (Head of Revenue Management), Catherine Walsh (COO), Susan Mitchell (CCO), and one rotating SS&C senior representative — of whom 2 of 5 are non-investment. Ridgeline Resort serves as the valuation agent of record, with Cushman & Wakefield Hospitality providing an annual independent review. Alpine prefers 3 or more non-investment members.",
+      pageLabel: "Page 4 of 14",
+    };
+    return {
+      section: "Section 2 — Valuation Process and Methodology",
+      before: "Ridgeline Resort Capital values its hospitality portfolio quarterly under the ASC 820 fair-value framework. Each property is valued using three approaches — DCF with hospitality-specific assumptions, sales comparable, and replacement cost. With respect to the firm's valuation process: ",
+      after: ". The DCF approach typically receives 65–75% weighting in hospitality, higher than industrial or multifamily given cash flow sensitivity to RevPAR. Property existence and ownership is verified by SS&C through annual review of title insurance policies and deeds, and KPMG verifies property existence as part of the annual audit.",
+      pageLabel: "Page 5 of 14",
+    };
+  }
+
+  // Code of Ethics
+  if (l.includes("code of ethics") || f.includes("code")) {
+    return {
+      section: "Code of Ethics — Personal Trading",
+      before: "The Code of Ethics governs personal securities transactions of all supervised persons. With respect to the personal trading controls in effect: ",
+      after: ". Pre-clearance is required for all securities transactions other than open-end mutual funds and US Treasuries, a 30-day minimum holding period applies, and annual attestations are completed. Brokerage statements are submitted quarterly by employees through Cipperman Compliance Services' portal rather than collected directly from custodians. The Code is dated September 2024 and is being refreshed in connection with the planned RIA transition.",
+      pageLabel: "Page 3 of 18",
+    };
+  }
+
+  // WISP / Information Security
+  if (l.includes("information security") || l.includes("wisp") || f.includes("wisp")) {
+    return {
+      section: "Written Information Security Program — Controls and Resilience",
+      before: "Ridgeline Resort Capital maintains a Written Information Security Program (WISP), Incident Response Plan (IRP), and Business Continuity Plan (BCP), supported by Vantage Tech LLC as outsourced IT and cybersecurity provider since 2022. With respect to the program controls and resilience posture: ",
+      after: ". The firm operates on a Microsoft 365 stack with Microsoft Entra ID single sign-on and mandatory MFA, and Microsoft Defender for endpoint protection (without DLP). Ridgeline Resort has not commissioned a SOC 2 audit; the first external penetration test was performed by Bishop Fox in September 2024, and the most recent BCP tabletop exercise was conducted in May 2023. KnowBe4 phishing simulations run quarterly with a rolling click rate of 5.2%, above the 3.2% financial services benchmark.",
+      pageLabel: "Page 4 of 20",
+    };
+  }
+
+  // Administration Agreement (SS&C)
+  if (l.includes("administration") || l.includes("admin") || f.includes("admin")) {
+    return {
+      section: "Administration Agreement — Scope of Services",
+      before: "This Administration Agreement engages SS&C ALPS Alternative Fund Services as fund administrator to Ridgeline Resort Holdings III, L.P. With respect to the administrator and the scope of its engagement: ",
+      after: ". SS&C ALPS has served as administrator since 2018 (initially engaged for Ridgeline Resort II) and provides full middle- and back-office services including NAV calculation, investor capital activity, AML/KYC, FATCA/CRS compliance, and carry waterfall computation through its proprietary system. David Park (CFO) reviews SS&C's annual SOC 1 Type II report. Property existence is verified by SS&C through annual review of title insurance policies and deeds.",
+      pageLabel: "Page 2 of 26",
+    };
+  }
+
+  // Audit Letter (KPMG)
+  if (l.includes("audit") || f.includes("audit")) {
+    return {
+      section: "KPMG LLP — Audit Confirmation",
+      before: "Alpine obtained confirmation directly from KPMG LLP regarding its audit engagement for Ridgeline Resort Holdings III, L.P. KPMG confirmed the following: ",
+      after: ". KPMG has served as independent auditor since 2018 and delivers its annual opinion within 100 days of fiscal year-end. The audit fee for FY2024 was $245,000. KPMG confirmed no restatements or material weaknesses since the inception of its engagement, and verifies property existence as part of the annual audit procedures.",
+      pageLabel: "Audit Confirmation · Page 1",
+    };
+  }
+
+  // Insurance Certificate
+  if (l.includes("insurance") || f.includes("insurance")) {
+    return {
+      section: "Cyber Liability Insurance Certificate",
+      before: "The Certificate of Insurance evidences the firm's cyber liability coverage. With respect to the limits in force: ",
+      after: ". The cyber liability limit is $7.5 million per occurrence and $7.5 million aggregate, which Alpine considers modest for the firm's $720 million AUM — institutional benchmarks at this scale typically range $10 million or more, with higher coverage warranted for hospitality given guest payment card data exposure. Alpine has recommended increasing the limit to at least $15 million at the next renewal.",
+      pageLabel: "Insurance Certificate · Page 1",
+    };
+  }
+
+  // Q4 2025 Investor Letter
+  if (l.includes("investor letter") || l.includes("q4 2025") || f.includes("letter")) {
+    return {
+      section: "Q4 2025 Investor Letter",
+      before: "The Q4 2025 Investor Letter, delivered within 60 days of quarter-end and signed jointly by Jonathan Reid and Catherine Walsh, reports on portfolio performance and capital activity. The letter states: ",
+      after: ". The 18–22 page quarterly letter includes a portfolio-level NAV summary, property-level RevPAR and NOI commentary, brand and operator updates, renovation progress tracking, debt summary, and market outlook. Ridgeline Resort also hosts an annual investor day each March in Miami attended by approximately 65% of LPs by capital, featuring a differentiated presentation from the revenue management team.",
+      pageLabel: "Q4 2025 Letter · Page 1",
+    };
+  }
+
+  // SEC EDGAR / ERA verification
+  if (l.includes("edgar") || l.includes("sec") || l.includes("iard") || l.includes("iapd")) {
+    return {
+      section: "SEC EDGAR — Exempt Reporting Adviser Record",
+      before: "SEC EDGAR filing record for Ridgeline Resort Capital, LLC. The firm is reported as an Exempt Reporting Adviser relying on the private fund adviser exemption under Section 203(m) of the Investment Advisers Act of 1940, and has filed in that capacity since 2017. The record reflects: ",
+      after: ". The firm's record shows no SEC examinations, regulatory actions, or disciplinary events for the firm or its principals. Current AUM of $720 million exceeds the threshold for ERA status, and the Manager has indicated a transition to full Registered Investment Adviser registration planned for the fourth quarter of 2026. Alpine confirmed ERA status via direct EDGAR query during the ODD review.",
+      pageLabel: "EDGAR Record · Page 1",
+    };
+  }
+
+  // Delaware register
+  if (l.includes("delaware")) {
+    return {
+      section: "Delaware Division of Corporations — Entity Verification",
+      before: "Alpine performed a direct check against the Delaware Division of Corporations register to confirm the existence and good standing of the Fund and its manager. The register reflects the following: ",
+      after: ". Ridgeline Resort Holdings III, L.P. (Delaware limited partnership) and Ridgeline Resort Capital, LLC (Delaware limited liability company, formed January 17, 2015) were both confirmed on the register. No discrepancies were identified between the entity names disclosed by the Manager and the registered entities.",
+      pageLabel: "Delaware Register · Page 1",
+    };
+  }
+
+  // ODD Report / Alpine internal analysis
+  if (l.includes("odd report") || l.includes("alpine") || f.includes("ridgeline_iii")) {
+    return {
+      section: "Ridgeline Resort III — ODD Report · Cross-Reference Analysis",
+      before: "Alpine Due Diligence — Operational Due Diligence Report. ODD Engagement: Ridgeline Resort Capital, LLC · Ridgeline Resort Holdings III, L.P. This report summarizes Alpine's analysis of the documents submitted, the management responses, and the third-party verifications obtained during the review. The following finding was identified: ",
+      after: ". The Fund received an overall YELLOW (watchlist) rating, with four YELLOW chapters reflecting emerging-manager governance characteristics combined with the cyclical sector exposure inherent in hospitality real estate. These are partially mitigated by a strong realized track record in Ridgeline Resort I, documented COVID-period resilience in Ridgeline Resort II, top-tier hotel operator relationships, and a differentiated dedicated revenue management team.",
+      pageLabel: "ODD Report · Page 1",
+    };
+  }
+
+  // Generic Ridgeline Resort fallback
+  return {
+    section: "Document Reference — Alpine Due Diligence File",
+    before: `The following passage has been extracted from the referenced source (${sourceLabel}) maintained in Alpine's operational due diligence file for Ridgeline Resort Holdings III, L.P. This material reflects information provided by Ridgeline Resort Capital, LLC or obtained from independent registries and third-party verifications as of the date stated. Alpine has reviewed this material in connection with its ODD program but has not independently verified all factual representations except as specifically noted in the accompanying ODD report. The specific passage cited in the ODD analysis states: `,
+    after: ". Investors and Alpine personnel are reminded that any manager-provided document is proprietary and confidential and may not be reproduced or disclosed to third parties without the prior written consent of Ridgeline Resort Capital, LLC. Please refer to the complete source document for full context, all defined terms, and applicable disclaimers.",
+    pageLabel: "Page 1",
+  };
+}
+
+// ── Fund source-preview dispatch ──────────────────────────────────────────────
+type SourcePreviewProfile = {
+  sourceMeta: Record<string, { label: string; type: string; filename?: string; size?: string }>;
+  docMeta: (filename: string, label: string) => { title: string; subtitle: string; date: string; badge: string };
+  passage: (quote: string, filename: string, sourceLabel: string) => { before: string; after: string; section: string; pageLabel: string };
+  brand: string;
+};
+
+const FUND_SOURCE_PROFILES: Record<string, SourcePreviewProfile> = {
+  "aurora-capital-iv":       { sourceMeta: AURORA_SOURCE_META,           docMeta: buildAuroraDocMeta,          passage: buildAuroraPassage,          brand: "ALPINE x AURORA CAPITAL MANAGEMENT" },
+  "trellis-capital-iv":      { sourceMeta: TRELLIS_SOURCE_META,          docMeta: buildTrellisDocMeta,         passage: buildTrellisPassage,         brand: "ALPINE x TRELLIS CAPITAL MANAGEMENT" },
+  "granite-vii-credit":      { sourceMeta: GRANITE_SOURCE_META,          docMeta: buildGraniteDocMeta,         passage: buildGranitePassage,         brand: "ALPINE x GRANITE CAPITAL MANAGEMENT" },
+  "cordova-jv-iii":          { sourceMeta: CORDOVA_SOURCE_META,          docMeta: buildCordovaDocMeta,         passage: buildCordovaPassage,         brand: "ALPINE x CORDOVA CAPITAL PARTNERS" },
+  "blackpine-credit-iv":     { sourceMeta: BLACKPINE_SOURCE_META,        docMeta: buildBlackpineDocMeta,       passage: buildBlackpinePassage,       brand: "ALPINE x BLACKPINE ASSET MANAGEMENT" },
+  "havencrest-industrial-v": { sourceMeta: HAVENCREST_SOURCE_META,       docMeta: buildHavencrestDocMeta,      passage: buildHavencrestPassage,      brand: "ALPINE x HAVENCREST REAL ESTATE ADVISORS" },
+  "ridgeline-resort-iii":    { sourceMeta: RIDGELINE_RESORT_SOURCE_META, docMeta: buildRidgelineResortDocMeta, passage: buildRidgelineResortPassage, brand: "ALPINE x RIDGELINE RESORT CAPITAL" },
+};
+
 // ── RefDot ────────────────────────────────────────────────────────────────────
 
-export function RefDot({ source, quote, context: _context, color, slug }: RefDotProps) {
+export function RefDot({ source, quote, context: _context, color, slug, sources, variant = "table" }: RefDotProps) {
   const [panel, setPanel] = useState<"left" | "right" | null>(null);
+  const [activeIdx, setActiveIdx] = useState(0);
   const dotRef = useRef<HTMLSpanElement>(null);
 
-  const isAurora = slug === "aurora-capital-iv";
-  const meta = (isAurora ? AURORA_SOURCE_META[source] : SOURCE_META[source]) || { label: source, type: "Source" };
+  const profile = slug ? FUND_SOURCE_PROFILES[slug] : undefined;
+  const lookupMeta = (s: string) =>
+    (profile ? profile.sourceMeta[s] : SOURCE_META[s]) || { label: s, type: "Source" };
+
+  // A single dot may carry multiple (source, quote) pairs — renderCitations
+  // merges directly-adjacent [[REF]] tokens into one marker. Normalize to a
+  // list; the panel renders the active entry and (when >1) lets the reader switch.
+  const sourceList = sources && sources.length > 0 ? sources : [{ source, quote }];
+  const safeIdx = Math.min(activeIdx, sourceList.length - 1);
+  const active = sourceList[safeIdx];
+  const meta = lookupMeta(active.source);
 
   const handleClick = () => {
     if (panel !== null) {
@@ -561,6 +2227,7 @@ export function RefDot({ source, quote, context: _context, color, slug }: RefDot
     if (dotRef.current) {
       const rect = dotRef.current.getBoundingClientRect();
       const side = rect.left < window.innerWidth / 2 ? "right" : "left";
+      setActiveIdx(0);
       setPanel(side);
     }
   };
@@ -575,11 +2242,15 @@ export function RefDot({ source, quote, context: _context, color, slug }: RefDot
   }, [panel]);
 
   const filename = meta.filename ?? "";
-  const label = meta.label ?? source;
-  const docMeta = isAurora ? buildAuroraDocMeta(filename, label) : buildDocMeta(filename, label);
-  const { before, after, section, pageLabel } = isAurora
-    ? buildAuroraPassage(quote, filename, label)
-    : buildPassage(quote, filename);
+  const label = meta.label ?? active.source;
+  const docMeta = profile ? profile.docMeta(filename, label) : buildDocMeta(filename, label);
+  const { before, after, section, pageLabel } = profile
+    ? profile.passage(active.quote, filename, label)
+    : buildPassage(active.quote, filename);
+  const ariaLabel =
+    sourceList.length > 1
+      ? `${sourceList.length} sources: ${sourceList.map((s) => lookupMeta(s.source).label).join("; ")}`
+      : `Source: ${label}`;
 
   const panelWidth = "min(540px, 44vw)";
 
@@ -587,10 +2258,26 @@ export function RefDot({ source, quote, context: _context, color, slug }: RefDot
     <>
       <span
         ref={dotRef}
+        role="button"
+        tabIndex={0}
+        aria-label={ariaLabel}
+        aria-haspopup="dialog"
+        aria-expanded={panel !== null}
         onClick={handleClick}
-        className={`inline-block w-[7px] h-[7px] rounded-full ${DOT_COLORS[color]} ml-1 align-middle cursor-pointer hover:ring-2 hover:ring-${color}-400/30 transition-all`}
-        title={`Source: ${label}`}
-      />
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            handleClick();
+          }
+        }}
+        className={`citation-dot citation-dot--${variant}`}
+        title={ariaLabel}
+      >
+        <span
+          aria-hidden
+          className={`citation-dot__pip ${variant === "prose" ? "" : DOT_COLORS[color]}`}
+        />
+      </span>
 
       {panel !== null && (
         <>
@@ -648,6 +2335,32 @@ export function RefDot({ source, quote, context: _context, color, slug }: RefDot
             {/* Scrollable body */}
             <div style={{ flex: 1, overflowY: "auto", padding: "24px 32px" }}>
 
+              {/* Multi-source switcher — only when this dot merged several citations */}
+              {sourceList.length > 1 && (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 16 }} role="tablist" aria-label="Sources for this sentence">
+                  {sourceList.map((s, i) => {
+                    const on = i === safeIdx;
+                    return (
+                      <button
+                        key={i}
+                        role="tab"
+                        aria-selected={on}
+                        onClick={() => setActiveIdx(i)}
+                        style={{
+                          fontSize: 10.5, fontWeight: 600, fontFamily: "sans-serif",
+                          padding: "4px 10px", borderRadius: 999, cursor: "pointer",
+                          color: on ? "#0f1117" : "#9ca3af",
+                          background: on ? "#e5e7eb" : "rgba(255,255,255,0.05)",
+                          border: `1px solid ${on ? "#e5e7eb" : "rgba(255,255,255,0.1)"}`,
+                        }}
+                      >
+                        {lookupMeta(s.source).label}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
               {/* Document page simulation */}
               <div style={{ background: "#ffffff", borderRadius: 6, boxShadow: "0 4px 24px rgba(0,0,0,0.5)", overflow: "hidden", fontFamily: "Georgia, 'Times New Roman', serif" }}>
 
@@ -679,7 +2392,7 @@ export function RefDot({ source, quote, context: _context, color, slug }: RefDot
                   </div>
                 ) : (
                   <div style={{ background: "#1e3a5f", padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <span style={{ fontSize: 9, fontWeight: 700, color: "#93c5fd", letterSpacing: "0.12em" }}>{isAurora ? "ALPINE x AURORA CAPITAL MANAGEMENT" : "ALPINE x RIDGELINE CAPITAL PARTNERS"}</span>
+                    <span style={{ fontSize: 9, fontWeight: 700, color: "#93c5fd", letterSpacing: "0.12em" }}>{profile ? profile.brand : "ALPINE x RIDGELINE CAPITAL PARTNERS"}</span>
                     <span style={{ fontSize: 9, color: "#ef4444", fontWeight: 700, letterSpacing: "0.08em", border: "1px solid #ef4444", padding: "1px 6px", borderRadius: 2 }}>CONFIDENTIAL</span>
                   </div>
                 )}
@@ -716,7 +2429,7 @@ export function RefDot({ source, quote, context: _context, color, slug }: RefDot
                         fontSize: "inherit",
                         WebkitBoxDecorationBreak: "clone",
                         boxDecorationBreak: "clone",
-                      }}>{quote}</mark>{after}
+                      }}>{active.quote}</mark>{after}
                     </p>
 
                   </div>
@@ -769,6 +2482,13 @@ export function RefDot({ source, quote, context: _context, color, slug }: RefDot
                       <path d="M22 11.08V12a10 10 0 11-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
                     </svg>
                     Kroll Cyber — No Critical Findings · Jan 28, 2026
+                  </div>
+                ) : !filename ? (
+                  <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 16px", fontSize: 11, fontWeight: 500, color: "#9ca3af", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 8, fontFamily: "sans-serif" }}>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" />
+                    </svg>
+                    {docMeta.badge} — verification record (not a downloadable document)
                   </div>
                 ) : (
                   <>

@@ -1,8 +1,11 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { RefDot } from "@/components/app-portal/review/RefDot";
+import { renderCitations } from "@/lib/app-portal/cited-text";
+import { EntityChart, OrgChart } from "@/components/app-portal/review/FundCharts";
+import { getFundCharts } from "@/lib/app-portal/fund-charts";
 import DocumentsPanel from "@/components/investor/DocumentsPanel";
 import ReportTour from "@/components/investor/ReportTour";
 import {
@@ -89,18 +92,22 @@ function flagColor(flag?: string): string | null {
   return null;
 }
 
-/** Render the `###`-delimited findings prose into headings / paragraphs / bullets. */
-function renderFindings(text: string): React.ReactNode[] {
+/** Render the `###`-delimited findings prose into headings / paragraphs / bullets.
+ *  Inline [[REF:KEY:"quote"]] tokens become muted citation dots (slug-aware). */
+function renderFindings(text: string, slug?: string): React.ReactNode[] {
   const out: React.ReactNode[] = [];
   let para: string[] = [];
   let bullets: string[] = [];
   let key = 0;
 
+  const cite = (s: string) =>
+    renderCitations(s, { slug, variant: "prose", color: sourceColor });
+
   const flushPara = () => {
     if (para.length) {
       out.push(
         <p key={`p${key++}`} className="font-body text-sm leading-relaxed" style={{ color: SECONDARY }}>
-          {para.join(" ")}
+          {cite(para.join(" "))}
         </p>,
       );
       para = [];
@@ -115,7 +122,7 @@ function renderFindings(text: string): React.ReactNode[] {
               <span style={{ color: VIOLET }} aria-hidden>
                 •
               </span>
-              <span>{b}</span>
+              <span>{cite(b)}</span>
             </li>
           ))}
         </ul>,
@@ -523,8 +530,11 @@ function Overview({
 
 // ── Report chapter (narrative findings) ──────────────────────────────────────
 
-function ReportChapter({ num, index, topic }: { num: number; index: number; topic: TopicInfo }) {
+function ReportChapter({ num, index, topic, slug, dataKey, onJumpToChart }: { num: number; index: number; topic: TopicInfo; slug?: string; dataKey?: string; onJumpToChart?: (num: number) => void }) {
   const summary = (topic.summary || "").replace(/^(GREEN|YELLOW|RED):\s*/i, "");
+  const charts = getFundCharts(dataKey);
+  const chartHere = charts && (charts.orgTopic === num || charts.entityTopic === num);
+  const chartLabel = charts?.orgTopic === num ? "org chart" : "fund structure chart";
   return (
     <section
       id={`chapter-${num}`}
@@ -533,8 +543,23 @@ function ReportChapter({ num, index, topic }: { num: number; index: number; topi
     >
       <div className="rounded-panel border overflow-hidden" style={{ background: BG_CARD, borderColor: BORDER }}>
         <ChapterHeader num={num} index={index} topic={topic} kicker={`Chapter ${index}`} summary={summary} />
+        {chartHere && (
+          <div className="px-5 pt-3">
+            <button
+              type="button"
+              onClick={() => onJumpToChart?.(num)}
+              className="inline-flex items-center gap-1.5 font-body text-[12px] font-medium rounded-card px-2.5 py-1.5 transition-colors hover:opacity-80"
+              style={{ color: VIOLET, background: `${VIOLET}14` }}
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="8.5" y="14" width="7" height="7" rx="1" /><path d="M6.5 10v2h11v-2M12 12v2" />
+              </svg>
+              View the {chartLabel} in Alpine Data →
+            </button>
+          </div>
+        )}
         {topic.findings && (
-          <div className="px-5 py-4 space-y-2.5">{renderFindings(topic.findings)}</div>
+          <div className="px-5 py-4 space-y-2.5">{renderFindings(topic.findings, slug)}</div>
         )}
       </div>
     </section>
@@ -548,13 +573,16 @@ function DataChapter({
   index,
   topic,
   slug,
+  dataKey,
 }: {
   num: number;
   index: number;
   topic: TopicInfo;
   slug: string;
+  dataKey?: string;
 }) {
   const groups = topic.dataPoints ?? [];
+  const charts = getFundCharts(dataKey);
   return (
     <section
       id={`chapter-${num}`}
@@ -563,6 +591,12 @@ function DataChapter({
     >
       <div className="rounded-panel border overflow-hidden" style={{ background: BG_CARD, borderColor: BORDER }}>
         <ChapterHeader num={num} index={index} topic={topic} kicker={`Chapter ${index} · Evidence`} />
+        {charts && (charts.orgTopic === num || charts.entityTopic === num) && (
+          <div className="px-5 pt-4">
+            {charts.orgTopic === num && <OrgChart data={charts.org} slug={slug} />}
+            {charts.entityTopic === num && <EntityChart data={charts.entity} slug={slug} />}
+          </div>
+        )}
         {groups.length > 0 ? (
           <div className="px-5 py-4 space-y-4">
             {groups.map((group, gi) => (
@@ -701,6 +735,22 @@ export default function InvestorReportReader({ slug, email = "" }: { slug: strin
     [viewMode],
   );
 
+  // Jump from a narrative chapter to its chart in the Alpine Data view: switch
+  // view, then scroll to the chapter once the data DOM has rendered.
+  const pendingChartScroll = useRef<string | null>(null);
+  const jumpToChart = useCallback((num: number) => {
+    pendingChartScroll.current = `chapter-${num}`;
+    setViewMode("data");
+    setActiveSection(`chapter-${num}`);
+  }, []);
+  useEffect(() => {
+    if (viewMode === "data" && pendingChartScroll.current) {
+      const id = pendingChartScroll.current;
+      pendingChartScroll.current = null;
+      requestAnimationFrame(() => requestAnimationFrame(() => scrollToSection(id)));
+    }
+  }, [viewMode, scrollToSection]);
+
   // Scroll-spy — highlight the TOC entry nearest the top of the viewport.
   useEffect(() => {
     if (sections.length === 0) return;
@@ -749,7 +799,6 @@ export default function InvestorReportReader({ slug, email = "" }: { slug: strin
               <a
                 href={pdfUrl}
                 download={`${entry.fundName} — Alpine ODD Report.pdf`}
-                target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 font-body text-[13px] font-emphasis px-3 py-1.5 rounded-btn min-h-[36px] transition-opacity hover:opacity-90"
                 style={{ background: INK, color: "#fff" }}
@@ -849,7 +898,7 @@ export default function InvestorReportReader({ slug, email = "" }: { slug: strin
                   />
                 </div>
                 {nums.map((n, i) => (
-                  <ReportChapter key={n} num={n} index={i + 1} topic={topicData[n]} />
+                  <ReportChapter key={n} num={n} index={i + 1} topic={topicData[n]} slug={slug} dataKey={entry?.dataKey} onJumpToChart={jumpToChart} />
                 ))}
                 <section id="documents" className="scroll-mt-[170px] md:scroll-mt-[116px]">
                   <DocumentsPanel slug={slug} referencedDocs={referencedDocs} />
@@ -867,7 +916,7 @@ export default function InvestorReportReader({ slug, email = "" }: { slug: strin
                   </p>
                 </div>
                 {nums.map((n, i) => (
-                  <DataChapter key={n} num={n} index={i + 1} topic={topicData[n]} slug={slug} />
+                  <DataChapter key={n} num={n} index={i + 1} topic={topicData[n]} slug={slug} dataKey={entry?.dataKey} />
                 ))}
               </>
             )}
