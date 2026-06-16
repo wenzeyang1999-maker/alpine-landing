@@ -122,3 +122,23 @@ jobs:
             --settings WEBSITES_PORT=3000 >/dev/null
           az webapp restart --name "$AZURE_WEBAPP_NAME" --resource-group "$RESOURCE_GROUP"
           echo "Deployed $IMG"
+
+      # Fail loudly if the container didn't come up (e.g. AcrPull missing) so a
+      # bad cutover is obvious and we can roll back, instead of a silent outage.
+      - name: Verify production is healthy
+        if: github.ref == 'refs/heads/azure'
+        run: |
+          set -uo pipefail
+          echo "Waiting for the container to start serving..."
+          ok=""
+          for i in $(seq 1 45); do
+            code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 https://alpinedd.com/login || true)
+            echo "  attempt $i: /login -> $code"
+            if [ "$code" = "200" ]; then ok=1; break; fi
+            sleep 8
+          done
+          if [ -z "$ok" ]; then
+            echo "::error::Production did not return 200 after the container cutover — check the App Service container/AcrPull settings. Roll back by repointing the app to the previous deployment."
+            exit 1
+          fi
+          echo "✓ Production is serving on the container"
