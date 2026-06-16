@@ -1,0 +1,15 @@
+.git
+.github
+.claude
+node_modules
+.next
+npm-debug.log*
+*.log
+.env*
+.vscode
+.idea
+README*.md
+docs/**/*.psd
+tests
+playwright-report
+test-results

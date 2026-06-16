@@ -12,6 +12,10 @@ const nextConfig = {
     outputFileTracingIncludes: {
       "/api/whitepaper/download": ["./docs/whitepaper.pdf"],
     },
+    // Keep Playwright out of the webpack bundle so the standalone server
+    // requires it from node_modules at runtime (Chromium comes from the
+    // Playwright base image, not the bundle).
+    serverComponentsExternalPackages: ["playwright", "playwright-core"],
   },
 };
 
