@@ -1,83 +1,121 @@
-name: Deploy to Azure App Service
+name: Deploy to Azure App Service (container)
 
-# Builds the Next.js standalone bundle and deploys it to the production
-# App Service (alpinedd-web-0a30 / alpine-prod). Triggers on every push to
-# `azure`, or manually via "Run workflow".
+# Builds the app as a container on Microsoft's Playwright image (Chromium baked
+# in), smoke-tests that the dynamic PDF route actually renders inside the
+# container, then on `azure` pushes the image to ACR and points the App Service
+# at it. Auth to Azure is OIDC — no stored passwords.
 on:
   push:
     branches: [azure]
   workflow_dispatch:
 
-# Never let two deploys race onto the single B1 instance.
 concurrency:
   group: deploy-azure-prod
   cancel-in-progress: false
 
-# Required for OIDC: the job mints a short-lived token for azure/login.
 permissions:
   id-token: write
   contents: read
 
 env:
   AZURE_WEBAPP_NAME: alpinedd-web-0a30
-  NODE_VERSION: "22.x"
+  RESOURCE_GROUP: alpine-prod
+  ACR_NAME: ${{ vars.AZURE_ACR_NAME }}   # repo variable, e.g. "alpinedd"
+  IMAGE_NAME: alpine-landing
 
 jobs:
-  build-and-deploy:
+  build-test-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build (standalone output)
-        env:
-          # ~17 routes construct `new Resend(process.env.RESEND_API_KEY)` at module
-          # load; `next build` imports them during page-data collection, so the key
-          # must be a non-empty string or the build throws. This placeholder is used
-          # ONLY at build — at runtime the route reads the REAL key from App Service
-          # (non-NEXT_PUBLIC env is not inlined; it's read live by server.js).
-          RESEND_API_KEY: re_build_placeholder_not_used_at_runtime
-          # NEXT_PUBLIC_* ARE inlined into the client bundle at build time, so these
-          # must carry the real production values (public by design — shipped to the
-          # browser anyway). Stored as repo Actions *variables*, not secrets.
-          NEXT_PUBLIC_BLOB_BASE_URL: ${{ vars.NEXT_PUBLIC_BLOB_BASE_URL }}
-          NEXT_PUBLIC_NOTES_TOKEN: ${{ vars.NEXT_PUBLIC_NOTES_TOKEN }}
-        run: npm run build
-
-      # Next's `output: "standalone"` emits a self-contained server at
-      # .next/standalone/server.js but does NOT copy static assets or /public.
-      # Assemble the full deployable tree the way Next documents.
-      - name: Assemble standalone bundle
+      # NEXT_PUBLIC_* are inlined at build time → must be the real values.
+      - name: Build container image
         run: |
-          mkdir -p deploy
-          cp -r .next/standalone/. deploy/
-          mkdir -p deploy/.next
-          cp -r .next/static deploy/.next/static
-          if [ -d public ]; then cp -r public deploy/public; fi
+          docker build \
+            --build-arg NEXT_PUBLIC_BLOB_BASE_URL="${{ vars.NEXT_PUBLIC_BLOB_BASE_URL }}" \
+            --build-arg NEXT_PUBLIC_NOTES_TOKEN="${{ vars.NEXT_PUBLIC_NOTES_TOKEN }}" \
+            -t "${IMAGE_NAME}:${GITHUB_SHA}" .
 
-      - name: Zip artifact
-        run: cd deploy && zip -r ../app.zip . -x '*.git*' >/dev/null
+      # Boot the container and confirm Chromium renders a real PDF (not the static
+      # fallback). This is the gate that proves Chromium works before any cutover.
+      - name: Smoke-test dynamic PDF in container
+        run: |
+          set -euo pipefail
+          SECRET="ci-smoke-only-secret-0123456789abcdef"
+          docker run -d --name app -p 3000:3000 \
+            -e NODE_ENV=production \
+            -e INVESTOR_SESSION_SECRET="$SECRET" \
+            "${IMAGE_NAME}:${GITHUB_SHA}"
 
-      # OIDC login — no stored password. Uses the federated credential on the
-      # `github-deploy-alpinedd` app registration scoped to repo + branch `azure`.
+          echo "Waiting for the server to come up..."
+          for i in $(seq 1 40); do
+            code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/login || true)
+            [ "$code" = "200" ] && { echo "up after ${i}x2s"; break; }
+            sleep 2
+          done
+
+          # Mint a session cookie the same way lib/investor/auth-session does.
+          TOKEN=$(SEC="$SECRET" node -e '
+            const c=require("crypto");
+            const email="demo@alpinedd.com";
+            const exp=Date.now()+3600000;
+            const payload=email+"|"+exp;
+            const sig=c.createHmac("sha256",process.env.SEC).update(payload).digest("hex").slice(0,32);
+            console.log(payload+"|"+sig);')
+
+          read -r CODE CT SIZE < <(curl -s -o /tmp/report.pdf \
+            -w "%{http_code} %{content_type} %{size_download}" \
+            -b "investor_session=${TOKEN}" \
+            "http://localhost:3000/api/investor/report-pdf?slug=trellis-capital-iv")
+          echo "PDF response: code=$CODE type=$CT size=$SIZE"
+          echo "--- container logs (tail) ---"; docker logs app 2>&1 | tail -50
+
+          case "$CT" in
+            application/pdf*) ;;
+            *) echo "::error::expected application/pdf but got '$CT' (code $CODE) — Chromium likely failed and fell back to the static PDF"; exit 1;;
+          esac
+          if [ "${SIZE:-0}" -lt 100000 ]; then
+            echo "::error::PDF is only ${SIZE} bytes — too small, render likely failed"; exit 1
+          fi
+          echo "✓ Chromium rendered a ${SIZE}-byte PDF inside the container"
+          docker rm -f app >/dev/null 2>&1 || true
+
+      # ── Everything below runs only on pushes to `azure` (production deploy) ──
       - name: Azure login (OIDC)
+        if: github.ref == 'refs/heads/azure'
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # webapps-deploy@v3 deploys via the AAD token from azure/login, so it
-      # works even with SCM basic-auth publishing disabled.
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          package: app.zip
+      - name: Push image to ACR
+        if: github.ref == 'refs/heads/azure'
+        run: |
+          set -euo pipefail
+          az acr login -n "$ACR_NAME"
+          IMG="${ACR_NAME}.azurecr.io/${IMAGE_NAME}:${GITHUB_SHA}"
+          docker tag "${IMAGE_NAME}:${GITHUB_SHA}" "$IMG"
+          docker push "$IMG"
+          echo "IMG=$IMG" >> "$GITHUB_ENV"
+
+      - name: Point the App Service at the new image
+        if: github.ref == 'refs/heads/azure'
+        run: |
+          set -euo pipefail
+          # Pull via the App Service's managed identity (no registry password stored).
+          az webapp config container set \
+            --name "$AZURE_WEBAPP_NAME" --resource-group "$RESOURCE_GROUP" \
+            --container-image-name "$IMG" \
+            --container-registry-url "https://${ACR_NAME}.azurecr.io"
+          az resource update \
+            --resource-group "$RESOURCE_GROUP" \
+            --namespace Microsoft.Web --resource-type sites \
+            --name "$AZURE_WEBAPP_NAME" \
+            --set properties.siteConfig.acrUseManagedIdentityCreds=true >/dev/null
+          az webapp config appsettings set \
+            --name "$AZURE_WEBAPP_NAME" --resource-group "$RESOURCE_GROUP" \
+            --settings WEBSITES_PORT=3000 >/dev/null
+          az webapp restart --name "$AZURE_WEBAPP_NAME" --resource-group "$RESOURCE_GROUP"
+          echo "Deployed $IMG"
