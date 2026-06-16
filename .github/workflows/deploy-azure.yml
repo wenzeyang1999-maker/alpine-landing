@@ -1,0 +1,71 @@
+name: Deploy to Azure App Service
+
+# Builds the Next.js standalone bundle and deploys it to the production
+# App Service (alpinedd-web-0a30 / alpine-prod). Triggers on every push to
+# `azure`, or manually via "Run workflow".
+on:
+  push:
+    branches: [azure]
+  workflow_dispatch:
+
+# Never let two deploys race onto the single B1 instance.
+concurrency:
+  group: deploy-azure-prod
+  cancel-in-progress: false
+
+# Required for OIDC: the job mints a short-lived token for azure/login.
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AZURE_WEBAPP_NAME: alpinedd-web-0a30
+  NODE_VERSION: "22.x"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (standalone output)
+        run: npm run build
+
+      # Next's `output: "standalone"` emits a self-contained server at
+      # .next/standalone/server.js but does NOT copy static assets or /public.
+      # Assemble the full deployable tree the way Next documents.
+      - name: Assemble standalone bundle
+        run: |
+          mkdir -p deploy
+          cp -r .next/standalone/. deploy/
+          mkdir -p deploy/.next
+          cp -r .next/static deploy/.next/static
+          if [ -d public ]; then cp -r public deploy/public; fi
+
+      - name: Zip artifact
+        run: cd deploy && zip -r ../app.zip . -x '*.git*' >/dev/null
+
+      # OIDC login — no stored password. Uses the federated credential on the
+      # `github-deploy-alpinedd` app registration scoped to repo + branch `azure`.
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # webapps-deploy@v3 deploys via the AAD token from azure/login, so it
+      # works even with SCM basic-auth publishing disabled.
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          package: app.zip
