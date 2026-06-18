@@ -102,7 +102,7 @@ function EntityBox({ node, slug, emphasis, print }: { node: EntityNode; slug?: s
         borderTop: `3px solid ${node.flag ? FLAG_COLOR[node.flag] : accent}`,
         borderRadius: 8,
         padding: "9px 11px",
-        boxShadow: emphasis ? "0 2px 10px rgba(15,23,42,0.08)" : "0 1px 3px rgba(15,23,42,0.05)",
+        boxShadow: print ? "none" : emphasis ? "0 2px 10px rgba(15,23,42,0.08)" : "0 1px 3px rgba(15,23,42,0.05)",
       }}
     >
       <NodeDot refObj={node.ref} slug={slug} print={print} />
@@ -219,7 +219,7 @@ function PersonBox({ person, slug, dotted, block, print }: { person: OrgPerson; 
         borderLeft: `3px solid ${person.flag ? FLAG_COLOR[person.flag] : dotted ? "#cbd5e1" : "#0ea5e9"}`,
         borderRadius: 8,
         padding: "8px 11px",
-        boxShadow: "0 1px 3px rgba(15,23,42,0.05)",
+        boxShadow: print ? "none" : "0 1px 3px rgba(15,23,42,0.05)",
       }}
     >
       <NodeDot refObj={person.ref} slug={slug} print={print} />

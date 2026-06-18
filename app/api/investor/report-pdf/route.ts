@@ -30,12 +30,44 @@ function releaseRenderSlot(): void {
 
 function pageHtml(body: string): string {
   return `<!doctype html><html><head><meta charset="utf-8"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-  @page { size: A4; }
+  @page { size: Letter; }
   * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   html, body { margin: 0; padding: 0; }
   body { font-family: Georgia, "Times New Roman", serif; }
 </style></head><body>${body}</body></html>`;
+}
+
+/**
+ * Read the actual page each `@@T:<id>@@` marker landed on in a rendered PDF.
+ * Uses pdfjs to extract text per page — Chrome's real pagination, so the TOC
+ * never drifts. Returns { id: pageNumber }.
+ */
+async function extractMarkerPages(bytes: Uint8Array): Promise<Record<string, number>> {
+  const map: Record<string, number> = {};
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const pdfjs: any = await import("pdfjs-dist/legacy/build/pdf.mjs");
+    const doc = await pdfjs.getDocument({ data: bytes, isEvalSupported: false, useSystemFonts: false }).promise;
+    for (let p = 1; p <= doc.numPages; p++) {
+      const pg = await doc.getPage(p);
+      const tc = await pg.getTextContent();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const text = (tc.items as any[]).map((it) => it.str || "").join("");
+      const re = /@@T:([^@]+)@@/g;
+      let m: RegExpExecArray | null;
+      while ((m = re.exec(text)) !== null) {
+        if (map[m[1]] === undefined) map[m[1]] = p;
+      }
+    }
+    if (typeof doc.cleanup === "function") doc.cleanup();
+  } catch (err) {
+    console.error("[report-pdf] TOC marker extraction failed:", err);
+  }
+  return map;
 }
 
 /**
@@ -100,10 +132,15 @@ export async function GET(req: NextRequest) {
   if (!entry) return new Response("Not found", { status: 404 });
 
   const date = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+  // Render everything one size larger via page.pdf({ scale }). Full-page sections
+  // (cover, chapter dividers) need a height that, once magnified by SCALE, still
+  // fits the US-Letter content box (~243mm) — otherwise each spills onto a second page.
+  const SCALE = 1.1;
+  const fillHeight = `${Math.floor(243.4 / SCALE - 2)}mm`;
   // Imported dynamically: Next forbids a static react-dom/server import in app routes.
   const { renderToStaticMarkup } = await import("react-dom/server");
   const body = renderToStaticMarkup(
-    React.createElement(ReportPrintDocument, { slug, recipient: email, date }),
+    React.createElement(ReportPrintDocument, { slug, recipient: email, date, fillHeight }),
   );
   const html = pageHtml(body);
 
@@ -116,7 +153,12 @@ export async function GET(req: NextRequest) {
     const { chromium } = await import("playwright");
     const browser = await chromium.launch({ args: ["--no-sandbox", "--disable-setuid-sandbox"] });
     try {
-      const page = await browser.newPage({ viewport: { width: 665, height: 986 } });
+      // page.pdf paginates at the US-Letter paper content box (not the browser
+      // viewport), and page.pdf({ scale }) magnifies the rendering without changing
+      // where the flow breaks — so the marker pass measures at the unscaled paper box.
+      const VW = 687; // Letter content width  in CSS px (215.9 − 20 − 14 mm @ 96dpi)
+      const VH = 920; // Letter content height in CSS px (279.4 − 20 − 16 mm @ 96dpi)
+      const page = await browser.newPage({ viewport: { width: VW, height: VH } });
       await page.emulateMedia({ media: "print" });
       await page.setContent(html, { waitUntil: "networkidle" });
 
@@ -125,83 +167,42 @@ export async function GET(req: NextRequest) {
       // in order, filling a page-height cursor, advancing a page whenever a
       // break-inside:avoid block (chart, table group) won't fit in the remaining
       // space — the same gaps a naive height/page estimate misses.
-      const PAGE_PX = 986; // A4 content height: (297 − 20 − 16)mm at 96dpi
-      const pageOf: Record<string, number> = await page.evaluate((PX) => {
-        const map: Record<string, number> = {};
-        let pageNo = 1; // cover is page 1
-        let y = 0;
-        const advance = () => { pageNo += 1; y = 0; };
-        const num = (v: string) => parseFloat(v) || 0;
-        const mark = (el: Element) => {
-          const ds = (el as HTMLElement).dataset;
-          if (ds.section) map[ds.section] = pageNo;
-          if (ds.subsection) map[ds.subsection] = pageNo;
-        };
-        const FLOW = /^(P|UL|OL|TABLE|H1|H2|H3|H4|H5|IMG|SVG|HR)$/;
-
-        // Place an element's border-box (margins handled by the caller, so adjacent
-        // sibling margins collapse correctly instead of being summed).
-        const placeBox = (el: Element) => {
-          mark(el);
-          const cs = getComputedStyle(el);
-          const isAvoid = cs.breakInside === "avoid";
-          const horizontal = cs.display.indexOf("flex") >= 0 || cs.display.indexOf("grid") >= 0;
-          if (isAvoid || horizontal || FLOW.test(el.tagName) || el.children.length === 0) {
-            const h = (el as HTMLElement).getBoundingClientRect().height;
-            if (isAvoid) {
-              if (y > 0 && y + h > PX) advance();
-              y += h;
-              while (y > PX) advance();
-            } else {
-              let rem = h;
-              while (y + rem > PX) { rem -= PX - y; advance(); }
-              y += rem;
-            }
-            return;
-          }
-          // vertical block container: add padding/border, recurse with collapsing
-          y += num(cs.paddingTop) + num(cs.borderTopWidth);
-          placeChildren(Array.from(el.children));
-          y += num(cs.paddingBottom) + num(cs.borderBottomWidth);
-          if (y > PX) advance();
-        };
-
-        // Walk siblings, collapsing the gap between them to max(prevBottom, nextTop).
-        function placeChildren(children: Element[]) {
-          let carry = 0;
-          for (const c of children) {
-            const cs = getComputedStyle(c);
-            y += Math.max(carry, num(cs.marginTop));
-            while (y > PX) advance();
-            placeBox(c);
-            carry = num(cs.marginBottom);
-          }
-          y += carry;
-          while (y > PX) advance();
-        }
-
-        Array.from(document.querySelectorAll("[data-section]")).forEach((sec, i) => {
-          if (i > 0) advance(); // break-before:page on every section after the cover
-          const id = (sec as HTMLElement).dataset.section as string;
-          map[id] = pageNo;
-          // the cover and chapter-divider pages are exactly one full page
-          if (id === "cover" || id.startsWith("ch-div-")) return;
-          placeChildren(Array.from(sec.children));
+      const pdfOpts = {
+        format: "Letter" as const,
+        printBackground: true,
+        scale: SCALE,
+        margin: { top: "20mm", bottom: "16mm", left: "20mm", right: "14mm" },
+      };
+      // ── Two-pass TOC ── Render once to discover the REAL page each section
+      // lands on, then number the TOC exactly. Inject an invisible,
+      // absolutely-positioned marker into every [data-section]/[data-subsection]
+      // (absolute → zero layout shift, so the measure and final renders paginate
+      // identically), render, and read each marker's actual PDF page. No estimation.
+      await page.evaluate(() => {
+        document.querySelectorAll("[data-section],[data-subsection]").forEach((el) => {
+          const h = el as HTMLElement;
+          const id = h.dataset.section || h.dataset.subsection;
+          if (!id) return;
+          if (!h.style.position) h.style.position = "relative";
+          const m = document.createElement("span");
+          m.textContent = `@@T:${id}@@`;
+          m.setAttribute("data-tocmark", "1");
+          m.style.cssText = "position:absolute;top:0;left:0;font-size:6px;color:#fff;opacity:0.01;white-space:nowrap;pointer-events:none";
+          h.insertBefore(m, h.firstChild);
         });
-        return map;
-      }, PAGE_PX);
+      });
+      const pageOf = await extractMarkerPages(new Uint8Array(await page.pdf(pdfOpts)));
+
+      // Fill the real page numbers into the TOC, drop the markers, render final.
       await page.evaluate((map) => {
         document.querySelectorAll("[data-page-for]").forEach((el) => {
           const id = (el as HTMLElement).dataset.pageFor as string;
           if (map[id] != null) el.textContent = String(map[id]);
         });
+        document.querySelectorAll("[data-tocmark]").forEach((el) => el.remove());
       }, pageOf);
 
-      const buf = await page.pdf({
-        format: "A4",
-        printBackground: true,
-        margin: { top: "20mm", bottom: "16mm", left: "20mm", right: "14mm" },
-      });
+      const buf = await page.pdf(pdfOpts);
       pdf = new Uint8Array(buf);
     } finally {
       await browser.close();

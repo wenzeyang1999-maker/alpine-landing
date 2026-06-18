@@ -12,10 +12,11 @@ const nextConfig = {
     outputFileTracingIncludes: {
       "/api/whitepaper/download": ["./docs/whitepaper.pdf"],
     },
-    // Keep Playwright out of the webpack bundle so the standalone server
-    // requires it from node_modules at runtime (Chromium comes from the
+    // Keep Playwright (headless-Chromium PDF generation) and pdfjs-dist (two-pass
+    // TOC text extraction) out of the webpack bundle so the standalone server
+    // requires them from node_modules at runtime (Chromium comes from the
     // Playwright base image, not the bundle).
-    serverComponentsExternalPackages: ["playwright", "playwright-core"],
+    serverComponentsExternalPackages: ["playwright", "playwright-core", "pdfjs-dist"],
   },
 };
 
