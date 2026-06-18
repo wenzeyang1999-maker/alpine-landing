@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Fragment, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { GREEN, AMBER, VIOLET, BORDER as NAV_BORDER } from "@/lib/constants";
@@ -7,7 +8,7 @@ import FloatingSubscribe from "@/components/FloatingSubscribe";
 import DownloadWhitepaperModal from "@/components/DownloadWhitepaperModal";
 
 const CREAM  = "#f5f0e8";
-const GOLD   = "#c8923a";
+const GOLD   = "#1f6e78";
 const PASS_C = "#2d6a4f";
 const STALL_C= "#b8730a";
 const FAIL_C = "#b5361c";
@@ -380,8 +381,10 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
                 <span data-wp-back-label>Back</span>
               </button>
               <span data-wp-header-divider style={{ width: 1, height: 18, background: "rgba(0,0,0,0.1)" }} />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img data-wp-header-logo src="/alpine-logo-dark.svg?v=5" alt="Alpine Due Diligence" style={{ height: 40, width: "auto" }} />
+              <Link href="/" aria-label="Alpine home" style={{ display: "inline-flex", alignItems: "center", flexShrink: 0 }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img data-wp-header-logo src="/alpine-logo-dark.svg?v=5" alt="Alpine Due Diligence" style={{ height: 40, width: "auto" }} />
+              </Link>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <a data-wp-book-meeting href="https://bookings.cloud.microsoft/book/AlpineDemo@alpinedd.com/?ismsaljsauthenabled=true" target="_blank" rel="noopener noreferrer" style={{
@@ -466,7 +469,7 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
                 <span style={{ color: "rgba(15,31,61,0.2)" }}>|</span>
                 <span style={{ fontSize: 11, letterSpacing: "0.12em", color: MUTED }}>CONFIDENTIAL</span>
               </div>
-              <span style={{ fontSize: 10, letterSpacing: "0.16em", color: MUTED, fontWeight: 600 }}>2026</span>
+              <span style={{ fontSize: 10, letterSpacing: "0.16em", color: MUTED, fontWeight: 600 }}>2026 May 21 · 9 AM</span>
             </div>
 
             {/* Main content */}
@@ -485,9 +488,7 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
                 <h1 data-wp-cover-h1 style={{ fontSize: 80, fontWeight: 800, color: BODY, lineHeight: 1.0, letterSpacing: "-0.035em", margin: "0 0 6px" }}>
                   Readiness
                 </h1>
-                <h1 data-wp-cover-h1 style={{ fontSize: 80, fontWeight: 800, lineHeight: 1.0, letterSpacing: "-0.035em", margin: "0 0 40px", display: "inline-block",
-                  background: `linear-gradient(90deg, ${GOLD}, #e8b84b)`,
-                  WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                <h1 data-wp-cover-h1 style={{ fontSize: 80, fontWeight: 800, lineHeight: 1.0, letterSpacing: "-0.035em", margin: "0 0 40px", display: "inline-block", color: GOLD }}>
                   Gap
                 </h1>
 
@@ -573,7 +574,7 @@ export default function WhitepaperView({ isPrint = false }: { isPrint?: boolean 
             </p>
 
             {/* Key concepts */}
-            <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: MUTED, margin: "0 0 16px" }}>Key Concepts</p>
+            <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: GOLD, margin: "0 0 16px" }}>Key Concepts</p>
             {[
               { term: "Structural findings", def: "Reflect fund size, age, headcount, or capital — resolve as the firm scales." },
               { term: "Fixable findings",    def: "Reflect documentation gaps or vendor engagement — can be closed with attention and a modest budget." },

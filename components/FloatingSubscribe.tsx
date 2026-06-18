@@ -3,11 +3,14 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Check, X } from "lucide-react";
-import { BG_CARD, INK, MUTED, VIOLET, GREEN, BORDER, LS_BODY } from "@/lib/constants";
+import { BG_CARD, INK, MUTED, GREEN, BORDER, LS_BODY } from "@/lib/constants";
+
+// Accent for the paper subscribe widget — petrol-teal, matching the case studies.
+const VIOLET = "#1f6e78";
 
 export default function FloatingSubscribe({
   source = "whitepaper",
-  heading = "ODD case study, every other Tuesday.",
+  heading = "ODD case study, every Thursday.",
 }: {
   source?: string;
   heading?: string;

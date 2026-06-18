@@ -7,24 +7,39 @@ export const metadata = {
   description: "Whitepapers, case studies, and research from Alpine's operational due diligence team.",
 };
 
+// Ordered newest first. Case studies are numbered by publication order
+// (earliest published = 1), independent of display order.
 const PUBLICATIONS = [
   {
-    category: "Whitepaper",
-    title: "The Operational Due Diligence Imperative",
+    category: "Case Study 2",
+    date: "2026 Jun 18 · 9 AM",
+    title: "The Woodford Equity Income Fund Case: When Liquidity Became the Risk",
     description:
-      "A comprehensive framework for evaluating operational risk in alternative investment managers — covering governance, compliance, technology, valuation, and LP communications.",
-    href: "/whitepaper",
-    cta: "Read whitepaper →",
+      "The fund had a label, a governance structure, a published NAV, and a famous manager. None of those things created liquidity when investors needed cash — a study in what structured fund review is designed to catch before the gate comes down.",
+    href: "/case-study/woodford",
+    cta: "Read case study →",
     available: true,
     external: false,
   },
   {
-    category: "Case Study",
+    category: "Case Study 1",
+    date: "2026 Jun 04 · 9 AM",
     title: "The Carvana Case: Why Operational Due Diligence Matters Before the Fraud Becomes Obvious",
     description:
       "A structured analysis of how governance conflicts, related-party opacity, and reporting quality concerns at Carvana would have been surfaced by a proper ODD review — before Hindenburg's report made them headlines.",
     href: "/case-study/carvana",
     cta: "Read case study →",
+    available: true,
+    external: false,
+  },
+  {
+    category: "Whitepaper",
+    date: "2026 May 21 · 9 AM",
+    title: "The Operational Due Diligence Imperative",
+    description:
+      "A comprehensive framework for evaluating operational risk in alternative investment managers — covering governance, compliance, technology, valuation, and LP communications.",
+    href: "/whitepaper",
+    cta: "Read whitepaper →",
     available: true,
     external: false,
   },
@@ -63,12 +78,17 @@ export default function PublicationsPage() {
                 style={{ background: BG_CARD, border: `1px solid ${BORDER}` }}
               >
                 <div className="flex-1 min-w-0">
-                  <span
-                    className="inline-block font-mono text-[10px] uppercase px-2 py-1 rounded-full mb-3"
-                    style={{ background: `${VIOLET}15`, color: VIOLET, fontWeight: 700, letterSpacing: "0.08em" }}
-                  >
-                    {pub.category}
-                  </span>
+                  <div className="flex items-center gap-3 mb-3">
+                    <span
+                      className="inline-block font-mono text-[10px] uppercase px-2 py-1 rounded-full"
+                      style={{ background: `${VIOLET}15`, color: VIOLET, fontWeight: 700, letterSpacing: "0.08em" }}
+                    >
+                      {pub.category}
+                    </span>
+                    <span className="font-mono text-[10px] uppercase" style={{ color: SUBTLE, letterSpacing: "0.08em" }}>
+                      {pub.date}
+                    </span>
+                  </div>
                   <h2
                     className="font-heading mb-2"
                     style={{ fontSize: "1.125rem", fontWeight: 700, color: INK, letterSpacing: "-0.02em" }}

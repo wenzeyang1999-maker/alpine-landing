@@ -33,7 +33,6 @@ const NAV_ITEMS: NavItem[] = [
       { label: "Three Products", href: "#services" },
     ],
   },
-  { kind: "link", label: "Blog",            href: "#blog" },
   {
     kind: "menu",
     label: "Alpine Space",

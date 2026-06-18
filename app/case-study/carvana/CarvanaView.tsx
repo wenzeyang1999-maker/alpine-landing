@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { GREEN, AMBER, VIOLET } from "@/lib/constants";
@@ -9,10 +10,10 @@ import DownloadWhitepaperModal from "@/components/DownloadWhitepaperModal";
 // ── Design tokens (match WhitepaperView) ─────────────────────────────────────
 const BODY   = "#1a2744";
 const MUTED  = "#4a5568";
-const GOLD   = "#c8923a";
+const GOLD   = "#1f6e78";
 const BORDER = "#ddd8cf";
-const RISK   = "#b5361c";
-const RISK_BG = "#fdf2f2";
+const RISK   = "#1f6e78";
+const RISK_BG = "#edf4f5";
 
 // ── Page wrapper ──────────────────────────────────────────────────────────────
 function Page({ children, minH = 900 }: { children: React.ReactNode; minH?: number }) {
@@ -164,9 +165,11 @@ export default function CarvanaView() {
               <span data-cs-back-label>Back</span>
             </button>
 
-            {/* Logo */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/alpine-logo-dark.svg?v=5" alt="Alpine Due Diligence" style={{ height: 36, width: "auto" }} />
+            {/* Logo → home */}
+            <Link href="/" aria-label="Alpine home" style={{ display: "inline-flex", alignItems: "center", flexShrink: 0 }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/alpine-logo-dark.svg?v=5" alt="Alpine Due Diligence" style={{ height: 36, width: "auto" }} />
+            </Link>
 
             <div style={{ flex: 1 }} />
 
@@ -215,7 +218,7 @@ export default function CarvanaView() {
                   CONFIDENTIAL
                 </span>
               </div>
-              <span style={{ fontSize: 10, fontWeight: 500, color: MUTED, letterSpacing: "0.08em" }}>2025</span>
+              <span style={{ fontSize: 10, fontWeight: 500, color: MUTED, letterSpacing: "0.08em" }}>2026 Jun 04 · 9 AM</span>
             </div>
 
             {/* Cover content */}
@@ -443,7 +446,7 @@ export default function CarvanaView() {
         </div>
       </div>
 
-      <FloatingSubscribe source="carvana-case" heading="ODD case study, every other Tuesday." />
+      <FloatingSubscribe source="carvana-case" heading="ODD case study, every Thursday." />
       <DownloadWhitepaperModal
         open={dlOpen}
         onClose={() => setDlOpen(false)}
