@@ -189,6 +189,7 @@ export default function WoodfordView() {
           [data-pdf-page]        { min-height: auto !important; box-shadow: none !important; border-radius: 0 !important; }
           [data-pdf-gap]         { display: none !important; }
           [data-wp-page-footer]  { display: none !important; }
+          [data-cs-statband]     { grid-template-columns: repeat(2, 1fr) !important; }
         }
         @media print {
           header, .floating-subscribe-root { display: none !important; }
@@ -265,7 +266,7 @@ export default function WoodfordView() {
               </p>
 
               {/* Key stats — the scale of the failure before suspension */}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1, background: BORDER, border: `1px solid ${BORDER}`, borderRadius: 6, overflow: "hidden", marginBottom: 40 }}>
+              <div data-cs-statband style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1, background: BORDER, border: `1px solid ${BORDER}`, borderRadius: 6, overflow: "hidden", marginBottom: 40 }}>
                 <div style={{ background: "#fff" }}><KeyStat value="£10.1B" kicker="Peak AUM" label="Fund value at peak, May 2017, before two years of outflows and deterioration." /></div>
                 <div style={{ background: "#fff" }}><KeyStat value="£4.3B" kicker="Outflows" label="Total redemptions between May 2017 and suspension, per FCA letter to the Treasury Committee." /></div>
                 <div style={{ background: "#fff" }}><KeyStat value="8%" kicker="Liquidity at gate" label="Share of investments sellable within seven days at suspension, against a four-day access expectation." /></div>

@@ -140,6 +140,7 @@ export default function CarvanaView() {
           [data-pdf-page]        { min-height: auto !important; box-shadow: none !important; border-radius: 0 !important; }
           [data-pdf-gap]         { display: none !important; }
           [data-wp-page-footer]  { display: none !important; }
+          [data-cs-statband]     { grid-template-columns: repeat(2, 1fr) !important; }
         }
         @media print {
           header, .floating-subscribe-root { display: none !important; }
@@ -244,7 +245,7 @@ export default function CarvanaView() {
               </p>
 
               {/* Key stats row */}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1, background: BORDER, border: `1px solid ${BORDER}`, borderRadius: 6, overflow: "hidden", marginBottom: 48 }}>
+              <div data-cs-statband style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1, background: BORDER, border: `1px solid ${BORDER}`, borderRadius: 6, overflow: "hidden", marginBottom: 48 }}>
                 <div style={{ background: "#fff" }}><KeyStat value="$5B+" label="Insider stock sold across two cycles before each collapse" /></div>
                 <div style={{ background: "#fff" }}><KeyStat value="284%" label="Stock recovery before Hindenburg report in Jan 2025" /></div>
                 <div style={{ background: "#fff" }}><KeyStat value="4×" label="Delinquency rate vs. industry average on 'prime' loans" /></div>
