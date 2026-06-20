@@ -39,21 +39,31 @@ export default function GlossaryExplorer() {
     [q, filter],
   );
 
-  // Deep-link safety: if the hash target is filtered out, clear filters so it shows.
+  // Deep-link handling. Native hash-scroll is unreliable in the App Router with a
+  // hydrating client island, so scroll explicitly. If the target is hidden by an
+  // active filter, clear filters first, then scroll once it paints.
   useEffect(() => {
-    function reveal() {
+    function goToHash(smooth: boolean) {
       const id = decodeURIComponent(window.location.hash.replace(/^#/, ""));
-      if (!id) return;
-      if (!document.getElementById(id) && GLOSSARY.some((t) => t.id === id)) {
+      if (!id || !GLOSSARY.some((t) => t.id === id)) return;
+      const scroll = () => document.getElementById(id)?.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
+      if (document.getElementById(id)) {
+        scroll();
+      } else {
         setQuery("");
         setFilter("all");
-        // scroll after the cleared list paints
-        window.setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
+        window.setTimeout(scroll, 0);
       }
     }
-    reveal();
-    window.addEventListener("hashchange", reveal);
-    return () => window.removeEventListener("hashchange", reveal);
+    // On mount, defer past hydration + full-list layout so the target's final
+    // position is known (an immediate scroll lands short for terms near the end).
+    const t = window.setTimeout(() => goToHash(false), 200);
+    const onHash = () => goToHash(true);
+    window.addEventListener("hashchange", onHash);
+    return () => {
+      window.clearTimeout(t);
+      window.removeEventListener("hashchange", onHash);
+    };
   }, []);
 
   function jumpToLetter(letter: string) {
