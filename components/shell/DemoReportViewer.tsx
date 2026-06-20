@@ -6,6 +6,8 @@ import { SOURCE_META } from "@/lib/ridgeline-data";
 import { AURORA_SOURCE_META } from "@/lib/aurora-data";
 import DataReportViewer, { RIDGELINE_DATA_REPORT } from "@/components/shell/DataReportViewer";
 import ExecutiveBriefViewer, { RIDGELINE_EXECUTIVE_BRIEF } from "@/components/shell/ExecutiveBriefViewer";
+import GlossaryHoverCards from "@/components/shell/GlossaryHoverCards";
+import { linkifyGlossaryHtml } from "@/lib/glossary-html";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -362,6 +364,10 @@ function inlineFormat(str: string): string {
 
   result = result.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
   result = result.replace(/\*(.+?)\*/g, "<em>$1</em>");
+
+  // Final pass: link glossary terms (first occurrence per line/paragraph). Runs
+  // last so it only sees finished HTML and skips tag interiors (REF spans etc.).
+  result = linkifyGlossaryHtml(result, new Set());
   return result;
 }
 
@@ -4697,12 +4703,15 @@ export default function DemoReportViewer(_props: { alpineReviewId?: string | nul
               />
             </div>
           ) : (
-            <div
-              ref={containerRef}
-              className="px-10 pt-5 pb-8 max-h-[calc(100vh-320px)] overflow-y-auto scroll-smooth"
-              data-report-content
-              dangerouslySetInnerHTML={{ __html: renderedHtml }}
-            />
+            <>
+              <div
+                ref={containerRef}
+                className="px-10 pt-5 pb-8 max-h-[calc(100vh-320px)] overflow-y-auto scroll-smooth"
+                data-report-content
+                dangerouslySetInnerHTML={{ __html: renderedHtml }}
+              />
+              <GlossaryHoverCards />
+            </>
           )}
         </div>
       ) : activeTab === "Overview" ? (
