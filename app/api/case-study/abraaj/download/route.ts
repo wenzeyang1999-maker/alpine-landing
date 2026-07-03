@@ -3,7 +3,8 @@ import { PDFDocument, rgb, degrees } from "pdf-lib";
 import { Resend } from "resend";
 import { readFile } from "fs/promises";
 import path from "path";
-import { supabase } from "@/lib/supabase";
+import { db } from "@/lib/db";
+import { watermarkDistributions } from "@/lib/db/schema";
 import { checkRateLimit } from "@/lib/rate-limit";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -122,12 +123,12 @@ export async function POST(req: NextRequest) {
     });
 
     try {
-      await supabase.from("watermark_distributions").insert({
-        recipient_name: rawName,
-        recipient_email: rawEmail,
+      await db.insert(watermarkDistributions).values({
+        recipientName: rawName,
+        recipientEmail: rawEmail,
         filename: PDF_FILENAME,
-        distributed_by: "abraaj-case-self-serve",
-        email_sent: true,
+        distributedBy: "abraaj-case-self-serve",
+        emailSent: true,
       });
     } catch (logErr) {
       console.error("Watermark distribution log error:", logErr);
