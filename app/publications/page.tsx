@@ -12,7 +12,7 @@ export const metadata = {
 const PUBLICATIONS = [
   {
     category: "Case Study 3",
-    date: "2026 Jun 27 · 9 AM",
+    date: "2026 Jul 02 · 9 AM",
     title: "The Abraaj Case: Where Did the Money Go?",
     description:
       "How Abraaj Group, a USD 13 billion impact private equity firm backed by the Gates Foundation, OPIC, and IFC, collapsed once investors could no longer verify where fund cash had gone. A structured analysis of commingling, governance concentration, valuation oversight, and key person control, and the ODD that surfaces it before the forensic review.",
