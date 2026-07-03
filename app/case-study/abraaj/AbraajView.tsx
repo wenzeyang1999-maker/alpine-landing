@@ -416,7 +416,7 @@ export default function AbraajView() {
         </div>
       </div>
 
-      <FloatingSubscribe source="abraaj-case" heading="ODD case study, every other Tuesday." />
+      <FloatingSubscribe source="abraaj-case" heading="ODD case study, every Thursday." />
       <DownloadWhitepaperModal
         open={dlOpen}
         onClose={() => setDlOpen(false)}
