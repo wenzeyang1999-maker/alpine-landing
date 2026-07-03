@@ -11,6 +11,17 @@ export const metadata = {
 // (earliest published = 1), independent of display order.
 const PUBLICATIONS = [
   {
+    category: "Case Study 3",
+    date: "2026 Jun 27 · 9 AM",
+    title: "The Abraaj Case: Where Did the Money Go?",
+    description:
+      "How Abraaj Group, a USD 13 billion impact private equity firm backed by the Gates Foundation, OPIC, and IFC, collapsed once investors could no longer verify where fund cash had gone. A structured analysis of commingling, governance concentration, valuation oversight, and key person control, and the ODD that surfaces it before the forensic review.",
+    href: "/case-study/abraaj",
+    cta: "Read case study →",
+    available: true,
+    external: false,
+  },
+  {
     category: "Case Study 2",
     date: "2026 Jun 18 · 9 AM",
     title: "The Woodford Equity Income Fund Case: When Liquidity Became the Risk",
