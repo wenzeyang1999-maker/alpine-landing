@@ -141,7 +141,13 @@ export default function AbraajView() {
           [data-pdf-page]        { min-height: auto !important; box-shadow: none !important; border-radius: 0 !important; }
           [data-pdf-gap]         { display: none !important; }
           [data-wp-page-footer]  { display: none !important; }
-          [data-cs-statband]     { grid-template-columns: repeat(2, 1fr) !important; }
+          [data-cs-statband]     { grid-template-columns: 1fr !important; }
+          [data-cs-topbar]       { padding: 14px 22px !important; }
+          [data-cs-cover]        { padding: 30px 22px 34px !important; }
+          [data-cs-coverfoot]    { display: none !important; }
+          [data-cs-body]         { padding: 30px 22px 40px !important; }
+          [data-cs-h1]           { font-size: 34px !important; line-height: 1.08 !important; }
+          [data-cs-h2]           { font-size: 18px !important; margin: 0 0 24px !important; }
         }
         @media print {
           header, .floating-subscribe-root { display: none !important; }
@@ -202,7 +208,7 @@ export default function AbraajView() {
 
           {/* ── Page 1 — Cover ── */}
           <Page minH={900}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "18px 48px", borderBottom: `1px solid ${BORDER}` }}>
+            <div data-cs-topbar style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "18px 48px", borderBottom: `1px solid ${BORDER}` }}>
               <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
                 <span style={{ fontSize: 10, fontWeight: 700, color: BODY, letterSpacing: "0.12em", textTransform: "uppercase" }}>
                   ALPINE DUE DILIGENCE
@@ -215,7 +221,7 @@ export default function AbraajView() {
               <span style={{ fontSize: 10, fontWeight: 500, color: MUTED, letterSpacing: "0.08em" }}>2026</span>
             </div>
 
-            <div style={{ padding: "56px 48px 48px", display: "flex", flexDirection: "column", gap: 0 }}>
+            <div data-cs-cover style={{ padding: "56px 48px 48px", display: "flex", flexDirection: "column", gap: 0 }}>
               <div style={{ display: "inline-flex", alignItems: "center", gap: 8, marginBottom: 36, padding: "5px 14px", border: `1px solid ${RISK}80`, borderRadius: 3, alignSelf: "flex-start" }}>
                 <span style={{ width: 5, height: 5, borderRadius: "50%", background: RISK, display: "inline-block" }} />
                 <span style={{ fontSize: 9, fontWeight: 700, color: RISK, letterSpacing: "0.18em", textTransform: "uppercase" }}>
@@ -223,10 +229,10 @@ export default function AbraajView() {
                 </span>
               </div>
 
-              <h1 style={{ fontSize: 52, fontWeight: 800, color: BODY, lineHeight: 1.05, letterSpacing: "-0.03em", margin: "0 0 8px" }}>
+              <h1 data-cs-h1 style={{ fontSize: 52, fontWeight: 800, color: BODY, lineHeight: 1.05, letterSpacing: "-0.03em", margin: "0 0 8px" }}>
                 The Abraaj Case
               </h1>
-              <h2 style={{ fontSize: 26, fontWeight: 500, color: GOLD, lineHeight: 1.25, letterSpacing: "-0.01em", margin: "0 0 32px" }}>
+              <h2 data-cs-h2 style={{ fontSize: 26, fontWeight: 500, color: GOLD, lineHeight: 1.25, letterSpacing: "-0.01em", margin: "0 0 32px" }}>
                 Where Did the Money Go?<br />The Collapse of Impact Private Equity
               </h2>
 
@@ -249,7 +255,7 @@ export default function AbraajView() {
               </div>
             </div>
 
-            <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "14px 48px", borderTop: `1px solid ${BORDER}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div data-cs-coverfoot style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "14px 48px", borderTop: `1px solid ${BORDER}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <span style={{ fontSize: 9, fontWeight: 700, color: MUTED, letterSpacing: "0.12em", textTransform: "uppercase" }}>{FOOTER}</span>
               <span style={{ fontSize: 9, color: MUTED }}>01</span>
             </div>
@@ -258,7 +264,7 @@ export default function AbraajView() {
 
           {/* ── Page 2 — Overview + The Question That Broke Confidence ── */}
           <Page>
-            <div style={{ padding: "48px 48px 80px" }}>
+            <div data-cs-body style={{ padding: "48px 48px 80px" }}>
               <Para mt={0}>
                 Abraaj Group was a Dubai based private equity firm focused on emerging markets. It built its reputation around a simple proposition: institutional capital could be deployed at scale in markets many traditional fund managers viewed as too complex to underwrite. Arif Naqvi appeared at Davos, co-chaired sessions with heads of state, and built a public profile few fund managers could match. At its peak, the firm managed more than USD 13 billion across Africa, Asia, Latin America, and the Middle East.
               </Para>
@@ -296,7 +302,7 @@ export default function AbraajView() {
 
           {/* ── Page 3 — Governance + Cash Controls ── */}
           <Page>
-            <div style={{ padding: "48px 48px 80px" }}>
+            <div data-cs-body style={{ padding: "48px 48px 80px" }}>
               <SectionHead title="Fund Governance Failed as a Practical Control System" />
               <Para mt={0}>
                 The cash question exposed a governance question. If LP capital could be called, held, moved, or reported in ways investors could not verify, then the issue was not limited to accounting records. It also concerned who had authority inside Abraaj, who could challenge that authority, and whether formal oversight bodies received enough information to act.
@@ -327,7 +333,7 @@ export default function AbraajView() {
 
           {/* ── Page 4 — Reporting + Valuation + findings grid ── */}
           <Page>
-            <div style={{ padding: "48px 48px 80px" }}>
+            <div data-cs-body style={{ padding: "48px 48px 80px" }}>
               <SectionHead title="LP Reporting Did Not Close the Verification Gap" />
               <Para mt={0}>
                 Abraaj&apos;s reporting described positions without proving the cash behind them. The DFSA found that AIML gave investors misleading financial information, made false statements about how money was being used, deflected requests for updated bank statements, and gave false explanations for delayed distributions. Those findings concerned basic cash movements: where investor money sat, when it moved, why it moved, and whether the movement matched what LPs had been told.
@@ -366,7 +372,7 @@ export default function AbraajView() {
 
           {/* ── Page 5 — Key Person + What ODD Prevents + What LPs Learn + close ── */}
           <Page>
-            <div style={{ padding: "48px 48px 80px" }}>
+            <div data-cs-body style={{ padding: "48px 48px 80px" }}>
               <SectionHead title="Key Person Risk Became Control Risk" />
               <Para mt={0}>
                 Key person risk usually starts with succession. At Abraaj, the larger issue was control. The DFSA found that Arif Naqvi was the ultimate decision maker at the firm: centrally involved in directing the use of investor monies, approving statements to investors the regulator later described as misleading, and managing the firm&apos;s responses when LPs pressed for answers. His influence extended across fundraising, investor communications, cash decisions, and the handling of exceptions.
