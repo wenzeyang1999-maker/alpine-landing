@@ -272,11 +272,11 @@ export default function AbraajView() {
                 The firm&apos;s healthcare fund drew particular attention because it combined private equity, development finance, and a clear social mission. The USD 1 billion vehicle targeted hospitals, clinics, and diagnostic centers in underserved markets. Its investor base included the Bill &amp; Melinda Gates Foundation, OPIC, PROPARCO, and IFC. The fund stated that it supported access to care for roughly two million patients each year. On paper, it was the kind of strategy that fit neatly into the rise of impact investing.
               </Para>
               <Para>
-                That made the later collapse more difficult to read from the outside. Abraaj did not look like a marginal manager operating away from scrutiny. It had recognizable investors, a strong public narrative, and a founder who moved comfortably among global policy and finance circles. The firm appeared mission driven, institutionally endorsed, globally connected, and active in markets with real demand for capital.
+                That halo made the collapse hard to read from the outside. Abraaj did not look like a marginal manager operating away from scrutiny. It had recognizable investors, a strong public narrative, and a founder who moved comfortably among global policy and finance circles. Every outward signal said institutional quality.
               </Para>
 
               <Callout>
-                The scandal emerged when investors began questioning what had happened to money committed to Abraaj&apos;s healthcare fund. Capital that had been called from investors was not deployed into healthcare investments as expected, raising concerns about the location and use of the funds.
+                The unraveling began with a question no marketing deck could answer: where, exactly, was the healthcare fund&apos;s cash?
               </Callout>
 
               <Para>
@@ -286,13 +286,13 @@ export default function AbraajView() {
               <div style={{ marginTop: 32 }}>
                 <SectionHead title="The Question That Broke Confidence" />
                 <Para mt={0}>
-                  Abraaj&apos;s collapse began with a basic question from investors: where was the healthcare fund&apos;s money? Investors had committed capital to a USD 1 billion fund that was supposed to build and support hospitals, clinics, and diagnostic centers in underserved markets. From the outside, the strategy looked credible. The problem emerged when capital that had been called from investors was not deployed into healthcare assets as expected.
+                  Investors had funded capital calls into the healthcare vehicle, yet the money had not moved into healthcare assets. When LPs asked where it sat and requested updated bank statements, the explanations did not resolve the concern. The matter escalated from ordinary questioning to forensic review.
                 </Para>
                 <Para>
-                  When investors asked for answers, the explanations did not resolve the concern. The matter escalated from ordinary investor questioning to forensic review. Later regulatory findings alleged a deeper failure: investor money had been mixed with corporate funds, used to support the management company&apos;s liquidity needs, and reported in ways that did not give LPs an accurate view of the cash.
+                  That is the point where confidence broke. Abraaj did not fail because investors missed one weak sentence in a deck. It failed because ordinary reporting had stopped answering an ordinary question, and nothing beneath the public story could be independently checked.
                 </Para>
                 <Para>
-                  The control issues were basic. Capital calls needed to match approved investments or expenses. Fund accounts needed to remain separate from manager liquidity. Intercompany movements needed formal approval and repayment records. Distributions needed to follow the agreed waterfall. Reporting needed to reconcile back to bank statements and entity level accounts. In private markets, these controls decide whether LP capital remains protected.
+                  The controls at stake were basic. Capital calls needed to match approved investments or expenses. Fund accounts needed to remain separate from manager liquidity. Intercompany movements needed formal approval and repayment records. Distributions needed to follow the agreed waterfall. Reporting needed to reconcile back to bank statements and entity level accounts. In private markets, these controls decide whether LP capital remains protected.
                 </Para>
               </div>
             </div>
@@ -352,12 +352,15 @@ export default function AbraajView() {
                 </Para>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, margin: "28px 0 0" }}>
+              <Para>
+                Taken together, the regulatory record reduces to four findings:
+              </Para>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, margin: "20px 0 0" }}>
                 {[
-                  { title: "Cash Commingling", body: "Capital investors understood to be reserved for fund investments was used for management company working capital and cash shortfalls (SEC and DFSA)." },
-                  { title: "Balance Window Dressing", body: "AIML borrowed before reporting dates to show bank balances that met LP expectations, then repaid after the dates passed." },
-                  { title: "Reporting Gap", body: "Standalone annual and monthly entity accounts could not later be obtained, so capital could not be traced from call to investment to exit." },
-                  { title: "Inflated Marks", body: "A senior executive approved valuations known to be inflated while resisting markdowns, supporting an overstated record used to raise the next fund." },
+                  { title: "Cash Commingling", body: "Fund capital diverted to management company working capital and shortfalls, per the SEC and DFSA." },
+                  { title: "Balance Window Dressing", body: "Borrowings timed around reporting dates so period end balances matched what LPs expected to see." },
+                  { title: "Reporting Gap", body: "No standalone entity accounts, so cash could not be traced from call to investment to exit." },
+                  { title: "Inflated Marks", body: "Valuations held above supportable levels while the record was used to raise the successor fund." },
                 ].map(({ title, body }) => (
                   <div key={title} style={{ padding: "16px 18px", background: "#fafafa", border: `1px solid ${BORDER}`, borderRadius: 6 }}>
                     <div style={{ fontSize: 12, fontWeight: 700, color: BODY, marginBottom: 8 }}>{title}</div>
@@ -375,19 +378,19 @@ export default function AbraajView() {
             <div data-cs-body style={{ padding: "48px 48px 80px" }}>
               <SectionHead title="Key Person Risk Became Control Risk" />
               <Para mt={0}>
-                Key person risk usually starts with succession. At Abraaj, the larger issue was control. The DFSA found that Arif Naqvi was the ultimate decision maker at the firm: centrally involved in directing the use of investor monies, approving statements to investors the regulator later described as misleading, and managing the firm&apos;s responses when LPs pressed for answers. His influence extended across fundraising, investor communications, cash decisions, and the handling of exceptions.
+                Key person risk usually starts with succession planning. At Abraaj, the larger issue was control. The founder sat at the center of fundraising, investor communications, cash decisions, and the handling of exceptions, the exact areas an independent check exists to police. When LPs pressed for answers, the responses themselves ran through him.
               </Para>
               <Para>
-                The problem was not only that one person mattered too much to the franchise. It was that the same person sat close to the areas that should have been checked independently. A control function cannot operate effectively when it depends on the judgment or permission of the person it may need to challenge. Abraaj shows why key person review should go beyond replacement planning to whether the firm can surface and escalate a serious problem involving senior leadership.
+                A control function cannot operate when it depends on the judgment or permission of the person it may need to challenge. So the practical key person question is not who replaces the founder. It is whether the firm can surface and escalate a serious problem involving its own senior leadership. At Abraaj, authority concentration made that close to impossible.
               </Para>
 
               <div style={{ marginTop: 36 }}>
                 <SectionHead title="What Proper ODD Would Have Prevented" />
                 <Callout>
-                  Each capital call should have matched an approved investment or fund expense. Fund bank accounts should have remained separate from management company accounts. The administrator should have received bank statements directly from the bank. Intercompany transfers should have carried formal approval, documented terms, and clear reporting to the LPAC.
+                  The test is one day of cash: on request, could the fund produce direct bank evidence, administrator records, capital call support, and transaction level reconciliations for a single date? At Abraaj, the answers came back incomplete, delayed, and disputed. That was the signal.
                 </Callout>
                 <Para mt={0}>
-                  The same discipline applied to expenses, distributions, and valuations. If an LP needed to verify cash balances on a given date, the fund should have been able to produce direct bank evidence, administrator records, capital call support, and transaction level reconciliations. In Abraaj&apos;s case, the answers became incomplete, delayed, and disputed. That was the signal.
+                  None of this requires forensic skill before commitment. It requires an administrator that receives statements directly from the bank, intercompany transfers with documented terms and LPAC visibility, distributions that reconcile through the waterfall, and marks that can be supported outside the manager&apos;s own narrative. Each item is checkable on documents a manager either can or cannot produce.
                 </Para>
               </div>
 
@@ -397,7 +400,7 @@ export default function AbraajView() {
                   Abraaj did not collapse because investors missed a red flag in a marketing deck. It collapsed because investors could not rely on the operating structure underneath the manager&apos;s story. Reputation, mission, and a roster of institutional co-investors are not substitutes for verification.
                 </Para>
                 <Para>
-                  Private market due diligence must go beyond what a manager says and test whether those statements can be independently confirmed. Capital calls, fund expenses, valuations, distributions, and intercompany movements need to be controlled, documented, and reviewable by someone other than the manager. <strong>That is the role of serious ODD: asking the structural questions before capital moves, before confidence breaks, and before the only remaining option is a forensic review.</strong>
+                  Private market due diligence must go beyond what a manager says and test whether those statements can be confirmed by someone other than the manager. <strong>That is the role of serious ODD: asking the structural questions before capital moves, before confidence breaks, and before the only remaining option is a forensic review.</strong>
                 </Para>
               </div>
 
