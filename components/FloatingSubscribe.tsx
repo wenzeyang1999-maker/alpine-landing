@@ -82,7 +82,7 @@ export default function FloatingSubscribe({
     return (
       <button
         onClick={() => { setOpen(true); setStatus("idle"); setMessage(""); }}
-        className="fixed bottom-6 right-6 z-50 rounded-full px-5 py-3 font-body text-[13px] shadow-lg hover:opacity-90 transition-opacity inline-flex items-center gap-2"
+        className="floating-subscribe-root fixed bottom-6 right-6 z-50 rounded-full px-5 py-3 font-body text-[13px] shadow-lg hover:opacity-90 transition-opacity inline-flex items-center gap-2"
         style={{ background: INK, color: "#fff", fontWeight: 600, letterSpacing: LS_BODY }}
         aria-label="Open subscribe widget"
       >
@@ -93,7 +93,7 @@ export default function FloatingSubscribe({
 
   return (
     <div
-      className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 rounded-card overflow-hidden"
+      className="floating-subscribe-root fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 rounded-card overflow-hidden"
       style={{
         background: BG_CARD,
         border: `1px solid ${BORDER}`,

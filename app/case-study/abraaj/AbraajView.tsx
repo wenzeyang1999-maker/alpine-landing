@@ -127,7 +127,7 @@ export default function AbraajView() {
   }, []);
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "#ebebeb" }}>
+    <div data-cs-outer style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "#ebebeb" }}>
       <style suppressHydrationWarning>{`
         @media (max-width: 768px) {
           [data-cs-zoom]         { display: none !important; }
@@ -152,7 +152,9 @@ export default function AbraajView() {
         @media print {
           header, .floating-subscribe-root { display: none !important; }
           [data-pdf-gap] { display: none !important; }
-          [data-pdf-page] { page-break-after: always; break-after: page; box-shadow: none !important; }
+          [data-pdf-page] { page-break-after: always; break-after: page; box-shadow: none !important; border-radius: 0 !important; }
+          [data-cs-outer] { background: #fff !important; }
+          [data-cs-scroll] { padding: 0 !important; }
         }
       `}</style>
 
