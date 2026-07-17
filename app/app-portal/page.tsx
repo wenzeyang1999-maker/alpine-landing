@@ -10,9 +10,9 @@ export const metadata = {
 
 const TILES = [
   {
-    href: "/demo-login",
-    label: "Sign in",
-    blurb: "Access your portal or admin workspace.",
+    href: "/admin",
+    label: "Admin",
+    blurb: "Open your admin workspace.",
   },
   {
     href: "/portfolio2",
