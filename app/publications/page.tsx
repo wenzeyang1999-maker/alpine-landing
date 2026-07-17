@@ -11,6 +11,17 @@ export const metadata = {
 // (earliest published = 1), independent of display order.
 const PUBLICATIONS = [
   {
+    category: "Case Study 4",
+    date: "2026 Jul 16 · 9 AM",
+    title: "The Credit Suisse Greensill Case: When the Story Was More Confident Than the Records",
+    description:
+      "How Credit Suisse's Greensill-linked supply-chain-finance funds — about USD 10 billion of client exposure — failed once the assets could not be verified at the claim level. A structured analysis of asset verification, originator risk, insurance diligence, and governance, and the ODD that surfaces it before the forensic review.",
+    href: "/case-study/greensill",
+    cta: "Read case study →",
+    available: true,
+    external: false,
+  },
+  {
     category: "Case Study 3",
     date: "2026 Jul 02 · 9 AM",
     title: "The Abraaj Case: Where Did the Money Go?",
