@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/api-guard";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM_EMAIL = "Alpine Due Diligence <notifications@alpinedd.com>";
 
 export async function POST(req: NextRequest) {
+  const __denied = await requireAdmin(req); if (__denied) return __denied;
   try {
     const { to, subject, body } = await req.json();
 

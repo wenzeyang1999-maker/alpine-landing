@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/api-guard";
 import { PDFDocument, rgb, degrees } from "pdf-lib";
 import { Resend } from "resend";
 import { db } from "@/lib/db";
@@ -56,6 +57,7 @@ function buildEmailHtml(recipientName: string, filename: string, distributedBy: 
 }
 
 export async function POST(req: NextRequest) {
+  const __denied = await requireAdmin(req); if (__denied) return __denied;
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
@@ -140,21 +142,10 @@ export async function POST(req: NextRequest) {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename="${attachmentFilename}"`,
         "X-Email-Sent": emailSent ? "true" : "false",
-        "Access-Control-Allow-Origin": "*",
       },
     });
   } catch (err) {
     console.error("Watermark error:", err);
     return NextResponse.json({ error: "Failed to process PDF" }, { status: 500 });
   }
-}
-
-export async function OPTIONS() {
-  return new NextResponse(null, {
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-    },
-  });
 }

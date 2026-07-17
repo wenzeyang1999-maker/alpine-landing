@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/api-guard";
 import { Resend } from "resend";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
@@ -51,6 +52,7 @@ type UserRow = {
 type FirmRow = { name: string };
 
 export async function POST(req: NextRequest) {
+  const __denied = await requireAdmin(req); if (__denied) return __denied;
   try {
     const { userId } = await req.json() as { userId: string };
     if (!userId) {
