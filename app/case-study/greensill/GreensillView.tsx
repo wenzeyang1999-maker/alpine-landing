@@ -160,7 +160,7 @@ export default function GreensillView() {
   }, []);
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "#ebebeb" }}>
+    <div data-cs-outer style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "#ebebeb" }}>
       <style suppressHydrationWarning>{`
         @media (max-width: 768px) {
           [data-cs-zoom]         { display: none !important; }
@@ -176,11 +176,19 @@ export default function GreensillView() {
           [data-wp-page-footer]  { display: none !important; }
           [data-cs-statband]     { grid-template-columns: repeat(2, 1fr) !important; }
           [data-cs-chain]        { flex-direction: column !important; }
+          [data-cs-topbar]       { padding: 14px 22px !important; }
+          [data-cs-cover]        { padding: 30px 22px 34px !important; }
+          [data-cs-coverfoot]    { display: none !important; }
+          [data-cs-body]         { padding: 30px 22px 40px !important; }
+          [data-cs-h1]           { font-size: 32px !important; line-height: 1.1 !important; }
+          [data-cs-h2]           { font-size: 18px !important; margin: 0 0 24px !important; }
         }
         @media print {
           header, .floating-subscribe-root { display: none !important; }
           [data-pdf-gap] { display: none !important; }
-          [data-pdf-page] { page-break-after: always; break-after: page; box-shadow: none !important; }
+          [data-pdf-page] { page-break-after: always; break-after: page; box-shadow: none !important; border-radius: 0 !important; }
+          [data-cs-outer] { background: #fff !important; }
+          [data-cs-scroll] { padding: 0 !important; }
         }
       `}</style>
 
@@ -223,7 +231,7 @@ export default function GreensillView() {
 
           {/* ── Page 1 — Cover ── */}
           <Page minH={900}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "18px 48px", borderBottom: `1px solid ${BORDER}` }}>
+            <div data-cs-topbar style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "18px 48px", borderBottom: `1px solid ${BORDER}` }}>
               <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
                 <span style={{ fontSize: 10, fontWeight: 700, color: BODY, letterSpacing: "0.12em", textTransform: "uppercase" }}>Alpine Due Diligence</span>
                 <div style={{ width: 1, height: 16, background: BORDER }} />
@@ -232,16 +240,16 @@ export default function GreensillView() {
               <span style={{ fontSize: 10, fontWeight: 500, color: MUTED, letterSpacing: "0.08em" }}>2026 Jul 16 · 9 AM</span>
             </div>
 
-            <div style={{ padding: "56px 48px 48px", display: "flex", flexDirection: "column" }}>
+            <div data-cs-cover style={{ padding: "56px 48px 48px", display: "flex", flexDirection: "column" }}>
               <div style={{ display: "inline-flex", alignItems: "center", gap: 8, marginBottom: 36, padding: "5px 14px", border: `1px solid ${RISK}80`, borderRadius: 3, alignSelf: "flex-start" }}>
                 <span style={{ width: 5, height: 5, borderRadius: "50%", background: RISK, display: "inline-block" }} />
                 <span style={{ fontSize: 9, fontWeight: 700, color: RISK, letterSpacing: "0.18em", textTransform: "uppercase" }}>ODD Case Study</span>
               </div>
 
-              <h1 style={{ fontSize: 46, fontWeight: 800, color: BODY, lineHeight: 1.07, letterSpacing: "-0.03em", margin: "0 0 8px" }}>
+              <h1 data-cs-h1 style={{ fontSize: 46, fontWeight: 800, color: BODY, lineHeight: 1.07, letterSpacing: "-0.03em", margin: "0 0 8px" }}>
                 The Credit Suisse Greensill Case
               </h1>
-              <h2 style={{ fontSize: 27, fontWeight: 600, color: BODY, lineHeight: 1.2, letterSpacing: "-0.02em", margin: "0 0 32px" }}>
+              <h2 data-cs-h2 style={{ fontSize: 27, fontWeight: 600, color: BODY, lineHeight: 1.2, letterSpacing: "-0.02em", margin: "0 0 32px" }}>
                 When the Story Was More Confident Than the Records
               </h2>
 
@@ -263,7 +271,7 @@ export default function GreensillView() {
               </div>
             </div>
 
-            <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "14px 48px", borderTop: `1px solid ${BORDER}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div data-cs-coverfoot style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "14px 48px", borderTop: `1px solid ${BORDER}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <span style={{ fontSize: 9, fontWeight: 700, color: MUTED, letterSpacing: "0.12em", textTransform: "uppercase" }}>Alpine Due Diligence · The Credit Suisse Greensill Case</span>
               <span style={{ fontSize: 9, color: MUTED }}>01</span>
             </div>
@@ -272,7 +280,7 @@ export default function GreensillView() {
 
           {/* ── Page 2 — What changed + the story ── */}
           <Page>
-            <div style={{ padding: "48px 48px 80px" }}>
+            <div data-cs-body style={{ padding: "48px 48px 80px" }}>
               <Para mt={0}>
                 In March 2021, the boards of four Credit Suisse supply-chain-finance funds first suspended subscriptions and redemptions, then terminated the funds and placed them into liquidation. For investors who had accepted the products as controlled exposure to short-dated receivables, the event changed the central question. Yield became secondary. Investors needed to know what the funds legally owned, which debtors owed each amount, whether the claims were enforceable, which assets were insured, and when recoveries could be distributed.
               </Para>
@@ -280,7 +288,7 @@ export default function GreensillView() {
                 The scale made those questions material. FINMA reported that clients had invested about USD 10 billion and that the client documentation presented the funds as low-risk. Yet Credit Suisse had limited knowledge and control over the specific claims. Greensill selected and reviewed the assets, securitised them, and arranged the insurance in its own name.
               </Para>
               <Callout>
-                The due-diligence failure was specific: Credit Suisse could not independently establish asset existence, eligibility, enforceability, debtor concentration, maturity, or insurance coverage at the claim level. Some positions represented future receivables for which no invoice or contractually due obligation yet existed.
+                The due-diligence failure was specific: Credit Suisse could not independently establish asset existence, eligibility, enforceability, debtor concentration, maturity, or insurance coverage at the claim level.
               </Callout>
 
               <div style={{ marginTop: 32 }}>
@@ -302,13 +310,13 @@ export default function GreensillView() {
 
           {/* ── Page 3 — How SCF works + how Greensill changed it + dependency chain ── */}
           <Page>
-            <div style={{ padding: "48px 48px 80px" }}>
+            <div data-cs-body style={{ padding: "48px 48px 80px" }}>
               <SectionHead title="How Supply-Chain Finance Normally Works" />
               <Para mt={0}>
                 The clean version is straightforward. A supplier sells goods or services to a buyer and issues an invoice. Instead of waiting for the buyer to pay, the supplier receives early payment from a finance provider, who later collects the full invoice amount from the buyer. A reviewer can test the clean version with three questions: does an invoice connect the financing to goods or services already delivered; does a buyer owe a fixed amount on a defined date; does the payment history support the expectation that the buyer will pay. When each answer is supported by documents from more than one source, the asset has an observable commercial base.
               </Para>
               <Para>
-                This is why claim-level review matters. A fund holding thousands of trade claims does not own a single abstract exposure. It owns thousands of small credit exposures — each with an obligor, amount, maturity, supporting documents, eligibility status, and coverage status. Fund-level reporting can summarise the portfolio, but it cannot replace review of the assets that make up the portfolio.
+                This is why claim-level review matters. A fund holding thousands of trade claims does not own a single abstract exposure. It owns thousands of small credit exposures, each with an obligor, amount, maturity, supporting documents, eligibility status, and coverage status. Fund-level reporting can summarise the portfolio, but it cannot replace review of the assets that make up the portfolio.
               </Para>
 
               <div style={{ marginTop: 36 }}>
@@ -343,23 +351,23 @@ export default function GreensillView() {
 
           {/* ── Page 4 — Structure + visibility + future receivables + compare table ── */}
           <Page>
-            <div style={{ padding: "48px 48px 80px" }}>
+            <div data-cs-body style={{ padding: "48px 48px 80px" }}>
               <SectionHead title="The Structure Credit Suisse Built" />
               <Para mt={0}>
-                FINMA said Credit Suisse launched the first of four supply-chain-finance funds with Greensill in 2017. Greensill acted as the financing company, securitised the claims, and transferred securities to the funds; insurance was expected to secure most claims against buyer default. Credit Suisse occupied two roles at once — fund platform and asset manager — while Greensill controlled the asset pipeline. That division of labour placed investor obligations on Credit Suisse while leaving much of the asset knowledge with Greensill.
+                FINMA said Credit Suisse launched the first of four supply-chain-finance funds with Greensill in 2017. Greensill acted as the financing company, securitised the claims, and transferred securities to the funds; insurance was expected to secure most claims against buyer default. Credit Suisse occupied two roles at once, fund platform and asset manager, while Greensill controlled the asset pipeline. That division of labour placed investor obligations on Credit Suisse while leaving much of the asset knowledge with Greensill.
               </Para>
 
               <div style={{ marginTop: 32 }}>
                 <SectionHead title="Where Visibility Broke Down" />
                 <Para mt={0}>
-                  FINMA found that Credit Suisse&apos;s asset-management company had little knowledge and control over the specific claims. Greensill selected and reviewed them, and Credit Suisse left Greensill to arrange insurance in its own name. In due-diligence terms, the party creating the exposure also supplied much of the evidence used to explain it — a structural weakness. Credit Suisse needed direct access to invoice files, buyer confirmations, payment records, eligibility files, insurance records, and exception logs, and the ability to test samples without relying on Greensill to frame what they meant.
+                  The structural weakness follows directly from that chain: the party creating the exposure also supplied much of the evidence used to explain it. A manager in that position needs direct access to invoice files, buyer confirmations, payment records, eligibility files, insurance records, and exception logs, and the ability to test samples without relying on the originator to frame what they mean. FINMA found that independence was missing at the claim level.
                 </Para>
               </div>
 
               <div style={{ marginTop: 32 }}>
                 <SectionHead title="Future Receivables Changed the Risk" />
                 <Para mt={0}>
-                  The case became more serious because some claims were not ordinary current receivables. FINMA said Greensill transferred future claims to the funds in some cases — claims that had not yet arisen, reflecting expectations about possible future business rather than documented present obligations. FINMA also said this allowed Greensill to finance companies whose creditworthiness was doubtful.
+                  The case became more serious because some claims were not ordinary current receivables. FINMA said Greensill transferred future claims to the funds in some cases: claims that had not yet arisen, reflecting expectations about possible future business rather than documented present obligations. FINMA also said this allowed Greensill to finance companies whose creditworthiness was doubtful.
                 </Para>
 
                 <div style={{ margin: "24px 0", border: `1px solid ${BORDER}`, borderRadius: 8, overflow: "hidden" }}>
@@ -373,7 +381,7 @@ export default function GreensillView() {
                   <CompareRow left="Verifiable via invoice, buyer, payment history" right="Verifiable only via forecasts and assumptions" />
                   <CompareRow left="Observable commercial base" right="Financing of doubtful-creditworthiness companies" />
                 </div>
-                <SourceNote>FINMA said Greensill transferred future claims to the funds in some cases, allowing it to finance companies whose creditworthiness was doubtful.</SourceNote>
+                <SourceNote>Source: FINMA findings, 28 February 2023 (1).</SourceNote>
               </div>
             </div>
             <PageFooter page={4} />
@@ -382,16 +390,16 @@ export default function GreensillView() {
 
           {/* ── Page 5 — Insurance + debtor + warnings + chronology ── */}
           <Page>
-            <div style={{ padding: "48px 48px 80px" }}>
+            <div data-cs-body style={{ padding: "48px 48px 80px" }}>
               <SectionHead title="Insurance Became Comfort Instead of Proof" />
               <Para mt={0}>
-                Insurance also looked reassuring from a distance. FINMA said the structure expected insurance to secure most claims against buyer default, and that Credit Suisse relied on cover organised by Greensill without enough knowledge or control over how many claims were contractually owed. Insurance reduces risk only when coverage can be matched to assets: policy terms, covered obligors, exclusions, concentration limits, renewal and cancellation rights, insurer credit quality, and claim history — and whether the specific claims are within coverage at the time the fund relies on it. Due diligence should treat insurance as a document set to be tested, not a label attached to the portfolio.
+                Insurance also looked reassuring from a distance. FINMA said the structure expected insurance to secure most claims against buyer default, and that Credit Suisse relied on cover organised by Greensill without enough knowledge or control over how many claims were contractually owed. Insurance reduces risk only when coverage can be matched to assets: policy terms, covered obligors, exclusions, concentration limits, renewal and cancellation rights, insurer credit quality, and claim history, and whether the specific claims are within coverage at the time the fund relies on it. Due diligence should treat insurance as a document set to be tested, not a label attached to the portfolio.
               </Para>
 
               <div style={{ marginTop: 32 }}>
                 <SectionHead title="Debtor Exposure Told a Different Story" />
                 <Para mt={0}>
-                  FINMA said Credit Suisse made partly false and overly positive statements to FINMA about the claims-selection process and the funds&apos; exposure to certain debtors. Apparent diversity of receivables can hide concentrated credit risk: a fund can hold many claims and still depend heavily on a small number of ultimate debtors or related corporate groups. If many claims point back to weak or connected debtors, the fund behaves less like diversified trade finance and more like concentrated credit — changing expected loss, recovery timing, and investor liquidity.
+                  FINMA said Credit Suisse made partly false and overly positive statements to FINMA about the claims-selection process and the funds&apos; exposure to certain debtors. Apparent diversity of receivables can hide concentrated credit risk: a fund can hold many claims and still depend heavily on a small number of ultimate debtors or related corporate groups. If many claims point back to weak or connected debtors, the fund behaves less like diversified trade finance and more like concentrated credit, changing expected loss, recovery timing, and investor liquidity.
                 </Para>
               </div>
 
@@ -406,7 +414,7 @@ export default function GreensillView() {
                   <div style={{ marginTop: 20 }}>
                     <TimelineRow date="2017" head="First Credit Suisse fund launches" body="The first of four supply-chain-finance funds launches with Greensill as originator and structurer." />
                     <TimelineRow date="2018" head="External fund closure prompts enquiries" body="FINMA later said a fund closure at another Greensill provider prompted questions inside Credit Suisse." />
-                    <TimelineRow date="2018–2021" head="Media and FINMA repeatedly raise concerns" body="Critical questions reached senior governance bodies, yet FINMA found no holistic, independent review." />
+                    <TimelineRow date="2018-2021" head="Media and FINMA repeatedly raise concerns" body="Critical questions reached senior governance bodies, yet FINMA found no holistic, independent review." />
                     <TimelineRow date="Before Mar 2021" head="Risk manager recommends rejecting bridge loan" body="The responsible risk manager identified business-model risks; a senior manager overruled the recommendation." />
                     <TimelineRow date="1 Mar 2021" head="Subscriptions and redemptions suspended" body="The boards suspended dealing because a substantial part of the assets could not be valued reliably." />
                     <TimelineRow date="4 Mar 2021" head="Four funds terminated and placed into liquidation" body="The boards terminated the funds and began liquidation. Investor focus shifted from yield to recovery." last />
@@ -421,10 +429,10 @@ export default function GreensillView() {
 
           {/* ── Page 6 — Independence + findings + records + ODD framework ── */}
           <Page>
-            <div style={{ padding: "48px 48px 80px" }}>
+            <div data-cs-body style={{ padding: "48px 48px 80px" }}>
               <SectionHead title="Independence Inside the Review Process" />
               <Para mt={0}>
-                FINMA found that Credit Suisse used employees responsible for the Greensill business relationship to deal with critical questions and warnings, and repeatedly asked Lex Greensill himself and relied on his answers for its own statements. That structure weakened the review before any document was examined. A relationship team has incentives that differ from an independent control function — when the same people defending the relationship also answer questions about its weaknesses, the review can become confirmation rather than challenge.
+                FINMA found that Credit Suisse used employees responsible for the Greensill business relationship to deal with critical questions and warnings, and repeatedly asked Lex Greensill himself and relied on his answers for its own statements. That structure weakened the review before any document was examined. A relationship team has incentives that differ from an independent control function. When the same people defending the relationship also answer questions about its weaknesses, the review can become confirmation rather than challenge.
               </Para>
 
               <div style={{ margin: "26px 0" }}>
@@ -441,7 +449,7 @@ export default function GreensillView() {
               <div style={{ marginTop: 32 }}>
                 <SectionHead title="The Records That Should Have Carried the Review" />
                 <Para mt={0}>
-                  A receivables-fund review starts with the holding and traces backward — from fund position to security, from security to claim pool, from claim pool to receivable, and from receivable to invoice, buyer obligation, supplier record, payment history, and insurance status. Each step should have documents that can be tested independently.
+                  A receivables-fund review starts with the holding and traces backward: from fund position to security, from security to claim pool, from claim pool to receivable, and from receivable to invoice, buyer obligation, supplier record, payment history, and insurance status. Each step should have documents that can be tested independently.
                 </Para>
 
                 <div style={{ margin: "24px 0 8px" }}>
@@ -449,7 +457,7 @@ export default function GreensillView() {
                   <Question n={1} title="Fund position → security." body="Which securities does the fund hold, and what claim pools do they represent?" />
                   <Question n={2} title="Claim pool → receivable → invoice." body="Invoices, purchase orders, and buyer acknowledgments that connect financing to delivered goods or services." />
                   <Question n={3} title="Debtor confirmation and payment history." body="Supplier records, debtor confirmations, aging reports, and exception logs that show whether exceptions are isolated or systematic." />
-                  <Question n={4} title="Insurance and eligibility." body="Policies, covered obligors, exclusions, concentration limits, eligibility files, and concentration reports — tested, not summarised." />
+                  <Question n={4} title="Insurance and eligibility." body="Policies, covered obligors, exclusions, concentration limits, eligibility files, and concentration reports, tested rather than summarised." />
                   <Question n={5} title="Future receivables, reviewed separately." body="What obligation exists today, what commercial assumption supports the future claim, and who bears loss if the future sales do not occur." />
                 </div>
               </div>
@@ -460,7 +468,7 @@ export default function GreensillView() {
 
           {/* ── Page 7 — Conclusion + references ── */}
           <Page>
-            <div style={{ padding: "48px 48px 80px" }}>
+            <div data-cs-body style={{ padding: "48px 48px 80px" }}>
               <SectionHead title="Conclusion: How the Story Ended" />
               <Para mt={0}>
                 The four Credit Suisse funds entered liquidation in March 2021. Greensill Capital (UK) Limited entered administration on 8 March with liabilities later reported at more than GBP 1.6 billion; the Australian parent entered administration the next day and liquidation in April, and other group companies followed. FINMA later found that Credit Suisse had seriously breached its duties to identify, limit, and monitor risk, ordered governance and risk-management reforms, and opened proceedings against four former managers.
@@ -476,11 +484,11 @@ export default function GreensillView() {
                 <EyebrowRow label="References" title="Public sources cited in this analysis" />
                 <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 4 }}>
                   {[
-                    ["1", "FINMA — “FINMA concludes Greensill proceedings against Credit Suisse,” 28 February 2023."],
-                    ["2", "Credit Suisse Group AG — Annual Report 2021, supply-chain-finance funds section (Form 20-F, 2022)."],
-                    ["3", "House of Commons Treasury Committee — Lessons from Greensill Capital, HC 151, Ch. 2, 20 July 2021."],
-                    ["4", "Reuters — “Credit Suisse freezes four funds invested in supply chain finance,” 11 March 2021."],
-                    ["5", "UK Insolvency Service — “Lex Greensill to be disqualified… for nine years,” 4 June 2026."],
+                    ["1", "FINMA, “FINMA concludes Greensill proceedings against Credit Suisse,” 28 February 2023."],
+                    ["2", "Credit Suisse Group AG, Annual Report 2021, supply-chain-finance funds section (Form 20-F, 2022)."],
+                    ["3", "House of Commons Treasury Committee, Lessons from Greensill Capital, HC 151, Ch. 2, 20 July 2021."],
+                    ["4", "Reuters, “Credit Suisse freezes four funds invested in supply chain finance,” 11 March 2021."],
+                    ["5", "UK Insolvency Service, “Lex Greensill to be disqualified… for nine years,” 4 June 2026."],
                   ].map(([n, src]) => (
                     <div key={n} style={{ display: "flex", gap: 10, fontSize: 12, color: MUTED, lineHeight: 1.55 }}>
                       <span style={{ flexShrink: 0, fontWeight: 700, color: BODY }}>{n}</span>
