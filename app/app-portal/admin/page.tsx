@@ -77,6 +77,13 @@ export default function AdminHome() {
             Broadcast email
           </Link>
           <Link
+            href="/admin/announce"
+            className="font-body text-sm px-3 py-1.5 rounded-md"
+            style={{ border: `1px solid ${BORDER}`, color: INK, background: BG_CARD }}
+          >
+            Announce publication
+          </Link>
+          <Link
             href="/admin/admins"
             className="font-body text-sm px-3 py-1.5 rounded-md"
             style={{ border: `1px solid ${BORDER}`, color: INK, background: BG_CARD }}
