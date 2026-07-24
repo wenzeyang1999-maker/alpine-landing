@@ -90,7 +90,7 @@ export default function NewsletterTermsPage() {
             </h2>
             <p className="mt-3">
               We rely on third-party processors to operate the newsletter, including
-              email-delivery providers (Resend), database hosting (Supabase), and
+              email-delivery providers (Resend), database and file hosting (Microsoft Azure), and
               analytics tools. These processors act on our instructions and have access
               to subscriber information only to the extent necessary to provide their
               services.

@@ -109,7 +109,7 @@ export default function AdminHome() {
           Admin
         </h1>
         <p className="font-body mt-2" style={{ color: MUTED, fontSize: 14 }}>
-          Internal Alpine workspace · live data from Supabase. Filter visible rows below.
+          Internal Alpine workspace · live data from Azure. Filter visible rows below.
         </p>
 
         <nav
@@ -154,7 +154,7 @@ export default function AdminHome() {
         className="px-6 py-6 font-body text-xs mt-auto"
         style={{ color: MUTED, borderTop: `1px solid ${BORDER}` }}
       >
-        Alpine internal · data via Supabase
+        Alpine internal · data via Azure
       </footer>
     </main>
   );
