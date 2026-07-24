@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { INK, MUTED, BORDER, BG_CARD, VIOLET } from "@/lib/app-portal/constants";
 
-type Action = "confirm" | "unsubscribe" | "reactivate";
+type Action = "confirm" | "unsubscribe" | "reactivate" | "resend_confirmation";
 
 export default function SubscriberRowActions({
   email,
@@ -16,9 +16,11 @@ export default function SubscriberRowActions({
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
 
   async function patch(action: Action) {
     setError(null);
+    setNotice(null);
     const res = await fetch(`/api/app-portal/subscribers/${encodeURIComponent(email)}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -29,11 +31,19 @@ export default function SubscriberRowActions({
       setError(data.error || `HTTP ${res.status}`);
       return;
     }
+    if (action === "resend_confirmation") {
+      // Status is unchanged (still pending) — just confirm the email went out.
+      setNotice("Sent ✓");
+      return;
+    }
     startTransition(() => router.refresh());
   }
 
   const actions: { label: string; value: Action }[] = [];
-  if (status === "pending") actions.push({ label: "Confirm", value: "confirm" });
+  if (status === "pending") {
+    actions.push({ label: "Resend confirm", value: "resend_confirmation" });
+    actions.push({ label: "Confirm", value: "confirm" });
+  }
   if (status === "active") actions.push({ label: "Unsubscribe", value: "unsubscribe" });
   if (status === "unsubscribed") actions.push({ label: "Reactivate", value: "reactivate" });
 
@@ -54,6 +64,11 @@ export default function SubscriberRowActions({
       {error && (
         <span className="font-body text-[11px]" style={{ color: VIOLET }}>
           {error}
+        </span>
+      )}
+      {notice && (
+        <span className="font-body text-[11px]" style={{ color: "#0E7C66" }}>
+          {notice}
         </span>
       )}
       {pending && (
