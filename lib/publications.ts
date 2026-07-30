@@ -16,6 +16,17 @@ export interface Publication {
 // (earliest published = 1), independent of display order.
 export const PUBLICATIONS: Publication[] = [
   {
+    category: "Case Study 5",
+    date: "2026 Jul 30 · 9 AM",
+    title: "The Chatham Asset Management Case: How Internal Bond Trades Raised Prices, Fund Values, and Fees",
+    description:
+      "How internal bond trades in an illiquid issue that Chatham's own funds dominated raised prices, fund NAVs, and advisory fees, per a settled SEC order. A structured analysis of conflicted trading, NAV integrity, and fee diligence, and the record a review pulls to trace where a price actually came from.",
+    href: "/case-study/chatham",
+    cta: "Read case study →",
+    available: true,
+    external: false,
+  },
+  {
     category: "Case Study 4",
     date: "2026 Jul 16 · 9 AM",
     title: "The Credit Suisse Greensill Case: When the Story Was More Confident Than the Records",
