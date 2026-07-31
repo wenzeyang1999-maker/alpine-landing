@@ -42,7 +42,9 @@ export default function SetPasswordPage() {
       }
       setDone(true);
       setTimeout(() => {
-        window.location.href = "/login?reset=ok";
+        // These tokens are only ever issued for analyst/admin (users table)
+        // accounts, which sign in at the app workspace — not the investor /login.
+        window.location.href = "https://app.alpinedd.com/demo-login?reset=ok";
       }, 1500);
     } catch {
       setError("Something went wrong. Please try again.");

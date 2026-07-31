@@ -148,6 +148,18 @@ function LoginInner() {
           >
             {loading ? "Verifying…" : "Sign In"}
           </button>
+
+          <p className="text-center text-sm font-body pt-1" style={{ color: MUTED }}>
+            {/* Absolute apex URL: /forgot-password is gated on the app. subdomain,
+                so link to the main host where the page is public. */}
+            <a
+              href="https://alpinedd.com/forgot-password"
+              className="underline hover:opacity-80 transition-opacity"
+              style={{ color: VIOLET }}
+            >
+              Forgot your password?
+            </a>
+          </p>
         </form>
 
         <p className="mt-5 text-center text-sm font-mono" style={{ color: MUTED }}>
