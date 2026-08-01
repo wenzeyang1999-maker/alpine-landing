@@ -241,6 +241,29 @@ export const blogPosts = pgTable("blog_posts", {
 	unique("blog_posts_url_key").on(table.url),
 ]);
 
+// Publications list (whitepapers + case studies) shown on /publications and used
+// by the "Announce a publication" tool. Rows are either hand-authored HTML readers
+// (href = internal route, isExternal=false) or admin-uploaded PDFs (href = public
+// Blob URL, isExternal=true, pdfPath set for cleanup on delete).
+export const publications = pgTable("publications", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+	category: text().notNull(),                         // "Case Study 6", "Whitepaper"
+	title: text().notNull(),
+	description: text().notNull(),
+	href: text().notNull(),                             // internal route OR public PDF URL
+	cta: text().default('Read →').notNull(),
+	dateLabel: text("date_label").notNull(),            // display string, e.g. "2026 Jul 30 · 9 AM"
+	isExternal: boolean("is_external").default(false).notNull(),
+	available: boolean().default(true).notNull(),
+	isVisible: boolean("is_visible").default(true).notNull(),
+	pdfPath: text("pdf_path"),                          // demo-docs blob path (uploads only)
+	publishedAt: timestamp("published_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+}, (table) => [
+	index("idx_publications_visible_published").using("btree", table.isVisible.asc().nullsLast().op("bool_ops"), table.publishedAt.desc().nullsFirst().op("timestamptz_ops")),
+	unique("publications_href_key").on(table.href),
+]);
+
 export const customers = pgTable("customers", {
 	id: uuid().defaultRandom().primaryKey().notNull(),
 	name: text().notNull(),

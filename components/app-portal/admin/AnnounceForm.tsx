@@ -2,11 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { BG_CARD, INK, MUTED, SUBTLE, BORDER } from "@/lib/app-portal/constants";
-import { PUBLICATIONS } from "@/lib/publications";
 
 const TEAL = "#1f6e78";
 
 interface Subscriber { email: string; name: string | null; subscribed_at: string | null }
+interface Pub { href: string; category: string; title: string; description: string }
 interface SendResult { sent: number; failed: number; recipient_count: number }
 
 function fmtDate(s: string | null): string {
@@ -16,7 +16,8 @@ function fmtDate(s: string | null): string {
 }
 
 export default function AnnounceForm() {
-  const [href, setHref] = useState(PUBLICATIONS[0]?.href ?? "");
+  const [href, setHref] = useState("");
+  const [pubs, setPubs] = useState<Pub[]>([]);
   const [subs, setSubs] = useState<Subscriber[] | null>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [loadErr, setLoadErr] = useState<string | null>(null);
@@ -24,9 +25,9 @@ export default function AnnounceForm() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<SendResult | null>(null);
 
-  const pub = useMemo(() => PUBLICATIONS.find((p) => p.href === href), [href]);
+  const pub = useMemo(() => pubs.find((p) => p.href === href), [pubs, href]);
 
-  // Load active subscribers; default to all selected.
+  // Load active subscribers + publications; default to all selected.
   useEffect(() => {
     let alive = true;
     (async () => {
@@ -36,7 +37,10 @@ export default function AnnounceForm() {
         if (!alive) return;
         if (!res.ok) { setLoadErr(data.error || "Failed to load subscribers"); return; }
         const list: Subscriber[] = data.subscribers ?? [];
+        const pubList: Pub[] = data.publications ?? [];
         setSubs(list);
+        setPubs(pubList);
+        setHref(pubList[0]?.href ?? "");
         setSelected(new Set(list.map((s) => s.email)));
       } catch {
         if (alive) setLoadErr("Network error loading subscribers.");
@@ -92,7 +96,7 @@ export default function AnnounceForm() {
       <div className="rounded-lg p-6 grid gap-3" style={{ background: BG_CARD, border: `1px solid ${BORDER}` }}>
         <label className="font-body text-[13px]" style={{ color: SUBTLE, fontWeight: 600 }}>1 · Publication</label>
         <select value={href} onChange={(e) => setHref(e.target.value)} style={inputStyle}>
-          {PUBLICATIONS.map((p) => (
+          {pubs.map((p) => (
             <option key={p.href} value={p.href}>{p.category} — {p.title}</option>
           ))}
         </select>

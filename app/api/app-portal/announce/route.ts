@@ -6,7 +6,7 @@ import { newsletterSubscribers } from "@/lib/db/schema";
 import { getAppAdminEmail } from "@/lib/app-portal/auth-session";
 import { wrapEmail } from "@/lib/app-portal/email-template";
 import { logAudit } from "@/lib/app-portal/audit-log";
-import { PUBLICATIONS, publicationUrl } from "@/lib/publications";
+import { getPublications, getPublicationByHref, publicationUrl } from "@/lib/publications";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM_EMAIL = "Alpine Due Diligence <notifications@alpinedd.com>";
@@ -38,8 +38,11 @@ export async function GET(req: NextRequest) {
     .where(and(isNull(newsletterSubscribers.unsubscribedAt), isNotNull(newsletterSubscribers.confirmedAt)))
     .orderBy(desc(newsletterSubscribers.createdAt));
 
+  const pubs = await getPublications();
+
   return NextResponse.json({
     subscribers: rows.map((r) => ({ email: r.email.toLowerCase(), name: r.fullName ?? null, subscribed_at: r.createdAt })),
+    publications: pubs.map((p) => ({ href: p.href, category: p.category, title: p.title, description: p.description })),
   });
 }
 
@@ -81,7 +84,7 @@ export async function POST(req: NextRequest) {
     const href = (body.href ?? "").trim();
     const dryRun = body.dry_run === true;
 
-    const pub = PUBLICATIONS.find((p) => p.href === href);
+    const pub = await getPublicationByHref(href);
     if (!pub) return NextResponse.json({ error: "Unknown publication." }, { status: 400 });
 
     const recipients = Array.from(

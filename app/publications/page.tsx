@@ -1,15 +1,18 @@
 import Link from "next/link";
 import SubpageLayout from "@/components/SubpageLayout";
 import { INK, MUTED, SUBTLE, BORDER, BG_CARD, VIOLET } from "@/lib/constants";
-import { PUBLICATIONS } from "@/lib/publications";
+import { getPublications } from "@/lib/publications";
 
 export const metadata = {
   title: "Publications — Alpine Due Diligence",
   description: "Whitepapers, case studies, and research from Alpine's operational due diligence team.",
 };
 
+// Read from the DB on each request so newly uploaded publications appear immediately.
+export const dynamic = "force-dynamic";
 
-export default function PublicationsPage() {
+export default async function PublicationsPage() {
+  const PUBLICATIONS = await getPublications();
   return (
     <SubpageLayout>
       <div className="flex-1 w-full">
