@@ -1,8 +1,9 @@
 /**
- * Outputs ready-to-run SQL to create a verified demo manager account.
- * Run the output against the Azure Postgres database (psql or your SQL client).
+ * Creates (or updates) the verified demo manager account.
  *
- * Usage: node scripts/seed-manager-demo.mjs
+ * Print the SQL only:       node scripts/seed-manager-demo.mjs
+ * Apply directly to the DB: DATABASE_URL=... node scripts/seed-manager-demo.mjs --apply
+ *   (--apply runs the seed and then prints the firm/user rows to confirm)
  */
 
 import { scryptSync, randomBytes } from "crypto";
@@ -69,4 +70,27 @@ BEGIN
 END $$;
 `;
 
-console.log(sql);
+if (process.argv.includes("--apply")) {
+  const url = process.env.DATABASE_URL;
+  if (!url) {
+    console.error("Missing DATABASE_URL (copy it from the App Service's environment variables).");
+    process.exit(1);
+  }
+  const postgres = (await import("postgres")).default;
+  const client = postgres(url, { prepare: false, ssl: "require" });
+  try {
+    await client.unsafe(sql);
+    const rows = await client`
+      SELECT f.name AS firm, f.slug, u.email, u.full_name, u.is_verified
+      FROM manager.users u JOIN manager.firms f ON f.id = u.firm_id
+      WHERE u.email = ${DEMO_EMAIL}
+    `;
+    console.log("Applied. Current demo account:");
+    console.table(rows);
+    console.log(`Login: ${DEMO_EMAIL} / ${DEMO_PASSWORD}`);
+  } finally {
+    await client.end();
+  }
+} else {
+  console.log(sql);
+}
