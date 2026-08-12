@@ -494,7 +494,9 @@ export default function PortalPage() {
               </p>
             </div>
             <a
-              href="https://manager.alpinedd.com"
+              // Real tokens carry into signup so the firm claims its portal
+              // (docs auto-attach). Demo tokens are not claimable; plain link.
+              href={isDemo ? "https://manager.alpinedd.com" : `https://manager.alpinedd.com/signup?portal=${encodeURIComponent(token)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="shrink-0 inline-flex items-center gap-1.5 rounded-lg px-4 py-2.5 text-xs font-semibold text-white hover:opacity-90 transition-opacity"

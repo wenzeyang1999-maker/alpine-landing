@@ -36,10 +36,14 @@ export const firmsInManager = manager.table("firms", {
 	aumQualifier: text("aum_qualifier"),
 	strategy: text(),
 	domicile: text(),
+	// Secure-upload-portal token this firm has claimed (signup claim flow or
+	// auto-backfill from customers.portal_token). One firm per token.
+	portalToken: text("portal_token"),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
 	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
 }, (table) => [
 	unique("firms_slug_key").on(table.slug),
+	unique("firms_portal_token_key").on(table.portalToken),
 	pgPolicy("firm_isolation", { as: "permissive", for: "all", to: ["public"], using: sql`(id = manager.current_firm_id())` }),
 ]);
 

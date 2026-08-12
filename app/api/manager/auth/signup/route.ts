@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { usersInManager, firmsInManager } from "@/lib/db/schema";
 import { hashPassword, isAcceptablePassword } from "@/lib/manager/password";
 import { signSession, managerCookieOptions, MANAGER_SESSION } from "@/lib/manager/auth-session";
+import { validateClaimableToken } from "@/lib/manager/portal-link";
 
 function slugify(name: string): string {
   return name
@@ -20,6 +21,7 @@ export async function POST(req: NextRequest) {
     const password: string = body.password ?? "";
     const full_name: string = (body.full_name ?? "").trim();
     const firm_name: string = (body.firm_name ?? "").trim();
+    const portal_token: string = (body.portal_token ?? "").trim();
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return NextResponse.json({ error: "Please enter a valid work email." }, { status: 400 });
@@ -61,9 +63,17 @@ export async function POST(req: NextRequest) {
       slug = `${slug}-${Math.random().toString(36).slice(2, 7)}`;
     }
 
+    // Claim the secure-portal token the signup arrived with (from the portal
+    // page's workspace banner). Invalid or already-claimed tokens are ignored
+    // rather than blocking signup — the portal link is a bonus, not a gate.
+    const claimedToken = portal_token && (await validateClaimableToken(portal_token)) ? portal_token : null;
+
     let firmId: string;
     try {
-      const [firmRaw] = await db.insert(firmsInManager).values({ name: firm_name, slug }).returning({ id: firmsInManager.id });
+      const [firmRaw] = await db
+        .insert(firmsInManager)
+        .values({ name: firm_name, slug, portalToken: claimedToken })
+        .returning({ id: firmsInManager.id });
       firmId = firmRaw.id;
     } catch (firmErr) {
       console.error("Firm insert error:", firmErr);

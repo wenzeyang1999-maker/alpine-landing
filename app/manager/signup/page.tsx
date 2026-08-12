@@ -1,15 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight, Eye, EyeOff } from "lucide-react";
 import {
   BG, BG_CARD, INK, SECONDARY, MUTED, VIOLET, BORDER, LS_BODY, LS_H1,
 } from "@/lib/constants";
 
-export default function ManagerSignup() {
+function ManagerSignupInner() {
   const router = useRouter();
+  // Arriving from the secure upload portal's workspace banner carries the
+  // portal token; signup claims it so the firm's portal documents attach.
+  const portalToken = useSearchParams().get("portal") ?? "";
   const [form, setForm] = useState({ email: "", password: "", full_name: "", firm_name: "" });
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState("");
@@ -27,7 +30,7 @@ export default function ManagerSignup() {
       const res = await fetch("/api/manager/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(portalToken ? { ...form, portal_token: portalToken } : form),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -82,6 +85,17 @@ export default function ManagerSignup() {
           Create your firm&rsquo;s Alpine account. Your workspace will be ready
           once our team verifies your firm — usually within 1 business day.
         </p>
+
+        {portalToken && (
+          <div
+            className="rounded-panel px-4 py-3 mb-6 font-body text-[13px]"
+            style={{ background: `${VIOLET}0d`, border: `1px solid ${VIOLET}40`, color: SECONDARY, lineHeight: 1.55 }}
+          >
+            <strong style={{ color: INK }}>Secure portal detected.</strong>{" "}
+            The documents your firm has uploaded through its Alpine secure portal
+            will be linked to this workspace automatically.
+          </div>
+        )}
 
         <form
           onSubmit={onSubmit}
@@ -197,5 +211,13 @@ export default function ManagerSignup() {
         </p>
       </section>
     </main>
+  );
+}
+
+export default function ManagerSignup() {
+  return (
+    <Suspense>
+      <ManagerSignupInner />
+    </Suspense>
   );
 }
