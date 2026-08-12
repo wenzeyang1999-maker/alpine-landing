@@ -79,9 +79,11 @@ export async function middleware(req: NextRequest) {
     // Portal" link point at app.<apex>/portal/<token>; send them to the
     // canonical location instead of bouncing managers to Internal Sign In.
     if (path === "/portal" || path.startsWith("/portal/")) {
-      const redirect = req.nextUrl.clone();
-      redirect.host = host.replace(/^app\./, "");
-      return NextResponse.redirect(redirect, 308);
+      // Build the URL by hand: req.nextUrl carries the container's internal
+      // port (3000) behind the Azure proxy, so cloning it leaks ":3000".
+      const proto = req.headers.get("x-forwarded-proto") ?? "https";
+      const apexHost = host.replace(/^app\./, "");
+      return NextResponse.redirect(`${proto}://${apexHost}${path}${req.nextUrl.search}`, 308);
     }
     if (!isPublicPath(path)) {
       const token = req.cookies.get(SESSION.COOKIE_NAME)?.value ?? null;
