@@ -797,10 +797,10 @@ function buildGranitePassage(quote: string, filename: string, sourceLabel: strin
       after: " across the Granite Credit Partners series, two managed account vehicles, and one CLO, together with $1.83 billion of uncalled capital commitments. All advisory activity is conducted on a discretionary basis. The Adviser does not manage wrap-fee programs and does not solicit retail investors.",
       pageLabel: "Page 4 of 18",
     };
-    if (q.includes("78%") || q.includes("ownership") || q.includes("alpine pension") || q.includes("employees")) return {
+    if (q.includes("78%") || q.includes("ownership") || q.includes("laurentide pension") || q.includes("employees")) return {
       section: "Schedules A & B — Direct and Indirect Owners",
       before: "The Adviser is majority owned by its employees, with ownership broadly distributed across 17 partner-level professionals. The reported ownership composition is: ",
-      after: ". Alpine Pension Investors holds its 22% interest as a passive minority investor acquired in 2018, with no voting rights or operational involvement in the management company. There are no other outside institutional owners or third-party controlling interests.",
+      after: ". Laurentide Pension Partners holds its 22% interest as a passive minority investor acquired in 2018, with no voting rights or operational involvement in the management company. There are no other outside institutional owners or third-party controlling interests.",
       pageLabel: "Page 7 of 18",
     };
     if (q.includes("complaint") || q.includes("disciplinary") || q.includes("none") || q.includes("customer")) return {
@@ -822,7 +822,7 @@ function buildGranitePassage(quote: string, filename: string, sourceLabel: strin
     if (q.includes("state street") || q.includes("pwc") || q.includes("jpmorgan") || q.includes("administrator") || q.includes("auditor") || q.includes("agent bank")) return {
       section: "Section 5 — Service Providers",
       before: "Fund Administrator: ",
-      after: ". State Street Alternative Investment Services has served as administrator since 2014 (transitioned to State Street's platform in 2018 following the SS&C acquisition) and provides books and records, NAV calculation, investor capital activity, AML/KYC, Form PF reporting, and FATCA/CRS compliance. Independent auditor: PricewaterhouseCoopers LLP, engaged since the firm's inception in 2010. Banking and agent-bank services, including the $400 million NAV facility, are provided by JPMorgan Chase, N.A. Fund counsel: Schulte Roth & Zabel LLP; transaction counsel: Kirkland & Ellis LLP.",
+      after: ". State Street Alternative Investment Services has served as administrator since 2014 and provides books and records, NAV calculation, investor capital activity, AML/KYC, Form PF reporting, and FATCA/CRS compliance. Independent auditor: PricewaterhouseCoopers LLP, engaged since the firm's inception in 2010. Banking and agent-bank services, including the $400 million subscription credit facility, are provided by JPMorgan Chase, N.A. Fund counsel: Schulte Roth & Zabel LLP; transaction counsel: Kirkland & Ellis LLP.",
       pageLabel: "Page 22 of 58",
     };
     if (q.includes("47 fte") || q.includes("headcount") || q.includes("47 ") || q.includes("investment professional") || q.includes("ortiz") || q.includes("walsh") || q.includes("wei chen") || q.includes("halloway") || q.includes("liu")) return {
@@ -834,7 +834,7 @@ function buildGranitePassage(quote: string, filename: string, sourceLabel: strin
     if (q.includes("succession") || q.includes("key person insurance") || q.includes("25m") || q.includes("background check") || q.includes("hireright") || q.includes("deferred")) return {
       section: "Section 2 — Governance and Succession",
       before: "Granite maintains a formal written succession plan filed with its regulator. With respect to the firm's governance, insurance, and personnel controls: ",
-      after: ". The plan identifies Margaret Liu as immediate successor to Stephen Halloway, with Daniel Ortiz designated as CIO successor. Key person life insurance of $25 million is in place on each of the four Executive Committee members, and background checks are conducted by HireRight on initial hire with a three-year refresh for partner-level employees.",
+      after: ". The plan identifies Margaret Liu as immediate successor to Stephen Halloway, with Daniel Ortiz designated as CIO successor. Key person life insurance of $25 million is in place on each of the five Executive Committee members, and background checks are conducted by HireRight on initial hire with a three-year refresh for partner-level employees.",
       pageLabel: "Page 8 of 58",
     };
     if (q.includes("wei chen") || q.includes("compliance") || q.includes("schulte roth") || q.includes("mock") || q.includes("attestation") || q.includes("pre-clear")) return {
@@ -843,10 +843,10 @@ function buildGranitePassage(quote: string, filename: string, sourceLabel: strin
       after: ". The compliance team comprises four dedicated full-time professionals. Granite engages Schulte Roth & Zabel LLP as outside compliance counsel and performs an annual mock SEC exam each fall, the most recent of which was conducted in November 2025. Annual attestations are completed by all employees.",
       pageLabel: "Page 14 of 58",
     };
-    if (q.includes("nav facility") || q.includes("$400m") || q.includes("400 ") || q.includes("13.4") || q.includes("$185m") || q.includes("leverage") || q.includes("advance rate")) return {
+    if (q.includes("nav facility") || q.includes("subscription") || q.includes("$400m") || q.includes("400 ") || q.includes("19.7") || q.includes("$185m") || q.includes("leverage") || q.includes("advance rate")) return {
       section: "Section 7 — Investment Operations and Leverage",
-      before: "Granite VII utilizes a subscription/NAV credit facility to manage capital efficiency. The facility terms and current utilization are as follows: ",
-      after: ". The facility is provided by JPMorgan Chase, N.A. at a 30% advance rate against NAV. Outstanding borrowings as of December 31, 2025 represent a conservative share of NAV, and use of leverage is reviewed by the LPAC quarterly. Granite does not employ asset-level leverage beyond this facility.",
+      before: "Granite VII utilizes a subscription credit facility to bridge capital calls during deployment. The facility terms and current utilization are as follows: ",
+      after: ". The facility is provided by JPMorgan Chase, N.A. and is secured by the uncalled capital commitments of the partnership. Outstanding borrowings as of December 31, 2025 represent 19.7% of committed capital, and use of leverage is reviewed by the LPAC quarterly. The LPA separately permits a NAV-based facility of up to 20% of NAV once the investment period matures; none is currently in place. Granite does not employ asset-level leverage beyond this facility.",
       pageLabel: "Page 31 of 58",
     };
     if (q.includes("default rate") || q.includes("workout") || q.includes("henderson") || q.includes("cliffwater") || q.includes("covenant") || q.includes("concentration") || q.includes("atlas") || q.includes("4.2")) return {
@@ -1024,7 +1024,7 @@ function buildGranitePassage(quote: string, filename: string, sourceLabel: strin
     return {
       section: "Alpine ODD — Internal Cross-Reference Analysis",
       before: "Alpine Due Diligence — Operational Due Diligence Report. ODD Engagement: Granite Capital Management, LLC · Granite VII Credit Partners, L.P. This report summarizes Alpine's analysis of the documents submitted, the management responses, and the third-party verifications obtained during the review. The following finding was identified: ",
-      after: ". The overall engagement is rated GREEN, with two YELLOW chapters (Investment Operations and Valuation) reflecting industry-normal use of a moderate NAV facility and an in-house valuation agent of record supported by strong Houlihan Lokey third-party review. Alpine recommends an accept rating subject to post-close monitoring of leverage utilization and Valuation Committee composition.",
+      after: ". The overall engagement is rated GREEN, with two YELLOW chapters (Investment Operations and Valuation) reflecting industry-normal use of a subscription credit facility and an in-house valuation agent of record supported by strong Houlihan Lokey third-party review. Alpine recommends an accept rating subject to post-close monitoring of leverage utilization and Valuation Committee composition.",
       pageLabel: "Alpine Analysis · Page 1",
     };
   }
@@ -1733,7 +1733,7 @@ function buildHavencrestPassage(quote: string, filename: string, sourceLabel: st
     if (q.includes("succession") || q.includes("key person insurance") || q.includes("$20m on") || q.includes("vesting") || q.includes("carry vesting")) return {
       section: "Section 2 — Governance and Succession",
       before: "The firm maintains a formal written succession plan and incentive-alignment framework. With respect to governance protections: ",
-      after: ". Mark Donovan is designated successor CEO and Lauren Foster (Head of Acquisitions) is designated successor CIO. Key person life insurance of $20 million is maintained on each of the four Executive Committee members. All carry-eligible employees are subject to a five-year carry vesting schedule, reinforcing long-term alignment between investment professionals and Limited Partners.",
+      after: ". Mark Donovan is designated successor CEO and Lauren Foster (Head of Acquisitions) is designated successor CIO. Key person life insurance of $20 million is maintained on each of the five Executive Committee members. All carry-eligible employees are subject to a five-year carry vesting schedule, reinforcing long-term alignment between investment professionals and Limited Partners.",
       pageLabel: "Page 7 of 58",
     };
     return {

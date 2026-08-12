@@ -3,7 +3,7 @@
  *
  * ODD review of Granite VII Credit Partners, L.P. (Senior Direct Lending — Middle-Market)
  * Manager: Granite Capital Management, LLC
- * Overall rating: GREEN (12 flags, 0 RED chapters, 2 YELLOW chapters)
+ * Overall rating: GREEN (6 flags, 0 RED chapters, 2 YELLOW chapters)
  */
 
 import type { TopicInfo, TopicDataGroup } from "./ridgeline-data";
@@ -26,7 +26,7 @@ Granite reported firmwide AUM of $4.21 billion as of December 31, 2025 (excludin
 
 ### Ownership & Succession
 
-The firm is majority owned by employees (78%), with the remaining 22% held by Alpine Pension Investors, a passive minority investor that acquired its stake in 2018 and has no voting rights or operational involvement. Ownership is broadly distributed across 17 partner-level employees. Granite maintains a formal written succession plan filed with its regulator, identifying Margaret Liu as immediate successor to Stephen Halloway in the event of his departure, with Daniel Ortiz (Head of Originations) as the designated CIO successor. Key person life insurance of $25 million is in place on each of the four Executive Committee members.
+The firm is majority owned by employees (78%), with the remaining 22% held by Laurentide Pension Partners, a passive minority investor that acquired its stake in 2018 and has no voting rights or operational involvement. Ownership is broadly distributed across 17 partner-level employees. Granite maintains a formal written succession plan filed with its regulator, identifying Margaret Liu as immediate successor to Stephen Halloway in the event of his departure, with Daniel Ortiz (Head of Originations) as the designated CIO successor. Key person life insurance of $25 million is in place on each of the five Executive Committee members.
 
 ### Human Resources
 
@@ -56,10 +56,10 @@ The chapter is rated GREEN. Granite's governance infrastructure is well-develope
         { label: "Chief Compliance Officer", value: "Wei Chen — joined 2025 from Sixth Street", source: "DDQ" },
       ]},
       { group: "Governance & Ownership", items: [
-        { label: "Ownership", value: "Employees 78%, Alpine Pension Investors (passive minority) 22%", source: "Form ADV" },
+        { label: "Ownership", value: "Employees 78%, Laurentide Pension Partners (passive minority) 22%", source: "Form ADV" },
         { label: "GP Commitment (Fund VII)", value: "3.0% in cash ($45M at hard cap)", flag: "green", source: "LPA" },
         { label: "Succession Plan", value: "Formal written plan filed with regulator", flag: "green", source: "DDQ" },
-        { label: "Key Person Insurance", value: "$25M on each of four Executive Committee members", flag: "green", source: "DDQ" },
+        { label: "Key Person Insurance", value: "$25M on each of five Executive Committee members", flag: "green", source: "DDQ" },
         { label: "Deferred Compensation", value: "5-year carried interest vesting", flag: "green", source: "DDQ" },
         { label: "Background Checks", value: "External (HireRight) — initial + 3-yr refresh for partners", flag: "green", source: "DDQ" },
       ]},
@@ -177,7 +177,7 @@ Granite VII Credit Partners, L.P. is structured as a Delaware limited partnershi
 
 ### Fees & Carried Interest
 
-The management fee is 1.50% per annum charged on invested capital during the investment period (years 1–4) and on net asset value thereafter (years 5–10) — a structure that aligns the fee burden with deployed capital rather than commitments, generally favorable to LPs.
+The management fee is 1.50% per annum charged on invested capital during the investment period (years 1–4) and on net asset value thereafter (years 5–8, continuing through any extension periods) — a structure that aligns the fee burden with deployed capital rather than commitments, generally favorable to LPs.
 
 Carried interest is 15% over a 7% preferred return, with a 50/50 catch-up. Carry is calculated on a whole-of-fund basis (not deal-by-deal), which protects LPs from clawback risk in the event of late-fund underperformance. A clawback provision applies through the end of the fund term, with the GP's clawback obligation backed by an escrow of 20% of distributed carry.
 
@@ -228,10 +228,10 @@ The chapter is rated GREEN. Fund terms are well-aligned with institutional LP st
   },
   5: {
     name: "Service Providers, Delegation & Oversight", rating: "GREEN",
-    summary: "Top-tier service providers: SS&C as administrator, PwC as auditor, JPMorgan as prime/agent bank, Schulte Roth as fund counsel. Long-standing relationships. Annual SOC 1 reviews of administrator. Dedicated oversight by Head of Fund Operations.",
+    summary: "Top-tier service providers: State Street as administrator, PwC as auditor, JPMorgan as prime/agent bank, Schulte Roth as fund counsel. Long-standing relationships. Annual SOC 1 reviews of administrator. Dedicated oversight by Head of Fund Operations.",
     findings: `### Administrator
 
-State Street Alternative Investment Services has served as Granite's fund administrator since 2014. State Street provides full middle- and back-office services including books and records, NAV calculation, investor capital activity, AML/KYC, regulatory reporting (Form PF), and FATCA/CRS compliance. SS&C transitioned this account to State Street's platform in 2018 following the SS&C acquisition. The administrator provides monthly NAV and quarterly capital statements to investors. Granite's Head of Fund Operations, Caroline McKenzie, conducts an annual on-site visit to State Street's Boston operations center and reviews their SOC 1 Type II report each year.
+State Street Alternative Investment Services has served as Granite's fund administrator since 2014. State Street provides full middle- and back-office services including books and records, NAV calculation, investor capital activity, AML/KYC, regulatory reporting (Form PF), and FATCA/CRS compliance. The administrator provides monthly NAV and quarterly capital statements to investors. Granite's Head of Fund Operations, Caroline McKenzie, conducts an annual on-site visit to State Street's Boston operations center and reviews their SOC 1 Type II report each year.
 
 ### Auditor
 
@@ -239,7 +239,7 @@ PricewaterhouseCoopers LLP has served as Granite's fund auditor since the firm's
 
 ### Prime / Agent Bank
 
-JPMorgan Chase, N.A. serves as Granite's principal banking relationship, including agent bank for the fund's $400 million subscription credit facility (NAV facility, advance rate 30%) and primary deposit relationship. All loan payments, capital calls, and distributions flow through JPMorgan accounts. Granite uses a dual-approval wire process requiring sign-off from both the Head of Operations and a member of the Executive Committee.
+JPMorgan Chase, N.A. serves as Granite's principal banking relationship, including agent bank for the fund's $400 million subscription credit facility and primary deposit relationship. All loan payments, capital calls, and distributions flow through JPMorgan accounts. Granite uses a dual-approval wire process requiring sign-off from both the Head of Operations and a member of the Executive Committee.
 
 ### Legal Counsel
 
@@ -252,9 +252,9 @@ The chapter is rated GREEN. Service providers are top-tier with long-standing re
     verificationCategory: "service_providers",
     dataPoints: [
       { group: "Service Providers", items: [
-        { label: "Administrator", value: "State Street Alternative Investment Services (since 2014; via SS&C platform)", flag: "green", source: "Admin Agreement" },
+        { label: "Administrator", value: "State Street Alternative Investment Services (since 2014)", flag: "green", source: "Admin Agreement" },
         { label: "Auditor", value: "PricewaterhouseCoopers LLP (since 2010)", flag: "green", source: "Audit Letter" },
-        { label: "Prime / Agent Bank", value: "JPMorgan Chase, N.A. (incl. $400M NAV facility, 30% advance rate)", flag: "green", source: "DDQ" },
+        { label: "Prime / Agent Bank", value: "JPMorgan Chase, N.A. (incl. $400M subscription credit facility)", flag: "green", source: "DDQ" },
         { label: "Fund Counsel", value: "Schulte Roth & Zabel LLP", source: "DDQ" },
         { label: "Transaction Counsel", value: "Kirkland & Ellis LLP", source: "DDQ" },
       ]},
@@ -272,7 +272,7 @@ The chapter is rated GREEN. Service providers are top-tier with long-standing re
   },
   6: {
     name: "Investment Operations & Portfolio Controls", rating: "YELLOW",
-    summary: "Disciplined investment committee with formal 4-of-5 supermajority approval. Robust deal pipeline tracking via Black Mountain. Allvue loan accounting. NAV facility at 30% advance rate is moderate but warrants monitoring. Single-name concentration limit (5%) tested at 4.2% top exposure. Portfolio monitoring of borrower covenants formalized.",
+    summary: "Disciplined investment committee with formal 4-of-5 supermajority approval. Robust deal pipeline tracking via Black Mountain. Allvue loan accounting. Subscription facility drawn at 19.7% of commitments warrants monitoring as deployment matures. Single-name concentration limit (5%) tested at 4.2% top exposure. Portfolio monitoring of borrower covenants formalized.",
     findings: `### Investment Committee & Approval
 
 The Investment Committee comprises five voting members: Stephen Halloway (CEO), Margaret Liu (CIO), Daniel Ortiz (Head of Originations), Priya Walsh (Head of Credit Risk), and Robert Yates (Head of Portfolio Management). New investments require approval from at least four of five voting members — a supermajority threshold that prevents any individual from forcing through a deal. Priya Walsh, as Head of Credit Risk, has explicit veto authority over all new investments. The committee meets weekly with ad-hoc sessions for time-sensitive opportunities.
@@ -283,11 +283,11 @@ Granite's origination team sources deals primarily from established sponsor rela
 
 Underwriting follows a structured 4-stage process: initial screening, preliminary diligence and IC pre-read, full due diligence with third-party reports (legal, accounting QofE, environmental, insurance), and final IC vote. Average time from screening to close is 8–10 weeks. Granite mandates third-party Quality of Earnings reports for all new originations.
 
-### Portfolio Concentration & NAV Facility
+### Portfolio Concentration & Fund Leverage
 
 The fund's single-borrower concentration cap is 5.0% of total commitments. As of December 31, 2025, the largest single exposure (Atlas Industrial Holdings) is at 4.2% of commitments, near but below the cap. The top 10 borrowers represent 28.4% of invested capital — a moderately diversified portfolio.
 
-Granite VII utilizes a $400 million subscription/NAV credit facility with JPMorgan at a 30% advance rate (against NAV). Outstanding borrowings as of December 31, 2025 are $185 million, representing 13.4% of NAV — within the conservative band Alpine expects from senior direct lending vehicles. Use of leverage is monitored by the LPAC quarterly.
+Granite VII utilizes a $400 million subscription credit facility with JPMorgan, secured by the uncalled capital commitments of the partnership. Outstanding borrowings as of December 31, 2025 are $185 million, representing 19.7% of the $940 million of committed capital — used to bridge capital calls during early deployment. The LPA separately permits a NAV-based facility, secured against portfolio value, of up to 20% of NAV once the investment period matures; no NAV facility is currently in place. Use of leverage is monitored by the LPAC quarterly.
 
 ### Borrower Monitoring & Workout
 
@@ -295,7 +295,7 @@ Each loan is assigned to a portfolio manager who maintains monthly contact with 
 
 ### Chapter Summary
 
-The chapter is rated YELLOW solely due to the use of the NAV facility, which while moderate in size, magnifies LP returns and adds modest tail risk in a credit downturn. The chapter would otherwise be rated GREEN: investment governance, portfolio controls, and workout capability are all institutional-grade. Alpine recommends investors monitor leverage utilization quarterly and reaffirm the LPAC's understanding of the NAV facility terms.`,
+The chapter is rated YELLOW solely due to fund-level borrowing: the subscription facility is conventional and moderately drawn, but sustained outstandings delay capital calls and flatter early IRR, and the LPA separately permits a NAV-based facility once the investment period matures. The chapter would otherwise be rated GREEN: investment governance, portfolio controls, and workout capability are all institutional-grade. Alpine recommends investors monitor utilization quarterly and reaffirm the LPAC's understanding of the facility terms, including the conditions under which a NAV-based facility could be activated.`,
     docCategories: ["Investment Ops"], riskObsIds: ["GO-002", "GO-003"],
     verificationCategory: "investment_ops",
     dataPoints: [
@@ -316,9 +316,10 @@ The chapter is rated YELLOW solely due to the use of the NAV facility, which whi
         { label: "Largest Exposure", value: "Atlas Industrial Holdings — 4.2% (near cap)", flag: "yellow", source: "DDQ" },
         { label: "Top-10 Borrowers", value: "28.4% of invested capital", source: "DDQ" },
       ]},
-      { group: "NAV Facility & Leverage", items: [
-        { label: "Subscription/NAV Facility", value: "$400M with JPMorgan; 30% advance rate", flag: "yellow", source: "DDQ" },
-        { label: "Outstanding Borrowings (12/31/2025)", value: "$185M = 13.4% of NAV", flag: "yellow", source: "DDQ" },
+      { group: "Fund Leverage", items: [
+        { label: "Subscription Facility", value: "$400M with JPMorgan; secured by uncalled commitments", flag: "yellow", source: "DDQ" },
+        { label: "Outstanding Borrowings (12/31/2025)", value: "$185M = 19.7% of committed capital", flag: "yellow", source: "DDQ" },
+        { label: "NAV-Based Facility", value: "Permitted under LPA after investment period (≤20% of NAV); none in place", flag: "green", source: "LPA" },
         { label: "LPAC Oversight", value: "Quarterly review of leverage utilization", flag: "green", source: "LPA" },
       ]},
       { group: "Workout & Default History", items: [
@@ -460,8 +461,8 @@ export const GRANITE_MOCK = {
     odd_percentile: "82nd",
     domicile: "Delaware LP (Cayman feeder)",
     fund_nav: "$940M first close (12/2025); pre-deployment",
-    recommendation_summary: "recommends an <b>accept</b> rating. Granite operates an institutional-grade direct-lending platform with a deep team, distributed ownership, well-tested controls, and a clean 15-year regulatory and litigation history. Two YELLOW chapters (Investment Ops, Valuation) reflect industry-normal use of a moderate NAV facility and an in-house valuation agent with strong third-party review.",
-    conditions_summary: "Post-close monitoring: quarterly review of NAV facility utilization and Valuation Committee composition; reaffirm LPAC understanding of leverage limits at each annual review.",
+    recommendation_summary: "recommends an <b>accept</b> rating. Granite operates an institutional-grade direct-lending platform with a deep team, distributed ownership, well-tested controls, and a clean 15-year regulatory and litigation history. Two YELLOW chapters (Investment Ops, Valuation) reflect industry-normal use of a subscription credit facility and an in-house valuation agent with strong third-party review.",
+    conditions_summary: "Post-close monitoring: quarterly review of subscription facility utilization and Valuation Committee composition; reaffirm LPAC understanding of leverage limits at each annual review.",
   },
   risk_observations: [
     { id: "GO-001", severity: "LOW", topic: "Manager, Ownership & Governance", title: "Background-check refresh cadence applies only to partners",
@@ -470,18 +471,18 @@ export const GRANITE_MOCK = {
     { id: "GO-002", severity: "MEDIUM", topic: "Investment Operations & Portfolio Controls", title: "Largest single-borrower exposure approaching contractual cap",
       detail: "As of December 31, 2025, the largest single exposure (Atlas Industrial Holdings) is at 4.2% of commitments against a 5.0% contractual cap. While not yet a breach, the proximity warrants monitoring.",
       remediation: "Investors should monitor quarterly disclosure of single-name exposures; LPAC should formally affirm understanding of the cap at each annual review." },
-    { id: "GO-003", severity: "MEDIUM", topic: "Investment Operations & Portfolio Controls", title: "NAV facility utilization at 13.4% of NAV",
-      detail: "Granite VII has drawn $185M of its $400M NAV facility with JPMorgan, representing 13.4% of NAV. While well within the conservative band Alpine expects from senior direct lending vehicles, NAV facility use magnifies LP returns and introduces modest tail risk in a credit downturn.",
-      remediation: "Monitor utilization quarterly. Confirm LPAC quarterly review of leverage attribution." },
+    { id: "GO-003", severity: "MEDIUM", topic: "Investment Operations & Portfolio Controls", title: "Subscription facility drawn at 19.7% of commitments; LPA permits future NAV-based facility",
+      detail: "Granite VII has drawn $185M of its $400M subscription credit facility with JPMorgan, secured by uncalled capital commitments — 19.7% of the $940M first close. Bridging use is conventional early in deployment, but sustained outstandings delay capital calls and flatter early IRR. The LPA separately permits a NAV-based facility (up to 20% of NAV) once the investment period matures, which would introduce portfolio-collateralized leverage.",
+      remediation: "Monitor utilization and days-outstanding quarterly. Confirm LPAC review of leverage attribution and of any future NAV-based facility activation." },
     { id: "GO-004", severity: "MEDIUM", topic: "Valuation, Asset Existence & Investor Reporting", title: "Granite serves as primary valuation agent of record",
       detail: "Granite serves as valuation agent of record on its own positions, with Houlihan Lokey providing semi-annual independent review (quarterly on watch-list credits). Alpine would prefer a structure where Houlihan serves as primary agent of record rather than reviewer.",
       remediation: "Encourage migration toward primary independent valuation agent structure over future vintages." },
     { id: "GO-005", severity: "LOW", topic: "Valuation, Asset Existence & Investor Reporting", title: "Carry waterfall maintained in Excel",
       detail: "Carry waterfall calculation is performed by Granite operations using Excel, reviewed by State Street, and approved by the CCO. An automated waterfall system would reduce model risk.",
       remediation: "Implement Allvue or equivalent automated carry waterfall module by end of 2027." },
-    { id: "GO-006", severity: "LOW", topic: "Legal, Regulatory & Compliance", title: "Compliance refresh modules quarterly cadence is robust",
-      detail: "Granite mandates quarterly cyber refresher modules in addition to annual compliance training. While this is a strength rather than a deficiency, Alpine encourages continued investment in this area.",
-      remediation: "N/A — observation only." },
+    { id: "GO-006", severity: "LOW", topic: "Legal, Regulatory & Compliance", title: "CCO in seat less than one year",
+      detail: "Wei Chen joined Granite as Chief Compliance Officer in March 2025 from Sixth Street, bringing nine years of credit-side compliance experience. The program is well-resourced (four dedicated professionals, outside counsel, annual mock SEC exam), but the transition is recent: policies, testing cadence, and the mock exam have completed less than one full cycle under the current CCO.",
+      remediation: "Confirm compliance program continuity and completion of a full annual testing cycle at the first annual review." },
   ],
   strengths: [
     { title: "Distributed employee ownership and 5-year deferred carry vesting align long-term incentives",

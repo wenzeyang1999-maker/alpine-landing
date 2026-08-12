@@ -226,10 +226,10 @@ export const FUND_CHARTS: Record<string, FundCharts> = {
       vehicles: [
         { label: "Managed Account Vehicles (x2)", sublabel: "part of $4.21B firmwide platform", kind: "vehicle", ref: { source: "Form ADV", quote: "two managed account vehicles and one CLO" } },
         { label: "Granite CLO", sublabel: "one collateralized loan obligation", kind: "vehicle", ref: { source: "Form ADV", quote: "two managed account vehicles and one CLO" } },
-        { label: "$400M Subscription / NAV Facility", sublabel: "JPMorgan · 30% advance rate · $185M drawn (13.4% NAV)", kind: "vehicle", flag: "yellow", ref: { source: "DDQ", quote: "400 million NAV facility with JPMorgan, 30% advance rate" } },
+        { label: "$400M Subscription Facility", sublabel: "JPMorgan · secured by uncalled commitments · $185M drawn (19.7% of commitments)", kind: "vehicle", flag: "yellow", ref: { source: "DDQ", quote: "400 million subscription credit facility with JPMorgan" } },
       ],
       providers: [
-        { label: "State Street Alt. Investment Services", sublabel: "Administrator", kind: "provider", status: "Since 2014 (via SS&C platform)", flag: "green", ref: { source: "Admin Agreement", quote: "State Street fund administrator since 2014" } },
+        { label: "State Street Alt. Investment Services", sublabel: "Administrator", kind: "provider", status: "Since 2014", flag: "green", ref: { source: "Admin Agreement", quote: "State Street fund administrator since 2014" } },
         { label: "PricewaterhouseCoopers LLP", sublabel: "Auditor", kind: "provider", status: "Since 2010 (fund inception)", flag: "green", ref: { source: "Audit Letter", quote: "PricewaterhouseCoopers auditor since inception in 2010" } },
         { label: "JPMorgan Chase, N.A.", sublabel: "Prime / agent bank", kind: "provider", status: "Agent bank + NAV facility", flag: "green", ref: { source: "DDQ", quote: "JPMorgan Chase, N.A. principal banking and agent bank" } },
         { label: "Schulte Roth & Zabel LLP", sublabel: "Fund counsel", kind: "provider", status: "Primary fund & compliance counsel", flag: "green", ref: { source: "DDQ", quote: "Schulte Roth & Zabel primary fund counsel" } },
@@ -275,7 +275,7 @@ export const FUND_CHARTS: Record<string, FundCharts> = {
         { name: "Schulte Roth & Zabel LLP", title: "Outside Compliance Counsel", note: "annual mock SEC exam each fall", ref: { source: "DDQ", quote: "Schulte Roth & Zabel outside compliance counsel, annual mock exam" } },
         { name: "Houlihan Lokey", title: "Independent Valuation Reviewer", note: "semi-annual on 100% of portfolio", ref: { source: "DDQ", quote: "Houlihan Lokey independent valuation review semi-annual" } },
       ],
-      note: "Employees own 78% (across 17 partners); Alpine Pension Investors holds 22% passive minority with no voting rights. Formal succession plan; $25M key-person insurance on each Executive Committee member.",
+      note: "Employees own 78% (across 17 partners); Laurentide Pension Partners holds 22% passive minority with no voting rights. Formal succession plan; $25M key-person insurance on each Executive Committee member.",
     },
   },
   "cordova": {
