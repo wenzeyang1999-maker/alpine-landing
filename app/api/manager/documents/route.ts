@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { and, eq, desc } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { managerUploads, portalDocuments, customers, firmsInManager } from "@/lib/db/schema";
+import { managerUploads, portalDocuments } from "@/lib/db/schema";
 import { signedUrl, removeObject } from "@/lib/storage";
 import { getCurrentManager } from "@/lib/manager/access";
-import { DEMO_SLUG_TO_TOKEN, DEMO_MOCK_DOCS } from "@/lib/portal-demo";
+import { DEMO_MOCK_DOCS } from "@/lib/portal-demo";
+import { portalTokenForManager } from "@/lib/manager/portal-link";
 
 const BUCKET = "manager-docs";
 const PORTAL_BUCKET = "portal-uploads";
@@ -17,29 +18,6 @@ interface PortalDocOut {
   uploaded_at: string;
   url: string | null;
   source: "portal";
-}
-
-// Resolve which secure-portal token belongs to this manager's firm:
-// demo firms map by slug; real customers map by the email that was onboarded
-// (customers.portal_token). Returns null when the firm has no portal.
-async function portalTokenForManager(firmId: string, email: string): Promise<string | null> {
-  try {
-    const [firm] = await db
-      .select({ slug: firmsInManager.slug })
-      .from(firmsInManager)
-      .where(eq(firmsInManager.id, firmId))
-      .limit(1);
-    if (firm && DEMO_SLUG_TO_TOKEN[firm.slug]) return DEMO_SLUG_TO_TOKEN[firm.slug];
-
-    const [customer] = await db
-      .select({ portalToken: customers.portalToken })
-      .from(customers)
-      .where(eq(customers.email, email))
-      .limit(1);
-    return customer?.portalToken ?? null;
-  } catch {
-    return null;
-  }
 }
 
 // Documents received through the firm's secure upload portal, shown read-only
