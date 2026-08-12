@@ -52,10 +52,12 @@ interface OnboardBody {
 
 function appBaseUrl(req: NextRequest): string {
   const proto = req.headers.get("x-forwarded-proto") ?? "http";
-  const host = req.headers.get("host") ?? "app.alpinedd.com";
-  // If admin is hitting this from the marketing host by mistake, still link to app subdomain
-  const appHost = host.startsWith("app.") ? host : `app.${host.replace(/^www\./, "")}`;
-  return `${proto}://${appHost}`;
+  const host = req.headers.get("host") ?? "alpinedd.com";
+  // The manager portal page (app/portal/[token]) lives on the apex host and is
+  // token-scoped; the app. subdomain would bounce managers to Internal Sign In
+  // (middleware 308s /portal/* there as a safety net for old links).
+  const apex = host.replace(/^(app|manager|www)\./, "");
+  return `${proto}://${apex}`;
 }
 
 function deriveToken(fund_name: string): string {

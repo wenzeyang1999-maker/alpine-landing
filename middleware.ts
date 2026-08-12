@@ -74,6 +74,15 @@ export async function middleware(req: NextRequest) {
 
   // App subdomain → auth-gated rewrite to /app-portal/*
   if (isAppHost(host)) {
+    // Manager document portal is token-scoped and lives on the apex host
+    // (app/portal/[token]). Old onboarding emails and the admin "Open Manager
+    // Portal" link point at app.<apex>/portal/<token>; send them to the
+    // canonical location instead of bouncing managers to Internal Sign In.
+    if (path === "/portal" || path.startsWith("/portal/")) {
+      const redirect = req.nextUrl.clone();
+      redirect.host = host.replace(/^app\./, "");
+      return NextResponse.redirect(redirect, 308);
+    }
     if (!isPublicPath(path)) {
       const token = req.cookies.get(SESSION.COOKIE_NAME)?.value ?? null;
       const email = await verifySession(token);
