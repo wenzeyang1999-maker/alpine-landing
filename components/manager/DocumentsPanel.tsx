@@ -13,6 +13,9 @@ interface Doc {
   mime_type: string | null;
   uploaded_at: string;
   url: string | null;
+  // "portal" rows arrived via the firm's secure upload portal (read-only here);
+  // "workspace" (or absent) rows are the manager's own uploads.
+  source?: "portal" | "workspace";
 }
 
 function fmtBytes(n: number | null): string {
@@ -156,6 +159,15 @@ export default function DocumentsPanel() {
                 </p>
               </div>
               <div className="flex items-center gap-1 shrink-0">
+                {doc.source === "portal" && (
+                  <span
+                    className="font-mono text-[9px] uppercase px-1.5 py-0.5 rounded-full mr-1"
+                    style={{ background: `${VIOLET}12`, color: VIOLET, fontWeight: 700, letterSpacing: "0.06em" }}
+                    title="Received via your firm's secure upload portal"
+                  >
+                    via secure portal
+                  </span>
+                )}
                 {doc.url && (
                   <a
                     href={doc.url}
@@ -167,6 +179,7 @@ export default function DocumentsPanel() {
                     <Download size={13} style={{ color: SECONDARY }} />
                   </a>
                 )}
+                {doc.source !== "portal" && (
                 <button
                   type="button"
                   onClick={() => handleDelete(doc.id)}
@@ -178,6 +191,7 @@ export default function DocumentsPanel() {
                     ? <Loader2 size={13} className="animate-spin" style={{ color: MUTED }} />
                     : <Trash2 size={13} style={{ color: "#EF4444" }} />}
                 </button>
+                )}
               </div>
             </div>
           ))
@@ -191,13 +205,14 @@ export default function DocumentsPanel() {
         <span
           className="font-mono text-[11px] px-2 py-0.5 rounded-full"
           style={{
-            background: docs.length >= 14 ? `${VIOLET}15` : `${BORDER}`,
-            color: docs.length >= 14 ? VIOLET : MUTED,
+            background: docs.filter((d) => d.source !== "portal").length >= 14 ? `${VIOLET}15` : `${BORDER}`,
+            color: docs.filter((d) => d.source !== "portal").length >= 14 ? VIOLET : MUTED,
             fontWeight: 700,
             letterSpacing: "0.04em",
           }}
         >
-          {docs.length}/14
+          {/* Portal-received docs do not count toward the upload cap */}
+          {docs.filter((d) => d.source !== "portal").length}/14
         </span>
       </div>
     </div>

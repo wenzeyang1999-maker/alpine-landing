@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { DEMO_PORTAL_CONFIG } from "@/lib/portal-demo";
+import { DEMO_PORTAL_CONFIG, canonicalPortalToken, TRELLIS_MOCK_DOCS, AURORA_MOCK_DOCS } from "@/lib/portal-demo";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -62,36 +62,6 @@ function getMatchedFile(docType: string, docs: PortalDoc[]): string | null {
   }
   return null;
 }
-
-const TRELLIS_MOCK_DOCS: PortalDoc[] = [
-  { id: "t01", filename: "Trellis-Capital-IV-ILPA-DDQ-2.0.pdf",               file_size: 3_200_000, page_count: 52, uploaded_at: "2026-04-01T09:10:00Z" },
-  { id: "t02", filename: "Trellis-Capital-Management-Form-ADV-ERA-2026.pdf",   file_size: 980_000,  page_count: 18, uploaded_at: "2026-04-01T09:12:00Z" },
-  { id: "t03", filename: "Trellis-Capital-IV-LPA.pdf",                         file_size: 2_100_000, page_count: 38, uploaded_at: "2026-04-01T09:15:00Z" },
-  { id: "t04", filename: "Trellis-Capital-IV-PPM.pdf",                         file_size: 1_750_000, page_count: 30, uploaded_at: "2026-04-01T09:17:00Z" },
-  { id: "t05", filename: "trellis_subscription_agreement.pdf",                 file_size: 640_000,  page_count: 12, uploaded_at: "2026-04-01T09:19:00Z" },
-  { id: "t06", filename: "Trellis-Capital-III-Audited-FS-FY2024.pdf",          file_size: 4_200_000, page_count: 68, uploaded_at: "2026-04-01T09:22:00Z" },
-  { id: "t07", filename: "Trellis-Capital-III-Audited-FS-FY2023.pdf",          file_size: 3_900_000, page_count: 64, uploaded_at: "2026-04-01T09:24:00Z" },
-  { id: "t08", filename: "Trellis-Capital-Valuation-Policy.pdf",               file_size: 420_000,  page_count: 8,  uploaded_at: "2026-04-01T09:26:00Z" },
-  { id: "t09", filename: "Summit-Advisory-Compliance-Binder-2025.pdf",         file_size: 1_100_000, page_count: 22, uploaded_at: "2026-04-01T09:28:00Z" },
-  { id: "t10", filename: "Apex-Fund-Services-Service-Description-FundIII.pdf", file_size: 560_000,  page_count: 10, uploaded_at: "2026-04-01T09:30:00Z" },
-];
-
-const AURORA_MOCK_DOCS: PortalDoc[] = [
-  { id: "a01", filename: "aurora-ilpa-ddq-2026.pdf",           file_size: 2_800_000, page_count: 48, uploaded_at: "2026-04-08T09:10:00Z" },
-  { id: "a02", filename: "aurora-form-adv-era-2026.pdf",        file_size: 840_000,  page_count: 15, uploaded_at: "2026-04-08T09:12:00Z" },
-  { id: "a03", filename: "aurora-lpa-fund-iv.pdf",              file_size: 1_950_000, page_count: 34, uploaded_at: "2026-04-08T09:15:00Z" },
-  { id: "a04", filename: "aurora-ppm-fund-iv.pdf",              file_size: 1_620_000, page_count: 28, uploaded_at: "2026-04-08T09:17:00Z" },
-  { id: "a05", filename: "aurora-compliance-manual-2026.pdf",   file_size: 1_100_000, page_count: 20, uploaded_at: "2026-04-08T09:19:00Z" },
-  { id: "a06", filename: "aurora-valuation-policy.pdf",         file_size: 390_000,  page_count: 7,  uploaded_at: "2026-04-08T09:21:00Z" },
-  { id: "a07", filename: "aurora-financials-fy2025.pdf",        file_size: 3_800_000, page_count: 62, uploaded_at: "2026-04-08T09:24:00Z" },
-  { id: "a08", filename: "aurora-firm-overview.pdf",            file_size: 720_000,  page_count: 14, uploaded_at: "2026-04-08T09:26:00Z" },
-  { id: "a09", filename: "aurora-wisp-2025.pdf",                file_size: 480_000,  page_count: 9,  uploaded_at: "2026-04-18T10:05:00Z" },
-  { id: "a10", filename: "aurora-incident-response-plan.pdf",   file_size: 310_000,  page_count: 6,  uploaded_at: "2026-04-18T10:07:00Z" },
-  { id: "a11", filename: "aurora-bcp-2025.pdf",                 file_size: 290_000,  page_count: 5,  uploaded_at: "2026-04-18T10:09:00Z" },
-  { id: "a12", filename: "aurora-admin-agreement-meridian.pdf", file_size: 650_000,  page_count: 11, uploaded_at: "2026-04-18T10:12:00Z" },
-  { id: "a13", filename: "aurora-insightsphere-agreement.pdf",  file_size: 280_000,  page_count: 5,  uploaded_at: "2026-04-18T10:14:00Z" },
-  { id: "a14", filename: "aurora-vantage-tech-engagement.pdf",  file_size: 320_000,  page_count: 6,  uploaded_at: "2026-04-18T10:16:00Z" },
-];
 
 const AURORA_FOLLOW_UP_ROUNDS = [
   {
@@ -179,7 +149,8 @@ function PortalShell({ children }: { children: React.ReactNode }) {
 
 export default function PortalPage() {
   const params = useParams();
-  const token = params.token as string;
+  // Pretty demo slugs (/portal/trellis) resolve to their canonical token.
+  const token = canonicalPortalToken(params.token as string);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const isDemo = token in DEMO_PORTAL_CONFIG;
@@ -499,6 +470,41 @@ export default function PortalPage() {
           </div>
         )}
 
+
+        {/* Manager Workspace bridge */}
+        <div
+          className="rounded-xl p-5 mb-6"
+          style={{
+            background: "linear-gradient(135deg, rgba(123,44,191,0.06), rgba(16,185,129,0.05))",
+            border: "1px solid rgba(123,44,191,0.25)",
+          }}
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+            <div className="flex-1">
+              <h2 className="font-heading font-semibold text-sm text-alpine-ink flex items-center gap-2">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7B2CBF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="4" width="18" height="16" rx="2" /><path d="M3 9h18" /><path d="M9 20V9" />
+                </svg>
+                Answer once, share with every LP
+              </h2>
+              <p className="text-xs text-alpine-slate mt-1.5 leading-relaxed">
+                {portalInfo.fund_name ? <strong className="text-alpine-ink">{portalInfo.fund_name}</strong> : "Your firm"} can manage
+                these documents and a Living DDQ in the Alpine Manager Workspace: respond to the 8-chapter
+                institutional framework once, keep it current, and reuse it for any allocator request.
+              </p>
+            </div>
+            <a
+              href="https://manager.alpinedd.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="shrink-0 inline-flex items-center gap-1.5 rounded-lg px-4 py-2.5 text-xs font-semibold text-white hover:opacity-90 transition-opacity"
+              style={{ backgroundColor: "#7B2CBF" }}
+            >
+              Open Manager Workspace
+              <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M6 3H3v10h10v-3" /><path d="M9 2h5v5" /><path d="M14 2L7 9" /></svg>
+            </a>
+          </div>
+        </div>
 
         {/* Compliance commitment */}
         <div className="bg-white rounded-xl border border-alpine-border p-5 mt-2">

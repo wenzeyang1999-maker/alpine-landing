@@ -489,8 +489,8 @@ export function DocumentCollectionView({ mock, onNavigate, brandName, slug }: { 
   const initialDocs = ACTIVE_DOCS.filter((d) => d.source === "Manager Upload").length;
   const followUpDocs = ACTIVE_DOCS.filter((d) => d.source.startsWith("Follow-Up")).length;
 
-  const portalUrl = `/portal/${meta.token}`;
-  const portalDisplayUrl = `portal.alpinedd.com/${meta.portalSlug}`;
+  const portalUrl = `/portal/${meta.portalSlug}`;
+  const portalDisplayUrl = `alpinedd.com/portal/${meta.portalSlug}`;
 
   return (
     <>

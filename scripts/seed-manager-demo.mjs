@@ -1,6 +1,6 @@
 /**
  * Outputs ready-to-run SQL to create a verified demo manager account.
- * Paste the output into Supabase SQL Editor and run it there.
+ * Run the output against the Azure Postgres database (psql or your SQL client).
  *
  * Usage: node scripts/seed-manager-demo.mjs
  */
@@ -9,9 +9,13 @@ import { scryptSync, randomBytes } from "crypto";
 
 const DEMO_EMAIL    = "demo@alpinedd.com";
 const DEMO_PASSWORD = "Alpine2026!";
-const DEMO_NAME     = "Alpine Demo";
-const FIRM_NAME     = "Alpine Demo Firm";
-const FIRM_SLUG     = "alpine-demo-firm";
+// Trellis Capital is the demo fund across the whole story: the analyst-side
+// Document Request, the /portal/trellis upload portal, and this workspace all
+// belong to the same firm. Slug must stay "trellis" — the manager Documents
+// panel maps it to the demo portal token (lib/portal-demo.ts).
+const DEMO_NAME     = "Arjun Mehta";
+const FIRM_NAME     = "Trellis Capital";
+const FIRM_SLUG     = "trellis";
 
 // Must match lib/manager/password.ts constants
 const SCRYPT_KEYLEN = 64;
@@ -22,8 +26,8 @@ const hash = scryptSync(DEMO_PASSWORD, salt, SCRYPT_KEYLEN, SCRYPT_OPTS);
 const passwordHash = `${salt.toString("hex")}:${hash.toString("hex")}`;
 
 const sql = `
--- ── Demo manager account seed ─────────────────────────────────
--- Paste into Supabase SQL Editor and click Run.
+-- ── Demo manager account seed (Trellis Capital) ───────────────
+-- Run against the Azure Postgres database.
 -- Email: ${DEMO_EMAIL}  |  Password: ${DEMO_PASSWORD}
 
 DO $$
@@ -53,6 +57,8 @@ BEGIN
     TRUE, NOW(), 'seed-script'
   )
   ON CONFLICT (email) DO UPDATE SET
+    firm_id         = EXCLUDED.firm_id,
+    full_name       = EXCLUDED.full_name,
     password_hash   = EXCLUDED.password_hash,
     password_set_at = EXCLUDED.password_set_at,
     is_verified     = TRUE,
