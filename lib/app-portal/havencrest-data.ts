@@ -22,7 +22,7 @@ Havencrest Real Estate Advisors, LLC ("Havencrest" or the "Manager") was founded
 
 ### Strategy & Fund Series
 
-Havencrest's strategy targets stabilized institutional-grade industrial properties with long-term creditworthy tenants. The firm raises closed-end fund vehicles every 3 years. Havencrest has raised five funds: Trust I (2010, $385M, fully realized), Trust II (2013, $625M, fully realized), Trust III (2016, $980M, fully invested), Trust IV (2020, $1.45B, ~92% deployed), and Trust V (current, $1.2B target / $1.5B hard cap, $980M raised through December 2025).
+Havencrest's strategy targets stabilized institutional-grade industrial properties with long-term creditworthy tenants. The firm raises closed-end fund vehicles approximately every three to four years. Havencrest has raised five funds: Trust I (2010, $385M, fully realized), Trust II (2013, $625M, fully realized), Trust III (2016, $980M, fully invested), Trust IV (2020, $1.45B, ~92% deployed), and Trust V (current, $1.2B target / $1.5B hard cap, $980M raised through December 2025).
 
 ### Assets under Management
 
@@ -193,7 +193,7 @@ The chapter is rated GREEN. Technology and resilience controls are institutional
     summary: "Delaware LP investing through Delaware REIT vehicle. Cayman feeder. 1.25% management fee on commitments. 15% carry over 7% preferred return with 50/50 catch-up. 10-year term + two 1-yr extensions. Whole-of-fund carry with 25% escrow. Conservative 55% LTV cap. Strong LP protections. GP 3% cash commitment.",
     findings: `### Fund Structure
 
-Havencrest Industrial Trust V, L.P. is structured as a Delaware limited partnership investing through a Delaware REIT vehicle (per IRC §§ 856–860). A Cayman feeder accommodates non-US and US tax-exempt investors. The fund invests across Core+ stabilized industrial properties in primary U.S. logistics markets. Maximum single-property concentration is 6% of total commitments; maximum single-market concentration is 25%; maximum single-tenant concentration is 12%.
+Havencrest Industrial Trust V, L.P. is structured as a Delaware limited partnership investing through a Delaware REIT vehicle (per IRC §§ 856–860). A Cayman feeder accommodates non-US and US tax-exempt investors. The fund invests across Core+ stabilized industrial properties in primary U.S. logistics markets. Maximum single-property concentration is 6% of total commitments; maximum single-market concentration is 25%; maximum single-tenant concentration is 12% of fund NOI.
 
 ### Fees & Carried Interest
 
@@ -227,7 +227,7 @@ The chapter is rated GREEN. Fund terms are LP-favorable: lower-than-typical mana
         { label: "Strategy", value: "Core+ stabilized industrial / logistics — primary U.S. logistics markets", source: "PPM" },
         { label: "Single-Property Cap", value: "6% of total commitments", flag: "green", source: "LPA" },
         { label: "Single-Market Cap", value: "25% of total commitments", flag: "green", source: "LPA" },
-        { label: "Single-Tenant Cap", value: "12% of total commitments", flag: "green", source: "LPA" },
+        { label: "Single-Tenant Cap", value: "12% of fund NOI", flag: "green", source: "LPA" },
       ]},
       { group: "Fees & Carry", items: [
         { label: "Management Fee", value: "1.25% on commitments (yrs 1–4), 1.00% on invested capital thereafter", flag: "green", source: "LPA" },
@@ -353,7 +353,7 @@ The chapter is rated YELLOW solely due to tenant concentration: Amazon at 11.8% 
         { label: "Tenant Credit Analysis", value: "Mandatory for leases > 100,000 SF", flag: "green", source: "DDQ" },
       ]},
       { group: "Tenant Concentration", items: [
-        { label: "Single-Tenant Cap", value: "12% of total commitments (NOI basis)", source: "LPA" },
+        { label: "Single-Tenant Cap", value: "12% of fund NOI", source: "LPA" },
         { label: "Largest Tenant (Amazon)", value: "11.8% of fund NOI (near cap)", flag: "yellow", source: "DDQ" },
         { label: "Top 3 Tenants (Amazon, FedEx, Walmart)", value: "28% of fund NOI", flag: "yellow", source: "DDQ" },
         { label: "Top 10 Tenants", value: "51% of fund NOI", flag: "yellow", source: "DDQ" },

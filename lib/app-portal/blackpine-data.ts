@@ -82,7 +82,7 @@ The chapter is rated YELLOW due to: (1) concentrated ownership in single founder
     summary: "SEC-registered investment adviser since 2019. Daniel Foster (COO) also serves as Chief Compliance Officer — segregation of duties concern. Engaged Apex Compliance Advisors as outside consultant since inception. Robust personal trading controls. Most recent SEC exam (Q1 2024) closed with deficiency letter on books-and-records retention.",
     findings: `### Regulatory Status
 
-Blackpine Asset Management, LLC is a U.S. Securities and Exchange Commission ("SEC") registered investment adviser (IARD/CRD 304882) since 2019, having registered as AUM crossed the RIA threshold. The firm is also subject to UK FCA regulation via its London research outpost. The firm maintains a Form PF filing obligation as a large hedge fund adviser.
+Blackpine Asset Management, LLC is a U.S. Securities and Exchange Commission ("SEC") registered investment adviser (IARD/CRD 304882) since 2019, having registered as AUM crossed the RIA threshold. The firm is also subject to UK FCA regulation via its London research outpost. The firm maintains a Form PF filing obligation (Section 1 only; the firm is below the $1.5 billion large hedge fund adviser threshold).
 
 ### Compliance Program
 
@@ -111,11 +111,11 @@ The chapter is rated YELLOW due to: (1) the COO/CCO combined role; (2) the 2024 
       { group: "Regulatory Status", items: [
         { label: "SEC Registration", value: "RIA since 2019 (IARD/CRD 304882)", flag: "green", source: "SEC_EDGAR" },
         { label: "UK Regulatory Status", value: "FCA-registered London entity for research outpost", source: "DDQ" },
-        { label: "Form PF Filer", value: "Yes (large hedge fund adviser)", source: "DDQ" },
+        { label: "Form PF Filer", value: "Yes (Section 1 only; below the $1.5B large hedge fund adviser threshold)", source: "DDQ" },
       ]},
       { group: "Compliance Team", items: [
         { label: "Chief Compliance Officer", value: "Daniel Foster (COO) — combined role", flag: "yellow", source: "DDQ" },
-        { label: "Dedicated Compliance FTE", value: "None — supported by Apex consultant + 1 in-house junior", flag: "yellow", source: "DDQ" },
+        { label: "Dedicated Compliance FTE", value: "None dedicated — 2 compliance/legal FTEs (1 junior compliance analyst + 1 legal), supported by Apex consultant", flag: "yellow", source: "DDQ" },
         { label: "Outside Compliance Consultant", value: "Apex Compliance Advisors LLC (since 2017)", flag: "green", source: "DDQ" },
         { label: "Annual Compliance Review", value: "Performed by Apex; most recent December 2025", flag: "green", source: "DDQ" },
         { label: "Compliance Manual Currency", value: "Revised February 2026", flag: "green", source: "DDQ" },
@@ -143,7 +143,7 @@ Blackpine operates on a Microsoft 365 productivity stack with Bloomberg Terminal
 
 ### Cybersecurity Program
 
-Vantage Tech LLC has served as Blackpine's outsourced IT and cybersecurity provider since 2020. Vantage provides patch management, endpoint monitoring, identity management, and incident response support.
+Vantage Tech Partners, LLC has served as Blackpine's outsourced IT and cybersecurity provider since 2020. Vantage provides patch management, endpoint monitoring, identity management, and incident response support.
 
 Blackpine has not commissioned a SOC 2 audit. The firm has indicated this is on the 2026 roadmap. Annual penetration testing has been conducted by Mandiant since 2023; the most recent test (October 2025) identified 4 medium-severity findings — all remediated within 60 days, confirmed by Mandiant retest.
 
@@ -171,7 +171,7 @@ The chapter is rated YELLOW solely due to the absence of a SOC 2 audit — the f
         { label: "Endpoint Protection", value: "CrowdStrike Falcon", flag: "green", source: "DDQ" },
       ]},
       { group: "Cybersecurity Program", items: [
-        { label: "Outsourced IT/Cyber", value: "Vantage Tech LLC (since 2020)", flag: "green", source: "DDQ" },
+        { label: "Outsourced IT/Cyber", value: "Vantage Tech Partners, LLC (since 2020)", flag: "green", source: "DDQ" },
         { label: "SOC 2 Audit", value: "Not yet commissioned; planned 2026", flag: "yellow", source: "DDQ" },
         { label: "External Penetration Testing", value: "Annual by Mandiant since 2023; 2025 — 4 medium findings, all remediated", flag: "green", source: "DDQ" },
         { label: "Communication Archiving", value: "Smarsh firmwide (deployed 2024)", flag: "green", source: "DDQ" },
@@ -194,7 +194,7 @@ Blackpine Credit Plus IV, L.P. is structured as a Delaware limited partnership w
 
 ### Fees & Carried Interest
 
-The management fee is 1.75% per annum on total commitments during the investment period (years 1–3), stepping down to 1.50% on NAV thereafter (years 4–8). Carried interest is 20% over an 8% preferred return with a 50/50 catch-up. Carry is calculated on a whole-of-fund basis with a clawback provision through the end of the fund term; the GP's clawback obligation is backed by an escrow of 30% of distributed carry.
+The management fee is 1.75% per annum on total commitments during the investment period (years 1–3), stepping down to 1.50% on NAV thereafter (years 4–6, extendable to year 8). Carried interest is 20% over an 8% preferred return with a 50/50 catch-up. Carry is calculated on a whole-of-fund basis with a clawback provision through the end of the fund term; the GP's clawback obligation is backed by an escrow of 30% of distributed carry.
 
 The whole-of-fund carry structure with material escrow is well-aligned with LP interests.
 
@@ -296,7 +296,7 @@ The chapter is rated GREEN. Service providers are institutional-quality with lon
     summary: "Martin Lin is sole portfolio manager — RED rating driver. 5-person Investment Committee provides advisory input but Lin has unilateral final decision authority. Robust trade-blotter controls and Citi prime broker custody. Position concentration limit 8% tested with one position at 7.4%. Use of repo financing introduces moderate fund-level leverage.",
     findings: `### Sole Portfolio Manager — Key Risk
 
-Martin Lin serves as sole Portfolio Manager with unilateral final investment authority across the Blackpine Credit Plus series. The 5-person Investment Committee (Lin, Reyes, Foster, plus two senior analysts) provides advisory input through formal IC presentations on each new position, but the IC's role is consultative rather than decisional. Alpine considers this a material structural risk: a single individual is solely responsible for all investment decisions across $850M+ in committed capital.
+Martin Lin serves as sole Portfolio Manager with unilateral final investment authority across the Blackpine Credit Plus series. The 5-person Investment Committee (Lin, Reyes, Foster, plus two senior analysts) provides advisory input through formal IC presentations on each new position, but the IC's role is consultative rather than decisional. Alpine considers this a material structural risk: a single individual is solely responsible for all investment decisions across the roughly $985M of committed capital in the Blackpine Credit Plus series.
 
 The risk is partially mitigated by (1) the formal IC presentation process, (2) Alexandra Reyes' senior research role and ability to challenge thesis, and (3) the strategy's relatively short holding periods (typically 18–30 months) which limit single-position downside exposure. However, Alpine notes that no structural check exists on a Lin investment decision once he has made it.
 
@@ -308,7 +308,7 @@ The Investment Committee meets weekly and reviews all new positions exceeding 2%
 
 The fund's single-position concentration cap is 8.0% of total commitments. As of December 31, 2025, the largest single position (LMC Holdings 8.875% Senior Notes) is at 7.4% of commitments. Top 10 positions represent 51% of NAV — moderately concentrated.
 
-Blackpine VI utilizes a $150 million committed repo facility with Citi as primary financing source, plus additional repo lines with two secondary banks. As of December 31, 2025, gross repo borrowings are $185M (representing 30% of NAV) — meaningfully leveraged for an opportunistic credit strategy. Net leverage (after offsetting cash positions) is 22%.
+Blackpine utilizes a $150 million committed repo facility with Citi as primary financing source, plus additional repo lines with two secondary banks. As of December 31, 2025, gross repo borrowings are $185M (representing 30% of NAV) — meaningfully leveraged for an opportunistic credit strategy. Net leverage (after offsetting cash positions) is 22%.
 
 ### Trade Controls
 
@@ -481,7 +481,7 @@ export const BLACKPINE_MOCK = {
     odd_score: 67,
     odd_percentile: "48th",
     domicile: "Delaware LP (Cayman master-feeder)",
-    fund_nav: "$260M raised; pre-deployment",
+    fund_nav: "$260M raised; ~55% deployed",
     recommendation_summary: "recommends a <b>watchlist</b> rating. Blackpine has produced strong realized returns across three prior vintages and has institutional-grade service providers and an independent valuation agent. The RED rating in Investment Operations (sole portfolio manager structure) and YELLOW ratings in Governance, Compliance, and Technology reflect emerging-manager characteristics that warrant active monitoring.",
     conditions_summary: "Post-close monitoring: track Investment Committee discipline and Lin's investment authority delegation; confirm SOC 2 audit completion by end-2026; monitor repo leverage utilization quarterly; track senior personnel retention given 2025 departures.",
   },
@@ -516,7 +516,7 @@ export const BLACKPINE_MOCK = {
       remediation: "Monitor repo utilization quarterly; confirm LPAC understanding of leverage policy at each annual review." },
   ],
   strengths: [
-    { title: "Strong realized track record across three completed vintages",
+    { title: "Strong realized track record across three prior vintages",
       detail: "Blackpine Credit Plus I delivered a 19.3% gross IRR and 1.74x MOIC. Funds II and III are tracking 17.8% and 14.6% gross IRR respectively at interim. Realized performance places Blackpine in the top quartile of opportunistic credit peers per Cliffwater data." },
     { title: "Independent valuation agent of record on Level 3 positions",
       detail: "Houlihan Lokey serves as primary valuation agent of record on all illiquid (Level 3) positions, marking quarterly. Blackpine does not produce its own marks on Level 3 positions, only providing market color. This is a meaningful institutional best practice that mitigates the strategy's inherent valuation complexity." },

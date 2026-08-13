@@ -7,7 +7,7 @@
  * NOTE: this is a distinct firm from the existing "Ridgeline Capital Partners, LLC"
  * (Global Long/Short Equity) — same surname coincidence, different manager.
  *
- * Overall rating: YELLOW (26 flags, 0 RED chapters, 4 YELLOW chapters)
+ * Overall rating: YELLOW (10 flags, 0 RED chapters, 5 YELLOW chapters)
  */
 
 import type { TopicInfo, TopicDataGroup } from "./ridgeline-data";
@@ -42,7 +42,7 @@ Jonathan Reid owns 60% of Ridgeline Resort; Catherine Walsh owns 40%. The two fo
 
 Ridgeline Resort employs 22 full-time professionals: 8 acquisitions, 6 asset management, 3 revenue management (specialized RM team — a strength for hospitality), 3 operations and finance, 1 compliance, and 1 administrative. Investment professionals average 10 years of hospitality experience.
 
-Recent departures: Marcus Davenport (Senior Asset Manager) departed in July 2025 to join Hyatt Capital. Background checks are performed by HireRight on initial hire only; no refresh cadence.
+Recent departures: Marcus Davenport (Senior Asset Manager) departed in July 2025 to join Beacon Lodging Partners. Background checks are performed by HireRight on initial hire only; no refresh cadence.
 
 ### Chapter Summary
 
@@ -74,7 +74,7 @@ The chapter is rated YELLOW due to: (1) two-founder ownership without a third se
         { label: "Background Checks", value: "External (HireRight) on initial hire; no refresh cadence", flag: "yellow", source: "DDQ" },
       ]},
       { group: "Recent Turnover", items: [
-        { label: "Marcus Davenport", value: "Senior Asset Manager — departed July 2025 to Hyatt Capital", flag: "yellow", source: "DDQ" },
+        { label: "Marcus Davenport", value: "Senior Asset Manager — departed July 2025 to Beacon Lodging Partners", flag: "yellow", source: "DDQ" },
       ]},
       { group: "Fund Series Track Record", items: [
         { label: "Ridgeline Resort I (2016)", value: "$185M — fully realized; 16.8% gross IRR / 1.81x MOIC", source: "DDQ" },
@@ -85,7 +85,7 @@ The chapter is rated YELLOW due to: (1) two-founder ownership without a third se
   },
   2: {
     name: "Legal, Regulatory & Compliance", rating: "YELLOW",
-    summary: "SEC ERA status — planned RIA transition Q4 2026. Single in-house compliance professional (Susan Mitchell). Engaged Cipperman Compliance Services as outside consultant. Personal trading policy adequate. No regulatory actions; one settled wage-and-hour claim at a JV II property (against operator, not Ridgeline directly).",
+    summary: "SEC ERA status — planned RIA transition Q4 2026. Single in-house compliance professional (Susan Mitchell). Engaged Cipperman Compliance Services as outside consultant. Personal trading policy adequate. No regulatory actions; one settled wage-and-hour claim at a Ridgeline Resort II property (against operator, not Ridgeline directly).",
     findings: `### Regulatory Status
 
 Ridgeline Resort Capital, LLC is a U.S. Securities and Exchange Commission ("SEC") Exempt Reporting Adviser ("ERA") under Section 203(m) of the Investment Advisers Act, filed since 2017. Current AUM ($720M) exceeds the threshold for full RIA registration; the Manager indicated transition to full RIA registration is planned for Q4 2026.
@@ -129,7 +129,7 @@ The chapter is rated YELLOW due to: (1) pending RIA transition planned for Q4 20
       { group: "Litigation & Regulatory History", items: [
         { label: "SEC Examinations", value: "None", flag: "green", source: "SEC_EDGAR" },
         { label: "Direct Litigation Against Ridgeline Resort", value: "None material", flag: "green", source: "DDQ" },
-        { label: "Indirect Exposure", value: "JV II Arizona resort wage-and-hour class action (against operator) — settled 2024 by operator insurance", flag: "yellow", source: "DDQ" },
+        { label: "Indirect Exposure", value: "Ridgeline Resort II Arizona wage-and-hour class action (against operator) — settled 2024 by operator insurance", flag: "yellow", source: "DDQ" },
       ]},
     ],
   },
@@ -142,7 +142,7 @@ Ridgeline Resort operates on Microsoft 365 productivity stack supplemented by Ya
 
 ### Cybersecurity Program
 
-Vantage Tech LLC has served as Ridgeline Resort's outsourced IT and cybersecurity provider since 2022. Vantage provides patch management, endpoint monitoring, identity management, and incident response support.
+Vantage Tech Partners, LLC has served as Ridgeline Resort's outsourced IT and cybersecurity provider since 2022. Vantage provides patch management, endpoint monitoring, identity management, and incident response support.
 
 Ridgeline Resort has not commissioned a SOC 2 audit. First external penetration testing was performed by Bishop Fox in September 2024 (4 medium findings, all remediated). Annual recurrence is planned but a second cycle has not yet been completed. KnowBe4 phishing simulations run quarterly through Vantage; rolling 4-quarter click rate is 5.2%, above the 3.2% financial services benchmark.
 
@@ -169,7 +169,7 @@ The chapter is rated YELLOW due to: (1) no SOC 2 audit; (2) annual pen test cade
         { label: "Endpoint Protection", value: "Microsoft Defender (no DLP)", flag: "yellow", source: "DDQ" },
       ]},
       { group: "Cybersecurity Program", items: [
-        { label: "Outsourced IT/Cyber", value: "Vantage Tech LLC (since 2022)", flag: "green", source: "DDQ" },
+        { label: "Outsourced IT/Cyber", value: "Vantage Tech Partners, LLC (since 2022)", flag: "green", source: "DDQ" },
         { label: "SOC 2 Audit", value: "Not commissioned", flag: "yellow", source: "DDQ" },
         { label: "External Penetration Testing", value: "First test September 2024 (Bishop Fox) — annual cadence planned, not yet evidenced", flag: "yellow", source: "DDQ" },
         { label: "Phishing Click Rate", value: "5.2% (rolling 4 quarters; vs. 3.2% industry benchmark)", flag: "yellow", source: "DDQ" },
@@ -241,7 +241,7 @@ The chapter is rated GREEN. Fund terms are reasonably aligned with institutional
     summary: "Solid service providers: SS&C as administrator, KPMG as auditor, Wells Fargo as primary bank, Goodwin Procter as fund counsel. Third-party hotel operators (Marriott, Hyatt, Hilton brand affiliates) provide property management. Detailed operator diligence process. Asset-level mortgage debt from hotel-specialist lenders.",
     findings: `### Administrator
 
-SS&C ALPS Alternative Fund Services has served as Ridgeline Resort's fund administrator since 2018 (initially engaged for Ridgeline Resort II). SS&C provides full middle- and back-office services including NAV calculation, investor capital activity, AML/KYC, and FATCA/CRS compliance. David Park (CFO) reviews SS&C's annual SOC 1 Type II report.
+SS&C ALPS Alternative Fund Services has served as Ridgeline Resort's fund administrator since 2020 (initially engaged for Ridgeline Resort II). SS&C provides full middle- and back-office services including NAV calculation, investor capital activity, AML/KYC, and FATCA/CRS compliance. David Park (CFO) reviews SS&C's annual SOC 1 Type II report.
 
 ### Auditor
 
@@ -289,7 +289,7 @@ The chapter is rated GREEN. Service providers are institutional-quality and the 
   },
   6: {
     name: "Investment Operations & Portfolio Controls", rating: "YELLOW",
-    summary: "4-person Investment Committee with majority approval. Hospitality-specific underwriting (RevPAR sensitivity, market supply analysis). Asset-level non-recourse mortgage debt at 55–65% LTV. Largest single property (4 Seasons Aspen) at 11.4% of commitments — near 12% cap. Cyclical sector exposure inherent. Strong revenue management team a differentiator.",
+    summary: "4-person Investment Committee with majority approval. Hospitality-specific underwriting (RevPAR sensitivity, market supply analysis). Asset-level non-recourse mortgage debt at 55–65% LTV. Largest single property (Four Seasons Aspen) at 11.4% of commitments — near 12% cap. Cyclical sector exposure inherent. Strong revenue management team a differentiator.",
     findings: `### Investment Committee & Approval
 
 The Investment Committee comprises four voting members: Jonathan Reid (Managing Partner / CIO), Catherine Walsh (COO), Ryan Thompson (Head of Acquisitions), and David Park (CFO). Approval requires majority (3 of 4) consent. Alpine notes that with a 4-person committee and 60/40 founder ownership, the effective approval dynamic concentrates around the two founders.
@@ -365,7 +365,7 @@ Ridgeline Resort values its hospitality portfolio quarterly under ASC 820 fair-v
 
 ### Valuation Committee
 
-The Valuation Committee comprises five members: David Park (CFO, Chair), Anita Krishnan (Head of RM), Catherine Walsh (COO), Susan Mitchell (CCO), and one rotating SS&C senior representative. Non-investment members hold 2 of 5 seats (CFO/Chair + SS&C); Susan Mitchell as CCO is independent of investment functions. Alpine prefers 3+ non-investment members.
+The Valuation Committee comprises five members: David Park (CFO, Chair), Anita Krishnan (Head of RM), Catherine Walsh (COO), Susan Mitchell (CCO), and one rotating SS&C senior representative. Non-investment members hold 2 of 5 seats (CFO/Chair + SS&C) Alpine counts the CCO within the investment-side majority for this purpose. Alpine prefers 3+ non-investment members.
 
 ### Third-Party Appraisal
 
@@ -392,7 +392,7 @@ The chapter is rated YELLOW due to: (1) annual rather than semi-annual third-par
       { group: "Valuation Process", items: [
         { label: "Framework", value: "Quarterly ASC 820 fair-value; DCF / sales comp / replacement cost", source: "Valuation Policy" },
         { label: "DCF Weighting", value: "65–75% (RevPAR-driven cash flow sensitivity)", source: "Valuation Policy" },
-        { label: "Valuation Committee Composition", value: "5 members; 2 non-investment (CFO/Chair, SS&C); CCO also independent", flag: "yellow", source: "Valuation Policy" },
+        { label: "Valuation Committee Composition", value: "5 members; 2 non-investment (CFO/Chair, SS&C)", flag: "yellow", source: "Valuation Policy" },
         { label: "Valuation Agent of Record", value: "Ridgeline Resort Capital (in-house)", flag: "yellow", source: "Valuation Policy" },
       ]},
       { group: "Third-Party Review", items: [
@@ -414,7 +414,7 @@ The chapter is rated YELLOW due to: (1) annual rather than semi-annual third-par
     summary: "Cooperative diligence posture. Proactively disclosed Arizona resort wage-and-hour matter and COVID-period Ridgeline II hold experience. Quarterly investor letters with property-level RevPAR/NOI commentary. Annual investor day in Miami with optional property tour. LPAC quorum strong. No material LP complaints.",
     findings: `### Diligence Engagement
 
-Ridgeline Resort's response to Alpine's diligence requests was prompt and thorough. The Manager voluntarily disclosed both the Arizona JV II wage-and-hour matter (settled 2024 against the operator) and the full COVID-period Ridgeline II hold experience and NOI recovery profile. Both founders were made available for direct interviews, plus the operator diligence team and CFO.
+Ridgeline Resort's response to Alpine's diligence requests was prompt and thorough. The Manager voluntarily disclosed both the Arizona Ridgeline Resort II wage-and-hour matter (settled 2024 against the operator) and the full COVID-period Ridgeline II hold experience and NOI recovery profile. Both founders were made available for direct interviews, plus the operator diligence team and CFO.
 
 ### Investor Communications
 
@@ -486,7 +486,7 @@ export const RIDGELINE_RESORT_MOCK = {
     odd_percentile: "42nd",
     domicile: "Delaware LP (Cayman feeder)",
     fund_nav: "$470M raised; ~22% deployed",
-    recommendation_summary: "recommends a <b>watchlist</b> rating. Ridgeline Resort has produced strong realized returns in its first vintage and operated through COVID-period stress in its second vintage with documented recovery. Four YELLOW chapters reflect emerging-manager governance characteristics combined with cyclical sector exposure inherent in hospitality real estate.",
+    recommendation_summary: "recommends a <b>watchlist</b> rating. Ridgeline Resort has produced strong realized returns in its first vintage and operated through COVID-period stress in its second vintage with documented recovery. Five YELLOW chapters reflect emerging-manager governance characteristics combined with cyclical sector exposure inherent in hospitality real estate.",
     conditions_summary: "Post-close monitoring: track RIA transition Q4 2026; monitor Four Seasons Aspen concentration and Sun Belt resort exposure; require LPAC update on hospitality market cycle indicators.",
   },
   risk_observations: [

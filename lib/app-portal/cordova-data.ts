@@ -3,7 +3,7 @@
  *
  * ODD review of Cordova JV Real Estate Fund III, L.P. (Joint Venture Real Estate — Value-Add Multifamily)
  * Manager: Cordova Capital Partners, LLC
- * Overall rating: YELLOW (24 flags, 0 RED chapters, 4 YELLOW chapters)
+ * Overall rating: YELLOW (13 flags, 0 RED chapters, 5 YELLOW chapters)
  */
 
 import type { TopicInfo, TopicDataGroup } from "./ridgeline-data";
@@ -15,7 +15,7 @@ export type { TopicInfo, TopicDataGroup };
 export const CORDOVA_TOPIC_DATA: Record<number, TopicInfo> = {
   1: {
     name: "Manager, Ownership & Governance", rating: "YELLOW",
-    summary: "Mid-sized RE platform founded 2014, third JV vintage. 18 FTEs concentrated in acquisitions and asset management. Single Managing Principal (Carlos Mendoza) holds 60% ownership and CIO role — concentration risk. No formal succession plan. GP commits 2% pari passu. Investment professional acts as compliance officer.",
+    summary: "Mid-sized RE platform founded 2014, third JV vintage. 18 FTEs concentrated in acquisitions and asset management. Single Managing Principal (Carlos Mendoza) holds 60% ownership and CIO role — concentration risk. No formal succession plan. GP commits 2% pari passu. CFO acts as compliance officer.",
     findings: `### Management Company and Affiliates
 
 Cordova Capital Partners, LLC ("Cordova" or the "Manager") was founded in 2014 by Carlos Mendoza (Managing Principal and Chief Investment Officer), formerly Director of Acquisitions at TruAmerica Multifamily and prior to that Senior Associate at Lone Star Funds. Cordova is headquartered in Dallas, Texas with a secondary office in Phoenix. The firm operates as a value-add multifamily real estate sponsor focused on Sun Belt markets (Texas, Arizona, North Carolina, Florida, Tennessee).
@@ -78,7 +78,7 @@ The chapter is rated YELLOW due to: (1) concentrated ownership in Carlos Mendoza
     summary: "SEC Exempt Reporting Adviser (ERA) status. Daniel Park (CFO) acts as Chief Compliance Officer — segregation of duties concern. Compliance program established in 2022; engaged Apex Compliance Advisors as outside consultant. Personal trading policy adequate but no minimum holding period. No regulatory actions.",
     findings: `### Regulatory Status
 
-Cordova Capital Partners, LLC is a U.S. Securities and Exchange Commission ("SEC") Exempt Reporting Adviser ("ERA") under Section 203(m) of the Investment Advisers Act, filed since 2016. The firm has not yet crossed the $150 million private fund adviser threshold for full RIA registration, although its current AUM exceeds this level and Alpine notes that Cordova will need to transition to full RIA registration prior to or alongside the closing of Fund III. The Manager indicated that the transition is planned for Q3 2026.
+Cordova Capital Partners, LLC is a U.S. Securities and Exchange Commission ("SEC") Exempt Reporting Adviser ("ERA") under Section 203(m) of the Investment Advisers Act, filed since 2016. The firm has continued to rely on the Section 203(m) private fund adviser exemption although its current AUM exceeds the $150 million threshold for full RIA registration and Alpine notes that Cordova will need to transition to full RIA registration prior to or alongside the closing of Fund III. The Manager indicated that the transition is planned for Q3 2026.
 
 ### Compliance Program
 
@@ -132,7 +132,7 @@ Cordova operates on Microsoft 365 (Exchange, SharePoint, Teams) supplemented by 
 
 ### Cybersecurity Program
 
-Cordova engaged Vantage Tech LLC in March 2023 as outsourced IT and cybersecurity provider. Vantage performs ongoing patch management, endpoint monitoring, identity management, and incident response support. Vantage is the same provider used by Aurora and several other small/mid alternative managers — Alpine views the engagement positively but notes that Vantage's service tier for Cordova does not include data loss prevention (DLP) or advanced threat detection.
+Cordova engaged Vantage Tech Partners, LLC in March 2023 as outsourced IT and cybersecurity provider. Vantage performs ongoing patch management, endpoint monitoring, identity management, and incident response support. Vantage is a provider used by a number of small and mid-sized alternative managers — Alpine views the engagement positively but notes that Vantage's service tier for Cordova does not include data loss prevention (DLP) or advanced threat detection.
 
 Cordova has not commissioned a SOC 2 audit. A first external penetration test was performed by Bishop Fox in November 2024 (3 medium-severity findings, all remediated within 60 days). Cordova has indicated that annual penetration testing will be established as a recurring practice — this is appropriate but not yet evidenced by a second test cycle.
 
@@ -159,7 +159,7 @@ The chapter is rated YELLOW due to: (1) no SOC 2 audit; (2) penetration testing 
         { label: "Endpoint Protection", value: "Microsoft Defender (no DLP)", flag: "yellow", source: "DDQ" },
       ]},
       { group: "Cybersecurity Program", items: [
-        { label: "Outsourced IT/Cyber", value: "Vantage Tech LLC (since March 2023)", flag: "green", source: "DDQ" },
+        { label: "Outsourced IT/Cyber", value: "Vantage Tech Partners, LLC (since March 2023)", flag: "green", source: "DDQ" },
         { label: "SOC 2 Audit", value: "Not commissioned", flag: "yellow", source: "DDQ" },
         { label: "Penetration Testing", value: "First test November 2024 (Bishop Fox) — annual cadence planned but not yet evidenced", flag: "yellow", source: "DDQ" },
         { label: "Phishing Click Rate", value: "4.8% (rolling 4 quarters; vs. 3.2% industry benchmark)", flag: "yellow", source: "DDQ" },
@@ -289,7 +289,7 @@ Cordova's acquisition process includes: site visits by acquisitions and asset ma
 
 ### Asset-Level Financing
 
-Each acquisition is financed with asset-level non-recourse debt at 60–70% loan-to-value, sourced primarily from agency lenders (Fannie Mae, Freddie Mac) for stabilized assets and bridge lenders for value-add transitions. Aggregate fund-level leverage as of December 31, 2025 (across deployed capital) is 64% LTV. Bridge debt is refinanced to agency debt upon stabilization (typically 18–30 months post-acquisition). Alpine notes that the bridge-to-agency refinancing model introduces refinancing risk if credit conditions tighten — this risk is partially mitigated by Cordova's strong agency lender relationships.
+Each acquisition is financed with asset-level non-recourse debt at 60–70% loan-to-value, sourced primarily from agency lenders (Fannie Mae, Freddie Mac) for stabilized assets and bridge lenders for value-add transitions. Aggregate portfolio LTV on property-level mortgage debt as of December 31, 2025 (across deployed capital) is 64%. Bridge debt is refinanced to agency debt upon stabilization (typically 18–30 months post-acquisition). Alpine notes that the bridge-to-agency refinancing model introduces refinancing risk if credit conditions tighten — this risk is partially mitigated by Cordova's strong agency lender relationships.
 
 ### Concentration
 
@@ -317,7 +317,7 @@ The chapter is rated YELLOW due to: (1) IC vote dynamics ("Carlos plus one"); (2
         { label: "Third-Party Appraisal", value: "Required for all acquisitions", flag: "green", source: "DDQ" },
       ]},
       { group: "Asset-Level Financing", items: [
-        { label: "LTV Range", value: "60–70% per asset; aggregate fund LTV 64% (12/31/2025)", flag: "yellow", source: "DDQ" },
+        { label: "LTV Range", value: "60–70% per asset; aggregate portfolio LTV 64% (property-level) (12/31/2025)", flag: "yellow", source: "DDQ" },
         { label: "Lender Mix", value: "Agency (Fannie/Freddie) for stabilized; bridge for value-add transition", source: "DDQ" },
         { label: "Refinance Window", value: "Bridge typically refinanced to agency 18–30 months post-acquisition", flag: "yellow", source: "DDQ" },
       ]},
@@ -394,7 +394,7 @@ The firm hosts an annual investor day each spring in Dallas. The 2025 investor d
 
 ### LPAC
 
-The LPAC has 7 seats. Meetings are held twice annually in person (typically June and December). Standing LPAC quorum across the past three years has been 87% — strong, though below Granite's 90%+ benchmark. The LPAC reviews quarterly valuation summaries, leverage utilization, concentration metrics, and conflicts requiring LPAC consent.
+The LPAC has 7 seats. Meetings are held twice annually in person (typically June and December). Standing LPAC quorum across the past three years has been 87% — strong, though below the 90%+ Alpine typically observes at institutional managers. The LPAC reviews quarterly valuation summaries, leverage utilization, concentration metrics, and conflicts requiring LPAC consent.
 
 ### Side Letters
 
@@ -457,7 +457,7 @@ export const CORDOVA_MOCK = {
     odd_percentile: "54th",
     domicile: "Delaware LP (Cayman feeder)",
     fund_nav: "$520M raised; ~28% deployed",
-    recommendation_summary: "recommends a <b>watchlist</b> rating. Cordova has produced strong realized returns across two prior vintages and operates a thoughtful JV sponsor model in the Sun Belt multifamily strategy. Four YELLOW chapters reflect emerging-manager governance characteristics (concentrated ownership, CFO/CCO role combination, cyber program maturity, valuation cadence).",
+    recommendation_summary: "recommends a <b>watchlist</b> rating. Cordova has produced strong realized returns across two prior vintages and operates a thoughtful JV sponsor model in the Sun Belt multifamily strategy. Five YELLOW chapters reflect emerging-manager governance characteristics (concentrated ownership, CFO/CCO role combination, cyber program maturity, investment-operations controls, valuation cadence).",
     conditions_summary: "Post-close monitoring: confirm Q3 2026 RIA transition; track operating partner reporting standardization; monitor Texas geographic concentration vs. 35% MSA cap.",
   },
   risk_observations: [
@@ -503,11 +503,11 @@ export const CORDOVA_MOCK = {
   ],
   strengths: [
     { title: "Strong realized track record in Sun Belt multifamily",
-      detail: "Cordova JV I delivered an 18.4% gross IRR and 1.92x MOIC across 14 fully realized investments. Cordova JV II is tracking 16.1% gross IRR on a 70%-realized basis. Realized returns place Cordova in the top quartile of value-add multifamily peers per Cliffwater RE Index data." },
+      detail: "Cordova JV I delivered an 18.4% gross IRR and 1.92x MOIC across 14 fully realized investments. Cordova JV II is tracking 16.1% gross IRR on a 70%-realized basis. Realized returns place Cordova in the top quartile of value-add multifamily peers per NCREIF peer value-add multifamily data." },
     { title: "Robust Operating Partner Diligence framework",
       detail: "Cordova's written Operating Partner Diligence Policy requires financial review, 5 LP references, 3 lender references, site visits, property management system review, and First Advantage background checks. Annual re-certification is required of all active operating partners — a thoughtful framework for the JV sponsor model." },
     { title: "Conservative asset-level leverage and dual-approval wire controls",
-      detail: "Aggregate fund-level leverage of 64% LTV is in the conservative range for value-add multifamily. Wire transfers require dual approval (CFO + one principal), and Cordova maintains signing authority on all property-level SPV bank accounts." },
+      detail: "Aggregate property-level LTV of 64% is in the conservative range for value-add multifamily. Wire transfers require dual approval (CFO + one principal), and Cordova maintains signing authority on all property-level SPV bank accounts." },
     { title: "Proactive diligence disclosure",
       detail: "Cordova voluntarily disclosed the Houston tenant class action against the JV II SPV/operator (Cordova not named) at the outset of diligence, before being asked. This reflects constructively on management transparency culture." },
   ],

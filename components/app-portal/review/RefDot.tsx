@@ -2108,7 +2108,7 @@ function buildRidgelineResortPassage(quote: string, filename: string, sourceLabe
     return {
       section: "Administration Agreement — Scope of Services",
       before: "This Administration Agreement engages SS&C ALPS Alternative Fund Services as fund administrator to Ridgeline Resort Holdings III, L.P. With respect to the administrator and the scope of its engagement: ",
-      after: ". SS&C ALPS has served as administrator since 2018 (initially engaged for Ridgeline Resort II) and provides full middle- and back-office services including NAV calculation, investor capital activity, AML/KYC, FATCA/CRS compliance, and carry waterfall computation through its proprietary system. David Park (CFO) reviews SS&C's annual SOC 1 Type II report. Property existence is verified by SS&C through annual review of title insurance policies and deeds.",
+      after: ". SS&C ALPS has served as administrator since 2020 (initially engaged for Ridgeline Resort II) and provides full middle- and back-office services including NAV calculation, investor capital activity, AML/KYC, FATCA/CRS compliance, and carry waterfall computation through its proprietary system. David Park (CFO) reviews SS&C's annual SOC 1 Type II report. Property existence is verified by SS&C through annual review of title insurance policies and deeds.",
       pageLabel: "Page 2 of 26",
     };
   }
