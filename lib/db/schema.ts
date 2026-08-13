@@ -469,6 +469,25 @@ export const portalDocuments = pgTable("portal_documents", {
 	index("idx_portal_documents_token").using("btree", table.token.asc().nullsLast().op("text_ops"), table.uploadedAt.desc().nullsFirst().op("text_ops")),
 ]);
 
+// Explicit association between a manager firm and the customer that owns a
+// secure upload portal. An email match only ever creates a 'pending' row (no
+// access); an Alpine admin approves it, and revocation is a real state.
+export const portalLinks = pgTable("portal_links", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+	firmId: uuid("firm_id").notNull(),
+	customerId: uuid("customer_id").notNull(),
+	status: text().default('pending').notNull(),
+	suggestedBy: text("suggested_by"),
+	approvedBy: text("approved_by"),
+	approvedAt: timestamp("approved_at", { withTimezone: true, mode: 'string' }),
+	revokedBy: text("revoked_by"),
+	revokedAt: timestamp("revoked_at", { withTimezone: true, mode: 'string' }),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+}, (table) => [
+	index("portal_links_firm_status_idx").using("btree", table.firmId.asc().nullsLast().op("uuid_ops"), table.status.asc().nullsLast().op("text_ops")),
+	index("portal_links_status_idx").using("btree", table.status.asc().nullsLast().op("text_ops")),
+]);
+
 export const referenceDataSources = pgTable("reference_data_sources", {
 	reviewSlug: text("review_slug").primaryKey().notNull(),
 	sources: jsonb().default({}).notNull(),

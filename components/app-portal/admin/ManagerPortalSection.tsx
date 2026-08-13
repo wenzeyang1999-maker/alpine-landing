@@ -65,6 +65,14 @@ export default async function ManagerPortalSection() {
       count={`${pending.length} pending · ${rows.length} total`}
       error={errorMsg}
     >
+      <p className="font-body text-[13px] mb-4">
+        <a href="/admin/portal-links" className="underline" style={{ color: "#7B2CBF" }}>
+          Review portal links &rarr;
+        </a>
+        <span style={{ color: "#64748B" }}>
+          {" "}approve which firms may read a customer&rsquo;s secure-portal documents
+        </span>
+      </p>
       {rows.length === 0 ? (
         <Empty>No manager accounts yet.</Empty>
       ) : (

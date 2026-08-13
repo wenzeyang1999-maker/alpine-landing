@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { usersInManager, firmsInManager } from "@/lib/db/schema";
 import { hashPassword, isAcceptablePassword } from "@/lib/manager/password";
 import { signSession, managerCookieOptions, MANAGER_SESSION } from "@/lib/manager/auth-session";
-import { validateClaimableToken } from "@/lib/manager/portal-link";
+import { claimableCustomerForToken, suggestPortalLink } from "@/lib/manager/portal-link";
 
 function slugify(name: string): string {
   return name
@@ -63,40 +63,27 @@ export async function POST(req: NextRequest) {
       slug = `${slug}-${Math.random().toString(36).slice(2, 7)}`;
     }
 
-    // Claim the secure-portal token the signup arrived with (from the portal
-    // page's workspace banner). Invalid or already-claimed tokens are ignored
-    // rather than blocking signup — the portal link is a bonus, not a gate.
-    const claimedToken = portal_token && (await validateClaimableToken(portal_token)) ? portal_token : null;
+    // Resolve the secure-portal token the signup arrived with (from the portal
+    // page's workspace banner). Possession of the token is evidence, not
+    // authorization: it records a pending link an Alpine admin approves. A
+    // token that is unknown, inactive, or already approved to another firm is
+    // ignored rather than blocking signup.
+    const claimCustomerId = portal_token ? await claimableCustomerForToken(portal_token) : null;
+    const portalAlreadyClaimed = Boolean(portal_token) && claimCustomerId === null;
 
     let firmId: string;
-    // True when the token was claimed between the check above and this insert
-    // (firms_portal_token_key is UNIQUE) — the firm already has a workspace.
-    let portalAlreadyClaimed = false;
     try {
       const [firmRaw] = await db
         .insert(firmsInManager)
-        .values({ name: firm_name, slug, portalToken: claimedToken })
+        .values({ name: firm_name, slug })
         .returning({ id: firmsInManager.id });
       firmId = firmRaw.id;
     } catch (firmErr) {
-      if (!claimedToken) {
-        console.error("Firm insert error:", firmErr);
-        return NextResponse.json({ error: "Could not create account. Please try again." }, { status: 500 });
-      }
-      // Never let a contested portal token block account creation: retry
-      // without it and tell the caller their firm's portal is already linked.
-      try {
-        const [firmRaw] = await db
-          .insert(firmsInManager)
-          .values({ name: firm_name, slug, portalToken: null })
-          .returning({ id: firmsInManager.id });
-        firmId = firmRaw.id;
-        portalAlreadyClaimed = true;
-      } catch (retryErr) {
-        console.error("Firm insert error (retry without portal token):", retryErr);
-        return NextResponse.json({ error: "Could not create account. Please try again." }, { status: 500 });
-      }
+      console.error("Firm insert error:", firmErr);
+      return NextResponse.json({ error: "Could not create account. Please try again." }, { status: 500 });
     }
+
+    if (claimCustomerId) await suggestPortalLink(firmId, claimCustomerId, email);
 
     // Hash password + create user (owner role, pending verification)
     const password_hash = hashPassword(password);

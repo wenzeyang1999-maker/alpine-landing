@@ -5,24 +5,29 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 // resolves from `fixture.rows` keyed by the table passed to .from()/.update().
 const fixture = vi.hoisted(() => ({
   rows: {} as Record<string, unknown[]>,
-  updates: [] as Array<{ table: string; values: Record<string, unknown> }>,
-  failUpdate: false,
+  inserts: [] as Array<{ table: string; values: Record<string, unknown> }>,
+  failInsert: false,
   failSelectFor: null as string | null,
 }));
 
 vi.mock("@/lib/db/schema", () => ({
   firmsInManager: { __t: "firms" },
   customers: { __t: "customers" },
+  portalLinks: { __t: "portalLinks" },
 }));
 
-vi.mock("drizzle-orm", () => ({ eq: () => ({}) }));
+vi.mock("drizzle-orm", () => ({ eq: () => ({}), and: () => ({}) }));
 
 vi.mock("@/lib/db", () => {
   /* eslint-disable @typescript-eslint/no-explicit-any */
   function selectBuilder() {
+    // The joined query reads from portalLinks and joins customers; the FIRST
+    // table named decides which fixture list answers, matching the real
+    // driver's behaviour of returning joined rows per left-hand row.
     let table = "";
     const b: any = {
       from(t: any) { table = t.__t; return b; },
+      innerJoin() { return b; },
       where() { return b; },
       limit() {
         if (fixture.failSelectFor === table) return Promise.reject(new Error("db unavailable"));
@@ -31,125 +36,129 @@ vi.mock("@/lib/db", () => {
     };
     return b;
   }
-  function updateBuilder(t: any) {
+  function insertBuilder(t: any) {
     const table = t.__t;
-    let values: Record<string, unknown> = {};
-    const b: any = {
-      set(v: Record<string, unknown>) { values = v; return b; },
-      where() {
-        if (fixture.failUpdate) return Promise.reject(new Error("unique violation"));
-        fixture.updates.push({ table, values });
+    return {
+      values(v: Record<string, unknown>) {
+        if (fixture.failInsert) return Promise.reject(new Error("unique violation"));
+        fixture.inserts.push({ table, values: v });
         return Promise.resolve(undefined);
       },
     };
-    return b;
   }
-  return { db: { select: () => selectBuilder(), update: (t: any) => updateBuilder(t) } };
+  return { db: { select: () => selectBuilder(), insert: (t: any) => insertBuilder(t) } };
 });
 
-import { portalTokenForManager, validateClaimableToken } from "@/lib/manager/portal-link";
+import { portalTokenForManager, claimableCustomerForToken } from "@/lib/manager/portal-link";
 
 beforeEach(() => {
   fixture.rows = {};
-  fixture.updates = [];
-  fixture.failUpdate = false;
+  fixture.inserts = [];
+  fixture.failInsert = false;
   fixture.failSelectFor = null;
 });
 
-describe("portalTokenForManager — resolution order", () => {
-  it("returns the firm's claimed token first, without consulting customers", async () => {
-    fixture.rows.firms = [{ slug: "acme", portalToken: "claimed-token" }];
-    fixture.rows.customers = [{ portalToken: "should-not-be-used" }];
+describe("portalTokenForManager — approved links only", () => {
+  it("returns the token of an approved link to an active customer", async () => {
+    fixture.rows.portalLinks = [{ portalToken: "cust-token", status: "active" }];
 
-    expect(await portalTokenForManager("firm-1", "a@acme.com")).toBe("claimed-token");
-    expect(fixture.updates).toHaveLength(0);
+    expect(await portalTokenForManager("firm-1", "a@acme.com")).toBe("cust-token");
+    expect(fixture.inserts).toHaveLength(0);
   });
 
-  it("prefers the claimed token over the demo-slug mapping", async () => {
-    fixture.rows.firms = [{ slug: "trellis", portalToken: "explicit-token" }];
+  it("returns null when the approved link's customer has been offboarded", async () => {
+    fixture.rows.portalLinks = [{ portalToken: "cust-token", status: "inactive" }];
 
-    expect(await portalTokenForManager("firm-1", "a@trellis.com")).toBe("explicit-token");
+    expect(await portalTokenForManager("firm-1", "a@acme.com")).toBeNull();
   });
 
-  it("falls back to the demo-slug mapping when no token is claimed", async () => {
-    fixture.rows.firms = [{ slug: "trellis", portalToken: null }];
+  it("falls back to the demo-slug map for seeded demo firms", async () => {
+    fixture.rows.portalLinks = [];
+    fixture.rows.firms = [{ slug: "trellis" }];
 
     expect(await portalTokenForManager("firm-1", "demo@alpinedd.com")).toBe("demo-trellis-token");
-    expect(fixture.updates).toHaveLength(0);
   });
 
-  it("falls back to the customer email match and backfills the firm token", async () => {
-    fixture.rows.firms = [{ slug: "acme", portalToken: null }];
-    fixture.rows.customers = [{ portalToken: "customer-token" }];
+  it("grants nothing on an email match, and records a pending suggestion", async () => {
+    fixture.rows.portalLinks = [];
+    fixture.rows.firms = [{ slug: "acme" }];
+    fixture.rows.customers = [{ id: "cust-1" }];
 
-    expect(await portalTokenForManager("firm-1", "a@acme.com")).toBe("customer-token");
-    expect(fixture.updates).toEqual([{ table: "firms", values: { portalToken: "customer-token" } }]);
+    expect(await portalTokenForManager("firm-1", "a@acme.com")).toBeNull();
+    expect(fixture.inserts).toEqual([
+      { table: "portalLinks", values: { firmId: "firm-1", customerId: "cust-1", status: "pending", suggestedBy: "a@acme.com" } },
+    ]);
   });
 
-  it("still returns the token when the backfill write fails", async () => {
-    fixture.rows.firms = [{ slug: "acme", portalToken: null }];
-    fixture.rows.customers = [{ portalToken: "customer-token" }];
-    fixture.failUpdate = true;
+  it("does not duplicate a suggestion that already exists", async () => {
+    fixture.rows.portalLinks = [{ id: "link-1" }];
+    fixture.rows.firms = [{ slug: "acme" }];
+    fixture.rows.customers = [{ id: "cust-1" }];
 
-    expect(await portalTokenForManager("firm-1", "a@acme.com")).toBe("customer-token");
-    expect(fixture.updates).toHaveLength(0);
+    // The approved lookup and the existing-suggestion lookup share a fixture
+    // list here; either way no second row may be written.
+    await portalTokenForManager("firm-1", "a@acme.com");
+    expect(fixture.inserts).toHaveLength(0);
   });
 
-  it("returns null when nothing matches, and does not backfill", async () => {
-    fixture.rows.firms = [{ slug: "acme", portalToken: null }];
+  it("returns null when no link, no demo slug and no matching customer exist", async () => {
+    fixture.rows.portalLinks = [];
+    fixture.rows.firms = [{ slug: "acme" }];
     fixture.rows.customers = [];
 
     expect(await portalTokenForManager("firm-1", "a@acme.com")).toBeNull();
-    expect(fixture.updates).toHaveLength(0);
-  });
-
-  it("still resolves by email when the firm row is missing, but skips the backfill", async () => {
-    fixture.rows.firms = [];
-    fixture.rows.customers = [{ portalToken: "customer-token" }];
-
-    expect(await portalTokenForManager("missing", "a@acme.com")).toBe("customer-token");
-    expect(fixture.updates).toHaveLength(0);
+    expect(fixture.inserts).toHaveLength(0);
   });
 
   it("returns null instead of throwing when the database is unavailable", async () => {
-    fixture.failSelectFor = "firms";
+    fixture.failSelectFor = "portalLinks";
 
     expect(await portalTokenForManager("firm-1", "a@acme.com")).toBeNull();
   });
+
+  it("still records the suggestion when the insert fails", async () => {
+    fixture.rows.portalLinks = [];
+    fixture.rows.firms = [{ slug: "acme" }];
+    fixture.rows.customers = [{ id: "cust-1" }];
+    fixture.failInsert = true;
+
+    expect(await portalTokenForManager("firm-1", "a@acme.com")).toBeNull();
+    expect(fixture.inserts).toHaveLength(0);
+  });
 });
 
-describe("validateClaimableToken", () => {
+describe("claimableCustomerForToken", () => {
   it("rejects an empty token", async () => {
-    expect(await validateClaimableToken("")).toBe(false);
+    expect(await claimableCustomerForToken("")).toBeNull();
   });
 
   it("rejects an absurdly long token without querying", async () => {
-    expect(await validateClaimableToken("x".repeat(201))).toBe(false);
+    expect(await claimableCustomerForToken("x".repeat(201))).toBeNull();
   });
 
-  it("rejects a token that matches no onboarded customer", async () => {
+  it("rejects a token with no active onboarded customer", async () => {
     fixture.rows.customers = [];
 
-    expect(await validateClaimableToken("unknown-token")).toBe(false);
+    expect(await claimableCustomerForToken("unknown-token")).toBeNull();
   });
 
-  it("rejects a token already claimed by another firm", async () => {
+  it("rejects a token whose portal is already approved to a firm", async () => {
     fixture.rows.customers = [{ id: "cust-1" }];
-    fixture.rows.firms = [{ id: "firm-existing" }];
+    fixture.rows.portalLinks = [{ id: "link-existing" }];
 
-    expect(await validateClaimableToken("taken-token")).toBe(false);
+    expect(await claimableCustomerForToken("taken-token")).toBeNull();
   });
 
-  it("accepts a real, unclaimed token", async () => {
+  it("returns the customer id for a real, unclaimed token", async () => {
     fixture.rows.customers = [{ id: "cust-1" }];
-    fixture.rows.firms = [];
+    fixture.rows.portalLinks = [];
 
-    expect(await validateClaimableToken("free-token")).toBe(true);
+    expect(await claimableCustomerForToken("free-token")).toBe("cust-1");
   });
 
-  it("returns false rather than throwing when the database is unavailable", async () => {
+  it("returns null rather than throwing when the database is unavailable", async () => {
     fixture.failSelectFor = "customers";
 
-    expect(await validateClaimableToken("any-token")).toBe(false);
+    expect(await claimableCustomerForToken("any-token")).toBeNull();
   });
 });
