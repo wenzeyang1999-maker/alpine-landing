@@ -9,7 +9,12 @@ import {
   BG, BG_CARD, INK, SECONDARY, MUTED, VIOLET, AMBER, BORDER, LS_BODY,
 } from "@/lib/constants";
 
-export default function ManagerPending() {
+type Search = { [key: string]: string | string[] | undefined };
+
+export default function ManagerPending({ searchParams }: { searchParams: Search }) {
+  // Set when signup found the firm's secure portal already linked to another
+  // workspace, so this account was created without the portal linkage.
+  const portalClaimed = searchParams?.portal === "claimed";
   return (
     <main style={{ background: BG, color: INK }} className="min-h-screen">
       <nav className="max-w-3xl mx-auto px-6 py-5 flex items-center justify-between">
@@ -62,6 +67,20 @@ export default function ManagerPending() {
           This usually takes less than 1 business day. You&rsquo;ll receive an
           email at the address you registered with once your account is approved.
         </p>
+
+        {portalClaimed && (
+          <div
+            className="rounded-panel p-5 mb-8 text-left"
+            style={{ background: `${AMBER}12`, border: `1px solid ${AMBER}55` }}
+          >
+            <p className="font-body text-[14px]" style={{ color: INK, lineHeight: 1.6, letterSpacing: LS_BODY }}>
+              <strong>Your firm already has an Alpine workspace.</strong> The documents
+              uploaded through your secure portal are linked to that existing workspace,
+              not this new account. Ask a colleague who already has access to send you a
+              team invite, and you will see them there.
+            </p>
+          </div>
+        )}
 
         <div
           className="rounded-panel p-6 text-left"

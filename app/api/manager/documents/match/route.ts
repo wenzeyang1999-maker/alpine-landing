@@ -8,12 +8,10 @@ import { portalTokenForManager } from "@/lib/manager/portal-link";
 
 const BUCKET = "manager-docs";
 const PORTAL_BUCKET = "portal-uploads";
-// Portal docs have no text_content cache column (no migration yet), so text is
-// extracted on the fly. Bound the work per request and keep a warm-instance
-// cache so repeated source-dot clicks don't re-parse the same PDFs.
+// Portal PDFs are parsed once and their text cached on the row (same as
+// manager uploads), so a source-dot click re-reads text instead of
+// re-downloading and re-parsing. Still bounded per request.
 const MAX_PORTAL_DOCS = 6;
-const portalTextCache = new Map<string, string | null>();
-const PORTAL_TEXT_CACHE_MAX = 20;
 const STOP_WORDS = new Set([
   "a","an","the","and","or","but","in","on","at","to","for","of","with",
   "by","from","is","are","was","were","be","been","being","have","has","had",
@@ -126,6 +124,8 @@ export interface MatchResult {
 export async function POST(req: NextRequest) {
   const user = await getCurrentManager();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // Unverified accounts must not reach portal documents (see documents/route).
+  if (!user.is_verified) return NextResponse.json({ error: "Account not verified" }, { status: 403 });
 
   const { questionText, answerText } = await req.json();
   if (!answerText && !questionText) {
@@ -149,9 +149,11 @@ export async function POST(req: NextRequest) {
       .from(managerUploads)
       .where(eq(managerUploads.userEmail, user.email));
   } catch {
-    return NextResponse.json({ matches: [] });
+    docs = [];
   }
-  if (!docs.length) return NextResponse.json({ matches: [] });
+  // No early return on an empty list: a firm whose documents all arrived
+  // through the secure portal has zero manager_uploads, and returning here
+  // would skip the portal search below entirely.
 
   const matches: MatchResult[] = [];
 
@@ -205,6 +207,7 @@ export async function POST(req: NextRequest) {
           id: portalDocuments.id,
           filename: portalDocuments.filename,
           storagePath: portalDocuments.storagePath,
+          textContent: portalDocuments.textContent,
         })
         .from(portalDocuments)
         .where(eq(portalDocuments.token, token))
@@ -214,14 +217,15 @@ export async function POST(req: NextRequest) {
       for (const doc of portalRows) {
         if (!doc.storagePath || !doc.filename.toLowerCase().endsWith(".pdf")) continue;
 
-        let text: string | null | undefined = portalTextCache.get(doc.storagePath);
-        if (text === undefined) {
+        let text: string | null = doc.textContent;
+        if (!text) {
           text = await extractPdfText(PORTAL_BUCKET, doc.storagePath);
-          if (portalTextCache.size >= PORTAL_TEXT_CACHE_MAX) {
-            const oldest = portalTextCache.keys().next().value;
-            if (oldest !== undefined) portalTextCache.delete(oldest);
+          if (text) {
+            await db
+              .update(portalDocuments)
+              .set({ textContent: text, textExtractedAt: new Date().toISOString() })
+              .where(eq(portalDocuments.id, doc.id));
           }
-          portalTextCache.set(doc.storagePath, text);
         }
         if (!text) continue;
 

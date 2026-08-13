@@ -69,6 +69,9 @@ export async function POST(req: NextRequest) {
     const claimedToken = portal_token && (await validateClaimableToken(portal_token)) ? portal_token : null;
 
     let firmId: string;
+    // True when the token was claimed between the check above and this insert
+    // (firms_portal_token_key is UNIQUE) — the firm already has a workspace.
+    let portalAlreadyClaimed = false;
     try {
       const [firmRaw] = await db
         .insert(firmsInManager)
@@ -76,8 +79,23 @@ export async function POST(req: NextRequest) {
         .returning({ id: firmsInManager.id });
       firmId = firmRaw.id;
     } catch (firmErr) {
-      console.error("Firm insert error:", firmErr);
-      return NextResponse.json({ error: "Could not create account. Please try again." }, { status: 500 });
+      if (!claimedToken) {
+        console.error("Firm insert error:", firmErr);
+        return NextResponse.json({ error: "Could not create account. Please try again." }, { status: 500 });
+      }
+      // Never let a contested portal token block account creation: retry
+      // without it and tell the caller their firm's portal is already linked.
+      try {
+        const [firmRaw] = await db
+          .insert(firmsInManager)
+          .values({ name: firm_name, slug, portalToken: null })
+          .returning({ id: firmsInManager.id });
+        firmId = firmRaw.id;
+        portalAlreadyClaimed = true;
+      } catch (retryErr) {
+        console.error("Firm insert error (retry without portal token):", retryErr);
+        return NextResponse.json({ error: "Could not create account. Please try again." }, { status: 500 });
+      }
     }
 
     // Hash password + create user (owner role, pending verification)
@@ -100,7 +118,10 @@ export async function POST(req: NextRequest) {
 
     const token = await signSession(email);
     const isProd = process.env.NODE_ENV === "production";
-    const res = NextResponse.json({ ok: true, redirect: "/manager/pending" }, { status: 201 });
+    const res = NextResponse.json(
+      { ok: true, redirect: "/manager/pending", portal_already_claimed: portalAlreadyClaimed },
+      { status: 201 },
+    );
     res.cookies.set(MANAGER_SESSION.COOKIE_NAME, token, managerCookieOptions(isProd));
     return res;
   } catch (err) {

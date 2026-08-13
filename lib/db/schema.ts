@@ -461,6 +461,10 @@ export const portalDocuments = pgTable("portal_documents", {
 	fileSize: bigint("file_size", { mode: "number" }),
 	storagePath: text("storage_path"),
 	uploadedAt: timestamp("uploaded_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+	// Extracted PDF text, cached on first passage-match so each file is parsed
+	// once rather than on every source-dot click. Mirrors manager_uploads.
+	textContent: text("text_content"),
+	textExtractedAt: timestamp("text_extracted_at", { withTimezone: true, mode: 'string' }),
 }, (table) => [
 	index("idx_portal_documents_token").using("btree", table.token.asc().nullsLast().op("text_ops"), table.uploadedAt.desc().nullsFirst().op("text_ops")),
 ]);

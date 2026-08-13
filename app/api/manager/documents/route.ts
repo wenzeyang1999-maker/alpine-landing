@@ -80,6 +80,10 @@ async function portalDocsForManager(firmId: string, email: string): Promise<Port
 export async function GET() {
   const user = await getCurrentManager();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // Signup mints a session before Alpine verifies the firm, and portal-token
+  // resolution can match on email alone — so unverified accounts must not
+  // reach documents. Same gate as app/api/manager/invite/send.
+  if (!user.is_verified) return NextResponse.json({ error: "Account not verified" }, { status: 403 });
 
   let rows: { id: string; filename: string; storagePath: string; fileSize: number | null; uploadedAt: string }[];
   try {
@@ -126,6 +130,10 @@ export async function GET() {
 export async function DELETE(req: Request) {
   const user = await getCurrentManager();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // Signup mints a session before Alpine verifies the firm, and portal-token
+  // resolution can match on email alone — so unverified accounts must not
+  // reach documents. Same gate as app/api/manager/invite/send.
+  if (!user.is_verified) return NextResponse.json({ error: "Account not verified" }, { status: 403 });
 
   const { id } = await req.json();
   if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });

@@ -37,7 +37,10 @@ function ManagerSignupInner() {
         setError(data.error ?? "Sign-up failed. Please try again.");
         return;
       }
-      router.push(data.redirect ?? "/manager/pending");
+      // The firm's portal was already linked to an existing workspace; carry
+      // that through so the pending page can point them at a team invite.
+      const dest = data.redirect ?? "/manager/pending";
+      router.push(data.portal_already_claimed ? `${dest}?portal=claimed` : dest);
     } catch {
       setError("Network error. Please try again.");
     } finally {

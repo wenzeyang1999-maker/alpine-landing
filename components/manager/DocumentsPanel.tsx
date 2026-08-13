@@ -18,6 +18,8 @@ interface Doc {
   source?: "portal" | "workspace";
 }
 
+const UPLOAD_CAP = 14;
+
 function fmtBytes(n: number | null): string {
   if (!n) return "—";
   if (n < 1024) return `${n} B`;
@@ -91,6 +93,10 @@ export default function DocumentsPanel() {
       setDeletingId(null);
     }
   }
+
+  // Documents received via the secure portal are read-only here and do not
+  // consume the workspace upload cap.
+  const uploadedCount = docs.filter((d) => d.source !== "portal").length;
 
   return (
     <div
@@ -205,14 +211,13 @@ export default function DocumentsPanel() {
         <span
           className="font-mono text-[11px] px-2 py-0.5 rounded-full"
           style={{
-            background: docs.filter((d) => d.source !== "portal").length >= 14 ? `${VIOLET}15` : `${BORDER}`,
-            color: docs.filter((d) => d.source !== "portal").length >= 14 ? VIOLET : MUTED,
+            background: uploadedCount >= UPLOAD_CAP ? `${VIOLET}15` : `${BORDER}`,
+            color: uploadedCount >= UPLOAD_CAP ? VIOLET : MUTED,
             fontWeight: 700,
             letterSpacing: "0.04em",
           }}
         >
-          {/* Portal-received docs do not count toward the upload cap */}
-          {docs.filter((d) => d.source !== "portal").length}/14
+          {uploadedCount}/{UPLOAD_CAP}
         </span>
       </div>
     </div>
