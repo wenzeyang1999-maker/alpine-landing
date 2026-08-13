@@ -9,12 +9,23 @@ const nextConfig = {
     ],
   },
   async rewrites() {
-    return [
+    const rules = [
       // Friendly URL for the Mercer demo. The page keeps its own server-side
       // demo gate; API calls are absolute (/api/demo/valuation/*) so they work
       // unchanged under this path.
       { source: "/mercerdemo", destination: "/demo/valuation" },
     ];
+    // Morningside OS demo: proxy /morningsidedemo to its own Web App. The
+    // target app is built with basePath "/morningsidedemo", so paths pass
+    // through unchanged. Inert until MORNINGSIDE_DEMO_ORIGIN is set (an app
+    // setting on the Alpine Web App), e.g. https://morningside-web.azurewebsites.net
+    if (process.env.MORNINGSIDE_DEMO_ORIGIN) {
+      rules.push(
+        { source: "/morningsidedemo", destination: `${process.env.MORNINGSIDE_DEMO_ORIGIN}/morningsidedemo` },
+        { source: "/morningsidedemo/:path*", destination: `${process.env.MORNINGSIDE_DEMO_ORIGIN}/morningsidedemo/:path*` },
+      );
+    }
+    return rules;
   },
   experimental: {
     outputFileTracingIncludes: {
