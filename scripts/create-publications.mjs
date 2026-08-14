@@ -31,6 +31,10 @@ const sql = postgres(url, { prepare: false, ssl: "require" });
 // Existing publications (mirror of the old hardcoded lib/publications.ts array).
 // href is the unique key → ON CONFLICT (href) DO NOTHING keeps re-runs idempotent.
 const SEED = [
+  { category: "Case Study 6", dateLabel: "2026 Aug 13 · 9 AM", publishedAt: "2026-08-13T09:00:00-04:00",
+    title: "The Allianz Structured Alpha Case: How Altered Risk Reports Hid the Portfolios Investors Actually Owned",
+    description: "How a $11 billion options strategy reported one risk profile while trading another, per a settled SEC order and criminal guilty pleas. Portfolio managers edited stress tests, performance history, and option Greeks before investors saw them, and March 2020 reconciled the two. A structured analysis of risk report integrity, hedge verification, and data governance.",
+    href: "/case-study/allianz", cta: "Read case study →" },
   { category: "Case Study 5", dateLabel: "2026 Jul 30 · 9 AM", publishedAt: "2026-07-30T09:00:00-04:00",
     title: "The Chatham Asset Management Case: How Internal Bond Trades Raised Prices, Fund Values, and Fees",
     description: "How internal bond trades in an illiquid issue that Chatham's own funds dominated raised prices, fund NAVs, and advisory fees, per a settled SEC order. A structured analysis of conflicted trading, NAV integrity, and fee diligence, and the record a review pulls to trace where a price actually came from.",
