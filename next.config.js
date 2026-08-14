@@ -17,14 +17,16 @@ const nextConfig = {
     ];
     // Morningside OS demo: proxy /morningsidedemo to its own Web App. The
     // target app is built with basePath "/morningsidedemo", so paths pass
-    // through unchanged. Inert until MORNINGSIDE_DEMO_ORIGIN is set (an app
-    // setting on the Alpine Web App), e.g. https://morningside-web.azurewebsites.net
-    if (process.env.MORNINGSIDE_DEMO_ORIGIN) {
-      rules.push(
-        { source: "/morningsidedemo", destination: `${process.env.MORNINGSIDE_DEMO_ORIGIN}/morningsidedemo` },
-        { source: "/morningsidedemo/:path*", destination: `${process.env.MORNINGSIDE_DEMO_ORIGIN}/morningsidedemo/:path*` },
-      );
-    }
+    // through unchanged. NOTE: rewrites() is evaluated at BUILD time, so the
+    // destination must be known here — a runtime app-setting cannot toggle it.
+    // The hostname is stable and public; the demo carries its own access gate.
+    const MORNINGSIDE_DEMO_ORIGIN =
+      process.env.MORNINGSIDE_DEMO_ORIGIN ||
+      "https://morningside-web-g6hebzbxc0eqaah3.canadacentral-01.azurewebsites.net";
+    rules.push(
+      { source: "/morningsidedemo", destination: `${MORNINGSIDE_DEMO_ORIGIN}/morningsidedemo` },
+      { source: "/morningsidedemo/:path*", destination: `${MORNINGSIDE_DEMO_ORIGIN}/morningsidedemo/:path*` },
+    );
     return rules;
   },
   experimental: {
