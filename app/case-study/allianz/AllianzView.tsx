@@ -177,6 +177,13 @@ export default function AllianzView() {
           [data-pdf-page] { page-break-after: always; break-after: page; box-shadow: none !important; border-radius: 0 !important; }
           /* Without this the final break emits a trailing blank page. */
           [data-pdf-page]:last-of-type { page-break-after: auto; break-after: auto; }
+          /* One page box == one physical sheet, so the footer pins to the true
+             bottom edge instead of floating partway down. A Letter sheet is
+             816x1056 CSS px at 96dpi; printed at scale 0.9 it holds
+             816/0.9 = 906 wide by 1056/0.9 = 1173 tall. 1170 leaves a hair of
+             slack so rounding can never spill a page in two. */
+          @page { size: Letter; margin: 0; }
+          [data-pdf-page] { height: 1170px !important; min-height: 1170px !important; }
           [data-cs-outer] { background: #fff !important; }
           [data-cs-scroll] { padding: 0 !important; }
         }
