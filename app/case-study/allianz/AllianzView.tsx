@@ -183,9 +183,25 @@ export default function AllianzView() {
              816/0.9 = 906 wide by 1056/0.9 = 1173 tall. 1170 leaves a hair of
              slack so rounding can never spill a page in two. */
           @page { size: Letter; margin: 0; }
-          [data-pdf-page] { height: 1170px !important; min-height: 1170px !important; }
           [data-cs-outer] { background: #fff !important; }
           [data-cs-scroll] { padding: 0 !important; }
+
+          /* The cover keeps a sheet to itself; everything after it flows as one
+             continuous document so each sheet fills. One section per sheet left
+             roughly a third of every page empty. Per-sheet footers cannot
+             survive the reflow, because the page boxes no longer map to sheets,
+             so below the cover the footer is dropped. */
+          [data-pdf-page] { height: auto !important; min-height: 0 !important;
+            page-break-after: auto !important; break-after: auto !important; }
+          [data-pdf-page]:first-of-type { height: 1170px !important;
+            page-break-after: always !important; break-after: page !important; }
+          [data-cs-body] { padding: 26px 48px 0 !important; }
+          [data-pdf-page]:not(:first-of-type) [data-cs-coverfoot] { display: none !important; }
+          /* Never split a figure, stat band, or comparison row across sheets,
+             and never strand a section heading at the foot of one. */
+          [data-cs-statband], [data-cs-altered], [data-cs-chain] {
+            page-break-inside: avoid !important; break-inside: avoid !important; }
+          h2, h3 { page-break-after: avoid !important; break-after: avoid !important; }
         }
       `}</style>
 
