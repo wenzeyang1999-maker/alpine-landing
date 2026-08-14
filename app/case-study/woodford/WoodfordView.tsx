@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { GREEN, AMBER, VIOLET } from "@/lib/constants";
 import FloatingSubscribe from "@/components/FloatingSubscribe";
+import { CASE_STUDY_PRINT_CSS } from "@/lib/case-study-print";
 
 // ── Design tokens (PDF palette — petrol-teal accent on deep teal-navy) ───────
 const BODY    = "#17323b";   // deep teal-navy — PDF headings & wordmark
@@ -191,12 +192,7 @@ export default function WoodfordView() {
           [data-wp-page-footer]  { display: none !important; }
           [data-cs-statband]     { grid-template-columns: repeat(2, 1fr) !important; }
         }
-        @media print {
-          header, .floating-subscribe-root { display: none !important; }
-          [data-pdf-gap] { display: none !important; }
-          [data-pdf-page] { page-break-after: always; break-after: page; box-shadow: none !important; }
-        }
-      `}</style>
+      ${CASE_STUDY_PRINT_CSS}`}</style>
 
       {/* ── Header ── */}
       <header>

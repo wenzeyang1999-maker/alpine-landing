@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { GREEN, AMBER, VIOLET } from "@/lib/constants";
 import FloatingSubscribe from "@/components/FloatingSubscribe";
+import { CASE_STUDY_PRINT_CSS } from "@/lib/case-study-print";
 
 // ── Design tokens (petrol-teal accent, matches the Chatham/Greensill cases) ──
 const BODY    = "#17323b";
@@ -171,39 +172,7 @@ export default function AllianzView() {
           [data-cs-body]{padding:30px 22px 40px!important;}
           [data-cs-h1]{font-size:32px!important;line-height:1.1!important;} [data-cs-h2]{font-size:18px!important;margin:0 0 24px!important;}
         }
-        @media print {
-          header, .floating-subscribe-root { display: none !important; }
-          [data-pdf-gap] { display: none !important; }
-          [data-pdf-page] { page-break-after: always; break-after: page; box-shadow: none !important; border-radius: 0 !important; }
-          /* Without this the final break emits a trailing blank page. */
-          [data-pdf-page]:last-of-type { page-break-after: auto; break-after: auto; }
-          /* One page box == one physical sheet, so the footer pins to the true
-             bottom edge instead of floating partway down. A Letter sheet is
-             816x1056 CSS px at 96dpi; printed at scale 0.9 it holds
-             816/0.9 = 906 wide by 1056/0.9 = 1173 tall. 1170 leaves a hair of
-             slack so rounding can never spill a page in two. */
-          @page { size: Letter; margin: 0; }
-          [data-cs-outer] { background: #fff !important; }
-          [data-cs-scroll] { padding: 0 !important; }
-
-          /* The cover keeps a sheet to itself; everything after it flows as one
-             continuous document so each sheet fills. One section per sheet left
-             roughly a third of every page empty. Per-sheet footers cannot
-             survive the reflow, because the page boxes no longer map to sheets,
-             so below the cover the footer is dropped. */
-          [data-pdf-page] { height: auto !important; min-height: 0 !important;
-            page-break-after: auto !important; break-after: auto !important; }
-          [data-pdf-page]:first-of-type { height: 1170px !important;
-            page-break-after: always !important; break-after: page !important; }
-          [data-cs-body] { padding: 26px 48px 0 !important; }
-          [data-pdf-page]:not(:first-of-type) [data-cs-coverfoot] { display: none !important; }
-          /* Never split a figure, stat band, or comparison row across sheets,
-             and never strand a section heading at the foot of one. */
-          [data-cs-statband], [data-cs-altered], [data-cs-chain] {
-            page-break-inside: avoid !important; break-inside: avoid !important; }
-          h2, h3 { page-break-after: avoid !important; break-after: avoid !important; }
-        }
-      `}</style>
+      ${CASE_STUDY_PRINT_CSS}`}</style>
 
       {/* ── Header ── */}
       <header>

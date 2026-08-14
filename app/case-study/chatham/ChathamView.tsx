@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { GREEN, AMBER, VIOLET } from "@/lib/constants";
 import FloatingSubscribe from "@/components/FloatingSubscribe";
+import { CASE_STUDY_PRINT_CSS } from "@/lib/case-study-print";
 
 // ── Design tokens (petrol-teal accent, matches the Greensill case) ───────────
 const BODY    = "#17323b";
@@ -136,14 +137,7 @@ export default function ChathamView() {
           [data-cs-body]{padding:30px 22px 40px!important;}
           [data-cs-h1]{font-size:32px!important;line-height:1.1!important;} [data-cs-h2]{font-size:18px!important;margin:0 0 24px!important;}
         }
-        @media print {
-          header, .floating-subscribe-root { display: none !important; }
-          [data-pdf-gap] { display: none !important; }
-          [data-pdf-page] { page-break-after: always; break-after: page; box-shadow: none !important; border-radius: 0 !important; }
-          [data-cs-outer] { background: #fff !important; }
-          [data-cs-scroll] { padding: 0 !important; }
-        }
-      `}</style>
+      ${CASE_STUDY_PRINT_CSS}`}</style>
 
       {/* ── Header ── */}
       <header>
