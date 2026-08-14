@@ -67,8 +67,40 @@ export async function POST(req: NextRequest) {
     if (!publishedInput) {
       return NextResponse.json({ error: "Publish date is required." }, { status: 400 });
     }
+
+    // Two kinds of publication:
+    //  - internal reader: a hand-authored route like /case-study/allianz, listed
+    //    as an internal link with no upload.
+    //  - uploaded PDF: stored in demo-docs and linked externally.
+    const linkHref = String(form.get("href") ?? "").trim();
+    if (linkHref) {
+      if (!linkHref.startsWith("/") || linkHref.startsWith("//")) {
+        return NextResponse.json({ error: "Internal link must be a site path beginning with a single /." }, { status: 400 });
+      }
+      const dateLabel = formatDateLabel(publishedInput);
+      const publishedAt = `${publishedInput.length === 16 ? `${publishedInput}:00` : publishedInput}`;
+      try {
+        const [row] = await db
+          .insert(publications)
+          .values({
+            category, title, description, href: linkHref,
+            cta: String(form.get("cta") ?? "").trim() || "Read case study →",
+            dateLabel, isExternal: false, available: true, isVisible: true,
+            pdfPath: null, publishedAt,
+          })
+          .returning();
+        await logAudit({ actor: adminEmail, action: "publication.create", target: linkHref, meta: { title, category } });
+        return NextResponse.json({ publication: toApi(row) }, { status: 201 });
+      } catch (e) {
+        const msg = e instanceof Error && /unique|duplicate/i.test(e.message)
+          ? "A publication already exists for that link."
+          : "Failed to create publication";
+        return NextResponse.json({ error: msg }, { status: 400 });
+      }
+    }
+
     if (!(file instanceof File) || file.size === 0) {
-      return NextResponse.json({ error: "A PDF file is required." }, { status: 400 });
+      return NextResponse.json({ error: "Upload a PDF, or enter an internal link instead." }, { status: 400 });
     }
     if (file.type && file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
       return NextResponse.json({ error: "File must be a PDF." }, { status: 400 });

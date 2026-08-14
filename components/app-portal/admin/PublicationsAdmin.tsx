@@ -35,6 +35,8 @@ export default function PublicationsAdmin() {
   const [cta, setCta] = useState("Read publication →");
   const [file, setFile] = useState<File | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  // Hand-authored readers (e.g. /case-study/allianz) are linked, not uploaded.
+  const [href, setHref] = useState("");
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -55,14 +57,17 @@ export default function PublicationsAdmin() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError(null); setOk(null);
-    if (!file) { setError("Choose a PDF to upload."); return; }
+    const link = href.trim();
+    if (!file && !link) { setError("Upload a PDF, or enter an internal link."); return; }
+    if (link && !link.startsWith("/")) { setError("Internal link must start with / (e.g. /case-study/allianz)."); return; }
     if (!category.trim() || !title.trim() || !description.trim() || !publishedAt) {
       setError("Category, title, description, and publish date are required."); return;
     }
     setSaving(true);
     try {
       const fd = new FormData();
-      fd.append("file", file);
+      if (link) fd.append("href", link);
+      else if (file) fd.append("file", file);
       fd.append("category", category.trim());
       fd.append("title", title.trim());
       fd.append("description", description.trim());
@@ -73,7 +78,7 @@ export default function PublicationsAdmin() {
       if (!res.ok) { setError(data.error || "Upload failed"); return; }
       setOk(`Published "${data.publication.title}".`);
       setCategory(""); setTitle(""); setDescription(""); setPublishedAt(""); setCta("Read publication →");
-      setFile(null); if (fileRef.current) fileRef.current.value = "";
+      setFile(null); setHref(""); if (fileRef.current) fileRef.current.value = "";
       load();
     } catch {
       setError("Network error. Try again.");
@@ -100,7 +105,11 @@ export default function PublicationsAdmin() {
     <div className="grid gap-8">
       {/* Upload form */}
       <form onSubmit={submit} className="rounded-lg p-6 grid gap-4" style={{ background: BG_CARD, border: `1px solid ${BORDER}` }}>
-        <div className="font-body text-[15px]" style={{ color: INK, fontWeight: 700 }}>Upload a publication</div>
+        <div className="font-body text-[15px]" style={{ color: INK, fontWeight: 700 }}>Add a publication</div>
+        <p className="font-body text-[12.5px]" style={{ color: SUBTLE, marginTop: -8, lineHeight: 1.55 }}>
+          Either upload a PDF, or link a hand-authored reader already built on the
+          site (for example <code>/case-study/allianz</code>). Fill in one, not both.
+        </p>
 
         <div className="grid gap-1.5">
           <label className="font-body text-[13px]" style={{ color: SUBTLE, fontWeight: 600 }}>PDF file</label>
@@ -108,9 +117,23 @@ export default function PublicationsAdmin() {
             ref={fileRef}
             type="file"
             accept="application/pdf,.pdf"
+            disabled={!!href.trim()}
             onChange={(e) => setFile(e.target.files?.[0] ?? null)}
             className="font-body text-[13px]"
-            style={{ color: INK }}
+            style={{ color: INK, opacity: href.trim() ? 0.45 : 1 }}
+          />
+        </div>
+
+        <div className="grid gap-1.5">
+          <label className="font-body text-[13px]" style={{ color: SUBTLE, fontWeight: 600 }}>
+            or internal link
+          </label>
+          <input
+            value={href}
+            onChange={(e) => setHref(e.target.value)}
+            placeholder="/case-study/allianz"
+            disabled={!!file}
+            style={{ ...inputStyle, opacity: file ? 0.45 : 1 }}
           />
         </div>
 
