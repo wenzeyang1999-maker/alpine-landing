@@ -1,6 +1,6 @@
 *{margin:0;padding:0;box-sizing:border-box}
 input,button,select,textarea{font:inherit;color:inherit}
-:root{--ink:#1F2937;--muted:#6B7280;--faint:#9CA3AF;--ground:#FFF;--surface:#F8FAFC;--line:#E5E7EB;--hair:#F1F5F9;--info:#0EA5E9;--pos:#16A34A;--neg:#DC2626;--warn:#D97706}
+:root{--ink:#1F2937;--muted:#6B7280;--faint:#6E7683;--ground:#FFF;--surface:#F8FAFC;--line:#E5E7EB;--hair:#F1F5F9;--info:#0EA5E9;--pos:#16A34A;--neg:#DC2626;--warn:#D97706}
 body{position:relative;font-family:Inter,-apple-system,'Helvetica Neue',Arial,sans-serif;color:var(--ink);background:var(--ground);width:100%;min-width:1240px;font-size:13px;-webkit-font-smoothing:antialiased}
 .num{font-variant-numeric:tabular-nums}
 .topbar{position:sticky;top:0;z-index:70;background:var(--ground);display:flex;align-items:center;gap:16px;padding:12px 28px;border-bottom:1px solid var(--line)}
@@ -323,12 +323,9 @@ table td:nth-child(2) b{white-space:nowrap}
 .sechead h2{font-size:16.5px !important;font-weight:700 !important;letter-spacing:-.25px !important}
 .sechead .q{font-size:11.5px;color:var(--muted)}
 .sechead .chips{margin-left:auto;display:flex;gap:6px;flex-shrink:0}
-.secno{display:none}
 /* Metrics sit closer to their own header than to the next section */
 .grid{gap:18px 24px !important}
 
-.secno{display:inline-block;min-width:19px;font-size:11px;font-weight:700;color:var(--faint);
-  font-variant-numeric:tabular-nums;letter-spacing:0;vertical-align:2px}
 
 /* Pipeline flag legend: styles were lost in an earlier refactor, leaving it unstyled */
 .flaglegend{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:16px;padding-top:12px;
