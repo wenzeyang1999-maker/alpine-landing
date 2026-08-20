@@ -48,20 +48,18 @@ table.pco td{padding:8px;font-size:12.5px}
 .navcell i{display:inline-block;height:6px;border-radius:3px;background:#94A3B8}
 .quote{font-size:11px;color:var(--muted);font-style:italic}
 .more{font-size:12px;color:var(--info);padding:10px 8px;cursor:pointer;display:inline-block}
-.source{width:0;min-width:0;flex:0 0 auto;border-left:0 solid var(--line);background:var(--surface);padding:18px 0;overflow:hidden;
-  transition:width .3s cubic-bezier(.2,.8,.2,1),padding .3s;
-  position:sticky;top:var(--topbar-h);height:calc(100vh - var(--topbar-h));align-self:flex-start}
-.source.open{padding:18px;border-left:1px solid var(--line);overflow-y:auto}
-.source .inner{width:100%}
 
 
-.closex{margin-left:8px;cursor:pointer;color:var(--muted);font-size:13px}
-.doccard{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.docbar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);background:#FBFDFF}
+
+
+
+
+
+
 .docbar b{font-size:12px}
 .docbar .pg{margin-left:auto;font-size:10.5px;color:var(--muted)}
-.cap{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--info);font-weight:600;margin:0 2px 10px}
-.srcfoot{font-size:11.5px;color:var(--muted);padding:10px 2px;line-height:1.55}
+
+
 .pill{bottom:16px}
 a.item{text-decoration:none}
 .assistpanel{position:fixed;z-index:67;left:50%;transform:translateX(-50%);bottom:64px;width:520px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 30px rgba(31,41,55,.14);padding:16px;display:none;font-size:12.5px;z-index:40}
@@ -329,21 +327,43 @@ a.item{text-decoration:none}
   </div></div>
 
 </div>
-<div class="source" id="srcpane"><div class="handle" id="srchandle" role="separator" aria-orientation="vertical" tabindex="0" title="Drag to resize, or use the arrow keys"></div>
+<div class="source" id="srcpane">
+  <div class="handle" id="srchandle" role="separator" aria-orientation="vertical" tabindex="0" aria-label="Resize the proof panel" title="Drag to resize &middot; double-click to reset &middot; arrow keys also work"><span class="grip"></span></div>
   <div class="inner">
-  <div class="srchead"><span class="sec-eyebrow">The proof</span><span class="purpose">Nothing asks to be trusted.</span><span class="srcclose" id="srcclose" role="button" tabindex="0">&#10005; Close proof panel</span></div>
-  <div class="cap" id="citecap"><span class="refdot active" style="vertical-align:middle"></span> Cited · Terms · coupon · highlighted on the source page</div>
-  <div class="doccard">
-    <div class="docbar"><span aria-hidden="true" style="width:11px;height:14px;border:1.5px solid var(--muted);border-radius:2px;display:inline-block"></span><b>Teaser_Project_Bluegrass.pdf</b><span class="docnav"><button id="pgprev" aria-label="Previous page">&#8249;</button><span class="pgnum">page <b id="pgnum">1</b> of 2</span><button id="pgnext" aria-label="Next page">&#8250;</button></span><a class="docdl" href="Teaser_Project_Bluegrass.pdf" download>&#8595; Download PDF</a></div>
-    <div style="position:relative;line-height:0">
-      <img id="srcimg" src="bluegrass-p1.png" style="width:100%;display:block" alt="Teaser page">
-      <div id="hl"></div>
-      <div id="hlbadge" style="position:absolute;right:6%;top:84.2%;font-size:10px;color:#fff;background:var(--info);border-radius:4px;padding:2px 7px;line-height:1.3;font-family:Inter,sans-serif">cited sentence ↓</div>
+    <div class="srcchrome">
+      <div class="chrometop">
+        <span class="sec-eyebrow">The proof</span>
+        <span class="purpose">Nothing asks to be trusted.</span>
+        <span class="srcclose" id="srcclose" role="button" tabindex="0">&#10005; Close</span>
+      </div>
+      <div class="chromebar">
+        <span class="fileic" aria-hidden="true"></span>
+        <b class="fname" title="Teaser_Project_Bluegrass.pdf">Teaser_Project_Bluegrass.pdf</b>
+        <span class="docnav">
+          <button id="pgprev" aria-label="Previous page">&#8249;</button>
+          <span class="pgnum"><b id="pgnum">1</b> / 2</span>
+          <button id="pgnext" aria-label="Next page">&#8250;</button>
+        </span>
+        <span class="zoomctl">
+          <button id="zout" aria-label="Zoom out">&minus;</button>
+          <button id="zfit" class="on" aria-label="Fit width">Fit</button>
+          <button id="zin" aria-label="Zoom in">+</button>
+        </span>
+        <a class="docdl" href="Teaser_Project_Bluegrass.pdf" download title="Download the source document">&#8595; PDF</a>
+      </div>
+      <div class="cap" id="citecap"><span class="refdot active" style="vertical-align:middle"></span> Click any figure on the tab to open its sentence here.</div>
     </div>
+    <div class="srcscroll" id="srcscroll">
+      <div class="doccard">
+        <div class="docpage">
+          <img id="srcimg" src="bluegrass-p1.png" alt="Teaser page">
+          <div id="hl"></div>
+          <div id="hlbadge">cited sentence &darr;</div>
+        </div>
+      </div>
+    </div>
+    <div class="srcfoot">The pane renders the document as the broker sent it. Corrections go through the assistant and are audited; the document itself never changes.</div>
   </div>
-  <div class="srcfoot">The pane renders the actual document as the broker sent it; every figure on this tab opens its own sentence here. Corrections go through the assistant and are audited; the document itself is immutable.</div>
-  </div>
-</div>
 </div>
 <div class="pill" role="button" tabindex="0" aria-label="Ask or correct this deal"><span class="mark" aria-hidden="true">&#9679;</span><span class="say">Ask or correct this deal&hellip;</span><span class="ctx">Bluegrass</span><span class="kbd">&#8984;K</span></div>
 <div class="assistpanel" id="apanel" role="dialog" aria-label="Deal assistant">
@@ -414,12 +434,19 @@ function paintRects(c){
   });
   badge.style.top=Math.max(1,c.rects[0][1]-2.6)+'%';
 }
+function scrollToCite(){
+  const box=document.getElementById('srcscroll'), page=document.querySelector('.docpage');
+  if(!curCite || curCite.page!==curPage || !page.offsetHeight){ return; }
+  const y = page.offsetTop + (curCite.rects[0][1]/100)*page.offsetHeight;
+  box.scrollTo({top: Math.max(0, y - box.clientHeight*0.34), behavior:'smooth'});
+}
 function goPage(n){
   curPage=Math.min(2,Math.max(1,n));
   srcimg.src='bluegrass-p'+curPage+'.png';
   pgnum.textContent=curPage;
   pgprev.disabled=curPage===1; pgnext.disabled=curPage===2;
   paintRects(curCite);
+  scrollToCite();
   const el=document.getElementById('citecap');
   if(curCite && curCite.page!==curPage) el.innerHTML='<span class="nocite">The cited sentence is on page '+curCite.page+'. Nothing is highlighted on this one.</span>';
   else if(curCite) el.innerHTML=capHTML;
@@ -432,7 +459,7 @@ function applyCite(key, label){
   capHTML = '<span class="refdot active" style="vertical-align:middle"></span> Cited &middot; '+(label||LABELS[key]||key)+' &middot; highlighted on the source page';
   goPage(c.page);
   openPane();
-  srcpane.scrollTop = 0;
+  requestAnimationFrame(scrollToCite);
   pane.animate([{boxShadow:'0 0 0 3px rgba(14,165,233,.4)'},{boxShadow:'none'}],{duration:900});
 }
 
@@ -543,6 +570,31 @@ document.querySelectorAll('.doc .open').forEach(b=>{ b.tabIndex=0; b.setAttribut
     }
     close();
   });
+})();
+// ---- proof panel: chrome is fixed, only the page scrolls; the grip is always visible
+(function(){
+  const scroll=document.getElementById('srcscroll'), img=document.getElementById('srcimg');
+  let zoom=0; // 0 = fit width
+  const ZOOMS=[1.25,1.5,2];
+  function applyZoom(){
+    const fit = zoom===0;
+    document.getElementById('zfit').classList.toggle('on',fit);
+    img.style.width = fit ? '100%' : (ZOOMS[zoom-1]*100)+'%';
+    scroll.style.overflowX = fit ? 'hidden' : 'auto';
+    document.getElementById('zin').disabled = zoom>=ZOOMS.length;
+    document.getElementById('zout').disabled = zoom===0;
+    document.getElementById('zfit').textContent = fit ? 'Fit' : Math.round(ZOOMS[zoom-1]*100)+'%';
+  }
+  document.getElementById('zin').addEventListener('click',()=>{zoom=Math.min(ZOOMS.length,zoom+1);applyZoom()});
+  document.getElementById('zout').addEventListener('click',()=>{zoom=Math.max(0,zoom-1);applyZoom()});
+  document.getElementById('zfit').addEventListener('click',()=>{zoom=0;applyZoom()});
+  applyZoom();
+  // resize: drag, double-click to reset, arrow keys
+  const pane=document.getElementById('srcpane'), h=document.getElementById('srchandle');
+  function half(){ const L=document.querySelector('.layout').clientWidth; return Math.round((L-document.querySelector('.rail').offsetWidth)/2); }
+  h.addEventListener('dblclick',()=>setW(half()));
+  h.addEventListener('mousedown',()=>{document.body.style.userSelect='none';pane.classList.add('dragging')});
+  window.addEventListener('mouseup',()=>{document.body.style.userSelect='';pane.classList.remove('dragging')});
 })();
 </script>
 </body></html>
