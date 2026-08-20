@@ -382,3 +382,27 @@ main{padding-bottom:110px}
   text-transform:uppercase;color:var(--faint);font-weight:700}
 .pagegap::before,.pagegap::after{content:"";flex:1;height:1px;background:var(--line)}
 .hl[data-hl]{position:absolute;inset:0;pointer-events:none}
+
+/* The mark is a way home */
+.brand{display:flex;align-items:center;gap:16px;text-decoration:none;color:inherit;border-radius:10px;padding:2px 4px 2px 2px}
+.brand:hover{background:var(--hair)}
+/* Admin surfaces live behind the account chip, not in everyone's navigation */
+.acct{position:relative}
+.acct .userchip{cursor:pointer}
+.acctmenu{position:absolute;right:0;top:34px;min-width:224px;background:#fff;border:1px solid var(--line);border-radius:12px;
+  box-shadow:0 12px 34px rgba(31,41,55,.16);padding:6px;display:none;z-index:90}
+.acct.open .acctmenu{display:block}
+.acctmenu .who{padding:9px 11px 10px;border-bottom:1px solid var(--hair);margin-bottom:5px}
+.acctmenu .who b{display:block;font-size:12.5px}
+.acctmenu .who span{font-size:11px;color:var(--muted)}
+.acctmenu .mi{display:flex;align-items:center;gap:8px;padding:8px 11px;border-radius:8px;font-size:12.5px;color:var(--ink);text-decoration:none}
+.acctmenu .mi:hover{background:var(--hair)}
+.acctmenu .mi.disabled{color:var(--faint);cursor:not-allowed}
+.acctmenu .mi.disabled:hover{background:none}
+.acctmenu .lock{margin-left:auto;font-size:9.5px;letter-spacing:.5px;text-transform:uppercase;font-weight:700;color:var(--faint)}
+/* Where am I: a deal tab says which table it came from, and goes back */
+.crumb{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;color:var(--muted);text-decoration:none;
+  padding:4px 10px 4px 6px;border-radius:999px;border:1px solid transparent}
+.crumb:hover{color:var(--ink);background:var(--hair);border-color:var(--line)}
+.crumb .arrow{font-size:13px;line-height:1}
+.mhead .crumb{margin-bottom:8px}

@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Project Anchor · Morningside OS</title><link rel="stylesheet" href="shared.css?v=75146bd5"><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Project Anchor · Morningside OS</title><link rel="stylesheet" href="shared.css?v=3f6792d4"><style>
 html{scroll-behavior:smooth}
 .layout{display:flex}
 .rail{width:196px;flex:0 0 196px;border-right:1px solid var(--line);padding:16px 0;background:#fff;
@@ -86,9 +86,9 @@ a.item{text-decoration:none}
 .searched .no{color:var(--faint)}
 </style></head><body>
 <div class="topbar">
-  <div class="mono">MCI</div><div class="appname">Morningside&nbsp;OS</div>
-  <nav class="topnav"><a href="today.html" style="color:inherit;text-decoration:none">Today</a><a href="pipeline.html" class="active" style="color:inherit;text-decoration:none">Pipeline</a><div class="navsoon" title="specified in the design document, not built in this prototype">Framework</div><div class="navsoon" title="specified in the design document, not built in this prototype">Audit</div></nav>
-  <div class="spacer"></div><div class="weeklabel">Wednesday, August 19, 2026</div><div class="userchip">AZ</div>
+  <a class="brand" href="today.html" title="Back to Today"><span class="mono">MCI</span><span class="appname">Morningside&nbsp;OS</span></a>
+  <nav class="topnav"><a class="" style="color:inherit;text-decoration:none" href="today.html">Today</a><a class="active" style="color:inherit;text-decoration:none" href="pipeline.html">Pipeline</a></nav>
+  <div class="spacer"></div><div class="weeklabel">Wednesday, August 19, 2026</div><div class="acct"><div class="userchip" role="button" tabindex="0" aria-haspopup="true">AZ</div><div class="acctmenu"><div class="who"><b>Allen Zhang</b><span>Investment Associate</span></div><a class="mi" href="#" title="Versions, thresholds and change requests">Screening framework</a><a class="mi disabled" title="IT Admin only">Audit console <span class="lock">IT Admin</span></a><a class="mi" href="#">Sign out</a></div></div>
 </div>
 <div class="layout">
 <div class="rail">
@@ -116,6 +116,7 @@ a.item{text-decoration:none}
 </div>
 <div class="main">
   <div class="mhead">
+    <a class="crumb" href="pipeline.html"><span class="arrow">&larr;</span> Pipeline <span style="color:var(--faint)">/</span> NAV Financing</a>
     <div class="dhead">
       <h1>Project Anchor</h1>
       <span class="chip verdict" title="Rule: at most one strategy deviation, and ranking IRR at or above the 10 percent band floor"><span class="dot"></span>Worth a look</span>
@@ -376,6 +377,7 @@ a.item{text-decoration:none}
     </div>
     <div class="srcfoot">The pane renders the document as the broker sent it. Corrections go through the assistant and are audited; the document itself never changes.</div>
   </div>
+</div>
 </div>
 <div class="pill" role="button" tabindex="0" aria-label="Ask or correct this deal"><span class="mark" aria-hidden="true">Ask</span><span class="say">Ask or correct this deal&hellip;</span><span class="ctx">Anchor</span><span class="kbd">&#8984;K</span><span class="badge">2</span></div>
 <div class="assistpanel" id="apanel" role="dialog" aria-label="Deal assistant">
