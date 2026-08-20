@@ -315,16 +315,16 @@ table td:nth-child(2) b{white-space:nowrap}
   display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
 .zonelabel .sec-eyebrow{font-size:11px;letter-spacing:1.6px}
 .zonelabel:first-of-type{margin-top:20px !important}
-/* Section: a header that owns its block. Sticky, so you always know where you are. */
-.secrow{border-bottom:none !important;padding:30px 0 6px !important}
-.secrow:first-child{padding-top:20px !important}
-.sechead{position:sticky;top:var(--topbar-h);z-index:20;background:var(--ground);
-  padding:9px 0 9px;margin-bottom:18px !important;border-bottom:1px solid var(--line);
+/* Section: separated by proximity alone. A big gap above the title, a tight one below. */
+.secrow{border-bottom:none !important;padding:46px 0 4px !important}
+.secrow:first-child{padding-top:22px !important}
+.sechead{position:static !important;border-bottom:none !important;padding:0 !important;margin-bottom:12px !important;
   display:flex;align-items:baseline;gap:12px}
 .sechead h2{font-size:16.5px !important;font-weight:700 !important;letter-spacing:-.25px !important}
 .sechead .q{font-size:11.5px;color:var(--muted)}
 .sechead .chips{margin-left:auto;display:flex;gap:6px;flex-shrink:0}
-/* Metrics sit closer to their own header than to the next section: proximity does the grouping */
+.secno{display:none}
+/* Metrics sit closer to their own header than to the next section */
 .grid{gap:18px 24px !important}
 
 .secno{display:inline-block;min-width:19px;font-size:11px;font-weight:700;color:var(--faint);
