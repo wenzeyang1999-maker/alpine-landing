@@ -336,3 +336,30 @@ table td:nth-child(2) b{white-space:nowrap}
 .flaglegend i.d{background:var(--neg)}
 .flaglegend i.c{background:transparent;border:1.5px solid var(--muted);width:5px;height:5px}
 .flaglegend i.s{background:var(--pos)}
+
+/* ============ Small screens: a coherent strategy, not patched pieces ============ */
+@media (max-width:900px){
+  html,body{max-width:100%;overflow-x:hidden}
+  main,.content,.mhead,.zonelabel,.decide{padding-left:16px !important;padding-right:16px !important;margin-left:0 !important;margin-right:0 !important}
+  /* Wide tables scroll inside their own frame rather than dragging the page sideways */
+  table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap}
+  table.pco,table.cmp,.pipeline table{min-width:0}
+  /* Two-column layouts stack */
+  .decide,.recs{grid-template-columns:1fr !important}
+  .grid{grid-template-columns:repeat(2,1fr) !important}
+  /* Rows that assumed horizontal room */
+  .qrow{flex-wrap:wrap}
+  .qrow .clock{text-align:left;width:100%;margin-top:4px}
+  .weekstrip{flex-wrap:wrap;gap:16px 22px}
+  .statestrip,.chiprow,.dhead,.filters,.droomhead,.entity,.searched{flex-wrap:wrap}
+  .sechead{flex-wrap:wrap}
+  .sechead .chips{margin-left:0;width:100%}
+  /* The proof panel becomes an overlay; a half split has no meaning at this width */
+  .source.open{position:fixed;inset:var(--topbar-h) 0 0 auto;width:min(92vw,440px) !important;z-index:60;
+    box-shadow:-8px 0 30px rgba(31,41,55,.16)}
+}
+@media (max-width:600px){
+  .grid{grid-template-columns:1fr !important}
+  .topnav{gap:12px;font-size:12px}
+  .weeklabel{display:none}
+}
