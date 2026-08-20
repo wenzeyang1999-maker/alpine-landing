@@ -1,0 +1,322 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Project Bluegrass · Morningside</title><link rel="stylesheet" href="shared.css"><style>
+html{scroll-behavior:smooth}
+.layout{display:flex}
+.rail{width:196px;flex:0 0 196px;border-right:1px solid var(--line);padding:16px 0;background:#fff;
+  position:sticky;top:var(--topbar-h);height:calc(100vh - var(--topbar-h));overflow-y:auto;align-self:flex-start}
+.rail .item{padding:11px 20px;font-size:12.5px;color:var(--muted);display:flex;gap:10px;align-items:center;border-left:2.5px solid transparent}
+.rail .on{color:var(--ink);font-weight:600;border-left-color:var(--ink);background:var(--surface)}
+.rail .sub{font-size:10px;color:var(--faint);padding:16px 20px 5px;text-transform:uppercase;letter-spacing:1.1px;font-weight:700}
+.main{flex:1;padding:0 0 120px;min-width:0}
+.mhead{padding:20px 28px 0}
+.dhead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.dhead h1{font-size:22px;font-weight:700;letter-spacing:-.2px}
+.dmeta{color:var(--muted);font-size:12.5px}
+.chiprow{display:flex;gap:8px;margin-top:10px;align-items:center}
+.toggle{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:14px 0 0;width:fit-content}
+.toggle div{padding:7px 14px;cursor:pointer;font-size:11.5px;color:var(--muted);border-right:1px solid var(--line)}
+.toggle div:last-child{border-right:none}
+.toggle .on{background:var(--ink);color:#fff;font-weight:600}
+.zonelabel{margin:18px 28px 0;display:flex;align-items:baseline;gap:10px}
+.ailabel{margin:10px 28px 0}
+.assessblock{margin:10px 28px 6px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 20px;display:flex;flex-direction:column;gap:14px}
+.assess{font-size:15px;line-height:1.7;flex:1;display:flex;flex-direction:column;gap:9px}
+.tally{width:170px;border-left:1px solid var(--line);padding-left:20px;display:flex;flex-direction:column;gap:9px;justify-content:center}
+.tally .trow{cursor:default;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.tally .trow b{font-size:16px;color:var(--ink);width:16px;text-align:right}
+.tdot{width:7px;height:7px;border-radius:50%}
+.content{padding:0 28px}
+.secrow{border-bottom:1px solid var(--line);padding:18px 0 16px;scroll-margin-top:calc(var(--topbar-h) + 12px)}
+.sechead{display:flex;align-items:baseline;gap:12px;margin-bottom:13px}
+.sechead h2{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--ink)}
+.sechead .q{font-size:12px;color:var(--muted)}
+.sechead .chips{margin-left:auto;display:flex;gap:6px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 24px}
+.kv .k{font-size:11px;color:var(--muted);letter-spacing:.3px}
+.kv .v{font-size:17px;font-weight:650;margin-top:3px;letter-spacing:-.2px}
+.kv .note{font-size:11px;color:var(--muted);margin-top:2px}
+.kv{cursor:pointer;border-radius:8px;padding:5px 8px;margin:-5px -8px;transition:background .18s ease}
+.kv:hover{background:rgba(14,165,233,.08)}
+.kv.active{background:rgba(14,165,233,.13)}
+.kv.active .v::after{content:"";display:inline-block;width:5.5px;height:5.5px;border-radius:50%;background:var(--info);margin-left:6px;vertical-align:super}
+.recon{display:inline-flex;align-items:center;gap:7px;margin-top:12px;font-size:11px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:4px 10px}
+.recon .check{font-weight:700}
+.pcohead{display:flex;gap:22px;font-size:12px;color:var(--muted);margin-bottom:10px}
+.pcohead b{color:var(--ink)}
+table.pco th{padding:6px 8px}
+table.pco td{padding:8px;font-size:12.5px}
+.navcell{display:flex;align-items:center;gap:8px}
+.navcell i{display:inline-block;height:6px;border-radius:3px;background:#94A3B8}
+.quote{font-size:11px;color:var(--muted);font-style:italic}
+.more{font-size:12px;color:var(--info);padding:10px 8px;cursor:pointer;display:inline-block}
+.source{width:0;min-width:0;flex:0 0 auto;border-left:0 solid var(--line);background:var(--surface);padding:18px 0;overflow:hidden;
+  transition:width .3s cubic-bezier(.2,.8,.2,1),padding .3s;
+  position:sticky;top:var(--topbar-h);height:calc(100vh - var(--topbar-h));align-self:flex-start}
+.source.open{width:440px;padding:18px;border-left:1px solid var(--line);overflow-y:auto}
+.source .inner{width:404px}
+.handle{position:absolute;left:0;top:0;bottom:0;width:6px;cursor:col-resize;background:transparent}
+.handle:hover{background:rgba(14,165,233,.25)}
+.closex{margin-left:8px;cursor:pointer;color:var(--muted);font-size:13px}
+.doccard{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.docbar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);background:#FBFDFF}
+.docbar b{font-size:12px}
+.docbar .pg{margin-left:auto;font-size:10.5px;color:var(--muted)}
+.cap{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--info);font-weight:600;margin:0 2px 10px}
+.srcfoot{font-size:11.5px;color:var(--muted);padding:10px 2px;line-height:1.55}
+.pill{bottom:16px}
+a.item{text-decoration:none}
+.assistpanel{position:fixed;z-index:67;left:50%;transform:translateX(-50%);bottom:64px;width:520px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 30px rgba(31,41,55,.14);padding:16px;display:none;font-size:12.5px;z-index:40}
+.assistpanel.open{display:block}
+.apmsg{padding:8px 10px;border-radius:10px;margin-bottom:8px;line-height:1.5}
+.apmsg.user{background:var(--surface);width:fit-content}
+.apmsg.sys{color:var(--muted);font-size:11.5px}
+.apcard{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:6px 0}
+.apcard .rowline{display:flex;gap:8px;align-items:center;font-size:12px}
+.apcard .old{color:var(--muted);text-decoration:line-through}
+.apcard .src{font-size:10.5px;color:var(--info);margin-top:4px}
+.apcard .acts{display:flex;gap:8px;margin-top:8px}
+</style></head><body>
+<div class="topbar">
+  <div class="mono">MCI</div><div class="appname">Morningside</div>
+  <nav class="topnav"><a href="index.html" style="color:inherit;text-decoration:none">Today</a><a href="pipeline.html" class="active" style="color:inherit;text-decoration:none">Pipeline</a><div>Framework</div><div>Audit</div></nav>
+  <div class="spacer"></div><div class="weeklabel">Wednesday, August 19, 2026</div><div class="userchip">AZ</div>
+</div>
+<div class="layout">
+<div class="rail">
+  <div class="sub">The answer</div>
+  <a class="item on" href="#top" data-spy="top">The read</a>
+  <div class="sub">The evidence</div>
+  <a class="item" href="#s-return" data-spy="s-return">Return</a>
+  <a class="item" href="#s-safety" data-spy="s-safety">Safety</a>
+  <a class="item" href="#s-repay" data-spy="s-repay">Repayment</a>
+  <a class="item" href="#s-manager" data-spy="s-manager">Manager</a>
+  <a class="item" href="#s-terms" data-spy="s-terms">Terms</a>
+  <a class="item" href="#s-portfolio" data-spy="s-portfolio">Portfolio</a>
+  <div class="item">Public record</div>
+  <div class="sub">The record</div>
+  <div class="item">Activity</div>
+  <div class="item">Edit mode</div>
+</div>
+<div class="main">
+  <div class="mhead">
+    <div class="dhead">
+      <h1>Project Bluegrass</h1>
+      <span class="chip verdict"><span class="dot"></span>Priority look</span>
+      <span class="dmeta">NAV Financing · Meridian Park · Hollis Bridge Fund III · received Aug 18</span>
+    </div>
+    <div class="chiprow">
+      <span class="chip"><span class="uscur">US$</span><b class="num">80.0M</b>&nbsp;· ~50% offered</span>
+      <span class="chip">Due in <b>12 days</b></span>
+      <span class="chip">Framework v1</span>
+      <span class="chip">Teaser + broker email · 2 documents</span>
+    </div>
+    <div class="toggle"><div class="on">Screening</div><div>Reached out</div><div>NDA requested</div><div>Submit to partner</div><div>Rejected</div></div>
+  </div>
+
+  <div class="zonelabel"><span class="sec-eyebrow">The read</span><span class="purpose">Should this deal get your time? The answer, then the reasons, in thirty seconds.</span></div>
+  <div class="ailabel"><span class="chip amber"><span class="dot"></span>AI first draft — judgment, not data</span></div>
+  <div class="assessblock">
+    <div style="display:flex;gap:26px">
+      <div class="assess">
+        <div><span class="sec-eyebrow" style="display:block;margin-bottom:2px;color:var(--muted)">The deal</span>A four-year <span class="cite num" data-cite="facility" data-src="Facility · page 1">US$80.0M</span> NAV facility against an <span class="cite" data-cite="portfolio8" data-src="Portfolio · page 2">eight-company</span> lower-middle-market buyout portfolio, funding <span class="cite" data-cite="addons" data-src="Use of proceeds · page 1">two signed add-ons</span> with bridge liquidity ahead of realizations in process.</div>
+        <div><span class="sec-eyebrow" style="display:block;margin-bottom:2px;color:var(--muted)">The manager</span>Hollis Bridge (Boston, <span class="cite num" data-cite="sponsor" data-src="Sponsor · page 1">US$1.4B AUM</span>) demonstrably returns capital: Fund I distributed <span class="cite num" data-cite="track" data-src="Track record · page 1">2.3x</span>, Fund II <span class="cite num" data-cite="track" data-src="Track record · page 1">1.6x</span>, and the borrower fund has already returned <span class="cite num" data-cite="track" data-src="Track record · page 1">1.1x</span>.</div>
+        <div><span class="sec-eyebrow" style="display:block;margin-bottom:2px;color:var(--muted)">The economics</span>Projected all-in gross IRR of <span class="cite num" data-cite="irr" data-src="Economics · page 2">14–15%</span> under the broker's own convention (engine: 14.6%), <span class="cite num" data-cite="ltv" data-src="The Facility · page 1">25.8% LTV</span> against a <span class="cite num" data-cite="ltv" data-src="The Facility · page 1">32.5% covenant</span>, and a 30.5% stressed attachment with the top position written to zero.</div>
+      </div>
+      <div class="tally">
+        <div class="trow"><span class="tdot" style="background:var(--neg)"></span><b class="num">0</b> deviations</div>
+        <div class="trow"><span class="tdot" style="border:1.5px solid var(--muted);width:5px;height:5px;background:#fff"></span><b class="num">2</b> cautions</div>
+        <div class="trow"><span class="tdot" style="background:var(--pos)"></span><b class="num">3</b> strengths</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:22px;border-top:1px solid var(--line);padding-top:13px">
+      <div style="flex:1">
+        <div class="sec-eyebrow" style="margin-bottom:7px;color:var(--muted)">Strengths</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:11.5px;color:var(--muted)">
+          <div><span class="chip strength"><span class="dot"></span>Well diversified</span> &nbsp;<span class="cite num" data-cite="portfolio8" data-src="Investment highlights · page 1">8 positions</span> across 5 sectors, largest <span class="cite num" data-cite="portfolio8" data-src="Investment highlights · page 1">15% of NAV</span></div>
+          <div><span class="chip strength"><span class="dot"></span>2 exits in process</span> &nbsp;banker-led, both expected to <span class="cite" data-cite="exits" data-src="Visible repayment path · page 1">sign within 6 months</span></div>
+          <div><span class="chip strength"><span class="dot"></span>Strong distribution record</span> &nbsp;Fund I DPI <span class="cite num" data-cite="track" data-src="Track record · page 1">2.3x</span> clears the 1.5x bar</div>
+        </div>
+      </div>
+      <div style="flex:1">
+        <div class="sec-eyebrow" style="margin-bottom:7px;color:var(--muted)">Risks</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:11.5px;color:var(--muted)">
+          <div><span class="chip caution"><span class="dot"></span>Caution · PIK present</span> &nbsp;<span class="cite num" data-cite="coupon" data-src="Economics · page 1">3.00% of the 11.00% coupon</span> at the borrower's election; cash share falls to ~70–75%</div>
+          <div><span class="chip caution"><span class="dot"></span>Caution · Upside dependent</span> &nbsp;removing the capped NAV participation cuts all-in IRR by more than 200 bps</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="zonelabel" style="margin-bottom:4px"><span class="sec-eyebrow">The evidence</span><span class="purpose">Each section answers one question from the mandate. If a section can't name its question, it doesn't belong here.</span></div>
+  <div class="content">
+  <div class="secrow" id="s-return">
+    <div class="sechead"><h2>Return</h2><span class="q">Does it clear the mid-teens mandate, and how much of that is contractual?</span><div class="chips"><span class="chip caution"><span class="dot"></span>Caution · Upside dependent</span></div></div>
+    <div class="grid num">
+      <div class="kv"><div class="k">All-in IRR, stated maturity</div><div class="v">14–15%</div><div class="note">ranks: expected repayment qualifies</div></div>
+      <div class="kv"><div class="k">Expected repayment</div><div class="v">14–15%</div><div class="note">2 exits + stated sweep</div></div>
+      <div class="kv"><div class="k">Cash share of return</div><div class="v">~70–75%</div><div class="note">8.00% cash of 11.00% coupon</div></div>
+      <div class="kv"><div class="k">Upside cap</div><div class="v">18.0% IRR</div><div class="note">5.0% of NAV growth</div></div>
+    </div>
+    <div class="recon">Broker: <span class="cite num" data-cite="irr" data-src="Economics · page 2">14–15% at 3-year average life</span> · engine, same convention: <b>14.6%</b> <span class="check">✓ reconciled</span></div>
+  </div>
+
+  <div class="secrow" id="s-safety">
+    <div class="sechead"><h2>Margin of safety</h2><span class="q">How much value sits between us and a loss, and does it survive stress?</span></div>
+    <div class="grid num">
+      <div class="kv"><div class="k">Headline LTV</div><div class="v">25.8%</div><div class="note">US$80M on US$310M NAV</div></div>
+      <div class="kv"><div class="k">Stressed · top position → 0</div><div class="v">30.5%</div><div class="note">largest write-off absorbed</div></div>
+      <div class="kv"><div class="k">LTV covenant</div><div class="v">32.5% max</div><div class="note">6.7 pts of headroom</div></div>
+      <div class="kv"><div class="k">Existing fund debt</div><div class="v">None stated</div><div class="note">not disclosed in the teaser</div></div>
+    </div>
+  </div>
+
+  <div class="secrow" id="s-repay">
+    <div class="sechead"><h2>Repayment</h2><span class="q">How many independent ways does this loan come back?</span><div class="chips"><span class="chip strength"><span class="dot"></span>Well diversified</span><span class="chip strength"><span class="dot"></span>2 exits in process</span></div></div>
+    <div class="grid num">
+      <div class="kv"><div class="k">Positions</div><div class="v">8</div><div class="note">5 sectors</div></div>
+      <div class="kv"><div class="k">Top position</div><div class="v">15%</div><div class="note">Halewood Packaging</div></div>
+      <div class="kv"><div class="k">Top three</div><div class="v">44%</div><div class="note">no majority reliance</div></div>
+      <div class="kv"><div class="k">Sale processes</div><div class="v">2 banker-led</div><div class="note">both expected to sign in 6 months</div></div>
+    </div>
+  </div>
+
+  <div class="secrow" id="s-manager">
+    <div class="sechead"><h2>Manager</h2><span class="q">Does this GP actually return capital, or only mark it up?</span><div class="chips"><span class="chip strength"><span class="dot"></span>Strong distribution record</span></div></div>
+    <div class="grid num">
+      <div class="kv"><div class="k">Fund I (2013)</div><div class="v">2.3x DPI</div><div class="note">substantially realized</div></div>
+      <div class="kv"><div class="k">Fund II (2016)</div><div class="v">1.6x DPI</div><div class="note">substantially realized</div></div>
+      <div class="kv"><div class="k">Fund III · borrower</div><div class="v">1.1x DPI</div><div class="note">1.6x TVPI · cash actually returned</div></div>
+      <div class="kv"><div class="k">Net IRR · borrower</div><div class="v">16.0%</div><div class="note">as of 3/31/26</div></div>
+    </div>
+  </div>
+
+  <div class="secrow" id="s-terms">
+    <div class="sechead"><h2>Terms</h2><span class="q">What are we actually signing, and where does it bite?</span><div class="chips"><span class="chip caution"><span class="dot"></span>Caution · PIK present</span></div></div>
+    <div class="grid num">
+      <div class="kv"><div class="k">Closing fee</div><div class="v">1.50%</div><div class="note">borrower-paid at close</div></div>
+      <div class="kv"><div class="k">Coupon</div><div class="v">11.00%<span class="refdot active"></span></div><div class="note">8.00% cash · 3.00% PIK, borrower election</div></div>
+      <div class="kv"><div class="k">Upside participation</div><div class="v">5.0%</div><div class="note">of NAV growth above US$310M</div></div>
+      <div class="kv"><div class="k">Term · law · sweep</div><div class="v">4 yrs · NY</div><div class="note">exit-proceeds sweep above threshold</div></div>
+    </div>
+  </div>
+
+  <div class="secrow" id="s-portfolio" style="border-bottom:none">
+    <div class="sechead"><h2>Portfolio</h2><span class="q">What exactly stands behind the loan, in the broker's own words?</span></div>
+    <div class="pcohead"><span><b>8</b> companies</span><span>stated NAV <b class="num">US$310.0M</b></span><span>sum of positions reconciles <span class="check">✓</span></span><span><b>2</b> exits in process</span></div>
+    <table class="pco num">
+      <tr><th>Company</th><th>Sector · ownership</th><th>% of NAV</th><th>Fund value</th><th>Status</th><th>Broker's words</th></tr>
+      <tr><td><b>Halewood Packaging</b></td><td class="muted">Packaging · 80%</td><td><span class="navcell"><i style="width:72px"></i>15%</span></td><td>US$48.0M</td><td><span class="chip"><span class="dot"></span>In sale process</span></td><td class="quote">"revenue US$120.0M, EBITDA US$11.0M"</td></tr>
+      <tr><td><b>Maplecore Foods</b></td><td class="muted">Food &amp; beverage</td><td><span class="navcell"><i style="width:70px"></i>15%</span></td><td>US$46.0M</td><td class="muted small">ownership in data room</td><td class="quote"></td></tr>
+      <tr><td><b>Brightmark Dental</b></td><td class="muted">Healthcare · 70%</td><td><span class="navcell"><i style="width:65px"></i>14%</span></td><td>US$42.0M</td><td></td><td class="quote">"revenue US$95.0M, EBITDA US$12.0M"</td></tr>
+      <tr><td><b>Stonegate Veterinary</b></td><td class="muted">Healthcare services</td><td><span class="navcell"><i style="width:61px"></i>13%</span></td><td>US$40.0M</td><td><span class="chip"><span class="dot"></span>In sale process</span></td><td class="quote"></td></tr>
+      <tr><td><b>Corenza Software</b></td><td class="muted">Application software · 100%</td><td><span class="navcell"><i style="width:57px"></i>12%</span></td><td>US$38.0M</td><td class="muted small">net cash US$5.0M</td><td class="quote"></td></tr>
+      <tr class="pcomore" hidden><td><b>Ridgetop Fire &amp; Safety</b></td><td class="muted">Business services · 85%</td><td><span class="navcell"><i style="width:51px"></i>11%</span></td><td>US$34.0M</td><td class="muted small">signed add-on pending</td><td class="quote">"revenue US$58.0M, EBITDA US$7.0M"</td></tr>
+      <tr class="pcomore" hidden><td><b>Ironvale Precision</b></td><td class="muted">Precision manufacturing</td><td><span class="navcell"><i style="width:48px"></i>10%</span></td><td>US$32.0M</td><td class="muted small">signed add-on pending</td><td class="quote"></td></tr>
+      <tr class="pcomore" hidden><td><b>Bluewater Marine</b></td><td class="muted">Industrial services · 100%</td><td><span class="navcell"><i style="width:45px"></i>10%</span></td><td>US$30.0M</td><td class="muted small">net debt US$25.0M</td><td class="quote">"revenue US$70.0M, EBITDA US$6.5M"</td></tr>
+    </table>
+    <div class="more" id="morebtn" role="button" tabindex="0">Show 3 more positions ▾</div>
+  </div>
+  </div>
+</div>
+
+<div class="source open" id="srcpane"><div class="handle" id="srchandle"></div>
+  <div class="inner">
+  <div class="zonelabel" style="margin:0 0 10px;padding:0"><span class="sec-eyebrow">The proof</span><span class="purpose">Nothing asks to be trusted.</span></div>
+  <div class="cap"><span class="refdot active" style="vertical-align:middle"></span> Cited · Terms · coupon · highlighted on the source page</div>
+  <div class="doccard">
+    <div class="docbar"><span aria-hidden="true" style="width:11px;height:14px;border:1.5px solid var(--muted);border-radius:2px;display:inline-block"></span><b>Teaser_Project_Bluegrass.pdf</b><span class="pg">page 1 of 2 · 100% · ⤢ <span class="closex" id="srcclose">✕</span></span></div>
+    <div style="position:relative;line-height:0">
+      <img id="srcimg" src="bluegrass-p1.png" style="width:100%;display:block" alt="Teaser page">
+      <div id="hl"></div>
+      <div id="hlbadge" style="position:absolute;right:6%;top:84.2%;font-size:10px;color:#fff;background:var(--info);border-radius:4px;padding:2px 7px;line-height:1.3;font-family:Inter,sans-serif">cited sentence ↓</div>
+    </div>
+  </div>
+  <div class="srcfoot">The pane renders the actual document as the broker sent it; every figure on this tab opens its own sentence here. Corrections go through the assistant and are audited; the document itself is immutable.</div>
+  </div>
+</div>
+</div>
+<div class="pill"><span aria-hidden="true" style="width:14px;height:14px;border:1.5px solid var(--muted);border-radius:4px 4px 4px 1px;display:inline-block"></span><span>Ask or correct…</span><span class="ctx">Project Bluegrass</span><span class="kbd">⌘K</span></div>
+<div class="assistpanel" id="apanel">
+  <div class="apmsg user">broker confirms the coupon moves to 10.5% cash, no PIK</div>
+  <div class="apcard"><div class="rowline"><b>Coupon</b><span class="old num">11.00% (8.00% cash · 3.00% PIK)</span><span>→</span><b class="num">10.50% all cash</b></div>
+    <div class="src">Source: chat · provenance negotiation · per A. Zhang, Aug 19</div>
+    <div class="acts"><span class="btn primary">Apply</span><span class="btn quiet">Reject</span></div></div>
+  <div class="apmsg sys">Applying recomputes the assessment: PIK caution clears, cash share → 100%, IRR re-runs. Every change is audited.</div>
+</div>
+<script>
+const srcpane = document.getElementById('srcpane');
+function openPane(){ srcpane.classList.add('open'); }
+function closePane(){ srcpane.classList.remove('open'); document.querySelectorAll('.cite.active,.kv.active').forEach(c=>c.classList.remove('active')); }
+document.getElementById('srcclose').addEventListener('click',closePane);
+// drag-to-resize
+const handle = document.getElementById('srchandle');
+let drag=null;
+handle.addEventListener('mousedown',e=>{drag={x:e.clientX,w:srcpane.offsetWidth};e.preventDefault()});
+window.addEventListener('mousemove',e=>{if(!drag)return;const w=Math.min(720,Math.max(320,drag.w+(drag.x-e.clientX)));srcpane.style.width=w+'px';srcpane.querySelector('.inner').style.width=(w-36)+'px'});
+window.addEventListener('mouseup',()=>drag=null);
+// whole metric blocks are click targets; label becomes the citation source
+document.querySelectorAll('.kv').forEach(kv=>{
+  kv.tabIndex=0; kv.setAttribute('role','button');
+  kv.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();kv.click()}});
+  kv.addEventListener('click',()=>{
+    document.querySelectorAll('.cite.active,.kv.active').forEach(c=>c.classList.remove('active'));
+    kv.classList.add('active');
+    const sec = kv.closest('.secrow')?.querySelector('h2')?.textContent || 'Terms';
+    const k = kv.querySelector('.k')?.textContent || '';
+    applyCite(KV_MAP[sec+'|'+k] || 'facility', sec+' · '+k);
+  });
+});
+const pane = document.querySelector('.doccard');
+const cap = document.querySelector('.cap');
+const CITES = {"facility": {"page": 1, "rects": [[43.66, 72.97, 35.29, 1.61]]}, "portfolio8": {"page": 1, "rects": [[25.5, 33.22, 61.25, 1.61]]}, "addons": {"page": 1, "rects": [[55.26, 50.19, 25.45, 1.61]]}, "sponsor": {"page": 1, "rects": [[38.67, 62.08, 44.43, 1.61]]}, "track": {"page": 1, "rects": [[64.66, 37.71, 22.26, 1.61]]}, "ltv": {"page": 1, "rects": [[11.57, 76.45, 52.63, 1.61]]}, "exits": {"page": 1, "rects": [[13.86, 47.44, 72.9, 1.61]]}, "coupon": {"page": 1, "rects": [[42.09, 87.33, 46.34, 1.61], [11.57, 89.08, 39.86, 1.61]]}, "nav": {"page": 1, "rects": [[38.05, 74.71, 34.95, 1.61]]}, "irr": {"page": 2, "rects": [[69.67, 18.82, 18.76, 1.61], [11.57, 20.57, 15.61, 1.61]]}, "upside": {"page": 2, "rects": [[24.68, 15.34, 62.62, 1.61]]}, "cap": {"page": 2, "rects": [[55.31, 17.08, 32.87, 1.61], [11.57, 18.82, 16.61, 1.61]]}};
+
+const LABELS = {facility:"The Facility · page 1 · facility & size", portfolio8:"Investment highlights · page 1 · diversification", addons:"Use of proceeds · page 1", sponsor:"The Sponsor · page 1", track:"Track record · page 1", ltv:"The Facility · page 1 · LTV & covenant", exits:"Repayment path · page 1", coupon:"Economics · page 1 · coupon", nav:"The Facility · page 1 · stated NAV", irr:"Economics · page 2 · projected IRR", upside:"Economics · page 2 · upside participation", cap:"Economics · page 2 · IRR cap"};
+const KV_MAP = {"Return|All-in IRR, stated maturity":"irr","Return|Expected repayment":"exits","Return|Cash share of return":"coupon","Return|Upside cap":"cap","Margin of safety|Headline LTV":"ltv","Margin of safety|Stressed · top position → 0":"nav","Margin of safety|LTV covenant":"ltv","Margin of safety|Existing fund debt":"ltv","Repayment|Positions":"portfolio8","Repayment|Top position":"portfolio8","Repayment|Top three":"portfolio8","Repayment|Sale processes":"exits","Manager|Fund I (2013)":"track","Manager|Fund II (2016)":"track","Manager|Fund III · borrower":"track","Manager|Net IRR · borrower":"track","Terms|Closing fee":"coupon","Terms|Coupon":"coupon","Terms|Upside participation":"upside","Terms|Term · law · sweep":"facility"};
+const srcimg = document.getElementById('srcimg');
+const hlwrap = document.getElementById('hl');
+const badge = document.getElementById('hlbadge');
+function applyCite(key, label){
+  const c = CITES[key]; if(!c) return;
+  srcimg.src = c.page === 2 ? 'bluegrass-p2.png' : 'bluegrass-p1.png';
+  hlwrap.innerHTML = '';
+  c.rects.forEach(r=>{
+    const d = document.createElement('div');
+    d.style.cssText = `position:absolute;left:${r[0]}%;top:${r[1]}%;width:${r[2]}%;height:${r[3]}%;background:rgba(14,165,233,.32);border-radius:2px`;
+    hlwrap.appendChild(d);
+  });
+  const first = c.rects[0];
+  badge.style.top = Math.max(1, first[1]-2.6) + '%';
+  cap.innerHTML = '<span class="refdot active" style="vertical-align:middle"></span> Cited · '+(label||LABELS[key]||key)+' · highlighted on the source page';
+  openPane();
+  srcpane.scrollTop = 0;
+  pane.animate([{boxShadow:'0 0 0 3px rgba(14,165,233,.4)'},{boxShadow:'none'}],{duration:900});
+}
+
+document.querySelectorAll('.cite').forEach(el=>{
+  el.tabIndex=0; el.setAttribute('role','button');
+  el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();el.click()}});
+  el.addEventListener('click',()=>{
+    document.querySelectorAll('.cite.active,.kv.active').forEach(c=>c.classList.remove('active'));
+    el.classList.add('active');
+    applyCite(el.dataset.cite || 'coupon', el.dataset.src);
+  });
+});
+const spy = new IntersectionObserver(es=>{
+  es.forEach(e=>{ if(e.isIntersecting){
+    document.querySelectorAll('[data-spy]').forEach(i=>i.classList.remove('on'));
+    const hit = document.querySelector('[data-spy="'+e.target.id+'"]'); if(hit) hit.classList.add('on');
+  }});
+},{rootMargin:'-30% 0px -60% 0px'});
+document.querySelectorAll('.secrow[id]').forEach(s=>spy.observe(s));
+const pill = document.querySelector('.pill'), apanel = document.getElementById('apanel');
+pill.style.cursor='pointer';
+pill.addEventListener('click',()=>apanel.classList.toggle('open'));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')apanel.classList.remove('open')});
+applyCite('coupon');
+srcpane.classList.add('open');
+
+const moreBtn=document.getElementById('morebtn');
+function toggleMore(){const rows=[...document.querySelectorAll('.pcomore')],hidden=rows[0].hidden;rows.forEach(r=>r.hidden=!hidden);moreBtn.textContent=hidden?'Hide 3 positions ▴':'Show 3 more positions ▾';}
+moreBtn.addEventListener('click',toggleMore);
+moreBtn.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleMore()}});
+</script>
+</body></html>

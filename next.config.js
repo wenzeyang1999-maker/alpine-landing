@@ -3,6 +3,12 @@ const nextConfig = {
   // Self-contained server bundle for Azure App Service deploy (node server.js).
   output: "standalone",
   skipTrailingSlashRedirect: true,
+  async redirects() {
+    return [
+      { source: "/morningsidecase", destination: "/morningsidecase/index.html", permanent: false },
+      { source: "/morningsidecase/", destination: "/morningsidecase/index.html", permanent: false },
+    ];
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "media.licdn.com" },

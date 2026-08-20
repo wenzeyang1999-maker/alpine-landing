@@ -1,0 +1,91 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Today · Morningside</title><link rel="stylesheet" href="shared.css"><style>
+main{max-width:1080px;margin:0 auto;padding:26px 28px 120px}
+.hello{font-size:13px;color:var(--muted);margin-bottom:4px;letter-spacing:.2px}
+.greet h1{font-size:22px;font-weight:700;letter-spacing:-.2px}
+.greet .sub{font-size:13.5px;color:var(--muted);margin-top:5px}
+.zone{margin-top:30px}
+.zonehead{display:flex;align-items:baseline;gap:12px}
+.queue{margin-top:14px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.qrow{display:flex;align-items:center;gap:14px;padding:15px 18px;border-bottom:1px solid var(--hair);background:#fff}
+.qrow:last-child{border-bottom:none}
+.qrow .n{width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.qrow.waiting .n{background:#fff;color:var(--faint);border:1.5px solid var(--line)}
+.qrow .what{flex:1;min-width:0}
+.qrow .what b{font-size:13.5px}
+.qrow .why{font-size:11.5px;color:var(--muted);margin-top:2px}
+.qrow .clock{font-size:11.5px;color:var(--muted);white-space:nowrap;text-align:right}
+.qrow .clock b{color:var(--ink)}
+.meeting{margin-top:14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:16px 18px;display:flex;gap:20px;align-items:center}
+.meeting .mwhat{flex:1}
+.meeting .mwhat b{font-size:13.5px}
+.meeting .mwhy{font-size:11.5px;color:var(--muted);margin-top:3px}
+.weekstrip{margin-top:14px;display:flex;gap:34px;padding:14px 4px;color:var(--muted);font-size:12px}
+.weekstrip b{color:var(--ink);font-size:15px;display:block;margin-bottom:1px}
+</style></head><body>
+<div class="topbar">
+  <div class="mono">MCI</div><div class="appname">Morningside</div>
+  <nav class="topnav"><a class="active" style="color:inherit;text-decoration:none" href="index.html">Today</a><a style="color:inherit;text-decoration:none" href="pipeline.html">Pipeline</a><div>Framework</div><div>Audit</div></nav>
+  <div class="spacer"></div><div class="weeklabel">Wednesday, August 19, 2026</div><div class="userchip">HZ</div>
+</div>
+<main>
+  <header class="greet">
+    <div class="hello">Hi Henry</div>
+    <h1>Three things need you before Thursday's meeting.</h1>
+    <div class="sub">Everything else is handled or waiting on someone else. The queue is ordered by what expires first.</div>
+  </header>
+
+  <section class="zone">
+    <div class="zonehead"><span class="sec-eyebrow">Your queue</span><span class="purpose">Every row needs your decision or your signature. Nothing here is informational.</span></div>
+    <div class="queue">
+      <div class="qrow">
+        <div class="n num">1</div>
+        <div class="what"><b>Anchor: two corrections waiting</b> <span class="chip verdict"><span class="dot"></span>Worth a look</span>
+          <div class="why">The broker's follow-up email moved the closing fee and the marks date. Apply or reject each; the tab recomputes itself.</div></div>
+        <div class="clock num">response due in <b>9 days</b><br><span class="faint">reminder fires Thursday</span></div>
+        <a class="btn primary" style="text-decoration:none" href="screening.html">Review proposals</a>
+      </div>
+      <div class="qrow">
+        <div class="n num">2</div>
+        <div class="what"><b>Bluegrass: first draft ready for your read</b> <span class="chip verdict"><span class="dot"></span>Priority look</span>
+          <div class="why">Generated 4 minutes after the teaser arrived. Zero deviations. Read it, then route it: tag the team or take it to Thursday.</div></div>
+        <div class="clock num">response due in <b>12 days</b></div>
+        <a class="btn primary" style="text-decoration:none" href="screening.html">Open tab</a>
+      </div>
+      <div class="qrow">
+        <div class="n num">3</div>
+        <div class="what"><b>Cedar: euro deal, rendered but unranked</b> <span class="chip tailored">Tailored</span>
+          <div class="why">The FX tag keeps it out of the ranking until the framework covers it. Decide: screen it manually now, or wait for coverage.</div></div>
+        <div class="clock num">response due in <b>16 days</b></div>
+        <a class="btn quiet" style="text-decoration:none" href="screening.html">Open tab</a>
+      </div>
+      <div class="qrow">
+        <div class="n num">4</div>
+        <div class="what"><b>Framework change: LTV caution 27.5% → 30%</b>
+          <div class="why">Drafted from Allen's request. Dry run: zero open deals re-rank. One click from you publishes it.</div></div>
+        <div class="clock"><span class="chip"><span class="dot"></span>Awaiting you</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="zone">
+    <div class="zonehead"><span class="sec-eyebrow">Thursday's meeting</span><span class="purpose">What the room will see on Aug 21, exactly as it stands now.</span></div>
+    <div class="meeting">
+      <div class="mwhat"><b>2 deals on the agenda · 1 still unsigned</b>
+        <div class="mwhy">Bluegrass reads Priority look and is not yet signed by Allen; Anchor's pass recommendation is drafted. Both render side by side in Partner review.</div></div>
+      <a class="btn quiet" style="text-decoration:none" href="pipeline.html">Preview the comparison</a>
+    </div>
+  </section>
+
+  <section class="zone">
+    <div class="zonehead"><span class="sec-eyebrow">The week so far</span><span class="purpose">Context, not work. If a number here surprises you, the queue above is where to act.</span></div>
+    <div class="weekstrip num">
+      <div><b>4</b>teasers received</div>
+      <div><b>3</b>tabs generated</div>
+      <div><b>4 min</b>median email to tab</div>
+      <div><b>1</b>recommendation drafted</div>
+      <div><b>0</b>deadlines at risk</div>
+    </div>
+  </section>
+</main>
+<div class="pill"><span aria-hidden="true" style="width:14px;height:14px;border:1.5px solid var(--muted);border-radius:4px 4px 4px 1px;display:inline-block"></span><span>Ask across the pipeline…</span><span class="ctx">Workspace</span><span class="kbd">⌘K</span></div>
+</body></html>
