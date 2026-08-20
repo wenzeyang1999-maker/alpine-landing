@@ -409,13 +409,12 @@ main{padding-bottom:110px}
   transition:width .22s cubic-bezier(.2,.8,.2,1),height .22s,border-radius .22s,padding .22s,gap .22s,border-color .18s}
 .pill:hover,.pill:focus-within,.pill.open{width:372px;height:46px;border-radius:999px;padding:9px 10px 9px 14px;gap:10px;
   justify-content:flex-start;border-color:var(--ink)}
-/* the mark is a prompt caret: this is a place you type a command, not a place you chat */
-.pill .mark{flex:0 0 auto;display:inline-flex;align-items:baseline;gap:3px;color:var(--ink);
-  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;font-weight:700;line-height:1;background:none;width:auto;height:auto;border-radius:0}
-.pill .mark::after{content:"";width:8px;height:1.5px;background:var(--ink);display:inline-block;
-  animation:caret 1.5s steps(1,end) infinite}
-@keyframes caret{0%,60%{opacity:1}61%,100%{opacity:.15}}
-.pill:hover .mark::after,.pill.open .mark::after{animation:none;opacity:1}
+/* the mark is the shortcut itself: a command surface, and it teaches the key */
+.pill .mark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;font-weight:600;
+  letter-spacing:-.3px;color:var(--ink);background:none;width:auto;height:auto;border-radius:0;
+  transition:opacity .14s}
+.pill:hover .mark,.pill.open .mark,.pill:focus-within .mark{opacity:0;pointer-events:none}
 /* scope is legible the moment it opens, not after you type */
 .pill .ctx{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:2px 9px;
   font-size:10.5px;color:var(--ink);font-weight:650;white-space:nowrap}
