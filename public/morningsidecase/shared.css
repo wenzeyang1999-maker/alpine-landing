@@ -212,3 +212,52 @@ td{padding:11px 10px;border-bottom:1px solid var(--hair);font-size:12.5px;vertic
 .flaglegend i.d{background:var(--neg)}
 .flaglegend i.c{background:transparent;border:1.5px solid var(--muted);width:5px;height:5px}
 .flaglegend i.s{background:var(--pos)}
+
+/* ============ Routing: state reports at the top, the act happens at the end ============ */
+.statestrip{display:flex;align-items:center;gap:12px;margin-top:14px;padding:9px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface);font-size:11.5px;color:var(--muted);flex-wrap:wrap}
+.statestrip .who{color:var(--muted)}
+.statestrip .sp{flex:1}
+.statestrip .jump{color:var(--info);font-weight:600;text-decoration:none;white-space:nowrap}
+.statestrip .jump:hover{text-decoration:underline}
+.decide{margin:22px 28px 0;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.dbox{border:1px solid var(--line);border-radius:12px;background:#fff;padding:16px 18px}
+.dbox.locked{background:#FCFDFE;border-style:dashed}
+.dbox h3{font-size:13px;font-weight:700;letter-spacing:-.1px;margin-bottom:3px}
+.dbox .sub{font-size:11.5px;color:var(--muted);margin-bottom:13px;line-height:1.55}
+.check{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.check .ck{display:flex;gap:8px;align-items:flex-start;font-size:11.5px;color:var(--muted);line-height:1.5}
+.check .ck .m{width:14px;flex:0 0 14px;text-align:center;font-weight:700}
+.check .ck.ok .m{color:var(--pos)}
+.check .ck.no .m{color:var(--warn)}
+.check .ck.no{color:#92400E}
+.stance{display:flex;gap:8px;margin-bottom:11px}
+.stance button{flex:1;border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 0;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer}
+.stance button:hover:not(:disabled){border-color:var(--muted);color:var(--ink)}
+.stance button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.stance button:disabled{opacity:.5;cursor:not-allowed}
+.dbox textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:12px;min-height:62px;resize:vertical;font-family:inherit;color:inherit}
+.dbox textarea:disabled{background:var(--hair);cursor:not-allowed}
+.dbox textarea::placeholder{color:var(--faint)}
+.signrow{display:flex;align-items:center;gap:11px;margin-top:11px}
+.signrow .why{font-size:11px;color:var(--muted);line-height:1.45}
+.btn:disabled,.btn.off{opacity:.45;cursor:not-allowed}
+.routes{display:flex;flex-direction:column;gap:9px}
+.route{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--hair)}
+.route:last-child{border-bottom:none}
+.route .act{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 13px;font-size:11.5px;font-weight:600;white-space:nowrap;cursor:pointer;color:var(--ink)}
+.route .act.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.route .act:disabled{opacity:.45;cursor:not-allowed}
+.route .eff{font-size:11px;color:var(--muted);line-height:1.5}
+.route select{border:1px solid var(--line);border-radius:8px;padding:4px 8px;font-size:11.5px;background:#fff}
+.tagrow{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+.sheet{position:fixed;inset:0;background:rgba(31,41,55,.34);display:none;align-items:center;justify-content:center;z-index:90}
+.sheet.open{display:flex}
+.sheetbox{background:#fff;border-radius:16px;width:460px;max-width:92vw;box-shadow:0 20px 60px rgba(31,41,55,.28);overflow:hidden}
+.sheetbox h4{font-size:14px;font-weight:700;padding:16px 20px 0}
+.sheetbox .body{padding:9px 20px 16px;font-size:12.5px;color:var(--muted);line-height:1.65}
+.sheetbox .body b{color:var(--ink)}
+.sheetbox .foot{display:flex;gap:9px;justify-content:flex-end;padding:12px 20px;background:var(--surface);border-top:1px solid var(--line)}
+.sheetbox input[type=text]{width:100%;border:1px solid var(--line);border-radius:9px;padding:8px 11px;font-size:12.5px;margin-top:9px}
+.routed{font-size:11.5px;color:var(--muted);margin-top:12px;padding:10px 13px;background:var(--surface);border-radius:9px;border:1px solid var(--line);display:none}
+.routed.show{display:block}
+@media (max-width:900px){.decide{grid-template-columns:1fr;margin-left:16px;margin-right:16px}}
