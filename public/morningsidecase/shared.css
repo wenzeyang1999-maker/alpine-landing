@@ -388,11 +388,12 @@ main{padding-bottom:110px}
 .cmdbtn .pend{display:inline-flex;align-items:center;gap:5px;color:#92400E;font-weight:650;font-size:11px}
 .cmdbtn .pend::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--warn)}
 /* the palette overlays because the user asked for it, which is the difference */
-.cmdscrim{position:fixed;inset:0;background:rgba(31,41,55,.30);display:none;z-index:88}
+/* barely a veil: the page stays readable, the palette floats above it on shadow alone */
+.cmdscrim{position:fixed;inset:0;background:rgba(31,41,55,.07);display:none;z-index:88}
 .cmdscrim.open{display:block}
 .assistpanel{position:fixed;left:50%;top:14vh;transform:translateX(-50%);bottom:auto;width:640px;max-width:92vw;
   max-height:70vh;background:#fff;border:1px solid var(--line);border-radius:16px;
-  box-shadow:0 24px 70px rgba(31,41,55,.28);display:none;flex-direction:column;overflow:hidden;font-size:12.5px;z-index:89}
+  box-shadow:0 28px 80px rgba(31,41,55,.22),0 6px 18px rgba(31,41,55,.10),0 0 0 1px rgba(31,41,55,.05);display:none;flex-direction:column;overflow:hidden;font-size:12.5px;z-index:89}
 .assistpanel.open{display:flex}
 .aphead{display:flex;align-items:center;gap:9px;padding:13px 18px;border-bottom:1px solid var(--line);background:#FBFDFF}
 .apbody{padding:15px 18px;overflow-y:auto;flex:1;min-height:0}
