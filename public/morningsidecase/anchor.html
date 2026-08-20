@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Project Anchor · Morningside OS</title><link rel="stylesheet" href="shared.css"><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Project Anchor · Morningside OS</title><link rel="stylesheet" href="shared.css?v=179ca7e5"><style>
 html{scroll-behavior:smooth}
 .layout{display:flex}
 .rail{width:196px;flex:0 0 196px;border-right:1px solid var(--line);padding:16px 0;background:#fff;
@@ -437,7 +437,7 @@ function openPane(){
   srcpane.classList.add('open');
   if(first){ const L=document.querySelector('.layout').clientWidth; setW(Math.round((L-document.querySelector('.rail').offsetWidth)/2)); }
 }
-function closePane(){ srcpane.style.removeProperty('width'); srcpane.style.removeProperty('flex'); srcpane.classList.remove('open'); curCite=null; document.querySelectorAll('.cite.active,.kv.active').forEach(c=>c.classList.remove('active')); }
+function closePane(){ srcpane.style.setProperty('width','0','important'); srcpane.style.setProperty('flex','0 0 0','important'); srcpane.classList.remove('open'); curCite=null; document.querySelectorAll('.cite.active,.kv.active').forEach(c=>c.classList.remove('active')); }
 document.getElementById('srcclose').addEventListener('click',closePane);
 // drag-to-resize
 const handle = document.getElementById('srchandle');
