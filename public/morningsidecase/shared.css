@@ -15,7 +15,8 @@ body{position:relative;font-family:Inter,-apple-system,'Helvetica Neue',Arial,sa
 .chip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:999px;padding:2.5px 9px;font-size:11px;color:var(--ink);white-space:nowrap;background:#fff}
 .chip .dot{width:6px;height:6px;border-radius:50%;background:var(--muted)}
 .chip.verdict{border-color:#CBD5E1;font-weight:600}
-.chip.verdict,.tray .go,.btn{cursor:pointer}
+.tray .go,.btn{cursor:pointer}
+.chip.verdict{cursor:help}
 .chip.verdict .dot{background:var(--ink)}
 .chip.tailored{color:var(--muted);font-style:italic}
 .chip.tracked{color:var(--faint);border-style:dashed}
