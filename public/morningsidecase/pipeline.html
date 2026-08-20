@@ -49,9 +49,9 @@ table th{position:sticky;top:calc(var(--topbar-h) + 62px);background:var(--groun
       <td><span class="chip verdict"><span class="dot"></span>Priority look</span></td>
       <td class="hide-sm">Meridian Park</td><td class="hide-sm">Hollis Bridge Fund III</td>
       <td><span class="uscur">US$</span>80.0M / ~50%</td>
-      <td>14–15% <span class="check">✓</span><span class="refdot"></span></td>
-      <td>25.8% → 30.5%<span class="refdot"></span></td>
-      <td class="small">0 dev · 2 cau · 3 str</td>
+      <td>14–15% <span class="check">✓</span></td>
+      <td>25.8% → 30.5%</td>
+      <td class="small flagcell"><span class="fg"><i class="c"></i>2 cautions</span><span class="fg"><i class="s"></i>3 strengths</span></td>
       <td><span class="chip"><span class="dot"></span>First draft</span></td>
       <td>in 12 days</td>
     </tr>
@@ -62,8 +62,8 @@ table th{position:sticky;top:calc(var(--topbar-h) + 62px);background:var(--groun
       <td class="hide-sm">Meridian Park</td><td class="hide-sm">Silverhawk Fund IV</td>
       <td><span class="uscur">US$</span>35.0M / 100%</td>
       <td>10.5–11% <span class="muted small" title="the teaser states no IRR">no broker figure</span></td>
-      <td>14.0% → 29.2%<span class="refdot"></span></td>
-      <td class="small">1 dev · 4 cau · 5 str <span class="chip dev">Deviation</span></td>
+      <td>14.0% → 29.2%</td>
+      <td class="small flagcell"><span class="fg dev"><i class="d"></i>1 deviation</span><span class="fg"><i class="c"></i>4 cautions</span><span class="fg"><i class="s"></i>5 strengths</span></td>
       <td><span class="chip amber"><span class="dot"></span>2 proposals pending</span></td>
       <td class="duewarn">in 9 days</td>
     </tr>
@@ -73,7 +73,7 @@ table th{position:sticky;top:calc(var(--topbar-h) + 62px);background:var(--groun
       <td><span class="chip tailored">Tailored</span></td>
       <td class="hide-sm">Ashgrove &amp; Co</td><td class="hide-sm">Ferrant Capital Fund II</td>
       <td><span class="uscur">€</span>45.0M / 100%</td>
-      <td class="muted">native FX<span class="refdot"></span></td>
+      <td class="muted">native FX</td>
       <td class="muted">22.1% → 27.8%</td>
       <td class="small muted">outside framework v1</td>
       <td><span class="chip"><span class="dot"></span>First draft</span></td>
@@ -117,8 +117,9 @@ table th{position:sticky;top:calc(var(--topbar-h) + 62px);background:var(--groun
       <td class="faint">—</td>
     </tr>
   </table>
+  <div class="flaglegend"><span><i class="d"></i>strategy deviation</span><span><i class="c"></i>caution</span><span><i class="s"></i>strength</span><span class="faint">Hover a row&rsquo;s flags to read each one with its reason.</span></div>
 </main>
-<div class="pill"><span aria-hidden="true" style="width:14px;height:14px;border:1.5px solid var(--muted);border-radius:4px 4px 4px 1px;display:inline-block"></span><span>Ask across the pipeline…</span><span class="ctx">Workspace</span><span class="kbd">⌘K</span></div>
+<div class="pill" role="button" tabindex="0" aria-label="Ask across the pipeline"><span class="mark" aria-hidden="true">&#9679;</span><span class="say">Ask across the pipeline&hellip;</span><span class="ctx">Workspace</span><span class="kbd">&#8984;K</span></div>
 <div class="tray"><span><b>2 deals selected</b></span><span style="color:#CBD5E1">Project Bluegrass · Project Anchor · same strategy, comparable</span><div class="go">Compare →</div></div>
 <script>
 // strategy filter: clicking a segment shows only that group's rows

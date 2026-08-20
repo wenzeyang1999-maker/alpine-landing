@@ -51,10 +51,10 @@ table.pco td{padding:8px;font-size:12.5px}
 .source{width:0;min-width:0;flex:0 0 auto;border-left:0 solid var(--line);background:var(--surface);padding:18px 0;overflow:hidden;
   transition:width .3s cubic-bezier(.2,.8,.2,1),padding .3s;
   position:sticky;top:var(--topbar-h);height:calc(100vh - var(--topbar-h));align-self:flex-start}
-.source.open{width:440px;padding:18px;border-left:1px solid var(--line);overflow-y:auto}
-.source .inner{width:404px}
-.handle{position:absolute;left:0;top:0;bottom:0;width:6px;cursor:col-resize;background:transparent}
-.handle:hover{background:rgba(14,165,233,.25)}
+.source.open{padding:18px;border-left:1px solid var(--line);overflow-y:auto}
+.source .inner{width:100%}
+
+
 .closex{margin-left:8px;cursor:pointer;color:var(--muted);font-size:13px}
 .doccard{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .docbar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);background:#FBFDFF}
@@ -99,8 +99,7 @@ a.item{text-decoration:none}
     <div class="rmeta">Silverhawk Fund IV &middot; Meridian Park</div>
     <span class="chip verdict"><span class="dot"></span>Worth a look</span>
   </div>
-  <div class="sub">The answer</div>
-  <a class="item on" href="#top" data-spy="top"><span class="lbl">The read</span></a>
+  <a class="item on lead" href="#top" data-spy="top"><span class="lbl">The read</span></a>
   <div class="sub">The evidence</div>
   <a class="item" href="#s-return" data-spy="s-return"><span class="lbl">Return</span><span class="fl"></span></a>
   <a class="item" href="#s-safety" data-spy="s-safety"><span class="lbl">Margin of safety</span><span class="fl"><i class="s"></i></span></a>
@@ -110,6 +109,7 @@ a.item{text-decoration:none}
   <a class="item" href="#s-portfolio" data-spy="s-portfolio"><span class="lbl">Portfolio</span></a>
   <a class="item" href="#s-public" data-spy="s-public"><span class="lbl">Public record</span></a>
   <div class="sub">The record</div>
+  <a class="item" href="#s-dataroom" data-spy="s-dataroom"><span class="lbl">Data room</span><span class="ct">3</span></a>
   <div class="item navsoon" title="not built in this prototype"><span class="lbl">Activity</span></div>
   <div class="item navsoon" title="not built in this prototype"><span class="lbl">Edit mode</span></div>
   <div class="railfoot">Marks beside a section are its fired flags. Red is a strategy deviation, hollow is a caution, green is a strength.</div>
@@ -131,12 +131,12 @@ a.item{text-decoration:none}
     <div class="toggle"><div class="on">Screening</div><div>Reached out</div><div>NDA requested</div><div>Submit to partner</div><div>Rejected</div></div>
   </div>
 
-  <div class="zonelabel"><span class="sec-eyebrow">The read</span><span class="purpose">Should this deal get your time? The answer, then the reasons, in thirty seconds.</span></div>
+  <div class="zonelabel" id="top"><span class="sec-eyebrow">The read</span><span class="purpose">Should this deal get your time? The answer, then the reasons, in thirty seconds.</span></div>
   <div class="ailabel"><span class="chip amber"><span class="dot"></span>AI first draft — judgment, not data</span></div>
   <div class="assessblock">
     <div style="display:flex;gap:26px">
       <div class="assess">
-        <div><span class="sec-eyebrow" style="display:block;margin-bottom:2px;color:var(--muted)">The deal</span>A three-year <span class="cite num" data-cite="facility" data-src="The Opportunity · page 1">US$35.0M</span> NAV facility against a late-life <span class="cite num" data-cite="nav" data-src="The Opportunity · page 1">four-company</span> portfolio, funding a one-time <span class="cite num" data-cite="proceeds" data-src="The Opportunity · page 1">distribution to the Fund&rsquo;s limited partners</span> ahead of realizations.</div>
+        <div><span class="sec-eyebrow" style="display:block;margin-bottom:2px;color:var(--muted)">The deal</span>A three-year <span class="cite num" data-cite="facility" data-src="The Opportunity · page 1">US$35.0M</span> NAV facility against a late-life <span class="cite num" data-cite="positions" data-src="The Opportunity · page 1 · position count">four-company</span> portfolio, funding a one-time <span class="cite num" data-cite="proceeds" data-src="The Opportunity · page 1">distribution to the Fund&rsquo;s limited partners</span> ahead of realizations.</div>
         <div><span class="sec-eyebrow" style="display:block;margin-bottom:2px;color:var(--muted)">The manager</span>Silverhawk (New York, <span class="cite num" data-cite="sponsor" data-src="Why Silverhawk · page 1">US$2.1B AUM</span>, founded 2005) has a fully realized track record: Fund II returned <span class="cite num" data-cite="fund2" data-src="Why Silverhawk · page 1">2.4x</span> at a 19.2% net IRR, and the borrower fund has already returned <span class="cite num" data-cite="fund4" data-src="Why Silverhawk · page 1">1.4x DPI</span> across nine completed exits.</div>
         <div><span class="sec-eyebrow" style="display:block;margin-bottom:2px;color:var(--muted)">The economics</span>Fee and coupon produce an all-in gross IRR of roughly <span class="cite num" data-cite="coupon" data-src="Indicative Terms · page 2">10.5 to 11%</span>, at the bottom of the normal band with no route higher; the teaser states no IRR of its own. Leverage is conservative at <span class="cite num" data-cite="ltv" data-src="The Opportunity · page 1">14.0% LTV</span>, but <span class="cite num" data-cite="corvid" data-src="The Portfolio · page 1">52% of NAV</span> sits in one company.</div>
       </div>
@@ -154,14 +154,14 @@ a.item{text-decoration:none}
           <div><span class="chip strength"><span class="dot"></span>Sweep present</span> &nbsp;<span class="cite" data-cite="sweep" data-src="Indicative Terms · page 2">distributions swept to a controlled account</span></div>
           <div><span class="chip strength"><span class="dot"></span>All-cash economics</span> &nbsp;<span class="cite num" data-cite="coupon" data-src="Indicative Terms · page 2">9.75% cash pay</span>, no PIK, no election risk</div>
           <div><span class="chip strength"><span class="dot"></span>Seasoned realized funds</span> &nbsp;Fund II fully realized at <span class="cite num" data-cite="fund2" data-src="Why Silverhawk · page 1">2.4x</span></div>
-          <div><span class="chip strength"><span class="dot"></span>Independent valuation stated</span> &nbsp;<span class="cite" data-cite="marks" data-src="The Portfolio · page 1">third-party supported valuation</span></div>
+          <div><span class="chip strength"><span class="dot"></span>Independent valuation stated</span> &nbsp;<span class="cite" data-cite="valuation" data-src="The Portfolio · page 2 · valuation basis">third-party supported valuation</span></div>
         </div>
       </div>
       <div style="flex:1">
         <div class="sec-eyebrow" style="margin-bottom:7px;color:var(--muted)">Risks</div>
         <div style="display:flex;flex-direction:column;gap:6px;font-size:11.5px;color:var(--muted)">
           <div><span class="chip dev">Deviation</span> &nbsp;Single position majority: <span class="cite num" data-cite="corvid" data-src="The Portfolio · page 1">52% of NAV</span> in Corvid Health contradicts repayment from multiple independent exits</div>
-          <div><span class="chip caution"><span class="dot"></span>Caution · No exit visibility</span> &nbsp;<span class="cite" data-cite="marks" data-src="The Portfolio · page 1">no sale process named</span> within the term</div>
+          <div><span class="chip caution"><span class="dot"></span>Caution · No exit visibility</span> &nbsp;<span class="cite" data-cite="portfolio" data-src="The Portfolio · page 1 · remaining positions">no sale process named</span> within the term</div>
           <div><span class="chip caution"><span class="dot"></span>Caution · Prepay unprotected</span> &nbsp;<span class="cite" data-cite="prepay" data-src="Indicative Terms · page 2">free prepayment after month 12</span> can cut the realized return</div>
           <div><span class="chip caution"><span class="dot"></span>Caution · LP distribution</span> &nbsp;<span class="cite" data-cite="proceeds" data-src="The Opportunity · page 1">proceeds leave the collateral</span> rather than strengthen it</div>
           <div><span class="chip caution"><span class="dot"></span>Caution · Marks stale</span> &nbsp;<span class="cite" data-cite="marks" data-src="The Portfolio · page 1">9/30/25 marks</span>, older than six months at screening</div>
@@ -219,7 +219,7 @@ a.item{text-decoration:none}
       <div class="kv"><div class="k">Closing fee</div><div class="v">2.00%</div><div class="note">borrower-paid at close</div></div>
       <div class="kv"><div class="k">Coupon</div><div class="v">9.75%</div><div class="note">fixed, cash pay, no PIK</div></div>
       <div class="kv"><div class="k">Prepayment</div><div class="v">Free after month 12</div><div class="note">no non-call, fee, or minimum MOIC</div></div>
-      <div class="kv"><div class="k">Term &middot; law &middot; sweep</div><div class="v">3 yrs &middot; NY</div><div class="note">distributions swept to a controlled account</div></div>
+      <div class="kv"><div class="k">Term and security</div><div class="v">New York law</div><div class="note">customary LTV-based covenant protections</div></div>
     </div>
   </div>
 
@@ -236,7 +236,7 @@ a.item{text-decoration:none}
     <div class="more" style="color:var(--muted);cursor:default">All four positions shown &middot; marks as of 9/30/25</div>
   </div>
 
-  <div class="secrow" id="s-public" style="border-bottom:none">
+  <div class="secrow" id="s-public">
     <div class="sechead"><h2>Public record</h2><span class="q">Is there anything about this manager the team should know before spending time?</span><div class="chips"><span class="chip amber"><span class="dot"></span>1 item, unverified</span></div></div>
     <div class="advisory">
       <div class="advtag">Advisory tier &middot; web sources, never feeds a metric or a ranking</div>
@@ -247,15 +247,41 @@ a.item{text-decoration:none}
       <div class="searched"><span>Searched: SEC IAPD and Form ADV &middot; SEC litigation and administrative proceedings &middot; EDGAR &middot; targeted adverse-term news</span><span class="no">Not searched in v1: FINRA BrokerCheck, court dockets</span></div>
     </div>
   </div>
+  <div class="secrow" id="s-dataroom" style="border-bottom:none">
+    <div class="sechead"><h2>Data room</h2><span class="q">What did we actually receive, and where does every citation on this tab land?</span></div>
+    <div class="droom">
+      <div class="droomhead"><span><b>3</b> documents</span><span><b>5</b> pages</span><span>every figure on this tab resolves into one of them</span><span>immutable</span></div>
+      <div class="doc">
+        <div class="ic" data-ext="PDF"></div>
+        <div class="dmain"><div class="dname">Teaser_Project_Anchor.pdf</div><div class="dsrc">Attachment on the intake email &middot; received Aug 19, 8:02am &middot; sha256 b7d1&hellip;2e40</div></div>
+        <div class="dcite"><b>19</b> citations<br><span class="faint">2 pages</span></div>
+        <span class="open" data-doc="teaser">Open in proof</span>
+      </div>
+      <div class="doc">
+        <div class="ic" data-ext="EML"></div>
+        <div class="dmain"><div class="dname">Meridian Park &mdash; Project Anchor, NAV facility</div><div class="dsrc">Broker email from j.reyes@meridianparkadvisors.com &middot; Aug 19, 8:02am &middot; allowlisted domain</div></div>
+        <div class="dcite"><b>1</b> citations<br><span class="faint">stored as sent</span></div>
+        <span class="open" data-doc="email">Open in proof</span>
+      </div>
+      <div class="doc">
+        <div class="ic" data-ext="EML"></div>
+        <div class="dmain"><div class="dname">Meridian Park &mdash; Anchor, two corrections</div><div class="dsrc">Broker follow-up &middot; Aug 19, 4:12pm &middot; source of the 2 pending proposals</div></div>
+        <div class="dcite"><b>0</b> citations<br><span class="faint">awaiting decision</span></div>
+        <span class="open" data-doc="followup">Review proposals</span>
+      </div>
+      <div class="droomfoot"><span class="drop">Drop a file here</span><span>or forward it to <b>teasers@morningsidemgmt.com</b>, which is the primary path: mail from an allowlisted broker domain lands here on its own, and the message itself is stored as a citable document beside its attachments.</span></div>
+    </div>
+    <div class="immut">Documents are ground truth and are never edited, by a person or by the assistant. A revised term sheet arrives as a new document and the record versions around it, so a citation made in August still opens the page it was made against. The teaser is what the broker sent; the tab is what we made of it.</div>
+  </div>
   </div>
 </div>
 
-<div class="source open" id="srcpane"><div class="handle" id="srchandle"></div>
+<div class="source" id="srcpane"><div class="handle" id="srchandle" role="separator" aria-orientation="vertical" tabindex="0" title="Drag to resize, or use the arrow keys"></div>
   <div class="inner">
   <div class="srchead"><span class="sec-eyebrow">The proof</span><span class="purpose">Nothing asks to be trusted.</span><span class="srcclose" id="srcclose" role="button" tabindex="0">&#10005; Close proof panel</span></div>
-  <div class="cap"><span class="refdot active" style="vertical-align:middle"></span> Cited · The Opportunity · coupon · highlighted on the source page</div>
+  <div class="cap" id="citecap"><span class="refdot active" style="vertical-align:middle"></span> Cited · The Opportunity · coupon · highlighted on the source page</div>
   <div class="doccard">
-    <div class="docbar"><span aria-hidden="true" style="width:11px;height:14px;border:1.5px solid var(--muted);border-radius:2px;display:inline-block"></span><b>Teaser_Project_Anchor.pdf</b><span class="pg">page 1 of 2 · 100% · ⤢</span></div>
+    <div class="docbar"><span aria-hidden="true" style="width:11px;height:14px;border:1.5px solid var(--muted);border-radius:2px;display:inline-block"></span><b>Teaser_Project_Anchor.pdf</b><span class="docnav"><button id="pgprev" aria-label="Previous page">&#8249;</button><span class="pgnum">page <b id="pgnum">1</b> of 2</span><button id="pgnext" aria-label="Next page">&#8250;</button></span><a class="docdl" href="Teaser_Project_Anchor.pdf" download>&#8595; Download PDF</a></div>
     <div style="position:relative;line-height:0">
       <img id="srcimg" src="anchor-p1.png" style="width:100%;display:block" alt="Teaser page">
       <div id="hl"></div>
@@ -266,24 +292,44 @@ a.item{text-decoration:none}
   </div>
 </div>
 </div>
-<div class="pill"><span aria-hidden="true" style="width:14px;height:14px;border:1.5px solid var(--muted);border-radius:4px 4px 4px 1px;display:inline-block"></span><span>Ask or correct…</span><span class="ctx">Project Anchor</span><span class="kbd">⌘K</span></div>
-<div class="assistpanel" id="apanel">
-  <div class="apmsg user">broker confirms the coupon moves to 10.5% cash, no PIK</div>
-  <div class="apcard"><div class="rowline"><b>Coupon</b><span class="old num">11.00% (8.00% cash · 3.00% PIK)</span><span>→</span><b class="num">10.50% all cash</b></div>
-    <div class="src">Source: chat · provenance negotiation · per A. Zhang, Aug 19</div>
-    <div class="acts"><span class="btn primary">Apply</span><span class="btn quiet">Reject</span></div></div>
-  <div class="apmsg sys">Applying recomputes the assessment: PIK caution clears, cash share → 100%, IRR re-runs. Every change is audited.</div>
+<div class="pill" role="button" tabindex="0" aria-label="Ask or correct this deal"><span class="mark" aria-hidden="true">&#9679;</span><span class="say">Ask or correct this deal&hellip;</span><span class="ctx">Anchor</span><span class="kbd">&#8984;K</span><span class="badge">2</span></div>
+<div class="assistpanel" id="apanel" role="dialog" aria-label="Deal assistant">
+  <div class="aphead"><span class="scope">Project Anchor</span><span class="what">this thread is the deal's record; changes here are proposals, not edits</span><span class="x" id="apclose" role="button" tabindex="0">&#10005;</span></div>
+  <div class="apbody">
+    <div class="apmsg user">follow-up from Meridian: closing fee is 2.25%, and marks are being refreshed to 3/31/26</div>
+    <div class="apcard"><div class="cardtag">Proposed change &middot; 1 of 2</div>
+      <div class="rowline"><b>Closing fee</b><span class="old num">2.00%</span><span class="arw">&rarr;</span><b class="num">2.25%</b></div>
+      <div class="src">Source: broker email, Aug 19, 4:12pm &middot; provenance <b>negotiation</b></div>
+      <div class="acts"><span class="btn primary">Apply</span><span class="btn quiet">Reject</span><span class="aud">audited either way</span></div></div>
+    <div class="apcard"><div class="cardtag">Proposed change &middot; 2 of 2</div>
+      <div class="rowline"><b>Marks as of</b><span class="old num">9/30/25</span><span class="arw">&rarr;</span><b class="num">3/31/26</b></div>
+      <div class="src">Source: broker email, Aug 19, 4:12pm &middot; clears the stale-marks caution on apply</div>
+      <div class="acts"><span class="btn primary">Apply</span><span class="btn quiet">Reject</span><span class="aud">audited either way</span></div></div>
+    <div class="apmsg sys">Both proposals cite the same email, so they can be applied together. Applying supersedes the current assessment and the signed read has to be renewed before this deal can go to a decision.</div>
+  </div>
+  <div class="apfoot">
+    <div class="apinput"><span class="clip" title="Attach a follow-up document">&#128206;</span><input type="text" placeholder="Tell it what changed, or ask anything about this deal" aria-label="Message the assistant"><span class="send" role="button" aria-label="Send">&#8593;</span></div>
+    <div class="aprule">Data changes need a citation or a named attribution. Engine numbers change only through the facts beneath them. The audit trail, the citations, and the source documents cannot be edited from here.</div>
+  </div>
 </div>
 <script>
 const srcpane = document.getElementById('srcpane');
-function openPane(){ srcpane.classList.add('open'); }
+function setW(w){const max=Math.round(innerWidth*.68);const v=Math.min(max,Math.max(380,w));
+  srcpane.style.setProperty('width',v+'px','important');
+  srcpane.style.setProperty('flex','0 0 '+v+'px','important');}
+function openPane(){
+  const first=!srcpane.classList.contains('open');
+  srcpane.classList.add('open');
+  if(first){ const L=document.querySelector('.layout').clientWidth; setW(Math.round((L-document.querySelector('.rail').offsetWidth)/2)); }
+}
 function closePane(){ srcpane.classList.remove('open'); document.querySelectorAll('.cite.active,.kv.active').forEach(c=>c.classList.remove('active')); }
 document.getElementById('srcclose').addEventListener('click',closePane);
 // drag-to-resize
 const handle = document.getElementById('srchandle');
 let drag=null;
 handle.addEventListener('mousedown',e=>{drag={x:e.clientX,w:srcpane.offsetWidth};e.preventDefault()});
-window.addEventListener('mousemove',e=>{if(!drag)return;const w=Math.min(720,Math.max(320,drag.w+(drag.x-e.clientX)));srcpane.style.width=w+'px';srcpane.querySelector('.inner').style.width=(w-36)+'px'});
+window.addEventListener('mousemove',e=>{if(!drag)return;setW(drag.w+(drag.x-e.clientX))});
+handle.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'){e.preventDefault();setW(srcpane.offsetWidth+40)}if(e.key==='ArrowRight'){e.preventDefault();setW(srcpane.offsetWidth-40)}});
 window.addEventListener('mouseup',()=>drag=null);
 // whole metric blocks are click targets; label becomes the citation source
 document.querySelectorAll('.kv').forEach(kv=>{
@@ -299,25 +345,43 @@ document.querySelectorAll('.kv').forEach(kv=>{
 });
 const pane = document.querySelector('.doccard');
 const cap = document.querySelector('.cap');
-const CITES = {"facility": {"page": 1, "rects": [[39.35, 34.96, 29.42, 1.61]]}, "nav": {"page": 1, "rects": [[61.95, 38.45, 24.16, 1.61], [11.57, 40.19, 18.64, 1.61]]}, "ltv": {"page": 1, "rects": [[30.64, 40.19, 34.08, 1.61]]}, "proceeds": {"page": 1, "rects": [[49.79, 41.93, 37.7, 1.61]]}, "sponsor": {"page": 1, "rects": [[66.87, 33.22, 20.88, 1.61], [11.57, 34.96, 27.35, 1.61]]}, "fund2": {"page": 1, "rects": [[77.48, 51.07, 7.59, 1.61], [11.57, 52.81, 39.08, 1.61]]}, "fund4": {"page": 1, "rects": [[61.61, 56.3, 25.8, 1.61]]}, "corvid": {"page": 1, "rects": [[83.87, 68.93, 2.67, 1.61], [11.57, 70.67, 45.12, 1.61]]}, "marks": {"page": 1, "rects": [[31.93, 88.88, 38.91, 1.61]]}, "coupon": {"page": 2, "rects": [[86.02, 21.0, 0.86, 1.61], [11.57, 22.74, 63.84, 1.61]]}, "prepay": {"page": 2, "rects": [[78.86, 22.74, 8.2, 1.61], [11.57, 24.48, 38.22, 1.61]]}, "sweep": {"page": 2, "rects": [[36.16, 26.22, 32.44, 1.61]]}};
+const CITES = {"facility": {"page": 1, "rects": [[39.35, 35.11, 29.42, 1.11]]}, "positions": {"page": 1, "rects": [[33.66, 38.6, 27.87, 1.11]]}, "nav": {"page": 1, "rects": [[61.95, 38.6, 24.16, 1.11], [11.57, 40.34, 18.64, 1.11]]}, "ltv": {"page": 1, "rects": [[30.64, 40.34, 34.08, 1.11]]}, "proceeds": {"page": 1, "rects": [[49.79, 42.08, 37.7, 1.11], [11.57, 43.82, 10.61, 1.11]]}, "sponsor": {"page": 1, "rects": [[66.87, 33.37, 20.88, 1.11], [11.57, 35.11, 27.35, 1.11]]}, "fund2": {"page": 1, "rects": [[56.0, 51.22, 29.07, 1.11], [11.57, 52.96, 39.08, 1.11]]}, "fund3": {"page": 1, "rects": [[51.08, 52.96, 36.93, 1.11], [11.57, 54.71, 42.78, 1.11]]}, "fund4": {"page": 1, "rects": [[11.57, 56.45, 71.09, 1.11]]}, "realized": {"page": 1, "rects": [[17.0, 58.19, 71.18, 1.11], [11.57, 59.93, 11.13, 1.11]]}, "corvid": {"page": 1, "rects": [[83.87, 69.08, 2.67, 1.11], [11.57, 70.82, 45.12, 1.11]]}, "portfolio": {"page": 1, "rects": [[11.57, 82.06, 64.61, 1.11]]}, "marks": {"page": 1, "rects": [[31.93, 89.03, 38.91, 1.11]]}, "valuation": {"page": 2, "rects": [[11.57, 15.49, 26.23, 1.11]]}, "coupon": {"page": 2, "rects": [[11.57, 22.89, 63.84, 1.11]]}, "prepay": {"page": 2, "rects": [[78.86, 22.89, 8.2, 1.11], [11.57, 24.63, 38.22, 1.11]]}, "sweep": {"page": 2, "rects": [[36.16, 26.37, 32.44, 1.11]]}, "covenant": {"page": 2, "rects": [[69.03, 26.37, 15.18, 1.11], [11.57, 28.12, 35.37, 1.11]]}, "cushion": {"page": 2, "rects": [[13.86, 33.77, 72.04, 1.11]]}};
 
-const LABELS = {"facility": "The Opportunity, page 1, facility", "nav": "The Opportunity, page 1, portfolio NAV", "ltv": "The Opportunity, page 1, LTV", "proceeds": "The Opportunity, page 1, use of proceeds", "sponsor": "Why Silverhawk, page 1, sponsor", "fund2": "Why Silverhawk, page 1, Fund II", "fund4": "Why Silverhawk, page 1, borrower fund", "corvid": "The Portfolio, page 1, Corvid", "marks": "The Portfolio, page 1, valuation", "coupon": "Indicative Terms, page 2, coupon", "prepay": "Indicative Terms, page 2, prepayment", "sweep": "Indicative Terms, page 2, sweep"};
-const KV_MAP = {"Return|All-in IRR, stated maturity": "coupon", "Return|Month-12 prepay sensitivity": "prepay", "Return|Cash share of return": "coupon", "Return|Upside participation": "coupon", "Margin of safety|Headline LTV": "ltv", "Margin of safety|Stressed, top position to zero": "corvid", "Margin of safety|Value cushion": "nav", "Margin of safety|LTV covenant": "sweep", "Repayment|Positions": "nav", "Repayment|Top position": "corvid", "Repayment|Top three": "corvid", "Repayment|Sale processes": "marks", "Manager|Fund II (2012)": "fund2", "Manager|Fund III (2015)": "fund2", "Manager|Fund IV \u00b7 borrower": "fund4", "Manager|Realized proceeds": "fund4", "Terms|Closing fee": "coupon", "Terms|Coupon": "coupon", "Terms|Prepayment": "prepay", "Terms|Term \u00b7 law \u00b7 sweep": "sweep"};
+const LABELS = {"facility": "The Opportunity, page 1, facility size", "positions": "The Opportunity, page 1, collateral and position count", "nav": "The Opportunity, page 1, portfolio NAV", "ltv": "The Opportunity, page 1, LTV at close", "proceeds": "The Opportunity, page 1, use of proceeds", "sponsor": "Why Silverhawk, page 1, sponsor and AUM", "fund2": "Why Silverhawk, page 1, Fund II", "fund3": "Why Silverhawk, page 1, Fund III", "fund4": "Why Silverhawk, page 1, borrower fund", "realized": "Why Silverhawk, page 1, realized proceeds", "corvid": "The Portfolio, page 1, Corvid position", "portfolio": "The Portfolio, page 1, remaining positions", "marks": "The Portfolio, page 1, valuation date", "valuation": "The Portfolio, page 2, valuation basis", "coupon": "Indicative Terms, page 2, coupon and fee", "prepay": "Indicative Terms, page 2, prepayment", "sweep": "Indicative Terms, page 2, distribution sweep", "covenant": "Indicative Terms, page 2, covenants and law", "cushion": "Why This Is Compelling, page 2, value cushion"};
+const KV_MAP = {"Return|All-in IRR, stated maturity": "coupon", "Return|Month-12 prepay sensitivity": "prepay", "Return|Cash share of return": "coupon", "Return|Upside participation": "coupon", "Margin of safety|Headline LTV": "ltv", "Margin of safety|Stressed, top position to zero": "corvid", "Margin of safety|Value cushion": "cushion", "Margin of safety|LTV covenant": "covenant", "Repayment|Positions": "positions", "Repayment|Top position": "corvid", "Repayment|Top three": "portfolio", "Repayment|Sale processes": "portfolio", "Manager|Fund II (2012)": "fund2", "Manager|Fund III (2015)": "fund3", "Manager|Fund IV · borrower": "fund4", "Manager|Realized proceeds": "realized", "Terms|Closing fee": "coupon", "Terms|Coupon": "coupon", "Terms|Prepayment": "prepay", "Terms|Term and security": "covenant"};
 const srcimg = document.getElementById('srcimg');
 const hlwrap = document.getElementById('hl');
 const badge = document.getElementById('hlbadge');
-function applyCite(key, label){
-  const c = CITES[key]; if(!c) return;
-  srcimg.src = c.page === 2 ? 'anchor-p2.png' : 'anchor-p1.png';
-  hlwrap.innerHTML = '';
+let curCite=null, curPage=1, capHTML='';
+const pgnum=document.getElementById('pgnum'), pgprev=document.getElementById('pgprev'), pgnext=document.getElementById('pgnext');
+function paintRects(c){
+  hlwrap.innerHTML='';
+  if(!c || c.page!==curPage){ badge.style.display='none'; return; }
+  badge.style.display='';
   c.rects.forEach(r=>{
-    const d = document.createElement('div');
-    d.style.cssText = `position:absolute;left:${r[0]}%;top:${r[1]}%;width:${r[2]}%;height:${r[3]}%;background:rgba(14,165,233,.32);border-radius:2px`;
+    const d=document.createElement('div');
+    d.style.cssText='position:absolute;left:'+r[0]+'%;top:'+r[1]+'%;width:'+r[2]+'%;height:'+r[3]+'%;background:rgba(14,165,233,.32);border-radius:2px';
     hlwrap.appendChild(d);
   });
-  const first = c.rects[0];
-  badge.style.top = Math.max(1, first[1]-2.6) + '%';
-  cap.innerHTML = '<span class="refdot active" style="vertical-align:middle"></span> Cited · '+(label||LABELS[key]||key)+' · highlighted on the source page';
+  badge.style.top=Math.max(1,c.rects[0][1]-2.6)+'%';
+}
+function goPage(n){
+  curPage=Math.min(2,Math.max(1,n));
+  srcimg.src='anchor-p'+curPage+'.png';
+  pgnum.textContent=curPage;
+  pgprev.disabled=curPage===1; pgnext.disabled=curPage===2;
+  paintRects(curCite);
+  const el=document.getElementById('citecap');
+  if(curCite && curCite.page!==curPage) el.innerHTML='<span class="nocite">The cited sentence is on page '+curCite.page+'. Nothing is highlighted on this one.</span>';
+  else if(curCite) el.innerHTML=capHTML;
+}
+pgprev.addEventListener('click',()=>goPage(curPage-1));
+pgnext.addEventListener('click',()=>goPage(curPage+1));
+function applyCite(key, label){
+  const c = CITES[key]; if(!c) return;
+  curCite=c;
+  capHTML = '<span class="refdot active" style="vertical-align:middle"></span> Cited &middot; '+(label||LABELS[key]||key)+' &middot; highlighted on the source page';
+  goPage(c.page);
   openPane();
   srcpane.scrollTop = 0;
   pane.animate([{boxShadow:'0 0 0 3px rgba(14,165,233,.4)'},{boxShadow:'none'}],{duration:900});
@@ -332,23 +396,36 @@ document.querySelectorAll('.cite').forEach(el=>{
     applyCite(el.dataset.cite || 'coupon', el.dataset.src);
   });
 });
-const spy = new IntersectionObserver(es=>{
-  es.forEach(e=>{ if(e.isIntersecting){
-    document.querySelectorAll('[data-spy]').forEach(i=>i.classList.remove('on'));
-    const hit = document.querySelector('[data-spy="'+e.target.id+'"]'); if(hit) hit.classList.add('on');
-  }});
-},{rootMargin:'-30% 0px -60% 0px'});
-document.querySelectorAll('.secrow[id]').forEach(s=>spy.observe(s));
+function markRail(){
+  const targets=[document.getElementById('top'),...document.querySelectorAll('.secrow[id]')].filter(Boolean);
+  const line=(document.querySelector('.topbar').offsetHeight||53)+90;
+  let active=targets[0];
+  for(const el of targets){ if(el.getBoundingClientRect().top<=line) active=el; }
+  document.querySelectorAll('[data-spy]').forEach(i=>i.classList.remove('on'));
+  const hit=document.querySelector('[data-spy="'+active.id+'"]'); if(hit) hit.classList.add('on');
+}
+window.addEventListener('scroll',markRail,{passive:true});
+window.addEventListener('resize',markRail);
+markRail();
 const pill = document.querySelector('.pill'), apanel = document.getElementById('apanel');
 pill.style.cursor='pointer';
 pill.addEventListener('click',()=>apanel.classList.toggle('open'));
 document.addEventListener('keydown',e=>{if(e.key==='Escape')apanel.classList.remove('open')});
-applyCite('ltv');
-srcpane.classList.add('open');
+document.getElementById('apclose').addEventListener('click',e=>{e.stopPropagation();apanel.classList.remove('open')});
+apanel.addEventListener('click',e=>e.stopPropagation());
+pill.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pill.click()}});
+goPage(1);
 
 const moreBtn=document.getElementById('morebtn');
 function toggleMore(){const rows=[...document.querySelectorAll('.pcomore')],hidden=rows[0].hidden;rows.forEach(r=>r.hidden=!hidden);moreBtn.textContent=hidden?'Hide 3 positions ▴':'Show 3 more positions ▾';}
 moreBtn.addEventListener('click',toggleMore);
 moreBtn.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleMore()}});
+document.querySelectorAll('.doc .open').forEach(b=>{ b.tabIndex=0; b.setAttribute('role','button');
+  b.addEventListener('click',()=>{ const kind=b.dataset.doc;
+    if(kind==='teaser'){ applyCite('facility'); }
+    else { openPane(); document.getElementById('citecap').innerHTML='<span class="nocite">The broker email is stored as a citable document. This prototype renders the teaser pages only.</span>'; }
+  });
+  b.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();b.click()}});
+});
 </script>
 </body></html>
