@@ -37,16 +37,6 @@ body{position:relative;font-family:Inter,-apple-system,'Helvetica Neue',Arial,sa
 .uscur{color:var(--muted);font-size:.85em;margin-right:1px}
 .purpose{font-size:12px;color:var(--muted);margin-top:3px;font-weight:400;line-height:1.5}
 .sec-eyebrow{font-size:10.5px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);font-weight:700}
-.pill{position:fixed;z-index:65;left:50%;transform:translateX(-50%);bottom:16px;display:flex;align-items:center;gap:0;justify-content:center;
-  border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:0 2px 10px rgba(31,41,55,.10);
-  width:44px;height:44px;padding:0;overflow:hidden;cursor:pointer;font-size:12.5px;color:var(--muted);
-  transition:width .22s cubic-bezier(.2,.8,.2,1),height .22s,border-radius .22s,padding .22s,gap .22s}
-.pill:hover,.pill:focus-within,.pill.open{width:330px;height:40px;border-radius:999px;padding:8px 16px;gap:10px;justify-content:flex-start}
-.pill > span:not(:first-child),.pill .ctx,.pill .kbd{opacity:0;max-width:0;white-space:nowrap;transition:opacity .18s ease .04s,max-width .22s}
-.pill:hover > span:not(:first-child),.pill:focus-within > span:not(:first-child),.pill.open > span:not(:first-child),
-.pill:hover .ctx,.pill:focus-within .ctx,.pill.open .ctx,.pill:hover .kbd,.pill:focus-within .kbd,.pill.open .kbd{opacity:1;max-width:220px}
-.pill .ctx{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:1px 8px;font-size:10.5px;color:var(--ink);font-weight:600}
-.pill .kbd{margin-left:auto;font-size:10px;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:0 4px}
 table{border-collapse:collapse;width:100%}
 th{font-size:10.5px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);font-weight:600;text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
 td{padding:11px 10px;border-bottom:1px solid var(--hair);font-size:12.5px;vertical-align:middle}
@@ -71,8 +61,7 @@ td{padding:11px 10px;border-bottom:1px solid var(--hair);font-size:12.5px;vertic
   .grid{grid-template-columns:repeat(2,1fr)}
   .topnav{gap:14px}
   .weeklabel{display:none}
-  .pill{position:fixed;width:min(330px,92vw)}
-  table .hide-sm{display:none}
+    table .hide-sm{display:none}
   .filters{flex-wrap:wrap;gap:10px}
   .seg{flex-wrap:wrap}
   .tray{position:fixed;left:0;right:0;width:100%;padding:10px 16px;gap:10px}
@@ -114,18 +103,6 @@ td{padding:11px 10px;border-bottom:1px solid var(--hair);font-size:12.5px;vertic
 .srcclose:hover{color:var(--ink);border-color:var(--muted)}
 
 /* ============ Assistant: collapsed mark, expanded panel ============ */
-.pill{width:46px;height:46px;border-radius:15px;gap:0;padding:0;
-  box-shadow:0 6px 22px rgba(31,41,55,.20),0 2px 6px rgba(31,41,55,.12),0 0 0 4px rgba(255,255,255,.9);border-color:#CBD5E1}
-.pill:hover,.pill:focus-within,.pill.open{width:360px;height:44px;border-radius:999px;padding:8px 8px 8px 15px;gap:10px}
-.pill .mark{flex:0 0 auto;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;
-  border-radius:7px;background:var(--ink);color:#fff;font-size:12px;font-weight:700;line-height:1;transition:transform .22s}
-.pill:hover .mark,.pill.open .mark{width:20px;height:20px;border-radius:6px;font-size:11px}
-.pill .say{color:var(--muted)}
-.pill .badge{position:absolute;top:-5px;right:-5px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;
-  background:var(--warn);color:#fff;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 0 2.5px #fff}
-.pill:hover .badge,.pill.open .badge{display:none}
-.pill.open{border-color:var(--ink)}
 .assistpanel{position:fixed;z-index:67;left:50%;transform:translateX(-50%);bottom:74px;width:560px;max-height:65vh;
   background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 44px rgba(31,41,55,.18);
   display:none;flex-direction:column;overflow:hidden;font-size:12.5px}
@@ -399,35 +376,35 @@ main{padding-bottom:110px}
 .crumb .arrow{font-size:13px;line-height:1}
 .mhead .crumb{margin-bottom:8px}
 
-/* ============ Assistant: a command surface, not a support bubble ============ */
-.pill{position:fixed;z-index:65;left:50%;transform:translateX(-50%);bottom:18px;
-  display:flex;align-items:center;gap:0;justify-content:center;
-  width:48px;height:48px;padding:0;border-radius:15px;overflow:visible;cursor:pointer;
-  background:#fff;border:1px solid #D5DCE4;
-  box-shadow:0 6px 20px rgba(31,41,55,.16),0 1px 3px rgba(31,41,55,.10),0 0 0 4px rgba(255,255,255,.92);
-  font-size:12.5px;color:var(--muted);
-  transition:width .22s cubic-bezier(.2,.8,.2,1),height .22s,border-radius .22s,padding .22s,gap .22s,border-color .18s}
-.pill:hover,.pill:focus-within,.pill.open{width:372px;height:46px;border-radius:999px;padding:9px 10px 9px 14px;gap:10px;
-  justify-content:flex-start;border-color:var(--ink)}
-/* the mark is the shortcut itself: a command surface, and it teaches the key */
-.pill .mark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;font-weight:600;
-  letter-spacing:-.3px;color:var(--ink);background:none;width:auto;height:auto;border-radius:0;
-  transition:opacity .14s}
-.pill:hover .mark,.pill.open .mark,.pill:focus-within .mark{opacity:0;pointer-events:none}
-/* scope is legible the moment it opens, not after you type */
-.pill .ctx{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:2px 9px;
-  font-size:10.5px;color:var(--ink);font-weight:650;white-space:nowrap}
-.pill .say{color:var(--muted);white-space:nowrap}
-.pill .kbd{margin-left:auto;font-size:10px;color:var(--muted);border:1px solid var(--line);border-radius:5px;
-  padding:2px 6px;background:var(--surface);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
-.pill > .ctx,.pill > .say,.pill > .kbd{opacity:0;max-width:0;overflow:hidden;transition:opacity .16s ease .04s,max-width .22s}
-.pill:hover > .ctx,.pill:hover > .say,.pill:hover > .kbd,
-.pill:focus-within > .ctx,.pill:focus-within > .say,.pill:focus-within > .kbd,
-.pill.open > .ctx,.pill.open > .say,.pill.open > .kbd{opacity:1;max-width:230px}
-/* work waiting on you is visible before you open anything */
-.pill .badge{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;padding:0 6px;border-radius:999px;
-  background:var(--warn);color:#fff;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 0 3px #fff;font-variant-numeric:tabular-nums}
-.pill:hover .badge,.pill.open .badge{top:-7px;right:-7px}
-@media (prefers-reduced-motion: reduce){.pill .mark::after{animation:none}}
+
+/* ============ Assistant: a control in the chrome, a palette on demand ============ */
+.cmdbtn{display:inline-flex;align-items:center;gap:9px;height:30px;padding:0 11px 0 8px;border:1px solid var(--line);
+  background:var(--surface);border-radius:9px;cursor:pointer;font-size:12px;color:var(--muted);white-space:nowrap;
+  transition:border-color .15s,background .15s;position:relative}
+.cmdbtn:hover{border-color:var(--muted);background:#fff;color:var(--ink)}
+.cmdbtn .k{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;font-weight:600;color:var(--ink);
+  background:#fff;border:1px solid var(--line);border-radius:5px;padding:2px 6px;line-height:1}
+.cmdbtn .scope{font-weight:600;color:var(--ink)}
+.cmdbtn .pend{display:inline-flex;align-items:center;gap:5px;color:#92400E;font-weight:650;font-size:11px}
+.cmdbtn .pend::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--warn)}
+/* the palette overlays because the user asked for it, which is the difference */
+.cmdscrim{position:fixed;inset:0;background:rgba(31,41,55,.30);display:none;z-index:88}
+.cmdscrim.open{display:block}
+.assistpanel{position:fixed;left:50%;top:14vh;transform:translateX(-50%);bottom:auto;width:640px;max-width:92vw;
+  max-height:70vh;background:#fff;border:1px solid var(--line);border-radius:16px;
+  box-shadow:0 24px 70px rgba(31,41,55,.28);display:none;flex-direction:column;overflow:hidden;font-size:12.5px;z-index:89}
+.assistpanel.open{display:flex}
+.aphead{display:flex;align-items:center;gap:9px;padding:13px 18px;border-bottom:1px solid var(--line);background:#FBFDFF}
+.apbody{padding:15px 18px;overflow-y:auto;flex:1;min-height:0}
+.apfoot{border-top:1px solid var(--line);padding:11px 14px;background:#FBFDFF}
+.suggest{display:flex;flex-direction:column;gap:2px}
+.suggest .sg{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:9px;cursor:pointer;color:var(--ink)}
+.suggest .sg:hover,.suggest .sg:focus-visible{background:var(--hair)}
+.suggest .sg .ic{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--faint);font-size:11px}
+.suggest .sg .sub{margin-left:auto;font-size:11px;color:var(--muted)}
+.aplabel{font-size:9.5px;letter-spacing:1.1px;text-transform:uppercase;font-weight:700;color:var(--faint);margin:2px 0 8px}
+
+.aphead .scope-chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:2px 10px;font-size:10.5px;font-weight:650;color:var(--ink)}
+.aphead .what{font-size:11.5px;color:var(--muted)}
+.aphead .x{margin-left:auto;color:var(--muted);cursor:pointer;font-size:13px;padding:2px 6px;border-radius:6px}
+.aphead .x:hover{background:var(--hair);color:var(--ink)}

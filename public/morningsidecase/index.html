@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Today · Morningside OS</title><link rel="icon" type="image/svg+xml" href="favicon.svg"><link rel="mask-icon" href="favicon.svg" color="#1F2937"><link rel="stylesheet" href="shared.css?v=09cf81f6"><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Today · Morningside OS</title><link rel="icon" type="image/svg+xml" href="favicon.svg?v=2"><link rel="mask-icon" href="favicon.svg?v=2" color="#1F2937"><link rel="stylesheet" href="shared.css?v=32b8a7a2"><style>
 main{max-width:1080px;margin:0 auto;padding:26px 28px 120px}
 .greet{padding-bottom:20px;border-bottom:1px solid var(--line)}
 .hello{font-size:26px;font-weight:700;color:var(--ink);letter-spacing:-.5px;margin-bottom:7px}
@@ -27,7 +27,7 @@ main{max-width:1080px;margin:0 auto;padding:26px 28px 120px}
 <div class="topbar">
   <a class="brand" href="index.html" title="Back to Today"><span class="mono">MCI</span><span class="appname">Morningside&nbsp;OS</span></a>
   <nav class="topnav"><a class="active" style="color:inherit;text-decoration:none" href="index.html">Today</a><a class="" style="color:inherit;text-decoration:none" href="pipeline.html">Pipeline</a></nav>
-  <div class="spacer"></div><div class="weeklabel">Wednesday, August 19, 2026</div><div class="acct"><div class="userchip" role="button" tabindex="0" aria-haspopup="true">HZ</div>
+  <div class="spacer"></div><button class="cmdbtn" id="cmdbtn" type="button" aria-haspopup="dialog" aria-label="Ask across the week"><span class="k">&#8984;K</span><span>Ask about</span><span class="scope">Workspace</span></button><div class="weeklabel">Wednesday, August 19, 2026</div><div class="acct"><div class="userchip" role="button" tabindex="0" aria-haspopup="true">HZ</div>
 <div class="acctmenu"><div class="who"><b>Allen Zhang</b><span>Investment Associate</span></div><a class="mi disabled" title="IT Admin edits it; everyone else requests changes in plain English through the assistant">Screening framework <span class="lock">IT Admin</span></a><a class="mi disabled" title="IT Admin only">Audit console <span class="lock">IT Admin</span></a><a class="mi" href="#">Sign out</a></div></div>
 </div>
 <main>
@@ -91,7 +91,6 @@ main{max-width:1080px;margin:0 auto;padding:26px 28px 120px}
     </div>
   </section>
 </main>
-<div class="pill" role="button" tabindex="0" aria-label="Ask across the week&rsquo;s deals, scope Workspace"><span class="mark" aria-hidden="true">&#8984;K</span><span class="ctx">Workspace</span><span class="say">Ask across the week&rsquo;s deals&hellip;</span><span class="kbd">&#8984;K</span></div>
 <script>
 // account menu
 (function(){const a=document.querySelector('.acct');if(!a)return;const c=a.querySelector('.userchip');
@@ -100,5 +99,38 @@ main{max-width:1080px;margin:0 auto;padding:26px 28px 120px}
  c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();t(e)}});
  document.addEventListener('click',()=>a.classList.remove('open'));
  document.addEventListener('keydown',e=>{if(e.key==='Escape')a.classList.remove('open')});})();
+// assistant: a control in the chrome, a palette on demand
+
+</script>
+<div class="cmdscrim" id="cmdscrim"></div>
+<div class="assistpanel" id="apanel" role="dialog" aria-modal="true" aria-label="Assistant">
+  <div class="aphead"><span class="scope-chip">Workspace</span><span class="what">reads across the record; it cannot change a deal from here</span><span class="x" id="apclose" role="button" tabindex="0">&#10005;</span></div>
+  <div class="apbody">
+    <div class="aplabel">Try</div>
+    <div class="suggest"><div class="sg" data-q="Which deals are due inside a week?"><span class="ic">&rsaquo;</span><span>Which deals are due inside a week?</span><span class="sub">4 live</span></div><div class="sg" data-q="What changed on Anchor since Monday?"><span class="ic">&rsaquo;</span><span>What changed on Anchor since Monday?</span><span class="sub">2 proposals</span></div><div class="sg" data-q="Draft Thursday's agenda from the queue"><span class="ic">&rsaquo;</span><span>Draft Thursday's agenda from the queue</span><span class="sub"></span></div></div>
+  </div>
+  <div class="apfoot">
+    <div class="apinput"><span class="clip" role="button" tabindex="0" title="Attach a document" aria-label="Attach a document"></span><input type="text" placeholder="Ask anything across the record" aria-label="Message the assistant"><span class="send" role="button" tabindex="0" aria-label="Send"></span></div>
+    <div class="aprule">The assistant reads across the record and can create tabs from a dropped document. It cannot change a deal from here: open that deal's tab to correct it.</div>
+  </div>
+</div>
+<script>
+(function(){
+  const btn=document.getElementById('cmdbtn'), p=document.getElementById('apanel'), s=document.getElementById('cmdscrim');
+  if(!btn||!p) return;
+  const open=()=>{p.classList.add('open');s&&s.classList.add('open');const i=p.querySelector('input');i&&setTimeout(()=>i.focus(),40)};
+  const close=()=>{p.classList.remove('open');s&&s.classList.remove('open')};
+  btn.addEventListener('click',open);
+  s&&s.addEventListener('click',close);
+  const x=document.getElementById('apclose');
+  if(x){x.addEventListener('click',close);x.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();close()}});}
+  document.addEventListener('keydown',e=>{
+    if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();p.classList.contains('open')?close():open()}
+    if(e.key==='Escape')close();
+  });
+  document.querySelectorAll('.suggest .sg').forEach(r=>{r.tabIndex=0;r.setAttribute('role','button');
+    const go=()=>{const i=p.querySelector('input');if(i){i.value=r.dataset.q;i.focus()}};
+    r.addEventListener('click',go);r.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});});
+})();
 </script>
 </body></html>

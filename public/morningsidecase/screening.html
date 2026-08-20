@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Project Bluegrass · Morningside OS</title><link rel="icon" type="image/svg+xml" href="favicon.svg"><link rel="mask-icon" href="favicon.svg" color="#1F2937"><link rel="stylesheet" href="shared.css?v=09cf81f6"><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Project Bluegrass · Morningside OS</title><link rel="icon" type="image/svg+xml" href="favicon.svg?v=2"><link rel="mask-icon" href="favicon.svg?v=2" color="#1F2937"><link rel="stylesheet" href="shared.css?v=32b8a7a2"><style>
 html{scroll-behavior:smooth}
 .layout{display:flex}
 .rail{width:196px;flex:0 0 196px;border-right:1px solid var(--line);padding:16px 0;background:#fff;
@@ -88,7 +88,7 @@ a.item{text-decoration:none}
 <div class="topbar">
   <a class="brand" href="today.html" title="Back to Today"><span class="mono">MCI</span><span class="appname">Morningside&nbsp;OS</span></a>
   <nav class="topnav"><a class="" style="color:inherit;text-decoration:none" href="today.html">Today</a><a class="active" style="color:inherit;text-decoration:none" href="pipeline.html">Pipeline</a></nav>
-  <div class="spacer"></div><div class="weeklabel">Wednesday, August 19, 2026</div><div class="acct"><div class="userchip" role="button" tabindex="0" aria-haspopup="true">AZ</div><div class="acctmenu"><div class="who"><b>Allen Zhang</b><span>Investment Associate</span></div><a class="mi disabled" title="IT Admin edits it; everyone else requests changes in plain English through the assistant">Screening framework <span class="lock">IT Admin</span></a><a class="mi disabled" title="IT Admin only">Audit console <span class="lock">IT Admin</span></a><a class="mi" href="#">Sign out</a></div></div>
+  <div class="spacer"></div><button class="cmdbtn" id="cmdbtn" type="button" aria-haspopup="dialog" aria-label="Ask or correct this deal"><span class="k">&#8984;K</span><span>Ask about</span><span class="scope-chip">Bluegrass</span></button><div class="weeklabel">Wednesday, August 19, 2026</div><div class="acct"><div class="userchip" role="button" tabindex="0" aria-haspopup="true">AZ</div><div class="acctmenu"><div class="who"><b>Allen Zhang</b><span>Investment Associate</span></div><a class="mi disabled" title="IT Admin edits it; everyone else requests changes in plain English through the assistant">Screening framework <span class="lock">IT Admin</span></a><a class="mi disabled" title="IT Admin only">Audit console <span class="lock">IT Admin</span></a><a class="mi" href="#">Sign out</a></div></div>
 </div>
 <div class="layout">
 <div class="rail">
@@ -369,9 +369,9 @@ a.item{text-decoration:none}
   </div>
 </div>
 </div>
-<div class="pill" role="button" tabindex="0" aria-label="Ask or correct this deal, scope Bluegrass"><span class="mark" aria-hidden="true">&#8984;K</span><span class="ctx">Bluegrass</span><span class="say">Ask or correct this deal&hellip;</span><span class="kbd">&#8984;K</span></div>
+<div class="cmdscrim" id="cmdscrim"></div>
 <div class="assistpanel" id="apanel" role="dialog" aria-label="Deal assistant">
-  <div class="aphead"><span class="scope">Project Bluegrass</span><span class="what">this thread is the deal's record; changes here are proposals, not edits</span><span class="x" id="apclose" role="button" tabindex="0">&#10005;</span></div>
+  <div class="aphead"><span class="scope-chip">Project Bluegrass</span><span class="what">this thread is the deal's record; changes here are proposals, not edits</span><span class="x" id="apclose" role="button" tabindex="0">&#10005;</span></div>
   <div class="apbody">
     <div class="apmsg user">broker confirms the coupon moves to 10.5% cash, no PIK</div>
     <div class="apcard"><div class="cardtag">Proposed change &middot; 1 field</div>
@@ -550,13 +550,6 @@ function markRail(){
 window.addEventListener('scroll',markRail,{passive:true});
 window.addEventListener('resize',markRail);
 markRail();
-const pill = document.querySelector('.pill'), apanel = document.getElementById('apanel');
-pill.style.cursor='pointer';
-pill.addEventListener('click',()=>apanel.classList.toggle('open'));
-document.addEventListener('keydown',e=>{if(e.key==='Escape')apanel.classList.remove('open')});
-document.getElementById('apclose').addEventListener('click',e=>{e.stopPropagation();apanel.classList.remove('open')});
-apanel.addEventListener('click',e=>e.stopPropagation());
-pill.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pill.click()}});
 syncPageIndicator(); paintText();
 
 const moreBtn=document.getElementById('morebtn');
@@ -676,5 +669,26 @@ document.querySelectorAll('.btn[role=button], .act, .srcclose, .aphead .x').forE
   if(!el.getAttribute('role')) el.setAttribute('role','button');
   el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();el.click()}});
 });
+// assistant: a control in the chrome, a palette on demand
+
+</script>
+<script>
+(function(){
+  const btn=document.getElementById('cmdbtn'), p=document.getElementById('apanel'), s=document.getElementById('cmdscrim');
+  if(!btn||!p) return;
+  const open=()=>{p.classList.add('open');s&&s.classList.add('open');const i=p.querySelector('input');i&&setTimeout(()=>i.focus(),40)};
+  const close=()=>{p.classList.remove('open');s&&s.classList.remove('open')};
+  btn.addEventListener('click',open);
+  s&&s.addEventListener('click',close);
+  const x=document.getElementById('apclose');
+  if(x){x.addEventListener('click',close);x.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();close()}});}
+  document.addEventListener('keydown',e=>{
+    if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();p.classList.contains('open')?close():open()}
+    if(e.key==='Escape')close();
+  });
+  document.querySelectorAll('.suggest .sg').forEach(r=>{r.tabIndex=0;r.setAttribute('role','button');
+    const go=()=>{const i=p.querySelector('input');if(i){i.value=r.dataset.q;i.focus()}};
+    r.addEventListener('click',go);r.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});});
+})();
 </script>
 </body></html>
