@@ -37,7 +37,7 @@ html{scroll-behavior:smooth}
 .kv{cursor:pointer;border-radius:8px;padding:5px 8px;margin:-5px -8px;transition:background .18s ease}
 .kv:hover{background:rgba(14,165,233,.08)}
 .kv.active{background:rgba(14,165,233,.13)}
-.kv.active .v::after{content:"";display:inline-block;width:5.5px;height:5.5px;border-radius:50%;background:var(--info);margin-left:6px;vertical-align:super}
+
 .recon{display:inline-flex;align-items:center;gap:7px;margin-top:12px;font-size:11px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:4px 10px}
 .recon .check{font-weight:700}
 .pcohead{display:flex;gap:22px;font-size:12px;color:var(--muted);margin-bottom:10px}
@@ -218,7 +218,7 @@ a.item{text-decoration:none}
     <div class="sechead"><h2>Terms</h2><span class="q">What are we actually signing, and where does it bite?</span><div class="chips"><span class="chip caution"><span class="dot"></span>Caution · PIK present</span></div></div>
     <div class="grid num">
       <div class="kv"><div class="k">Closing fee</div><div class="v">1.50%</div><div class="note">borrower-paid at close</div></div>
-      <div class="kv"><div class="k">Coupon</div><div class="v">11.00%<span class="refdot active"></span></div><div class="note">8.00% cash · 3.00% PIK, borrower election</div></div>
+      <div class="kv"><div class="k">Coupon</div><div class="v">11.00%</div><div class="note">8.00% cash · 3.00% PIK, borrower election</div></div>
       <div class="kv"><div class="k">Upside participation</div><div class="v">5.0%</div><div class="note">of NAV growth above US$310M</div></div>
       <div class="kv"><div class="k">Term and security</div><div class="v">4 years</div><div class="note">pledge of holding-vehicle interests</div></div>
     </div>
@@ -229,15 +229,16 @@ a.item{text-decoration:none}
     <div class="pcohead"><span><b>8</b> companies</span><span>stated NAV <b class="num">US$310.0M</b></span><span>sum of positions reconciles <span class="check">✓</span></span><span><b>2</b> exits in process</span></div>
     <table class="pco num">
       <tr><th>Company</th><th>Sector · ownership</th><th>% of NAV</th><th>Fund value</th><th>Status</th><th>Broker's words</th></tr>
-      <tr><td><b>Halewood Packaging</b></td><td class="muted">Packaging · 80%</td><td><span class="navcell"><i style="width:72px"></i>15%</span></td><td>US$48.0M</td><td><span class="chip"><span class="dot"></span>In sale process</span></td><td class="quote">"revenue US$120.0M, EBITDA US$11.0M"</td></tr>
-      <tr><td><b>Maplecore Foods</b></td><td class="muted">Food &amp; beverage</td><td><span class="navcell"><i style="width:70px"></i>15%</span></td><td>US$46.0M</td><td class="muted small">ownership in data room</td><td class="quote"></td></tr>
-      <tr><td><b>Brightmark Dental</b></td><td class="muted">Healthcare · 70%</td><td><span class="navcell"><i style="width:65px"></i>14%</span></td><td>US$42.0M</td><td></td><td class="quote">"revenue US$95.0M, EBITDA US$12.0M"</td></tr>
-      <tr><td><b>Stonegate Veterinary</b></td><td class="muted">Healthcare services</td><td><span class="navcell"><i style="width:61px"></i>13%</span></td><td>US$40.0M</td><td><span class="chip"><span class="dot"></span>In sale process</span></td><td class="quote"></td></tr>
-      <tr><td><b>Corenza Software</b></td><td class="muted">Application software · 100%</td><td><span class="navcell"><i style="width:57px"></i>12%</span></td><td>US$38.0M</td><td class="muted small">net cash US$5.0M</td><td class="quote"></td></tr>
-      <tr class="pcomore" hidden><td><b>Ridgetop Fire &amp; Safety</b></td><td class="muted">Business services · 85%</td><td><span class="navcell"><i style="width:51px"></i>11%</span></td><td>US$34.0M</td><td class="muted small">signed add-on pending</td><td class="quote">"revenue US$58.0M, EBITDA US$7.0M"</td></tr>
-      <tr class="pcomore" hidden><td><b>Ironvale Precision</b></td><td class="muted">Precision manufacturing</td><td><span class="navcell"><i style="width:48px"></i>10%</span></td><td>US$32.0M</td><td class="muted small">signed add-on pending</td><td class="quote"></td></tr>
-      <tr class="pcomore" hidden><td><b>Bluewater Marine</b></td><td class="muted">Industrial services · 100%</td><td><span class="navcell"><i style="width:45px"></i>10%</span></td><td>US$30.0M</td><td class="muted small">net debt US$25.0M</td><td class="quote">"revenue US$70.0M, EBITDA US$6.5M"</td></tr>
+      <tr class="pcorow" data-cite="co_halewood" data-src="Portfolio snapshot, page 2, Halewood" tabindex="0" role="button"><td><b>Halewood Packaging</b></td><td class="muted">Packaging · 80%</td><td><span class="navcell"><i style="width:72px"></i>15%</span></td><td>US$48.0M</td><td><span class="chip"><span class="dot"></span>In sale process</span></td><td class="quote">"revenue US$120.0M, EBITDA US$11.0M"</td></tr>
+      <tr class="pcorow" data-cite="co_maplecore" data-src="Portfolio table, page 2, Maplecore" tabindex="0" role="button"><td><b>Maplecore Foods</b></td><td class="muted">Food &amp; beverage &middot; <span class="faint">ownership not stated</span></td><td><span class="navcell"><i style="width:70px"></i>15%</span></td><td>US$46.0M</td><td class="muted small"></td><td class="quote"></td></tr>
+      <tr class="pcorow" data-cite="co_brightmark" data-src="Portfolio snapshot, page 2, Brightmark" tabindex="0" role="button"><td><b>Brightmark Dental</b></td><td class="muted">Healthcare · 70%</td><td><span class="navcell"><i style="width:65px"></i>14%</span></td><td>US$42.0M</td><td></td><td class="quote">"revenue US$95.0M, EBITDA US$12.0M"</td></tr>
+      <tr class="pcorow" data-cite="co_stonegate" data-src="Portfolio table, page 2, Stonegate" tabindex="0" role="button"><td><b>Stonegate Veterinary</b></td><td class="muted">Healthcare services &middot; <span class="faint">ownership not stated</span></td><td><span class="navcell"><i style="width:61px"></i>13%</span></td><td>US$40.0M</td><td><span class="chip"><span class="dot"></span>In sale process</span></td><td class="quote"></td></tr>
+      <tr class="pcorow" data-cite="co_corenza" data-src="Portfolio snapshot, page 2, Corenza" tabindex="0" role="button"><td><b>Corenza Software</b></td><td class="muted">Application software · 100%</td><td><span class="navcell"><i style="width:57px"></i>12%</span></td><td>US$38.0M</td><td class="muted small">net cash US$5.0M</td><td class="quote">"revenue US$24.0M, EBITDA US$3.0M"</td></tr>
+      <tr class="pcomore pcorow" hidden data-cite="co_ridgetop" data-src="Portfolio snapshot, page 2, Ridgetop" tabindex="0" role="button"><td><b>Ridgetop Fire &amp; Safety</b></td><td class="muted">Business services · 85%</td><td><span class="navcell"><i style="width:51px"></i>11%</span></td><td>US$34.0M</td><td class="muted small">signed add-on pending</td><td class="quote">"revenue US$58.0M, EBITDA US$7.0M"</td></tr>
+      <tr class="pcomore pcorow" hidden data-cite="co_ironvale" data-src="Portfolio table, page 2, Ironvale" tabindex="0" role="button"><td><b>Ironvale Precision</b></td><td class="muted">Precision manufacturing &middot; <span class="faint">ownership not stated</span></td><td><span class="navcell"><i style="width:48px"></i>10%</span></td><td>US$32.0M</td><td class="muted small">signed add-on pending</td><td class="quote"></td></tr>
+      <tr class="pcomore pcorow" hidden data-cite="co_bluewater" data-src="Portfolio snapshot, page 2, Bluewater" tabindex="0" role="button"><td><b>Bluewater Marine</b></td><td class="muted">Industrial services · 100%</td><td><span class="navcell"><i style="width:45px"></i>10%</span></td><td>US$30.0M</td><td class="muted small">net debt US$25.0M</td><td class="quote">"revenue US$70.0M, EBITDA US$6.5M"</td></tr>
     </table>
+    <div class="pcohint">Every row opens the broker's own sentence for that company in the proof panel.</div>
     <div class="more" id="morebtn" role="button" tabindex="0">Show 3 more positions ▾</div>
   </div>
 
@@ -349,6 +350,7 @@ a.item{text-decoration:none}
           <button id="zfit" class="on" aria-label="Fit width">Fit</button>
           <button id="zin" aria-label="Zoom in">+</button>
         </span>
+        <button id="copycite" class="docdl" type="button" title="Copy the cited sentence">&#9112; Copy quote</button>
         <a class="docdl" href="Teaser_Project_Bluegrass.pdf" download title="Download the source document">&#8595; PDF</a>
       </div>
       <div class="cap" id="citecap"><span class="refdot active" style="vertical-align:middle"></span> Click any figure on the tab to open its sentence here.</div>
@@ -358,7 +360,7 @@ a.item{text-decoration:none}
         <div class="docpage">
           <img id="srcimg" src="bluegrass-p1.png" alt="Teaser page">
           <div id="hl"></div>
-          <div id="hlbadge">cited sentence &darr;</div>
+          <div id="txt" class="textlayer"></div>
         </div>
       </div>
     </div>
@@ -382,6 +384,37 @@ a.item{text-decoration:none}
   </div>
 </div>
 <script>
+// ---- selectable text layer: the page image carries positioned lines on top, as PDF.js does
+const TEXT = [[{"x": 11.569, "y": 8.493, "w": 38.59, "h": 1.518, "t": "MERIDIAN PARK CAPITAL ADVISORS"}, {"x": 11.569, "y": 10.507, "w": 27.631, "h": 0.876, "t": "Private Capital Solutions Group | NAV Financing"}, {"x": 11.569, "y": 15.686, "w": 64.289, "h": 1.752, "t": "Project Bluegrass: Diversified NAV Facility with Upside"}, {"x": 11.569, "y": 17.895, "w": 14.846, "h": 1.752, "t": "Participation"}, {"x": 11.569, "y": 20.667, "w": 70.732, "h": 1.11, "t": "A chance to partner with a proven, distribution-focused lower-middle-market sponsor across an"}, {"x": 11.569, "y": 22.409, "w": 73.225, "h": 1.11, "t": "eight-company portfolio, with structured upside participation on top of a double-digit fixed coupon."}, {"x": 11.569, "y": 25.595, "w": 74.445, "h": 0.876, "t": "Strictly confidential; distributed to a select group of prospective financing partners. Summary information only; a full data room is available"}, {"x": 11.569, "y": 26.858, "w": 74.994, "h": 0.876, "t": "upon execution of an NDA. This document is entirely fictional and prepared for a candidate-evaluation exercise; any resemblance to actual"}, {"x": 11.569, "y": 28.121, "w": 11.032, "h": 0.876, "t": "firms is coincidental."}, {"x": 11.569, "y": 31.149, "w": 18.775, "h": 1.285, "t": "Investment Highlights"}, {"x": 11.895, "y": 33.323, "w": 74.861, "h": 1.168, "t": "• Diversification: eight portfolio companies across packaging, healthcare, software, services, and precision"}, {"x": 13.856, "y": 35.111, "w": 49.61, "h": 1.11, "t": "manufacturing; the largest position represents just 15% of portfolio NAV."}, {"x": 11.895, "y": 37.818, "w": 75.029, "h": 1.168, "t": "• A sponsor that returns capital: Hollis Bridge’s Fund I (2013, US$280M) has distributed 2.3x to investors;"}, {"x": 13.856, "y": 39.606, "w": 71.612, "h": 1.11, "t": "Fund II (2016, US$450M) has already returned 1.6x. The borrower, Fund III (2019, US$620M), stands at"}, {"x": 13.856, "y": 41.348, "w": 72.385, "h": 1.11, "t": "1.6x TVPI / 1.1x DPI with a 16.0% net IRR, which reflects cash actually returned rather than paper marks."}, {"x": 13.856, "y": 43.091, "w": 28.733, "h": 1.11, "t": "Figures net of fees, as of March 31, 2026."}, {"x": 11.895, "y": 45.798, "w": 74.432, "h": 1.168, "t": "• Visible repayment path: two portfolio companies, Halewood Packaging and Stonegate Veterinary, are in"}, {"x": 13.856, "y": 47.586, "w": 72.902, "h": 1.11, "t": "active, banker-led sale processes with indications received; the GP expects both to sign within six months."}, {"x": 11.895, "y": 50.293, "w": 71.579, "h": 1.168, "t": "• Productive use of proceeds: approximately US$52 million funds two signed add-on acquisitions (for"}, {"x": 13.856, "y": 52.081, "w": 70.145, "h": 1.11, "t": "Ridgetop Fire & Safety and Ironvale Precision), with the balance providing bridge liquidity ahead of the"}, {"x": 13.856, "y": 53.823, "w": 15.787, "h": 1.11, "t": "realizations in process."}, {"x": 11.895, "y": 56.53, "w": 75.12, "h": 1.168, "t": "• Current valuations: portfolio figures as of March 31, 2026, per the Fund’s most recent quarterly valuation."}, {"x": 11.569, "y": 60.013, "w": 10.986, "h": 1.285, "t": "The Sponsor"}, {"x": 11.569, "y": 62.232, "w": 71.523, "h": 1.11, "t": "Founded in 2011 and based in Boston, Hollis Bridge Partners (US$1.4 billion AUM) buys founder-owned"}, {"x": 11.569, "y": 63.975, "w": 74.797, "h": 1.11, "t": "services and niche manufacturing businesses in the U.S. lower middle market, usually as the first institutional"}, {"x": 11.569, "y": 65.717, "w": 74.372, "h": 1.11, "t": "capital, and builds them up through a disciplined buy-and-build approach. It has fully or substantially realized"}, {"x": 11.569, "y": 67.459, "w": 66.688, "h": 1.11, "t": "most of its first two funds, a level of distribution discipline that is uncommon in the current market."}, {"x": 11.569, "y": 70.897, "w": 9.889, "h": 1.285, "t": "The Facility"}, {"x": 11.569, "y": 73.116, "w": 67.38, "h": 1.11, "t": "Hollis Bridge Partners Fund III, L.P. is seeking a US$80.0 million term facility secured against its"}, {"x": 11.569, "y": 74.858, "w": 67.815, "h": 1.11, "t": "eight-company portfolio, which carries an aggregate net asset value of US$310.0 million. That is a"}, {"x": 11.569, "y": 76.601, "w": 75.494, "h": 1.11, "t": "loan-to-value at close of 25.8%, against a maximum LTV covenant of 32.5%. An existing relationship lender to"}, {"x": 11.569, "y": 78.343, "w": 73.423, "h": 1.11, "t": "the GP has indicated it will commit up to 50% of the facility; the remainder is being offered to one additional"}, {"x": 11.569, "y": 80.086, "w": 76.528, "h": 1.11, "t": "financing partner. The facility has a four-year term, a pledge of the Fund’s interests in portfolio company holding"}, {"x": 11.569, "y": 81.828, "w": 62.81, "h": 1.11, "t": "vehicles, an exit-proceeds sweep above an agreed threshold, and New York governing law."}, {"x": 11.569, "y": 85.265, "w": 9.589, "h": 1.285, "t": "Economics"}, {"x": 11.569, "y": 87.485, "w": 76.863, "h": 1.11, "t": "The facility carries a 1.50% closing fee and a fixed coupon of 11.00% per annum, of which 8.00% is cash pay"}, {"x": 11.569, "y": 89.227, "w": 74.468, "h": 1.11, "t": "and 3.00% may, at the borrower’s election, be paid in kind and added to the loan balance. On top of that, the"}, {"x": 11.569, "y": 93.007, "w": 76.863, "h": 0.876, "t": "Project Bluegrass | Meridian Park Capital Advisors | Strictly Confidential Page 1"}], [{"x": 11.569, "y": 8.493, "w": 38.59, "h": 1.518, "t": "MERIDIAN PARK CAPITAL ADVISORS"}, {"x": 11.569, "y": 10.507, "w": 27.631, "h": 0.876, "t": "Private Capital Solutions Group | NAV Financing"}, {"x": 11.569, "y": 15.49, "w": 75.736, "h": 1.11, "t": "lender receives an upside participation equal to 5.0% of the growth in portfolio NAV above the US$310.0"}, {"x": 11.569, "y": 17.232, "w": 76.615, "h": 1.11, "t": "million closing level, payable at maturity or on full repayment, capped so that the lender’s aggregate all-in IRR"}, {"x": 11.569, "y": 18.975, "w": 76.863, "h": 1.11, "t": "does not exceed 18.0%. On the sponsor’s base case, the total economics produce a projected gross all-in IRR"}, {"x": 11.569, "y": 20.717, "w": 40.373, "h": 1.11, "t": "of roughly 14 to 15%, assuming a three-year average life."}, {"x": 11.569, "y": 24.154, "w": 16.078, "h": 1.285, "t": "Portfolio Snapshot"}, {"x": 11.569, "y": 26.374, "w": 75.23, "h": 1.11, "t": "The five largest positions are profiled below; the remaining three are summarized in the table that follows. Full"}, {"x": 11.569, "y": 28.116, "w": 36.581, "h": 1.11, "t": "portfolio company detail is available in the data room."}, {"x": 11.569, "y": 31.121, "w": 76.863, "h": 1.11, "t": "Halewood Packaging (packaging; 80% owned): revenue US$120.0M, EBITDA US$11.0M, net debt US$40.0M,"}, {"x": 11.569, "y": 32.864, "w": 72.987, "h": 1.11, "t": "enterprise value US$100.0M; Fund value US$48.0M (15% of NAV). In an active sale process. Brightmark"}, {"x": 11.569, "y": 34.606, "w": 70.659, "h": 1.11, "t": "Dental Group (healthcare; 70% owned): revenue US$95.0M, EBITDA US$12.0M, net debt US$45.0M,"}, {"x": 11.569, "y": 36.348, "w": 74.364, "h": 1.11, "t": "enterprise value US$105.0M; Fund value US$42.0M (14%). Corenza Software (application software; wholly"}, {"x": 11.569, "y": 38.091, "w": 75.233, "h": 1.11, "t": "owned): revenue US$24.0M, EBITDA US$3.0M, a net cash position of US$5.0M, enterprise value US$33.0M;"}, {"x": 11.569, "y": 39.833, "w": 74.881, "h": 1.11, "t": "Fund value US$38.0M (12%). Ridgetop Fire & Safety (business services; 85% owned): revenue US$58.0M,"}, {"x": 11.569, "y": 41.576, "w": 72.731, "h": 1.11, "t": "EBITDA US$7.0M, net debt US$25.0M, enterprise value US$65.0M; Fund value US$34.0M (11%); signed"}, {"x": 11.569, "y": 43.318, "w": 76.522, "h": 1.11, "t": "add-on pending. Bluewater Marine (industrial services; wholly owned): revenue US$70.0M, EBITDA US$6.5M,"}, {"x": 11.569, "y": 45.06, "w": 54.355, "h": 1.11, "t": "net debt US$25.0M, enterprise value US$55.0M; Fund value US$30.0M (10%)."}, {"x": 12.549, "y": 49.159, "w": 69.828, "h": 0.969, "t": "Company Sector Fund Value (US$M) % of NAV"}, {"x": 12.549, "y": 51.937, "w": 66.439, "h": 0.969, "t": "Maplecore Foods Food & beverage 46.0 15%"}, {"x": 12.549, "y": 54.715, "w": 66.439, "h": 0.969, "t": "Stonegate Veterinary Healthcare services 40.0 13%"}, {"x": 12.549, "y": 57.492, "w": 66.439, "h": 0.969, "t": "Ironvale Precision Precision manufacturing 32.0 10%"}, {"x": 11.569, "y": 60.116, "w": 76.288, "h": 0.876, "t": "Note: Stonegate Veterinary is in an active sale process; Ironvale Precision has a signed add-on acquisition pending. Ownership levels for the"}, {"x": 11.569, "y": 61.378, "w": 44.21, "h": 0.876, "t": "three positions above range from 60% to 100% and are detailed in the data room."}, {"x": 11.569, "y": 64.407, "w": 16.279, "h": 1.285, "t": "Timeline & Contact"}, {"x": 11.569, "y": 66.626, "w": 71.866, "h": 1.11, "t": "Indications of interest are requested within three weeks of receipt of this summary. The data room, which"}, {"x": 11.569, "y": 68.369, "w": 75.924, "h": 1.11, "t": "includes full portfolio company financials, valuation support, and the GP’s realization pipeline, is available upon"}, {"x": 11.569, "y": 70.111, "w": 58.577, "h": 1.11, "t": "execution of an NDA. Contact: NAV Financing Team, Meridian Park Capital Advisors."}, {"x": 11.569, "y": 93.007, "w": 76.863, "h": 0.876, "t": "Project Bluegrass | Meridian Park Capital Advisors | Strictly Confidential Page 2"}]];
+function paintText(){
+  const layer=document.getElementById('txt'); if(!layer) return;
+  layer.innerHTML='';
+  (TEXT[curPage-1]||[]).forEach(l=>{
+    const s=document.createElement('span');
+    s.textContent=l.t;
+    s.style.cssText='position:absolute;left:'+l.x+'%;top:'+l.y+'%;width:'+l.w+'%;height:'+l.h+'%;'+
+      'font-size:'+l.h+'%;line-height:1;white-space:pre;transform-origin:0 0;color:transparent;cursor:text';
+    layer.appendChild(s);
+  });
+  // scale each line to sit exactly over its printed counterpart, so selection tracks the glyphs
+  requestAnimationFrame(()=>{
+    const box=layer.getBoundingClientRect();
+    [...layer.children].forEach((s,i)=>{
+      const l=(TEXT[curPage-1]||[])[i]; if(!l) return;
+      s.style.fontSize=(l.h/100*box.height*1.02)+'px';
+      const want=l.w/100*box.width, have=s.scrollWidth;
+      if(have>0) s.style.transform='scaleX('+(want/have)+')';
+    });
+  });
+}
+function copyCited(){
+  if(!curCite) return;
+  const t=(TEXT[curCite.page-1]||[]).filter(l=>curCite.rects.some(r=>Math.abs(l.y-r[1])<0.9)).map(l=>l.t).join(' ');
+  navigator.clipboard?.writeText(t);
+  const b=document.getElementById('copycite'); const was=b.textContent;
+  b.textContent='Copied'; setTimeout(()=>b.textContent=was,1400);
+}
+
 const srcpane = document.getElementById('srcpane');
 function setW(w){const max=Math.round(innerWidth*.68);const v=Math.min(max,Math.max(380,w));
   srcpane.style.setProperty('width',v+'px','important');
@@ -391,7 +424,7 @@ function openPane(){
   srcpane.classList.add('open');
   if(first){ const L=document.querySelector('.layout').clientWidth; setW(Math.round((L-document.querySelector('.rail').offsetWidth)/2)); }
 }
-function closePane(){ srcpane.classList.remove('open'); document.querySelectorAll('.cite.active,.kv.active').forEach(c=>c.classList.remove('active')); }
+function closePane(){ srcpane.style.removeProperty('width'); srcpane.style.removeProperty('flex'); srcpane.classList.remove('open'); curCite=null; document.querySelectorAll('.cite.active,.kv.active').forEach(c=>c.classList.remove('active')); }
 document.getElementById('srcclose').addEventListener('click',closePane);
 // drag-to-resize
 const handle = document.getElementById('srchandle');
@@ -414,25 +447,23 @@ document.querySelectorAll('.kv').forEach(kv=>{
 });
 const pane = document.querySelector('.doccard');
 const cap = document.querySelector('.cap');
-const CITES = {"facility": {"page": 1, "rects": [[36.33, 73.12, 42.62, 1.11]]}, "portfolio8": {"page": 1, "rects": [[25.5, 33.37, 61.25, 1.11]]}, "top1": {"page": 1, "rects": [[24.55, 35.11, 38.91, 1.11]]}, "addons": {"page": 1, "rects": [[35.16, 50.34, 45.55, 1.11]]}, "sponsor": {"page": 1, "rects": [[38.67, 62.23, 44.43, 1.11]]}, "fundI": {"page": 1, "rects": [[36.89, 37.86, 50.04, 1.11]]}, "fundII": {"page": 1, "rects": [[13.86, 39.61, 35.98, 1.11]]}, "fundIII": {"page": 1, "rects": [[13.86, 41.35, 72.38, 1.11]]}, "nav": {"page": 1, "rects": [[11.57, 74.86, 61.43, 1.11]]}, "ltv": {"page": 1, "rects": [[11.57, 76.6, 52.63, 1.11]]}, "syndication": {"page": 1, "rects": [[64.63, 76.6, 22.43, 1.11]]}, "termlaw": {"page": 1, "rects": [[23.99, 80.09, 64.1, 1.11]]}, "sweep": {"page": 1, "rects": [[18.04, 81.83, 56.34, 1.11]]}, "exits": {"page": 1, "rects": [[13.86, 47.59, 72.9, 1.11]]}, "coupon": {"page": 1, "rects": [[11.57, 87.48, 76.86, 1.11]]}, "pik": {"page": 1, "rects": [[11.57, 89.23, 61.61, 1.11]]}, "upside": {"page": 2, "rects": [[24.68, 15.49, 62.62, 1.11]]}, "cap": {"page": 2, "rects": [[55.31, 17.23, 32.87, 1.11]]}, "irr": {"page": 2, "rects": [[11.57, 20.72, 40.37, 1.11]]}, "snapshot": {"page": 2, "rects": [[11.57, 26.37, 72.3, 1.11]]}, "marks": {"page": 1, "rects": [[13.86, 56.58, 73.16, 1.11]]}};
+const CITES = {"facility": {"page": 1, "rects": [[36.33, 73.12, 42.62, 1.11]]}, "portfolio8": {"page": 1, "rects": [[25.5, 33.37, 61.25, 1.11]]}, "top1": {"page": 1, "rects": [[24.55, 35.11, 38.91, 1.11]]}, "addons": {"page": 1, "rects": [[35.16, 50.34, 45.55, 1.11]]}, "sponsor": {"page": 1, "rects": [[38.67, 62.23, 44.43, 1.11]]}, "fundI": {"page": 1, "rects": [[36.89, 37.86, 50.04, 1.11]]}, "fundII": {"page": 1, "rects": [[13.86, 39.61, 35.98, 1.11]]}, "fundIII": {"page": 1, "rects": [[13.86, 41.35, 72.38, 1.11]]}, "nav": {"page": 1, "rects": [[11.57, 74.86, 61.43, 1.11]]}, "ltv": {"page": 1, "rects": [[11.57, 76.6, 52.63, 1.11]]}, "syndication": {"page": 1, "rects": [[64.63, 76.6, 22.43, 1.11]]}, "termlaw": {"page": 1, "rects": [[23.99, 80.09, 64.1, 1.11]]}, "sweep": {"page": 1, "rects": [[18.04, 81.83, 56.34, 1.11]]}, "exits": {"page": 1, "rects": [[13.86, 47.59, 72.9, 1.11]]}, "coupon": {"page": 1, "rects": [[11.57, 87.48, 76.86, 1.11]]}, "pik": {"page": 1, "rects": [[11.57, 89.23, 61.61, 1.11]]}, "upside": {"page": 2, "rects": [[24.68, 15.49, 62.62, 1.11]]}, "cap": {"page": 2, "rects": [[55.31, 17.23, 32.87, 1.11]]}, "irr": {"page": 2, "rects": [[11.57, 20.72, 40.37, 1.11]]}, "snapshot": {"page": 2, "rects": [[11.57, 26.37, 72.3, 1.11]]}, "marks": {"page": 1, "rects": [[13.86, 56.58, 73.16, 1.11]]}, "co_halewood": {"page": 2, "rects": [[11.57, 31.12, 76.86, 1.11]]}, "co_brightmark": {"page": 2, "rects": [[11.57, 36.35, 40.98, 1.11]]}, "co_corenza": {"page": 2, "rects": [[52.98, 36.35, 32.95, 1.11]]}, "co_ridgetop": {"page": 2, "rects": [[32.45, 39.83, 54.0, 1.11]]}, "co_bluewater": {"page": 2, "rects": [[23.22, 43.32, 64.87, 1.11]]}, "co_maplecore": {"page": 2, "rects": [[12.55, 51.94, 66.44, 0.97]]}, "co_stonegate": {"page": 2, "rects": [[12.55, 54.71, 66.44, 0.97]]}, "co_ironvale": {"page": 2, "rects": [[12.55, 57.49, 66.44, 0.97]]}, "co_note": {"page": 2, "rects": [[11.57, 60.12, 62.8, 0.88]]}, "co_ownership": {"page": 2, "rects": [[11.57, 61.38, 44.21, 0.88]]}};
 
-const LABELS = {"facility": "The Facility, page 1, facility size", "portfolio8": "Investment highlights, page 1, diversification", "top1": "Investment highlights, page 1, largest position", "addons": "Investment highlights, page 1, use of proceeds", "sponsor": "The Sponsor, page 1, sponsor and AUM", "fundI": "Investment highlights, page 1, Fund I", "fundII": "Investment highlights, page 1, Fund II", "fundIII": "Investment highlights, page 1, borrower fund", "nav": "The Facility, page 1, portfolio NAV", "ltv": "The Facility, page 1, LTV and covenant", "syndication": "The Facility, page 1, syndication", "termlaw": "The Facility, page 1, term and security", "sweep": "The Facility, page 1, sweep and law", "exits": "Investment highlights, page 1, repayment path", "coupon": "Economics, page 1, fee and coupon", "pik": "Economics, page 1, PIK election", "upside": "Economics, page 2, upside participation", "cap": "Economics, page 2, IRR cap", "irr": "Economics, page 2, projected IRR", "snapshot": "Portfolio snapshot, page 2, position detail", "marks": "Investment highlights, page 1, valuation date"};
+const LABELS = {"facility": "The Facility, page 1, facility size", "portfolio8": "Investment highlights, page 1, diversification", "top1": "Investment highlights, page 1, largest position", "addons": "Investment highlights, page 1, use of proceeds", "sponsor": "The Sponsor, page 1, sponsor and AUM", "fundI": "Investment highlights, page 1, Fund I", "fundII": "Investment highlights, page 1, Fund II", "fundIII": "Investment highlights, page 1, borrower fund", "nav": "The Facility, page 1, portfolio NAV", "ltv": "The Facility, page 1, LTV and covenant", "syndication": "The Facility, page 1, syndication", "termlaw": "The Facility, page 1, term and security", "sweep": "The Facility, page 1, sweep and law", "exits": "Investment highlights, page 1, repayment path", "coupon": "Economics, page 1, fee and coupon", "pik": "Economics, page 1, PIK election", "upside": "Economics, page 2, upside participation", "cap": "Economics, page 2, IRR cap", "irr": "Economics, page 2, projected IRR", "snapshot": "Portfolio snapshot, page 2, position detail", "marks": "Investment highlights, page 1, valuation date", "co_halewood": "Portfolio snapshot, page 2, Halewood", "co_brightmark": "Portfolio snapshot, page 2, Brightmark", "co_corenza": "Portfolio snapshot, page 2, Corenza", "co_ridgetop": "Portfolio snapshot, page 2, Ridgetop", "co_bluewater": "Portfolio snapshot, page 2, Bluewater", "co_maplecore": "Portfolio table, page 2, Maplecore", "co_stonegate": "Portfolio table, page 2, Stonegate", "co_ironvale": "Portfolio table, page 2, Ironvale", "co_note": "Portfolio note, page 2, status of table positions", "co_ownership": "Portfolio note, page 2, ownership not stated"};
 const KV_MAP = {"Return|All-in IRR, stated maturity": "irr", "Return|Expected repayment": "sweep", "Return|Cash share of return": "coupon", "Return|Upside cap": "cap", "Margin of safety|Headline LTV": "ltv", "Margin of safety|Stressed · top position → 0": "top1", "Margin of safety|LTV covenant": "ltv", "Margin of safety|Existing fund debt": "facility", "Repayment|Positions": "portfolio8", "Repayment|Top position": "top1", "Repayment|Top three": "snapshot", "Repayment|Sale processes": "exits", "Manager|Fund I (2013)": "fundI", "Manager|Fund II (2016)": "fundII", "Manager|Fund III · borrower": "fundIII", "Manager|Net IRR · borrower": "fundIII", "Terms|Closing fee": "coupon", "Terms|Coupon": "coupon", "Terms|Upside participation": "upside", "Terms|Term and security": "termlaw", "Portfolio|": "snapshot"};
 const srcimg = document.getElementById('srcimg');
 const hlwrap = document.getElementById('hl');
-const badge = document.getElementById('hlbadge');
+
 let curCite=null, curPage=1, capHTML='';
 const pgnum=document.getElementById('pgnum'), pgprev=document.getElementById('pgprev'), pgnext=document.getElementById('pgnext');
 function paintRects(c){
   hlwrap.innerHTML='';
-  if(!c || c.page!==curPage){ badge.style.display='none'; return; }
-  badge.style.display='';
+  if(!c || c.page!==curPage){ return; }
   c.rects.forEach(r=>{
     const d=document.createElement('div');
     d.style.cssText='position:absolute;left:'+r[0]+'%;top:'+r[1]+'%;width:'+r[2]+'%;height:'+r[3]+'%;background:rgba(14,165,233,.32);border-radius:2px';
     hlwrap.appendChild(d);
   });
-  badge.style.top=Math.max(1,c.rects[0][1]-2.6)+'%';
 }
 function scrollToCite(){
   const box=document.getElementById('srcscroll'), page=document.querySelector('.docpage');
@@ -446,6 +477,7 @@ function goPage(n){
   pgnum.textContent=curPage;
   pgprev.disabled=curPage===1; pgnext.disabled=curPage===2;
   paintRects(curCite);
+  paintText();
   scrollToCite();
   const el=document.getElementById('citecap');
   if(curCite && curCite.page!==curPage) el.innerHTML='<span class="nocite">The cited sentence is on page '+curCite.page+'. Nothing is highlighted on this one.</span>';
@@ -596,5 +628,12 @@ document.querySelectorAll('.doc .open').forEach(b=>{ b.tabIndex=0; b.setAttribut
   h.addEventListener('mousedown',()=>{document.body.style.userSelect='none';pane.classList.add('dragging')});
   window.addEventListener('mouseup',()=>{document.body.style.userSelect='';pane.classList.remove('dragging')});
 })();
+document.querySelectorAll('tr.pcorow').forEach(r=>{
+  const go=()=>{document.querySelectorAll('.cite.active,.kv.active,tr.pcorow.active').forEach(x=>x.classList.remove('active'));
+    r.classList.add('active'); applyCite(r.dataset.cite, r.dataset.src);};
+  r.addEventListener('click',go);
+  r.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});
+});
+document.getElementById('copycite').addEventListener('click',copyCited);
 </script>
 </body></html>
