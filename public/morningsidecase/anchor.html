@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Project Anchor · Morningside OS</title><link rel="stylesheet" href="shared.css?v=e88331c9"><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Project Anchor · Morningside OS</title><link rel="stylesheet" href="shared.css?v=75146bd5"><style>
 html{scroll-behavior:smooth}
 .layout{display:flex}
 .rail{width:196px;flex:0 0 196px;border-right:1px solid var(--line);padding:16px 0;background:#fff;
@@ -365,13 +365,13 @@ a.item{text-decoration:none}
       </div>
       <div class="cap" id="citecap"><span class="refdot active" style="vertical-align:middle"></span> Click any figure on the tab to open its sentence here.</div>
     </div>
-    <div class="srcscroll" id="srcscroll">
-      <div class="doccard">
-        <div class="docpage">
-          <img id="srcimg" src="anchor-p1.png" alt="Teaser page">
-          <div id="hl"></div>
-          <div id="txt" class="textlayer"></div>
-        </div>
+        <div class="srcscroll" id="srcscroll">
+      <div class="doccard" data-page="1">
+        <div class="docpage"><img src="anchor-p1.png" alt="Teaser_Project_Anchor.pdf, page 1"><div class="hl" data-hl="1"></div><div class="textlayer" data-txt="1"></div></div>
+      </div>
+      <div class="pagegap"><span>page 2</span></div>
+      <div class="doccard" data-page="2">
+        <div class="docpage"><img src="anchor-p2.png" alt="Teaser_Project_Anchor.pdf, page 2"><div class="hl" data-hl="2"></div><div class="textlayer" data-txt="2"></div></div>
       </div>
     </div>
     <div class="srcfoot">The pane renders the document as the broker sent it. Corrections go through the assistant and are audited; the document itself never changes.</div>
@@ -468,48 +468,77 @@ const CITES = {"facility": {"page": 1, "rects": [[39.35, 35.11, 29.42, 1.11]]}, 
 
 const LABELS = {"facility": "The Opportunity, page 1, facility size", "positions": "The Opportunity, page 1, collateral and position count", "nav": "The Opportunity, page 1, portfolio NAV", "ltv": "The Opportunity, page 1, LTV at close", "proceeds": "The Opportunity, page 1, use of proceeds", "sponsor": "Why Silverhawk, page 1, sponsor and AUM", "fund2": "Why Silverhawk, page 1, Fund II", "fund3": "Why Silverhawk, page 1, Fund III", "fund4": "Why Silverhawk, page 1, borrower fund", "realized": "Why Silverhawk, page 1, realized proceeds", "corvid": "The Portfolio, page 1, Corvid position", "portfolio": "The Portfolio, page 1, remaining positions", "marks": "The Portfolio, page 1, valuation date", "valuation": "The Portfolio, page 2, valuation basis", "coupon": "Indicative Terms, page 2, coupon and fee", "prepay": "Indicative Terms, page 2, prepayment", "sweep": "Indicative Terms, page 2, distribution sweep", "covenant": "Indicative Terms, page 2, covenants and law", "cushion": "Why This Is Compelling, page 2, value cushion", "co_corvid": "The Portfolio, page 1, Corvid", "co_transloop": "The Portfolio, page 1, TransLoop", "co_merrow": "The Portfolio, page 1, Merrow", "co_pallas": "The Portfolio, page 1, Pallas"};
 const KV_MAP = {"Return|All-in IRR, stated maturity": "coupon", "Return|Month-12 prepay sensitivity": "prepay", "Return|Cash share of return": "coupon", "Return|Upside participation": "coupon", "Margin of safety|Headline LTV": "ltv", "Margin of safety|Stressed, top position to zero": "corvid", "Margin of safety|Value cushion": "cushion", "Margin of safety|LTV covenant": "covenant", "Repayment|Positions": "positions", "Repayment|Top position": "corvid", "Repayment|Top three": "portfolio", "Repayment|Sale processes": "portfolio", "Manager|Fund II (2012)": "fund2", "Manager|Fund III (2015)": "fund3", "Manager|Fund IV · borrower": "fund4", "Manager|Realized proceeds": "realized", "Terms|Closing fee": "coupon", "Terms|Coupon": "coupon", "Terms|Prepayment": "prepay", "Terms|Term and security": "covenant"};
-const srcimg = document.getElementById('srcimg');
 const hlwrap = document.getElementById('hl');
 
-let curCite=null, curPage=1, capHTML='';
-const pgnum=document.getElementById('pgnum'), pgprev=document.getElementById('pgprev'), pgnext=document.getElementById('pgnext');
+let curCite=null, capHTML='';
+// ---- the document is one continuous scroll; page controls jump, they do not swap
+function paintText(){
+  document.querySelectorAll('.textlayer[data-txt]').forEach(layer=>{
+    const pg=+layer.dataset.txt; layer.innerHTML='';
+    (TEXT[pg-1]||[]).forEach(l=>{
+      const s=document.createElement('span');
+      s.textContent=l.t;
+      s.style.cssText='position:absolute;left:'+l.x+'%;top:'+l.y+'%;width:'+l.w+'%;height:'+l.h+'%;'+
+        'line-height:1;white-space:pre;transform-origin:0 0;color:transparent;cursor:text';
+      layer.appendChild(s);
+    });
+    requestAnimationFrame(()=>{
+      const box=layer.getBoundingClientRect();
+      [...layer.children].forEach((s,i)=>{
+        const l=(TEXT[pg-1]||[])[i]; if(!l) return;
+        s.style.fontSize=(l.h/100*box.height*1.02)+'px';
+        const want=l.w/100*box.width, have=s.scrollWidth;
+        if(have>0) s.style.transform='scaleX('+(want/have)+')';
+      });
+    });
+  });
+}
 function paintRects(c){
-  hlwrap.innerHTML='';
-  if(!c || c.page!==curPage){ return; }
+  document.querySelectorAll('.hl[data-hl]').forEach(h=>h.innerHTML='');
+  if(!c) return;
+  const layer=document.querySelector('.hl[data-hl="'+c.page+'"]'); if(!layer) return;
   c.rects.forEach(r=>{
     const d=document.createElement('div');
     d.style.cssText='position:absolute;left:'+r[0]+'%;top:'+r[1]+'%;width:'+r[2]+'%;height:'+r[3]+'%;background:rgba(14,165,233,.32);border-radius:2px';
-    hlwrap.appendChild(d);
+    layer.appendChild(d);
   });
 }
-function scrollToCite(){
-  const box=document.getElementById('srcscroll'), page=document.querySelector('.docpage');
-  if(!curCite || curCite.page!==curPage || !page.offsetHeight){ return; }
-  const y = page.offsetTop + (curCite.rects[0][1]/100)*page.offsetHeight;
-  smoothTo(box, Math.max(0, y - box.clientHeight*0.34));
-}
+function pageEl(n){ return document.querySelector('.doccard[data-page="'+n+'"]'); }
 function goPage(n){
-  curPage=Math.min(2,Math.max(1,n));
-  srcimg.src='anchor-p'+curPage+'.png';
-  pgnum.textContent=curPage;
-  pgprev.disabled=curPage===1; pgnext.disabled=curPage===2;
-  paintRects(curCite);
-  paintText();
-  scrollToCite();
-  const el=document.getElementById('citecap');
-  if(curCite && curCite.page!==curPage) el.innerHTML='<span class="nocite">The cited sentence is on page '+curCite.page+'. Nothing is highlighted on this one.</span>';
-  else if(curCite) el.innerHTML=capHTML;
+  const el=pageEl(Math.min(2,Math.max(1,n))); if(!el) return;
+  const box=document.getElementById('srcscroll');
+  box.scrollTo({top: el.offsetTop - 14, behavior: REDUCED ? 'auto' : 'smooth'});
 }
-pgprev.addEventListener('click',()=>goPage(curPage-1));
-pgnext.addEventListener('click',()=>goPage(curPage+1));
+function currentPage(){
+  const box=document.getElementById('srcscroll'), mid=box.scrollTop + box.clientHeight*0.35;
+  return (pageEl(2) && mid >= pageEl(2).offsetTop) ? 2 : 1;
+}
+function syncPageIndicator(){
+  const p=currentPage();
+  document.getElementById('pgnum').textContent=p;
+  document.getElementById('pgprev').disabled = p===1;
+  document.getElementById('pgnext').disabled = p===2;
+}
+document.getElementById('srcscroll').addEventListener('scroll',syncPageIndicator,{passive:true});
+document.getElementById('pgprev').addEventListener('click',()=>goPage(currentPage()-1));
+document.getElementById('pgnext').addEventListener('click',()=>goPage(currentPage()+1));
+function scrollToCite(){
+  if(!curCite) return;
+  const box=document.getElementById('srcscroll'), card=pageEl(curCite.page); if(!card) return;
+  const page=card.querySelector('.docpage');
+  const y = card.offsetTop + (curCite.rects[0][1]/100)*page.offsetHeight;
+  box.scrollTo({top: Math.max(0, y - box.clientHeight*0.34), behavior: REDUCED ? 'auto' : 'smooth'});
+}
 function applyCite(key, label){
   const c = CITES[key]; if(!c) return;
   curCite=c;
   capHTML = '<span class="refdot active" style="vertical-align:middle"></span> Cited &middot; '+(label||LABELS[key]||key)+' &middot; highlighted on the source page';
-  goPage(c.page);
+  document.getElementById('citecap').innerHTML = capHTML;
+  paintRects(c);
   openPane();
-  requestAnimationFrame(scrollToCite);
-  if(!REDUCED) pane.animate([{boxShadow:'0 0 0 3px rgba(14,165,233,.4)'},{boxShadow:'none'}],{duration:900});
+  requestAnimationFrame(()=>{ scrollToCite(); setTimeout(syncPageIndicator,420); });
+  if(!REDUCED) document.querySelector('.doccard[data-page="'+c.page+'"]')
+    .animate([{boxShadow:'0 0 0 3px rgba(14,165,233,.4)'},{boxShadow:'none'}],{duration:900});
 }
 
 document.querySelectorAll('.cite').forEach(el=>{
@@ -540,7 +569,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')apanel.classList.rem
 document.getElementById('apclose').addEventListener('click',e=>{e.stopPropagation();apanel.classList.remove('open')});
 apanel.addEventListener('click',e=>e.stopPropagation());
 pill.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pill.click()}});
-goPage(1);
+syncPageIndicator(); paintText();
 
 const moreBtn=document.getElementById('morebtn');
 if(moreBtn){
@@ -622,13 +651,15 @@ document.querySelectorAll('.doc .open').forEach(b=>{ b.tabIndex=0; b.setAttribut
 })();
 // ---- proof panel: chrome is fixed, only the page scrolls; the grip is always visible
 (function(){
-  const scroll=document.getElementById('srcscroll'), img=document.getElementById('srcimg');
+  const scroll=document.getElementById('srcscroll');
+  const imgs=()=>[...document.querySelectorAll('.docpage img')];
   let zoom=0; // 0 = fit width
   const ZOOMS=[1.25,1.5,2];
   function applyZoom(){
     const fit = zoom===0;
     document.getElementById('zfit').classList.toggle('on',fit);
-    img.style.width = fit ? '100%' : (ZOOMS[zoom-1]*100)+'%';
+    imgs().forEach(im=>im.style.width = fit ? '100%' : (ZOOMS[zoom-1]*100)+'%');
+    setTimeout(paintText,60);
     scroll.style.overflowX = fit ? 'hidden' : 'auto';
     document.getElementById('zin').disabled = zoom>=ZOOMS.length;
     document.getElementById('zout').disabled = zoom===0;
