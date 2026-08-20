@@ -301,12 +301,6 @@ tr.pcorow:hover td:first-child b{text-decoration-color:rgba(14,165,233,.85)}
 /* Coverage is a property of the deal, not a verdict */
 .dealtag{display:block;margin-top:3px;font-size:10.5px;color:var(--faint);font-weight:400;white-space:nowrap}
 .notranked{font-size:11.5px;color:var(--faint);font-style:italic}
-/* The assistant reads as a control: a circle that says what it does */
-.pill{background:#fff;border-radius:50%}
-.pill .mark{width:auto;height:auto;flex:0 0 auto;background:none;color:var(--ink);font-size:12.5px;font-weight:700;letter-spacing:-.1px;border-radius:0}
-.pill:hover,.pill:focus-within,.pill.open{border-radius:999px;padding:8px 8px 8px 16px}
-.pill:hover .mark,.pill.open .mark{display:none}
-.pill .badge{top:-4px;right:-4px}
 
 table td:nth-child(2) b{white-space:nowrap}
 
@@ -364,8 +358,6 @@ table td:nth-child(2) b{white-space:nowrap}
   .weeklabel{display:none}
 }
 
-/* A floating control must read as floating: give it a halo so it never looks like broken text overlap */
-.pill{backdrop-filter:saturate(1.1)}
 main{padding-bottom:110px}
 
 /* Drawn affordances rather than emoji, which read as decoration and never match the type */
@@ -406,3 +398,37 @@ main{padding-bottom:110px}
 .crumb:hover{color:var(--ink);background:var(--hair);border-color:var(--line)}
 .crumb .arrow{font-size:13px;line-height:1}
 .mhead .crumb{margin-bottom:8px}
+
+/* ============ Assistant: a command surface, not a support bubble ============ */
+.pill{position:fixed;z-index:65;left:50%;transform:translateX(-50%);bottom:18px;
+  display:flex;align-items:center;gap:0;justify-content:center;
+  width:48px;height:48px;padding:0;border-radius:15px;overflow:visible;cursor:pointer;
+  background:#fff;border:1px solid #D5DCE4;
+  box-shadow:0 6px 20px rgba(31,41,55,.16),0 1px 3px rgba(31,41,55,.10),0 0 0 4px rgba(255,255,255,.92);
+  font-size:12.5px;color:var(--muted);
+  transition:width .22s cubic-bezier(.2,.8,.2,1),height .22s,border-radius .22s,padding .22s,gap .22s,border-color .18s}
+.pill:hover,.pill:focus-within,.pill.open{width:372px;height:46px;border-radius:999px;padding:9px 10px 9px 14px;gap:10px;
+  justify-content:flex-start;border-color:var(--ink)}
+/* the mark is a prompt caret: this is a place you type a command, not a place you chat */
+.pill .mark{flex:0 0 auto;display:inline-flex;align-items:baseline;gap:3px;color:var(--ink);
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;font-weight:700;line-height:1;background:none;width:auto;height:auto;border-radius:0}
+.pill .mark::after{content:"";width:8px;height:1.5px;background:var(--ink);display:inline-block;
+  animation:caret 1.5s steps(1,end) infinite}
+@keyframes caret{0%,60%{opacity:1}61%,100%{opacity:.15}}
+.pill:hover .mark::after,.pill.open .mark::after{animation:none;opacity:1}
+/* scope is legible the moment it opens, not after you type */
+.pill .ctx{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:2px 9px;
+  font-size:10.5px;color:var(--ink);font-weight:650;white-space:nowrap}
+.pill .say{color:var(--muted);white-space:nowrap}
+.pill .kbd{margin-left:auto;font-size:10px;color:var(--muted);border:1px solid var(--line);border-radius:5px;
+  padding:2px 6px;background:var(--surface);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.pill > .ctx,.pill > .say,.pill > .kbd{opacity:0;max-width:0;overflow:hidden;transition:opacity .16s ease .04s,max-width .22s}
+.pill:hover > .ctx,.pill:hover > .say,.pill:hover > .kbd,
+.pill:focus-within > .ctx,.pill:focus-within > .say,.pill:focus-within > .kbd,
+.pill.open > .ctx,.pill.open > .say,.pill.open > .kbd{opacity:1;max-width:230px}
+/* work waiting on you is visible before you open anything */
+.pill .badge{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;padding:0 6px;border-radius:999px;
+  background:var(--warn);color:#fff;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 0 3px #fff;font-variant-numeric:tabular-nums}
+.pill:hover .badge,.pill.open .badge{top:-7px;right:-7px}
+@media (prefers-reduced-motion: reduce){.pill .mark::after{animation:none}}
