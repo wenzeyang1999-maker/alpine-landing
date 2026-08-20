@@ -115,7 +115,7 @@ td{padding:11px 10px;border-bottom:1px solid var(--hair);font-size:12.5px;vertic
 
 /* ============ Assistant: collapsed mark, expanded panel ============ */
 .pill{width:46px;height:46px;border-radius:15px;gap:0;padding:0;
-  box-shadow:0 3px 14px rgba(31,41,55,.13),0 1px 3px rgba(31,41,55,.08);border-color:#DCE3EA}
+  box-shadow:0 6px 22px rgba(31,41,55,.20),0 2px 6px rgba(31,41,55,.12),0 0 0 4px rgba(255,255,255,.9);border-color:#CBD5E1}
 .pill:hover,.pill:focus-within,.pill.open{width:360px;height:44px;border-radius:999px;padding:8px 8px 8px 15px;gap:10px}
 .pill .mark{flex:0 0 auto;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;
   border-radius:7px;background:var(--ink);color:#fff;font-size:12px;font-weight:700;line-height:1;transition:transform .22s}
@@ -363,3 +363,7 @@ table td:nth-child(2) b{white-space:nowrap}
   .topnav{gap:12px;font-size:12px}
   .weeklabel{display:none}
 }
+
+/* A floating control must read as floating: give it a halo so it never looks like broken text overlap */
+.pill{backdrop-filter:saturate(1.1)}
+main{padding-bottom:110px}
