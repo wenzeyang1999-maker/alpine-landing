@@ -367,3 +367,11 @@ table td:nth-child(2) b{white-space:nowrap}
 /* A floating control must read as floating: give it a halo so it never looks like broken text overlap */
 .pill{backdrop-filter:saturate(1.1)}
 main{padding-bottom:110px}
+
+/* Drawn affordances rather than emoji, which read as decoration and never match the type */
+.apinput .clip{position:relative}
+.apinput .clip::before{content:"";position:absolute;inset:0;margin:auto;width:9px;height:14px;
+  border:1.5px solid currentColor;border-radius:6px 6px 5px 5px;border-top-width:1.5px}
+.apinput .send{position:relative}
+.apinput .send::before{content:"";position:absolute;inset:0;margin:auto;width:7px;height:7px;
+  border-top:1.6px solid #fff;border-right:1.6px solid #fff;transform:rotate(-45deg) translate(1px,1px)}
