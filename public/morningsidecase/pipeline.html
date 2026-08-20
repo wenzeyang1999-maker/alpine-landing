@@ -51,7 +51,7 @@ table th{position:sticky;top:calc(var(--topbar-h) + 62px);background:var(--groun
       <td><span class="uscur">US$</span>80.0M / ~50%</td>
       <td>14–15% <span class="check">✓</span></td>
       <td>25.8% → 30.5%</td>
-      <td class="small flagcell"><span class="fg"><i class="c"></i>2 cautions</span><span class="fg"><i class="s"></i>3 strengths</span></td>
+      <td class="small"><div class="flagcell"><div class="rest"><span><i class="c"></i>2 cautions</span><span><i class="s"></i>3 strengths</span></div></div></td>
       <td><span class="chip"><span class="dot"></span>First draft</span></td>
       <td>in 12 days</td>
     </tr>
@@ -63,19 +63,19 @@ table th{position:sticky;top:calc(var(--topbar-h) + 62px);background:var(--groun
       <td><span class="uscur">US$</span>35.0M / 100%</td>
       <td>10.5–11% <span class="muted small" title="the teaser states no IRR">no broker figure</span></td>
       <td>14.0% → 29.2%</td>
-      <td class="small flagcell"><span class="fg dev"><i class="d"></i>1 deviation</span><span class="fg"><i class="c"></i>4 cautions</span><span class="fg"><i class="s"></i>5 strengths</span></td>
+      <td class="small"><div class="flagcell"><div class="dev"><i class="d"></i>1 deviation</div><div class="rest"><span><i class="c"></i>4 cautions</span><span><i class="s"></i>5 strengths</span></div></div></td>
       <td><span class="chip amber"><span class="dot"></span>2 proposals pending</span></td>
       <td class="duewarn">in 9 days</td>
     </tr>
     <tr>
       <td><input type="checkbox"></td>
-      <td><b title="no screening tab in this prototype">Project Cedar</b></td>
-      <td><span class="chip tailored">Tailored</span></td>
+      <td><b title="no screening tab in this prototype">Project Cedar</b><div class="dealtag" title="Non-USD: rendered and cited in full, but outside framework v1 for ranking">FX &middot; outside v1</div></td>
+      <td><span class="notranked">not ranked</span></td>
       <td class="hide-sm">Ashgrove &amp; Co</td><td class="hide-sm">Ferrant Capital Fund II</td>
       <td><span class="uscur">€</span>45.0M / 100%</td>
       <td class="muted">native FX</td>
       <td class="muted">22.1% → 27.8%</td>
-      <td class="small muted">outside framework v1</td>
+      <td class="small"><div class="flagcell"><span class="none">rendered, not scored</span></div></td>
       <td><span class="chip"><span class="dot"></span>First draft</span></td>
       <td>in 16 days</td>
     </tr>
@@ -93,12 +93,12 @@ table th{position:sticky;top:calc(var(--topbar-h) + 62px);background:var(--groun
     <tr class="trackedrow">
       <td></td>
       <td><b title="no screening tab in this prototype">Project Whitmore</b></td>
-      <td><span class="chip tracked">Tracked</span></td>
+      <td><span class="notranked">no framework yet</span></td>
       <td class="hide-sm">Ashgrove &amp; Co</td><td class="hide-sm">Calder Ridge Fund I · continuation</td>
       <td><span class="uscur">US$</span>60.0M sleeve</td>
       <td class="faint">framework not yet built</td>
       <td class="faint">—</td>
-      <td class="small faint">—</td>
+      <td class="small"><div class="flagcell"><span class="none">not screened</span></div></td>
       <td><span class="chip"><span class="dot"></span>Docs on file</span></td>
       <td>in 21 days</td>
     </tr>
@@ -107,19 +107,19 @@ table th{position:sticky;top:calc(var(--topbar-h) + 62px);background:var(--groun
     <tr class="trackedrow">
       <td></td>
       <td><b title="no screening tab in this prototype">Project Keel</b></td>
-      <td><span class="chip tracked">Tracked</span></td>
+      <td><span class="notranked">no framework yet</span></td>
       <td class="hide-sm">Direct from GP</td><td class="hide-sm">Keelworth Partners · management co.</td>
       <td><span class="uscur">US$</span>25.0M</td>
       <td class="faint">framework not yet built</td>
       <td class="faint">—</td>
-      <td class="small faint">—</td>
+      <td class="small"><div class="flagcell"><span class="none">not screened</span></div></td>
       <td><span class="chip"><span class="dot"></span>Intro call held</span></td>
       <td class="faint">—</td>
     </tr>
   </table>
-  <div class="flaglegend"><span><i class="d"></i>strategy deviation</span><span><i class="c"></i>caution</span><span><i class="s"></i>strength</span><span class="faint">Hover a row&rsquo;s flags to read each one with its reason.</span></div>
+  <div class="flaglegend"><span><i class="d"></i>strategy deviation</span><span><i class="c"></i>caution</span><span><i class="s"></i>strength</span><span class="faint">Verdicts appear only where a framework covers the deal; coverage is shown on the deal itself.</span></div>
 </main>
-<div class="pill" role="button" tabindex="0" aria-label="Ask across the pipeline"><span class="mark" aria-hidden="true">&#9679;</span><span class="say">Ask across the pipeline&hellip;</span><span class="ctx">Workspace</span><span class="kbd">&#8984;K</span></div>
+<div class="pill" role="button" tabindex="0" aria-label="Ask across the pipeline"><span class="mark" aria-hidden="true">Ask</span><span class="say">Ask across the pipeline&hellip;</span><span class="ctx">Workspace</span><span class="kbd">&#8984;K</span></div>
 <div class="tray"><span><b>2 deals selected</b></span><span style="color:#CBD5E1">Project Bluegrass · Project Anchor · same strategy, comparable</span><div class="go">Compare →</div></div>
 <script>
 // strategy filter: clicking a segment shows only that group's rows
