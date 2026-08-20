@@ -385,11 +385,11 @@ a.item{text-decoration:none}
     <div class="apcard"><div class="cardtag">Proposed change &middot; 1 of 2</div>
       <div class="rowline"><b>Closing fee</b><span class="old num">2.00%</span><span class="arw">&rarr;</span><b class="num">2.25%</b></div>
       <div class="src">Source: broker email, Aug 19, 4:12pm &middot; provenance <b>negotiation</b></div>
-      <div class="acts"><span class="btn primary">Apply</span><span class="btn quiet">Reject</span><span class="aud">audited either way</span></div></div>
+      <div class="acts"><span class="btn primary" role="button" tabindex="0">Apply</span><span class="btn quiet" role="button" tabindex="0">Reject</span><span class="aud">audited either way</span></div></div>
     <div class="apcard"><div class="cardtag">Proposed change &middot; 2 of 2</div>
       <div class="rowline"><b>Marks as of</b><span class="old num">9/30/25</span><span class="arw">&rarr;</span><b class="num">3/31/26</b></div>
       <div class="src">Source: broker email, Aug 19, 4:12pm &middot; clears the stale-marks caution on apply</div>
-      <div class="acts"><span class="btn primary">Apply</span><span class="btn quiet">Reject</span><span class="aud">audited either way</span></div></div>
+      <div class="acts"><span class="btn primary" role="button" tabindex="0">Apply</span><span class="btn quiet" role="button" tabindex="0">Reject</span><span class="aud">audited either way</span></div></div>
     <div class="apmsg sys">Both proposals cite the same email, so they can be applied together. Applying supersedes the current assessment and the signed read has to be renewed before this deal can go to a decision.</div>
   </div>
   <div class="apfoot">
@@ -649,5 +649,10 @@ document.querySelectorAll('tr.pcorow').forEach(r=>{
   r.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});
 });
 document.getElementById('copycite').addEventListener('click',copyCited);
+document.querySelectorAll('.btn[role=button], .act, .srcclose, .aphead .x').forEach(el=>{
+  if(el.tabIndex<0) el.tabIndex=0;
+  if(!el.getAttribute('role')) el.setAttribute('role','button');
+  el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();el.click()}});
+});
 </script>
 </body></html>

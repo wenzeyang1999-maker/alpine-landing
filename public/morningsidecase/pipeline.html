@@ -33,8 +33,8 @@ table th{position:sticky;top:calc(var(--topbar-h) + 62px);background:var(--groun
   </header>
 
   <div class="filters">
-    <div class="seg"><div class="on">All strategies</div><div>NAV Financing</div><div>GP-led Secondaries</div><div>GP Financing</div></div>
-    <div class="seg"><div class="on">Live</div><div>30 days</div><div>Quarter</div><div>All time</div></div>
+    <div class="seg" role="group"><div class="on" role="button" tabindex="0">All strategies</div><div role="button" tabindex="0">NAV Financing</div><div role="button" tabindex="0">GP-led Secondaries</div><div role="button" tabindex="0">GP Financing</div></div>
+    <div class="seg" role="group"><div class="on" role="button" tabindex="0">Live</div><div role="button" tabindex="0">30 days</div><div role="button" tabindex="0">Quarter</div><div role="button" tabindex="0">All time</div></div>
     <div class="sorts">Sort: <b>By deadline</b> · By strategy fit (NAV)</div>
     <div class="sorts" style="margin-left:auto">6 live · 2 selected</div>
   </div>
@@ -120,7 +120,7 @@ table th{position:sticky;top:calc(var(--topbar-h) + 62px);background:var(--groun
   <div class="flaglegend"><span><i class="d"></i>strategy deviation</span><span><i class="c"></i>caution</span><span><i class="s"></i>strength</span><span class="faint">Verdicts appear only where a framework covers the deal; coverage is shown on the deal itself.</span></div>
 </main>
 <div class="pill" role="button" tabindex="0" aria-label="Ask across the pipeline"><span class="mark" aria-hidden="true">Ask</span><span class="say">Ask across the pipeline&hellip;</span><span class="ctx">Workspace</span><span class="kbd">&#8984;K</span></div>
-<div class="tray"><span><b>2 deals selected</b></span><span style="color:#CBD5E1">Project Bluegrass · Project Anchor · same strategy, comparable</span><div class="go">Compare →</div></div>
+<div class="tray"><span><b>2 deals selected</b></span><span style="color:#CBD5E1">Project Bluegrass · Project Anchor · same strategy, comparable</span><div class="go" role="button" tabindex="0">Compare →</div></div>
 <script>
 // strategy filter: clicking a segment shows only that group's rows
 const segs = document.querySelectorAll('.filters .seg')[0].children;
@@ -140,5 +140,13 @@ function refreshTray(){
 document.querySelectorAll('input[type=checkbox]').forEach(c=>c.addEventListener('change',refreshTray));
 document.querySelector('.tray .go').style.cursor='pointer';
 document.querySelector('.tray .go').addEventListener('click',()=>location.href='compare.html');
+// keyboard parity: every custom control answers Enter and Space
+document.querySelectorAll('.seg [role=button], .tray .go').forEach(el=>{
+  el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();el.click()}});
+});
+// the time-range filter was inert; at minimum it now shows which range is selected
+document.querySelectorAll('.filters .seg')[1]?.querySelectorAll('[role=button]').forEach((el,_,all)=>{
+  el.addEventListener('click',()=>{all.forEach(x=>x.classList.remove('on'));el.classList.add('on')});
+});
 </script>
 </body></html>

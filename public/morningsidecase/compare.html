@@ -115,5 +115,8 @@ main{padding:22px 28px 140px}
   <div class="note">The ordering rule is visible, not a score: fewest strategy deviations first, then fewest cautions, then the higher ranking IRR. Bluegrass ranks above Anchor on the first test and never needs the third. Anchor's five strengths are real and are not netted against its deviation, because a majority-of-NAV single position is a different kind of fact than a good coupon. What the tool will not do is decide; it makes the two profiles legible in the same shape so the room can.</div>
 </main>
 <div class="pill" role="button" tabindex="0" aria-label="Ask across both deals"><span class="mark" aria-hidden="true">Ask</span><span class="say">Ask across both deals&hellip;</span><span class="ctx">Workspace</span><span class="kbd">&#8984;K</span></div>
-<div class="tray"><span><b>2 deals on Thursday's agenda</b></span><span style="color:#CBD5E1">1 still unsigned &middot; decisions are recorded here, by the Managing Partner only</span><div class="go">Record decisions</div></div>
+<div class="tray"><span><b>2 deals on Thursday's agenda</b></span><span style="color:#CBD5E1">1 still unsigned &middot; decisions are recorded here, by the Managing Partner only</span><div class="go" role="button" tabindex="0" title="Only a Managing Partner can record a decision">Record decisions</div></div>
+<script>
+document.querySelectorAll(".tray .go").forEach(el=>el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();el.click()}}));
+</script>
 </body></html>

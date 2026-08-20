@@ -376,7 +376,7 @@ a.item{text-decoration:none}
     <div class="apcard"><div class="cardtag">Proposed change &middot; 1 field</div>
       <div class="rowline"><b>Coupon</b><span class="old num">11.00% &middot; 8.00% cash + 3.00% PIK</span><span class="arw">&rarr;</span><b class="num">10.50%, all cash</b></div>
       <div class="src">Source: this message &middot; provenance <b>negotiation</b> &middot; attributed to A. Zhang, Aug 19</div>
-      <div class="acts"><span class="btn primary">Apply</span><span class="btn quiet">Reject</span><span class="aud">audited either way</span></div></div>
+      <div class="acts"><span class="btn primary" role="button" tabindex="0">Apply</span><span class="btn quiet" role="button" tabindex="0">Reject</span><span class="aud">audited either way</span></div></div>
     <div class="apmsg sys">Applying supersedes the current assessment: the PIK caution clears, cash share moves to 100 percent, and the IRR re-runs. The tab updates in place.</div>
   </div>
   <div class="apfoot">
@@ -636,5 +636,10 @@ document.querySelectorAll('tr.pcorow').forEach(r=>{
   r.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});
 });
 document.getElementById('copycite').addEventListener('click',copyCited);
+document.querySelectorAll('.btn[role=button], .act, .srcclose, .aphead .x').forEach(el=>{
+  if(el.tabIndex<0) el.tabIndex=0;
+  if(!el.getAttribute('role')) el.setAttribute('role','button');
+  el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();el.click()}});
+});
 </script>
 </body></html>
