@@ -1,6 +1,10 @@
 *{margin:0;padding:0;box-sizing:border-box}
 input,button,select,textarea{font:inherit;color:inherit}
-:root{--ink:#1F2937;--muted:#6B7280;--faint:#6E7683;--ground:#FFF;--surface:#F8FAFC;--line:#E5E7EB;--hair:#F1F5F9;--info:#0EA5E9;--pos:#16A34A;--neg:#DC2626;--warn:#D97706}
+/* Every ink token clears WCAG AA (4.5:1) against all three of the surfaces it
+   is actually painted on: white, --surface and the source pane's tint. The
+   earlier sky and green passed on white and failed on the tinted panels, which
+   is where most of the interactive text lives. */
+:root{--ink:#1F2937;--muted:#6B7280;--faint:#697180;--ground:#FFF;--surface:#F8FAFC;--line:#E5E7EB;--hair:#F1F5F9;--info:#0B76B8;--pos:#15803D;--neg:#DC2626;--warn:#B45309}
 body{position:relative;font-family:Inter,-apple-system,'Helvetica Neue',Arial,sans-serif;color:var(--ink);background:var(--ground);width:100%;min-width:1240px;font-size:13px;-webkit-font-smoothing:antialiased}
 .num{font-variant-numeric:tabular-nums}
 .topbar{position:sticky;top:0;z-index:70;background:var(--ground);display:flex;align-items:center;gap:16px;padding:12px 28px;border-bottom:1px solid var(--line)}
