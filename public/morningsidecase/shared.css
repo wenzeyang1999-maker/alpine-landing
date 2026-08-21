@@ -322,6 +322,9 @@ tr.pcorow:hover td:first-child b{text-decoration-color:rgba(14,165,233,.85)}
 .dealtag{display:block;margin-top:3px;font-size:10.5px;color:var(--faint);font-weight:400;white-space:nowrap}
 /* Two-fact cell: the party above, the entity below. A column headed GP / Fund
    must show both, not a fund name that happens to contain the GP's. */
+/* The borrower is one legal entity, so its name holds one line; the qualifier
+   sits beneath it. */
+@media (min-width:1400px){ td.borrower{white-space:nowrap} }
 .subline{display:block;margin-top:2px;font-size:10.5px;color:var(--faint);font-weight:400}
 .notranked{font-size:11.5px;color:var(--faint);font-style:italic}
 

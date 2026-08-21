@@ -18,7 +18,7 @@ addEventListener('DOMContentLoaded',function(){
   });
 });
 })();
-</script><link rel="stylesheet" href="shared.css?v=048c9a6e"><style>
+</script><link rel="stylesheet" href="shared.css?v=c832b422"><style>
 main{padding:24px 28px 150px}
 .phead h1{font-size:20px;font-weight:700;letter-spacing:-.2px}
 .filters{position:sticky;top:var(--topbar-h);z-index:50;background:var(--ground);display:flex;align-items:center;gap:16px;margin-top:16px;padding:12px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
@@ -61,14 +61,14 @@ table th{position:sticky;top:calc(var(--topbar-h) + 62px);background:var(--groun
   </div>
 
   <table class="num">
-    <tr><th></th><th>Deal</th><th>Verdict</th><th class="hide-sm hide-md">Broker / source</th><th class="hide-sm">GP / Fund</th><th>Facility</th><th>All-in IRR</th><th>LTV → stressed</th><th>Flags</th><th>Status</th><th>Due</th></tr>
+    <tr><th></th><th>Deal</th><th>Verdict</th><th class="hide-sm hide-md">Broker / source</th><th class="hide-sm">Borrower</th><th>Facility</th><th>All-in IRR</th><th>LTV → stressed</th><th>Flags</th><th>Status</th><th>Due</th></tr>
 
     <tr class="grouphead" data-strat="nav"><td colspan="11"><div class="gh"><b>NAV Financing</b><span class="purpose">Screened by Framework v1. Verdicts and ranking live here.</span></div></td></tr>
     <tr>
       <td><input type="checkbox"></td>
       <td><b title="no screening tab in this prototype">Project Cedar</b><div class="dealtag" title="Computed natively in euros; only the ticket-size test against the US$20-50M mandate uses a rate">EUR &middot; ticket converted at 1.07</div></td>
       <td><span class="chip verdict" title="Rule: at most one strategy deviation, and contractual all-in at or above the 10 percent band floor"><span class="dot"></span>Worth a look</span></td>
-      <td class="hide-sm hide-md">Ashgrove &amp; Co</td><td class="hide-sm">Ferrant Capital<span class="subline">Fund II, the borrower</span></td>
+      <td class="hide-sm hide-md">Ashgrove &amp; Co</td><td class="hide-sm borrower">Ferrant Capital Fund II<span class="subline">SCSp &middot; 2019 vintage</span></td>
       <td class="nowrap"><span class="uscur">€</span>45.0M / 100%</td>
       <td class="nowrap">10.1% <span class="irrsub" title="1.75% fee and 9.50% coupon over four years, computed in euros">EUR</span></td>
       <td class="nowrap">22.1% → 27.8%</td>
@@ -80,7 +80,7 @@ table th{position:sticky;top:calc(var(--topbar-h) + 62px);background:var(--groun
       <td><input type="checkbox" checked></td>
       <td><a href="screening.html" style="color:inherit"><b>Project Bluegrass</b></a></td>
       <td><span class="chip verdict" title="Rule: no strategy deviations, and ranking IRR at or above 12.5 percent or three or more strengths. This deal qualifies through its three strengths; its 11.6 percent sits below the 12.5 bar"><span class="dot"></span>Priority look</span></td>
-      <td class="hide-sm hide-md">Meridian Park</td><td class="hide-sm">Hollis Bridge Partners<span class="subline">Fund III, the borrower</span></td>
+      <td class="hide-sm hide-md">Meridian Park</td><td class="hide-sm borrower">Hollis Bridge Partners Fund III<span class="subline">L.P. &middot; 2019 vintage</span></td>
       <td class="nowrap"><span class="uscur">US$</span>80.0M / ~50%</td>
       <td class="nowrap">11.6% <span class="irrsub" title="The broker states 14 to 15%; that needs an undisclosed NAV growth assumption">broker says 14–15%</span></td>
       <td class="nowrap">25.8% → 30.5%</td>
@@ -92,7 +92,7 @@ table th{position:sticky;top:calc(var(--topbar-h) + 62px);background:var(--groun
       <td><input type="checkbox" checked></td>
       <td><a href="anchor.html" style="color:inherit"><b>Project Anchor</b></a></td>
       <td><span class="chip verdict" title="Rule: at most one strategy deviation, and ranking IRR at or above the 10 percent band floor"><span class="dot"></span>Worth a look</span></td>
-      <td class="hide-sm hide-md">Meridian Park</td><td class="hide-sm">Silverhawk Capital Partners<span class="subline">Fund IV, the borrower</span></td>
+      <td class="hide-sm hide-md">Meridian Park</td><td class="hide-sm borrower">Silverhawk Capital Partners Fund IV<span class="subline">L.P. &middot; 2018 vintage</span></td>
       <td class="nowrap"><span class="uscur">US$</span>35.0M / 100%</td>
       <td class="nowrap">10.6% <span class="irrsub" title="the teaser states no IRR of its own">no broker figure</span></td>
       <td class="nowrap">14.0% → 29.2%</td>
@@ -115,7 +115,7 @@ table th{position:sticky;top:calc(var(--topbar-h) + 62px);background:var(--groun
       <td></td>
       <td><b title="no screening tab in this prototype">Project Whitmore</b></td>
       <td><span class="notranked">no framework yet</span></td>
-      <td class="hide-sm hide-md">Ashgrove &amp; Co</td><td class="hide-sm">Calder Ridge<span class="subline">Fund I continuation vehicle</span></td>
+      <td class="hide-sm hide-md">Ashgrove &amp; Co</td><td class="hide-sm borrower">Calder Ridge Fund I<span class="subline">continuation vehicle, not the fund</span></td>
       <td class="nowrap"><span class="uscur">US$</span>60.0M sleeve</td>
       <td class="faint">framework not yet built</td>
       <td class="faint">—</td>
@@ -129,7 +129,7 @@ table th{position:sticky;top:calc(var(--topbar-h) + 62px);background:var(--groun
       <td></td>
       <td><b title="no screening tab in this prototype">Project Keel</b></td>
       <td><span class="notranked">no framework yet</span></td>
-      <td class="hide-sm hide-md">Direct from GP</td><td class="hide-sm">Keelworth Partners<span class="subline">management company, no fund</span></td>
+      <td class="hide-sm hide-md">Direct from GP</td><td class="hide-sm borrower">Keelworth Partners<span class="subline">the management company itself</span></td>
       <td class="nowrap"><span class="uscur">US$</span>25.0M</td>
       <td class="faint">framework not yet built</td>
       <td class="faint">—</td>
