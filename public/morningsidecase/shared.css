@@ -38,8 +38,23 @@ body{position:relative;font-family:Inter,-apple-system,'Helvetica Neue',Arial,sa
 .purpose{font-size:12px;color:var(--muted);margin-top:3px;font-weight:400;line-height:1.5}
 .sec-eyebrow{font-size:10.5px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);font-weight:700}
 table{border-collapse:collapse;width:100%}
-th{font-size:10.5px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);font-weight:600;text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+th{font-size:10.5px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);font-weight:600;text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
 td{padding:11px 10px;border-bottom:1px solid var(--hair);font-size:12.5px;vertical-align:middle}
+/* A figure that wraps reads as two facts. Money, ratios, stress deltas and the
+   response clock each stay on one line; the table scrolls before they break. */
+td.nowrap,td.nowrap *{white-space:nowrap}
+.irrsub{display:block;font-size:11px;color:var(--muted);margin-top:1px}
+/* Keeping figures unbroken costs width, so the pipeline buys it back from
+   padding first and from columns second. The table must not sit in an overflow
+   container: that would make the sticky header stick to the box, not the
+   viewport, which is worse than a narrow column. */
+table.num th,table.num td{padding-left:8px;padding-right:8px}
+@media (max-width:1200px){ table .hide-md{display:none} }
+@media (max-width:1080px){
+  table .hide-sm{display:none}
+  table.num th,table.num td{padding-left:6px;padding-right:6px}
+  main{padding-left:16px;padding-right:16px}
+}
 .muted{color:var(--muted)}
 .faint{color:var(--faint)}
 .small{font-size:11px}
