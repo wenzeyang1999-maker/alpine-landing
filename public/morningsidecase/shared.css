@@ -65,6 +65,20 @@ table.num th,table.num td{padding-left:8px;padding-right:8px}
 .btn{border-radius:999px;padding:5px 15px;font-size:11.5px;font-weight:600;white-space:nowrap}
 .btn.primary{background:var(--ink);color:#fff}
 .btn.quiet{border:1px solid var(--line);color:var(--ink);background:#fff}
+/* Access gate: the demo is private case material. The page hides until the
+   token is entered once per tab; the check is a SHA-256 compare so the token
+   itself never appears in source. */
+html.gated body>*{display:none !important}
+html.gated body>#gate{display:flex !important}
+#gate{position:fixed;inset:0;background:var(--ground);z-index:999;align-items:center;justify-content:center}
+.gatecard{width:340px;text-align:center;padding:36px 32px;border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:0 18px 50px rgba(31,41,55,.10)}
+.gatecard .mono{margin:0 auto 14px}
+.gatecard b{font-size:15px;letter-spacing:-.2px;display:block}
+.gatecard p{font-size:12px;color:var(--muted);line-height:1.55;margin:8px 0 16px}
+.gatecard input{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 12px;font-size:13px;font-family:inherit;color:var(--ink);text-align:center}
+.gatecard input:focus{outline:2px solid var(--info);outline-offset:1px}
+.gatecard .gerr{font-size:11.5px;color:var(--neg);margin-top:10px}
+.gatecard .ghint{font-size:10.5px;color:var(--faint);margin-top:14px;line-height:1.5}
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
 }
