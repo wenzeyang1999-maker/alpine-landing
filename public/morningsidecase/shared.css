@@ -221,6 +221,16 @@ table.num th,table.num td{padding-left:8px;padding-right:8px}
 .routed{font-size:11.5px;color:var(--muted);margin-top:12px;padding:10px 13px;background:var(--surface);border-radius:9px;border:1px solid var(--line);display:none}
 .routed.show{display:block}
 @media (max-width:900px){.decide{grid-template-columns:1fr;margin-left:16px;margin-right:16px}}
+/* Opening the proof panel halves the tab without changing the window, so the
+   tab's columns have to answer to their container. Viewport breakpoints alone
+   left the sign-and-route block as two 300px columns of dense text, which is
+   the worst place in the product to make someone read sideways. */
+.layout > .main{container-type:inline-size}
+@container (max-width:900px){
+  .layout .main .decide{grid-template-columns:1fr}
+  .layout .main .grid{grid-template-columns:repeat(2,1fr)}
+}
+@container (max-width:480px){ .layout .main .grid{grid-template-columns:1fr} }
 
 /* ============ Proof panel: fixed chrome, one scrolling page, an always-visible grip ============ */
 .source{position:sticky;top:var(--topbar-h);height:calc(100vh - var(--topbar-h));align-self:flex-start;
