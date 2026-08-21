@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Today · Morningside OS</title><link rel="icon" type="image/svg+xml" href="favicon.svg?v=2"><link rel="mask-icon" href="favicon.svg?v=2" color="#1F2937"><link rel="stylesheet" href="shared.css?v=1a85a04a"><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Today · Morningside OS</title><link rel="icon" type="image/svg+xml" href="favicon.svg?v=2"><link rel="mask-icon" href="favicon.svg?v=2" color="#1F2937"><link rel="stylesheet" href="shared.css?v=2cf4c7ab"><style>
 main{max-width:1080px;margin:0 auto;padding:26px 28px 120px}
 .greet{padding-bottom:20px;border-bottom:1px solid var(--line)}
 .hello{font-size:26px;font-weight:700;color:var(--ink);letter-spacing:-.5px;margin-bottom:7px}
@@ -34,24 +34,24 @@ main{max-width:1080px;margin:0 auto;padding:26px 28px 120px}
   <header class="greet">
     <div class="hello">Hi Henry<span class="wave">.</span></div>
     <h1>Three things need you before Thursday's meeting.</h1>
-    <div class="sub">Everything else is handled or waiting on someone else. The queue is ordered by what expires first.</div>
+    <div class="sub">Everything else is handled or waiting on someone else. The queue leads with what Thursday needs, then by deadline.</div>
   </header>
 
   <section class="zone">
-    <div class="zonehead"><span class="sec-eyebrow">Your queue</span><span class="purpose">Every row needs your decision or your signature. Nothing here is informational.</span></div>
+    <div class="zonehead"><span class="sec-eyebrow">Your queue</span><span class="purpose">Every row needs your decision or your signature. Anchor leads because it is blocked: its read cannot be signed while proposals are open.</span></div>
     <div class="queue">
       <div class="qrow">
         <div class="n num">1</div>
         <div class="what"><b>Anchor: two corrections waiting</b> <span class="chip verdict" title="Rule: at most one strategy deviation, and ranking IRR at or above the 10 percent band floor"><span class="dot"></span>Worth a look</span>
           <div class="why">The broker's follow-up email moved the closing fee and the marks date. Apply or reject each; the tab recomputes itself.</div></div>
-        <div class="clock num">response due in <b>9 days</b><br><span class="faint">reminder fires Thursday</span></div>
+        <div class="clock num">response due in <b>21 days</b></div>
         <a class="btn primary" style="text-decoration:none" href="anchor.html">Review proposals</a>
       </div>
       <div class="qrow">
         <div class="n num">2</div>
         <div class="what"><b>Bluegrass: first draft ready for your read</b> <span class="chip verdict" title="Rule: no strategy deviations, and ranking IRR at or above 12.5 percent or three or more strengths"><span class="dot"></span>Priority look</span>
           <div class="why">Generated 4 minutes after the teaser arrived. Zero deviations. Read it, then route it: tag the team or take it to Thursday.</div></div>
-        <div class="clock num">response due in <b>12 days</b></div>
+        <div class="clock num">response due in <b>20 days</b></div>
         <a class="btn primary" style="text-decoration:none" href="screening.html">Open tab</a>
       </div>
       <div class="qrow">
@@ -131,6 +131,17 @@ main{max-width:1080px;margin:0 auto;padding:26px 28px 120px}
   document.querySelectorAll('.suggest .sg').forEach(r=>{r.tabIndex=0;r.setAttribute('role','button');
     const go=()=>{const i=p.querySelector('input');if(i){i.value=r.dataset.q;i.focus()}};
     r.addEventListener('click',go);r.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});});
+})();
+</script>
+<script>
+// the top bar's height is measured, not assumed: sticky panels have drifted twice from a hardcoded value
+(function(){
+  const bar=document.querySelector('.topbar'); if(!bar) return;
+  const sync=()=>document.documentElement.style.setProperty('--topbar-h',Math.round(bar.getBoundingClientRect().height)+'px');
+  sync();
+  addEventListener('resize',sync);
+  if(window.ResizeObserver) new ResizeObserver(sync).observe(bar);
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(sync);
 })();
 </script>
 </body></html>

@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Project Bluegrass · Morningside OS</title><link rel="icon" type="image/svg+xml" href="favicon.svg?v=2"><link rel="mask-icon" href="favicon.svg?v=2" color="#1F2937"><link rel="stylesheet" href="shared.css?v=1a85a04a"><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Project Bluegrass · Morningside OS</title><link rel="icon" type="image/svg+xml" href="favicon.svg?v=2"><link rel="mask-icon" href="favicon.svg?v=2" color="#1F2937"><link rel="stylesheet" href="shared.css?v=2cf4c7ab"><style>
 html{scroll-behavior:smooth}
 .layout{display:flex}
 .rail{width:196px;flex:0 0 196px;border-right:1px solid var(--line);padding:16px 0;background:#fff;
@@ -124,7 +124,7 @@ a.item{text-decoration:none}
     </div>
     <div class="chiprow">
       <span class="chip"><span class="uscur">US$</span><b class="num">80.0M</b>&nbsp;· ~50% offered</span>
-      <span class="chip">Due in <b>12 days</b></span>
+      <span class="chip">Due in <b>20 days</b></span>
       <span class="chip">Framework v1</span>
       <span class="chip">Teaser + broker email · 2 documents</span>
     </div>
@@ -132,7 +132,7 @@ a.item{text-decoration:none}
       <span class="chip"><span class="dot"></span>Screening</span>
       <span class="who">set when the tab generated, Aug 18 at 9:18am &middot; nobody notified yet</span>
       <span class="sp"></span>
-      <span>Response due in <b>12 days</b></span>
+      <span>Response due in <b>20 days</b></span>
       <a class="jump" href="#s-route">Route this deal &darr;</a>
     </div>
   </div>
@@ -220,7 +220,7 @@ a.item{text-decoration:none}
       <div class="kv"><div class="k">Closing fee</div><div class="v">1.50%</div><div class="note">borrower-paid at close</div></div>
       <div class="kv"><div class="k">Coupon</div><div class="v">11.00%</div><div class="note">8.00% cash · 3.00% PIK, borrower election</div></div>
       <div class="kv"><div class="k">Upside participation</div><div class="v">5.0%</div><div class="note">of NAV growth above US$310M</div></div>
-      <div class="kv"><div class="k">Term and security</div><div class="v">4 years</div><div class="note">pledge of holding-vehicle interests</div></div>
+      <div class="kv"><div class="k">Term and law</div><div class="v">4 years &middot; NY</div><div class="note">pledge of holding-vehicle interests</div></div>
     </div>
   </div>
 
@@ -689,6 +689,17 @@ document.querySelectorAll('.btn[role=button], .act, .srcclose, .aphead .x').forE
   document.querySelectorAll('.suggest .sg').forEach(r=>{r.tabIndex=0;r.setAttribute('role','button');
     const go=()=>{const i=p.querySelector('input');if(i){i.value=r.dataset.q;i.focus()}};
     r.addEventListener('click',go);r.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});});
+})();
+</script>
+<script>
+// the top bar's height is measured, not assumed: sticky panels have drifted twice from a hardcoded value
+(function(){
+  const bar=document.querySelector('.topbar'); if(!bar) return;
+  const sync=()=>document.documentElement.style.setProperty('--topbar-h',Math.round(bar.getBoundingClientRect().height)+'px');
+  sync();
+  addEventListener('resize',sync);
+  if(window.ResizeObserver) new ResizeObserver(sync).observe(bar);
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(sync);
 })();
 </script>
 </body></html>

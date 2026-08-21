@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Partner review · Morningside OS</title><link rel="icon" type="image/svg+xml" href="favicon.svg?v=2"><link rel="mask-icon" href="favicon.svg?v=2" color="#1F2937"><link rel="stylesheet" href="shared.css?v=1a85a04a"><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Partner review · Morningside OS</title><link rel="icon" type="image/svg+xml" href="favicon.svg?v=2"><link rel="mask-icon" href="favicon.svg?v=2" color="#1F2937"><link rel="stylesheet" href="shared.css?v=2cf4c7ab"><style>
 main{padding:22px 28px 140px}
 .phead h1{font-size:20px;font-weight:700;letter-spacing:-.2px}
 .zonelabel{display:flex;align-items:baseline;gap:10px;margin:26px 0 12px}
@@ -157,6 +157,17 @@ document.querySelectorAll(".tray .go").forEach(el=>el.addEventListener("keydown"
   document.querySelectorAll('.suggest .sg').forEach(r=>{r.tabIndex=0;r.setAttribute('role','button');
     const go=()=>{const i=p.querySelector('input');if(i){i.value=r.dataset.q;i.focus()}};
     r.addEventListener('click',go);r.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});});
+})();
+</script>
+<script>
+// the top bar's height is measured, not assumed: sticky panels have drifted twice from a hardcoded value
+(function(){
+  const bar=document.querySelector('.topbar'); if(!bar) return;
+  const sync=()=>document.documentElement.style.setProperty('--topbar-h',Math.round(bar.getBoundingClientRect().height)+'px');
+  sync();
+  addEventListener('resize',sync);
+  if(window.ResizeObserver) new ResizeObserver(sync).observe(bar);
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(sync);
 })();
 </script>
 </body></html>

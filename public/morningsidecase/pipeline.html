@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Pipeline · Morningside OS</title><link rel="icon" type="image/svg+xml" href="favicon.svg?v=2"><link rel="mask-icon" href="favicon.svg?v=2" color="#1F2937"><link rel="stylesheet" href="shared.css?v=1a85a04a"><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Pipeline · Morningside OS</title><link rel="icon" type="image/svg+xml" href="favicon.svg?v=2"><link rel="mask-icon" href="favicon.svg?v=2" color="#1F2937"><link rel="stylesheet" href="shared.css?v=2cf4c7ab"><style>
 main{padding:24px 28px 150px}
 .phead h1{font-size:20px;font-weight:700;letter-spacing:-.2px}
 .filters{position:sticky;top:var(--topbar-h);z-index:50;background:var(--ground);display:flex;align-items:center;gap:16px;margin-top:16px;padding:12px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
@@ -54,7 +54,7 @@ table th{position:sticky;top:calc(var(--topbar-h) + 62px);background:var(--groun
       <td>25.8% → 30.5%</td>
       <td class="small"><div class="flagcell"><div class="rest"><span><i class="c"></i>2 cautions</span><span><i class="s"></i>3 strengths</span></div></div></td>
       <td><span class="chip"><span class="dot"></span>First draft</span></td>
-      <td>in 12 days</td>
+      <td>in 20 days</td>
     </tr>
     <tr>
       <td><input type="checkbox" checked></td>
@@ -66,7 +66,7 @@ table th{position:sticky;top:calc(var(--topbar-h) + 62px);background:var(--groun
       <td>14.0% → 29.2%</td>
       <td class="small"><div class="flagcell"><div class="dev"><i class="d"></i>1 deviation</div><div class="rest"><span><i class="c"></i>4 cautions</span><span><i class="s"></i>5 strengths</span></div></div></td>
       <td><span class="chip amber"><span class="dot"></span>2 proposals pending</span></td>
-      <td class="duewarn">in 9 days</td>
+      <td>in 21 days</td>
     </tr>
     <tr>
       <td><input type="checkbox"></td>
@@ -187,6 +187,17 @@ document.querySelectorAll('.filters .seg')[1]?.querySelectorAll('[role=button]')
   document.querySelectorAll('.suggest .sg').forEach(r=>{r.tabIndex=0;r.setAttribute('role','button');
     const go=()=>{const i=p.querySelector('input');if(i){i.value=r.dataset.q;i.focus()}};
     r.addEventListener('click',go);r.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});});
+})();
+</script>
+<script>
+// the top bar's height is measured, not assumed: sticky panels have drifted twice from a hardcoded value
+(function(){
+  const bar=document.querySelector('.topbar'); if(!bar) return;
+  const sync=()=>document.documentElement.style.setProperty('--topbar-h',Math.round(bar.getBoundingClientRect().height)+'px');
+  sync();
+  addEventListener('resize',sync);
+  if(window.ResizeObserver) new ResizeObserver(sync).observe(bar);
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(sync);
 })();
 </script>
 </body></html>

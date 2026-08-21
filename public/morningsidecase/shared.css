@@ -337,13 +337,17 @@ table td:nth-child(2) b{white-space:nowrap}
 
 main{padding-bottom:110px}
 
-/* Drawn affordances rather than emoji, which read as decoration and never match the type */
-.apinput .clip{position:relative}
-.apinput .clip::before{content:"";position:absolute;inset:0;margin:auto;width:9px;height:14px;
-  border:1.5px solid currentColor;border-radius:6px 6px 5px 5px;border-top-width:1.5px}
+/* Drawn affordances rather than emoji: an arrow that is an arrow, and a plus for attach */
+.apinput .clip{position:relative;color:var(--muted)}
+.apinput .clip::before,.apinput .clip::after{content:"";position:absolute;inset:0;margin:auto;background:currentColor;border-radius:1px}
+.apinput .clip::before{width:12px;height:1.6px}
+.apinput .clip::after{width:1.6px;height:12px}
 .apinput .send{position:relative}
-.apinput .send::before{content:"";position:absolute;inset:0;margin:auto;width:7px;height:7px;
-  border-top:1.6px solid #fff;border-right:1.6px solid #fff;transform:rotate(-45deg) translate(1px,1px)}
+.apinput .send::before{content:"";position:absolute;left:50%;top:50%;width:1.7px;height:11px;background:#fff;
+  transform:translate(-50%,-50%);border-radius:1px}
+.apinput .send::after{content:"";position:absolute;left:50%;top:50%;width:7px;height:7px;
+  border-top:1.7px solid #fff;border-left:1.7px solid #fff;border-radius:1px;
+  transform:translate(-50%,-50%) translateY(-3px) rotate(45deg)}
 
 /* Continuous scroll: pages stack with a labelled gutter between them */
 .srcscroll .doccard{margin-bottom:0}
