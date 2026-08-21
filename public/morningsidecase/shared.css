@@ -320,6 +320,9 @@ tr.pcorow:hover td:first-child b{text-decoration-color:rgba(14,165,233,.85)}
 .flagcell .none{font-size:11px;color:var(--faint)}
 /* Coverage is a property of the deal, not a verdict */
 .dealtag{display:block;margin-top:3px;font-size:10.5px;color:var(--faint);font-weight:400;white-space:nowrap}
+/* Two-fact cell: the party above, the entity below. A column headed GP / Fund
+   must show both, not a fund name that happens to contain the GP's. */
+.subline{display:block;margin-top:2px;font-size:10.5px;color:var(--faint);font-weight:400}
 .notranked{font-size:11.5px;color:var(--faint);font-style:italic}
 
 table td:nth-child(2) b{white-space:nowrap}
